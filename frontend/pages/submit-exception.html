@@ -10,61 +10,125 @@
     <link href="../assets/css/rtl.css" rel="stylesheet">
     
     <style>
-        .form-section {
-            transition: all 0.2s ease;
-        }
-        .dynamic-fields {
-            display: none;
-        }
-        .dynamic-fields.show {
-            display: block;
-        }
+        :root { --exception-blue: #2563eb; --exception-slate: #0f172a; }
+        body { font-family: 'Outfit', 'Inter', system-ui, sans-serif; color: var(--exception-slate); background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb; }
+        #exception-main-content,
+        #exception-main-content.main-content { margin: 0 !important; padding: 0; width: 100% !important; max-width: 100% !important; min-width: 0; box-sizing: border-box; }
+        [dir="rtl"] #exception-main-content,
+        [dir="rtl"] #exception-main-content.main-content { margin-right: 0 !important; margin-left: 0 !important; padding-right: 0 !important; }
+        .form-section { transition: all 0.2s ease; }
+        .dynamic-fields { display: none; }
+        .dynamic-fields.show { display: block; }
+        /* Page header - director style */
+        .page-header-exception { text-align: center; margin-bottom: 2rem; padding: 2rem; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; border: 1px solid rgba(148, 163, 184, 0.1); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
+        .page-header-exception .page-title { font-size: 2rem; font-weight: 700; color: #1e293b; margin: 0 0 0.5rem 0; display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+        .page-header-exception .page-title i { color: #3b82f6; font-size: 1.75rem; }
+        .page-header-exception .page-subtitle { font-size: 1rem; color: #64748b; margin: 0; font-weight: 500; }
+        html[dir="rtl"] .page-header-exception .page-title { flex-direction: row-reverse; }
+        /* Tabs - Director style (pill) */
+        .director-tabs-exception { display: inline-flex; flex-wrap: wrap; gap: 6px; padding: 6px; background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 999px; }
+        .director-tab-exception { border-radius: 999px; padding: 8px 16px; border: none; background: transparent; color: #475569; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease; cursor: pointer; font-size: 0.875rem; }
+        .director-tab-exception:hover { background: rgba(59, 130, 246, 0.1); color: #1d4ed8; transform: translateY(-1px); }
+        .director-tab-exception.active { background: linear-gradient(120deg, #2563eb, #7c3aed); color: white; box-shadow: 0 10px 22px rgba(37, 99, 235, 0.25); transform: translateY(-1px); }
+        .director-tab-exception i { font-size: 0.9rem; }
+        /* Panels */
+        .panel-exception { background: #fff; border-radius: 0 16px 16px 16px; padding: 24px 28px; box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08); border: 1px solid rgba(15, 23, 42, 0.06); border-top: none; position: relative; overflow: hidden; }
+        .panel-exception::before { content: ''; position: absolute; inset: 0; background: linear-gradient(120deg, rgba(37, 99, 235, 0.04), rgba(124, 58, 237, 0.02)); opacity: 0.6; pointer-events: none; z-index: 0; }
+        .panel-exception > * { position: relative; z-index: 1; }
+        .panel-exception .form-section h3 { color: #0f172a; font-weight: 600; border-bottom: 1px solid rgba(148, 163, 184, 0.2); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        /* Inputs */
+        .panel-exception input[type="text"],
+        .panel-exception input[type="date"],
+        .panel-exception input[type="time"],
+        .panel-exception input[type="number"],
+        .panel-exception input[type="file"],
+        .panel-exception select,
+        .panel-exception textarea { border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.9); padding: 0.5rem 0.75rem; font-size: 14px; transition: all 0.2s; }
+        .panel-exception input:focus, .panel-exception select:focus, .panel-exception textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+        /* Filter buttons */
+        .filter-btn-exception { padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 10px; font-size: 13px; font-weight: 500; color: #475569; background: #fff; cursor: pointer; transition: all 0.2s; }
+        .filter-btn-exception:hover { background: #f8fafc; border-color: #3b82f6; color: #2563eb; }
+        .filter-btn-exception.active, .filter-btn-exception.bg-blue-600 { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+        /* Stat cards (invitations tab) */
+        .stat-card-exception { background: #fff; border-radius: 20px; padding: 26px 28px; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06); border: 1px solid rgba(148, 163, 184, 0.12); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+        .stat-card-exception::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; opacity: 0.95; }
+        .stat-card-exception:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12); }
+        .stat-card-exception.blue::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .stat-card-exception.green::before { background: linear-gradient(90deg, #10b981, #34d399); }
+        .stat-card-exception.gray::before { background: linear-gradient(90deg, #64748b, #94a3b8); }
+        .stat-card-exception.red::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .stat-card-exception > .flex { gap: 22px; }
+        .stat-card-exception .stat-icon-exception { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 23px; color: #fff; flex-shrink: 0; margin-inline-end: 10px; }
+        .stat-card-exception .stat-icon-exception + div { margin-inline-start: 0 !important; padding-inline-start: 10px; min-width: 0; }
+        .stat-card-exception.blue .stat-icon-exception { background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4); }
+        .stat-card-exception.green .stat-icon-exception { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4); }
+        .stat-card-exception.gray .stat-icon-exception { background: linear-gradient(135deg, #64748b, #475569); box-shadow: 0 6px 16px rgba(100, 116, 139, 0.4); }
+        .stat-card-exception.red .stat-icon-exception { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4); }
+        .stat-card-exception .stat-label { font-size: 0.8125rem; font-weight: 600; color: #64748b; letter-spacing: 0.02em; }
+        .stat-card-exception .stat-value { font-size: 1.875rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; }
+        /* Messages */
+        #errorMessage { border-radius: 14px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15); }
+        #successMessage { border-radius: 14px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); }
+        /* Buttons */
+        .btn-exception-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 600; border: none; cursor: pointer; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transition: all 0.3s ease; }
+        .btn-exception-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35); }
+        .btn-exception-secondary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 600; background: rgba(248, 250, 252, 0.95); color: #475569; border: 1px solid rgba(226, 232, 240, 0.9); cursor: pointer; transition: all 0.2s ease; text-decoration: none; }
+        .btn-exception-secondary:hover { background: rgba(241, 245, 249, 1); transform: translateY(-1px); }
+        /* Tables */
+        .panel-exception table thead { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); }
+        .panel-exception table thead th { font-weight: 600; color: #475569; letter-spacing: 0.02em; }
+        .panel-exception table tbody tr { transition: background 0.2s; }
+        .panel-exception table tbody tr:hover { background: rgba(59, 130, 246, 0.04); }
+        /* History cards (card view) */
+        .history-card-exception { transition: all 0.3s ease; border: 2px solid rgba(148, 163, 184, 0.15); border-radius: 20px; background: #fff; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04); overflow: hidden; padding: 24px; }
+        .history-card-exception:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(59, 130, 246, 0.12); border-color: rgba(59, 130, 246, 0.3); }
+        .history-card-exception .info-block { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 14px; margin-bottom: 10px; }
+        .history-card-exception .info-block.blue { background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.04)); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .history-card-exception .info-block.green { background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.04)); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .history-card-exception .info-block .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+        .history-card-exception .info-block.blue .icon-box { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .history-card-exception .info-block.green .icon-box { background: linear-gradient(135deg, #10b981, #059669); }
+        .history-card-exception .info-block .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; color: #64748b; margin: 0 0 4px 0; }
+        .history-card-exception .info-block .value { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .history-view-btn { padding: 8px 12px; border-radius: 8px; font-size: 13px; border: none; cursor: pointer; transition: all 0.2s; background: #f1f5f9; color: #64748b; }
+        .history-view-btn:hover { color: #0f172a; background: #e2e8f0; }
+        .history-view-btn.active { background: #3b82f6; color: white; }
+        #historyTableWrap.hidden { display: none !important; }
+        #historyCardsWrap.hidden { display: none !important; }
     </style>
 </head>
 <body class="bg-gray-50">
     <!-- The reusable navbar will be automatically inserted here -->
     
     <!-- Main Content -->
-    <div class="main-content flex-1 flex flex-col overflow-hidden">
-    <div class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div id="exception-main-content" class="main-content flex-1 flex flex-col overflow-hidden">
+    <div class="w-full max-w-full py-6 px-4 sm:px-6 lg:px-8">
         <!-- Page Header -->
-        <div class="mb-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900" data-translate="requests.title">Requests</h1>
-                    <p class="text-gray-600" data-translate="requests.my_requests">Submit exceptions, view your request history, and manage pending extra hours</p>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <!-- Language Selector -->
-                    <select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="en">English</option>
-                        <option value="fr">Français</option>
-                        <option value="ar">العربية</option>
-                    </select>
-                </div>
+        <div class="page-header-exception flex flex-col items-center justify-center gap-4 text-center">
+            <div class="w-full">
+                <h1 class="page-title justify-center" data-translate="requests.title"><i class="fas fa-file-pen"></i> <span>Requests</span></h1>
+                <p class="page-subtitle text-center mx-auto" data-translate="requests.my_requests">Submit exceptions, view your request history, and manage pending extra hours</p>
             </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="mb-4 border-b border-gray-200">
-            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                <button type="button" data-tab="submit" class="tab-btn border-blue-500 text-blue-600 whitespace-nowrap pb-2 px-1 border-b-2 font-medium text-sm">
-                    <i class="fas fa-paper-plane mr-2"></i> <span data-translate="requests.create_request">Submit Exception</span>
-                </button>
-                <button type="button" data-tab="history" class="tab-btn text-gray-500 hover:text-gray-700 whitespace-nowrap pb-2 px-1 border-b-2 border-transparent font-medium text-sm">
-                    <i class="fas fa-clock-rotate-left mr-2"></i> <span data-translate="requests.my_requests">My History</span>
-                </button>
-                <button type="button" data-tab="extra" class="tab-btn text-gray-500 hover:text-gray-700 whitespace-nowrap pb-2 px-1 border-b-2 border-transparent font-medium text-sm">
-                    <i class="fas fa-user-plus mr-2"></i> <span data-translate="requests.overtime">Pending Extra Hours</span>
-                </button>
-                <button type="button" data-tab="invitations" class="tab-btn text-gray-500 hover:text-gray-700 whitespace-nowrap pb-2 px-1 border-b-2 border-transparent font-medium text-sm hidden">
-                    <i class="fas fa-envelope mr-2"></i> Sent Invitations
-                </button>
-            </nav>
-        </div>
+        <!-- Tabs (Director style: pill tabs) -->
+        <nav class="director-tabs-exception flex flex-wrap gap-2 mb-6" aria-label="Tabs">
+            <button type="button" data-tab="history" class="director-tab-exception active">
+                <i class="fas fa-clock-rotate-left"></i> <span data-translate="requests.my_history">My History</span>
+            </button>
+            <button type="button" data-tab="extra" class="director-tab-exception">
+                <i class="fas fa-user-plus"></i> <span data-translate="requests.overtime">Pending Extra Hours</span>
+            </button>
+            <button type="button" data-tab="invitations" class="director-tab-exception hidden">
+                <i class="fas fa-envelope"></i> <span data-translate="requests.sent_invitations">Sent Invitations</span>
+            </button>
+            <button type="button" data-tab="submit" class="director-tab-exception">
+                <i class="fas fa-plus"></i> <span data-translate="requests.add_request">Add a request</span>
+            </button>
+        </nav>
 
-        <!-- Tab: Submit Exception (existing form) -->
-        <div id="tab-submit" class="bg-white rounded-lg shadow">
+        <!-- Tab: Submit Exception (Add a request form) - shown when last tab selected -->
+        <div id="tab-submit" class="panel-exception hidden">
             <form id="exceptionForm" class="p-6 space-y-6">
                 <!-- Basic Information -->
                 <div class="form-section">
@@ -287,61 +351,73 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div class="flex justify-end space-x-4">
-                    <a href="exceptions.html" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                        <i class="fas fa-arrow-left mr-2"></i>
+                <div class="flex justify-end gap-3 flex-wrap">
+                    <a href="exceptions.html" class="btn-exception-secondary">
+                        <i class="fas fa-arrow-left"></i>
                         <span data-translate="common.back">Back</span>
                     </a>
-                    <button type="submit" id="submitButton"
-                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-paper-plane mr-2"></i>
-                        <span data-translate="requests.create_request">Submit Request</span>
+                    <button type="submit" id="submitButton" class="btn-exception-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        <span data-translate="requests.submit_request">Submit Request</span>
                     </button>
                 </div>
             </form>
         </div>
 
         <!-- Tab: My History -->
-        <div id="tab-history" class="bg-white rounded-lg shadow hidden">
-            <div class="p-6 space-y-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-medium text-gray-900" data-translate="requests.my_submitted_exceptions">My Submitted Exceptions</h3>
-                    <div class="space-x-2">
-                        <button type="button" class="hist-filter px-3 py-1 text-sm rounded border" data-status="all" data-translate="requests.all">All</button>
-                        <button type="button" class="hist-filter px-3 py-1 text-sm rounded border" data-status="Pending" data-translate="requests.pending">Pending</button>
-                        <button type="button" class="hist-filter px-3 py-1 text-sm rounded border" data-status="Approved" data-translate="requests.approved">Approved</button>
-                        <button type="button" class="hist-filter px-3 py-1 text-sm rounded border" data-status="Rejected" data-translate="requests.rejected">Rejected</button>
+        <div id="tab-history" class="panel-exception">
+            <div class="space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                        <i class="fas fa-list text-blue-600"></i>
+                        <span data-translate="requests.my_submitted_exceptions">My Submitted Exceptions</span>
+                    </h3>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" id="historyViewCards" class="history-view-btn active"><i class="fas fa-border-all mr-1"></i><span class="hidden sm:inline" data-translate="report.view_cards">Cards</span></button>
+                        <button type="button" id="historyViewList" class="history-view-btn"><i class="fas fa-list mr-1"></i><span class="hidden sm:inline" data-translate="report.view_list">List</span></button>
+                        <span class="text-gray-400 mx-1">|</span>
+                        <button type="button" class="hist-filter filter-btn-exception active" data-status="all" data-translate="requests.all">All</button>
+                        <button type="button" class="hist-filter filter-btn-exception" data-status="Pending" data-translate="requests.pending">Pending</button>
+                        <button type="button" class="hist-filter filter-btn-exception" data-status="Approved" data-translate="requests.approved">Approved</button>
+                        <button type="button" class="hist-filter filter-btn-exception" data-status="Rejected" data-translate="requests.rejected">Rejected</button>
                     </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.date">Date</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.type">Type</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.status">Status</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.reason">Reason</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTbody" class="bg-white divide-y divide-gray-200"></tbody>
-                    </table>
+                <div id="historyContent" class="w-full">
+                    <div id="historyTableWrap" class="overflow-x-auto history-table-wrap w-full" style="display: none;">
+                        <table class="min-w-full w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.date">Date</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.end_date">End Date</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.type">Type</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.status">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.reason">Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTbody" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                    <div id="historyCardsWrap" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                 </div>
-                <div id="historyEmpty" class="hidden text-gray-500 text-sm" data-translate="requests.no_items_display">No items to display.</div>
+                <div id="historyEmpty" class="hidden text-center py-12 text-gray-500">
+                    <i class="fas fa-inbox text-5xl text-gray-200 mb-3"></i>
+                    <p class="font-medium" data-translate="requests.no_items_display">No items to display.</p>
+                </div>
             </div>
         </div>
 
         <!-- Tab: Pending Extra Hours (overtime requests + substitution invitations) -->
-        <div id="tab-extra" class="bg-white rounded-lg shadow hidden">
-            <div class="p-6 space-y-6">
+        <div id="tab-extra" class="panel-exception hidden">
+            <div class="space-y-6">
                 <!-- Section 1: My Overtime Requests -->
                 <div class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-medium text-gray-900" data-translate="requests.my_extra_hours_requests">My Extra Hours Requests</h3>
-                        <div class="space-x-2">
-                            <button type="button" class="overtime-filter px-3 py-1 text-sm rounded border" data-status="all" data-translate="requests.all">All</button>
-                            <button type="button" class="overtime-filter px-3 py-1 text-sm rounded border" data-status="Pending" data-translate="requests.pending">Pending</button>
-                            <button type="button" class="overtime-filter px-3 py-1 text-sm rounded border" data-status="Approved" data-translate="requests.approved">Approved</button>
-                            <button type="button" class="overtime-filter px-3 py-1 text-sm rounded border" data-status="Declined" data-translate="requests.declined">Declined</button>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <h3 class="text-lg font-semibold text-gray-900" data-translate="requests.my_extra_hours_requests">My Extra Hours Requests</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" class="overtime-filter filter-btn-exception active" data-status="all" data-translate="requests.all">All</button>
+                            <button type="button" class="overtime-filter filter-btn-exception" data-status="Pending" data-translate="requests.pending">Pending</button>
+                            <button type="button" class="overtime-filter filter-btn-exception" data-status="Approved" data-translate="requests.approved">Approved</button>
+                            <button type="button" class="overtime-filter filter-btn-exception" data-status="Declined" data-translate="requests.declined">Declined</button>
                         </div>
                     </div>
                     <div class="overflow-x-auto">
@@ -366,17 +442,17 @@
 
                 <!-- Section 2: Substitution Invitations (Extra Hours Opportunities) -->
                 <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-medium text-gray-900">
-                            <i class="fas fa-user-clock mr-2"></i>
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                            <i class="fas fa-user-clock text-blue-600"></i>
                             <span data-translate="requests.substitution_invitations">Substitution Invitations (Extra Hours Opportunities)</span>
                         </h3>
-                    <div class="space-x-2">
-                        <button type="button" class="inv-filter px-3 py-1 text-sm rounded border" data-status="pending" data-translate="requests.pending">Pending</button>
-                        <button type="button" class="inv-filter px-3 py-1 text-sm rounded border" data-status="accepted" data-translate="requests.accepted">Accepted</button>
-                        <button type="button" class="inv-filter px-3 py-1 text-sm rounded border" data-status="dropped" data-translate="requests.dropped">Dropped</button>
-                        <button type="button" class="inv-filter px-3 py-1 text-sm rounded border" data-status="taught" data-translate="requests.taught">Taught</button>
-                        <button type="button" id="refreshInvitationsBtn" class="px-3 py-1 text-sm rounded border bg-blue-100 text-blue-700 hover:bg-blue-200" data-translate="requests.refresh" data-translate-title="requests.refresh" title="Refresh">
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" class="inv-filter filter-btn-exception active" data-status="pending" data-translate="requests.pending">Pending</button>
+                        <button type="button" class="inv-filter filter-btn-exception" data-status="accepted" data-translate="requests.accepted">Accepted</button>
+                        <button type="button" class="inv-filter filter-btn-exception" data-status="dropped" data-translate="requests.dropped">Dropped</button>
+                        <button type="button" class="inv-filter filter-btn-exception" data-status="taught" data-translate="requests.taught">Taught</button>
+                        <button type="button" id="refreshInvitationsBtn" class="filter-btn-exception bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200" data-translate-title="requests.refresh" title="Refresh">
                             <i class="fas fa-sync-alt mr-1"></i><span data-translate="requests.refresh">Refresh</span>
                         </button>
                         </div>
@@ -388,17 +464,16 @@
         </div>
 
         <!-- Tab: Sent Invitations Management -->
-        <div id="tab-invitations" class="bg-white rounded-lg shadow hidden" style="display: none;">
-            <div class="p-6 space-y-6">
+        <div id="tab-invitations" class="panel-exception hidden" style="display: none;">
+            <div class="space-y-6">
                 <!-- Header with filters -->
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                        <h3 class="text-lg font-medium text-gray-900" data-translate="requests.sent_invitations_management">Sent Invitations Management</h3>
-                        <p class="text-sm text-gray-600" data-translate="requests.manage_invitations">Manage all substitution invitations sent to teachers</p>
+                        <h3 class="text-lg font-semibold text-gray-900" data-translate="requests.sent_invitations_management">Sent Invitations Management</h3>
+                        <p class="text-sm text-gray-600 mt-1" data-translate="requests.manage_invitations">Manage all substitution invitations sent to teachers</p>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <!-- Status Filter -->
-                        <select id="invitationStatusFilter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select id="invitationStatusFilter" class="panel-exception select px-3 py-2 rounded-lg text-sm border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="" data-translate="common.all_status">All Status</option>
                             <option value="pending" data-translate="requests.pending">Pending</option>
                             <option value="accepted" data-translate="requests.accepted">Accepted</option>
@@ -406,105 +481,93 @@
                             <option value="denied" data-translate="requests.rejected">Denied</option>
                             <option value="dropped" data-translate="requests.dropped">Dropped</option>
                         </select>
-                        <!-- Date Filter -->
-                        <input type="date" id="invitationDateFilter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" data-translate-placeholder="common.filter_by_date" placeholder="Filter by date">
-                        <!-- Teacher Filter -->
-                        <select id="invitationTeacherFilter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="date" id="invitationDateFilter" class="px-3 py-2 rounded-lg text-sm border border-gray-300 focus:ring-2 focus:ring-blue-500" data-translate-placeholder="common.filter_by_date" placeholder="Filter by date">
+                        <select id="invitationTeacherFilter" class="px-3 py-2 rounded-lg text-sm border border-gray-300 focus:ring-2 focus:ring-blue-500">
                             <option value="" data-translate="common.all_teachers">All Teachers</option>
                         </select>
-                        <!-- Refresh Button -->
-                        <button id="refreshInvitations" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <i class="fas fa-sync-alt mr-1"></i> <span data-translate="requests.refresh">Refresh</span>
+                        <button id="refreshInvitations" class="btn-exception-primary text-sm py-2">
+                            <i class="fas fa-sync-alt"></i> <span data-translate="requests.refresh">Refresh</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Statistics Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <div class="stat-card-exception blue">
                         <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-clock text-blue-600 text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-blue-600" data-translate="requests.pending">Pending</p>
-                                <p class="text-2xl font-bold text-blue-900" id="pendingCount">0</p>
+                            <div class="stat-icon-exception"><i class="fas fa-clock"></i></div>
+                            <div>
+                                <p class="stat-label" data-translate="requests.pending">Pending</p>
+                                <p class="stat-value" id="pendingCount">0</p>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <div class="stat-card-exception green">
                         <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-check text-green-600 text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-green-600" data-translate="requests.accepted">Accepted</p>
-                                <p class="text-2xl font-bold text-green-900" id="acceptedCount">0</p>
+                            <div class="stat-icon-exception"><i class="fas fa-check"></i></div>
+                            <div>
+                                <p class="stat-label" data-translate="requests.accepted">Accepted</p>
+                                <p class="stat-value" id="acceptedCount">0</p>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div class="stat-card-exception gray">
                         <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-graduation-cap text-gray-600 text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-600" data-translate="requests.taught">Taught</p>
-                                <p class="text-2xl font-bold text-gray-900" id="taughtCount">0</p>
+                            <div class="stat-icon-exception"><i class="fas fa-graduation-cap"></i></div>
+                            <div>
+                                <p class="stat-label" data-translate="requests.taught">Taught</p>
+                                <p class="stat-value" id="taughtCount">0</p>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                    <div class="stat-card-exception red">
                         <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-times text-red-600 text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-red-600" data-translate="requests.rejected">Denied</p>
-                                <p class="text-2xl font-bold text-red-900" id="deniedCount">0</p>
+                            <div class="stat-icon-exception"><i class="fas fa-times"></i></div>
+                            <div>
+                                <p class="stat-label" data-translate="requests.denied">Denied</p>
+                                <p class="stat-value" id="deniedCount">0</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Invitations Table -->
-                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Absent Teacher</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level & Grade</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invited Teachers</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.date_time">Date & Time</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.absent_teacher">Absent Teacher</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.level_grade">Level & Grade</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.invited_teachers">Invited Teachers</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="common.duration">Duration</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.status">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="requests.action">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="invitationsTableBody" class="bg-white divide-y divide-gray-200">
-                                <!-- Table rows will be populated by JavaScript -->
                             </tbody>
                         </table>
                     </div>
-                    <div id="invitationsTableEmpty" class="hidden text-center py-8 text-gray-500">
-                        <i class="fas fa-inbox text-4xl mb-2"></i>
-                        <p>No invitations found</p>
+                    <div id="invitationsTableEmpty" class="hidden text-center py-12 text-gray-500">
+                        <i class="fas fa-inbox text-5xl mb-3 text-gray-300"></i>
+                        <p class="font-medium" data-translate="requests.no_invitations_found">No invitations found</p>
                     </div>
                 </div>
 
                 <!-- Pagination -->
-                <div id="invitationsPagination" class="flex items-center justify-between">
+                <div id="invitationsPagination" class="flex flex-wrap items-center justify-between gap-3">
                     <div class="text-sm text-gray-700">
-                        Showing <span id="invitationsStart">0</span> to <span id="invitationsEnd">0</span> of <span id="invitationsTotal">0</span> invitations
+                        <span data-translate="requests.showing_invitations">Showing</span> <span id="invitationsStart">0</span> <span data-translate="requests.to">to</span> <span id="invitationsEnd">0</span> <span data-translate="requests.of">of</span> <span id="invitationsTotal">0</span> <span data-translate="requests.invitations_count">invitations</span>
                     </div>
-                    <div class="flex space-x-2">
-                        <button id="prevPage" class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <i class="fas fa-chevron-left mr-1"></i> Previous
+                    <div class="flex gap-2">
+                        <button id="prevPage" class="filter-btn-exception disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fas fa-chevron-left mr-1"></i> <span data-translate="common.previous">Previous</span>
                         </button>
-                        <button id="nextPage" class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                            Next <i class="fas fa-chevron-right ml-1"></i>
+                        <button id="nextPage" class="filter-btn-exception disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span data-translate="common.next">Next</span> <i class="fas fa-chevron-right ml-1"></i>
                         </button>
                     </div>
                 </div>
@@ -570,80 +633,22 @@
             
             // Wait for translations to be available before initializing
             waitForTranslations(function() {
-                // Language selector - MUST be initialized before any translation calls
-                const languageSelector = document.getElementById('languageSelector');
                 let savedLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
-                
-                console.log('[submit-exception] Initializing with savedLanguage:', savedLanguage);
-                console.log('[submit-exception] Translations available:', {
-                    translations: typeof window.translations !== 'undefined',
-                    setLanguage: typeof window.setLanguage === 'function',
-                    updatePageTranslations: typeof window.updatePageTranslations === 'function',
-                    currentLanguage: window.currentLanguage
-                });
-                
-                if (languageSelector) {
-                    languageSelector.value = savedLanguage;
-                    
-                    // CRITICAL: Set language immediately and synchronously
-                    if (typeof window.setLanguage === 'function') {
-                        window.setLanguage(savedLanguage);
-                    }
-                    
-                    languageSelector.addEventListener('change', function() {
-                        const newLang = this.value;
-                        console.log('[submit-exception] Language changed to:', newLang);
-                        if (typeof window.setLanguage === 'function') {
-                            window.setLanguage(newLang);
-                        }
-                        // Force update translations immediately
-                        setTimeout(function() {
-                            if (typeof window.updatePageTranslations === 'function') {
-                                window.updatePageTranslations();
-                            }
-                        }, 50);
-                    });
+                if (typeof window.setLanguage === 'function') {
+                    window.setLanguage(savedLanguage);
                 }
-                
+                window.__historyViewMode = window.__historyViewMode || 'cards';
+
                 // Initialize translations with multiple attempts to ensure they load
                 function applyTranslationsNow() {
-                    // Get current language from multiple sources
-                    let currentLang = window.currentLanguage || 
-                                     localStorage.getItem('language') || 
-                                     localStorage.getItem('lang') || 
-                                     savedLanguage || 'en';
-                    
-                    console.log('[submit-exception] Applying translations, currentLanguage:', currentLang, {
-                        windowCurrentLanguage: window.currentLanguage,
-                        localStorageLanguage: localStorage.getItem('language'),
-                        localStorageLang: localStorage.getItem('lang'),
-                        savedLanguage: savedLanguage
-                    });
-                    
-                    // CRITICAL: Force set language before applying translations
+                    let currentLang = window.currentLanguage || localStorage.getItem('language') || localStorage.getItem('lang') || savedLanguage || 'en';
                     if (typeof window.setLanguage === 'function') {
                         window.setLanguage(currentLang);
-                        // Wait a tiny bit for setLanguage to complete
                         setTimeout(function() {
-                            // Apply translations
                             if (typeof window.updatePageTranslations === 'function') {
-                                console.log('[submit-exception] Calling window.updatePageTranslations after setLanguage');
                                 window.updatePageTranslations();
-                                
-                                // Double-check specific elements
-                                const testElements = document.querySelectorAll('[data-translate="requests.justification_attachment"], [data-translate="requests.upload_file"], [data-translate="requests.additional_information"]');
-                                console.log('[submit-exception] Found', testElements.length, 'test elements');
-                                testElements.forEach(el => {
-                                    const key = el.getAttribute('data-translate');
-                                    const translated = typeof window.translate === 'function' ? window.translate(key) : key;
-                                    console.log('[submit-exception] Element', key, 'should be:', translated, 'current text:', el.textContent);
-                                });
-                            } else {
-                                console.error('[submit-exception] updatePageTranslations is not available!');
                             }
                         }, 10);
-                    } else {
-                        console.error('[submit-exception] setLanguage is not available!');
                     }
                 }
                 
@@ -656,34 +661,19 @@
                 // Try again after longer delay (for async loading)
                 setTimeout(applyTranslationsNow, 500);
                 
-                // Listen for language changes
-                document.addEventListener('languageChanged', function(e) {
-                    console.log('[submit-exception] languageChanged event received:', e.detail);
+                document.addEventListener('languageChanged', function() {
                     setTimeout(applyTranslationsNow, 50);
-                    // Re-render dynamic content
-                    const currentTab = document.querySelector('.tab-btn.border-blue-500');
-                    if (currentTab) {
-                        const tabName = currentTab.getAttribute('data-tab');
+                    const activeTab = document.querySelector('.director-tab-exception.active');
+                    if (activeTab) {
+                        const tabName = activeTab.getAttribute('data-tab');
                         if (tabName === 'history') {
                             const currentFilter = document.querySelector('.hist-filter.active');
-                            if (currentFilter) {
-                                loadHistory(currentFilter.getAttribute('data-status'));
-                            } else {
-                                loadHistory('all');
-                            }
+                            loadHistory(currentFilter ? currentFilter.getAttribute('data-status') : 'all');
                         } else if (tabName === 'extra') {
                             const currentOvertimeFilter = document.querySelector('.overtime-filter.active');
-                            if (currentOvertimeFilter) {
-                                loadOvertimeRequests(currentOvertimeFilter.getAttribute('data-status'));
-                            } else {
-                                loadOvertimeRequests('all');
-                            }
+                            loadOvertimeRequests(currentOvertimeFilter ? currentOvertimeFilter.getAttribute('data-status') : 'all');
                             const currentInvFilter = document.querySelector('.inv-filter.active');
-                            if (currentInvFilter) {
-                                loadInvitations(currentInvFilter.getAttribute('data-status'));
-                            } else {
-                                loadInvitations('pending');
-                            }
+                            loadInvitations(currentInvFilter ? currentInvFilter.getAttribute('data-status') : 'pending');
                         }
                     }
                 });
@@ -747,9 +737,31 @@
             // History filters
             document.querySelectorAll('.hist-filter').forEach(btn => {
                 btn.addEventListener('click', async () => {
+                    document.querySelectorAll('.hist-filter').forEach(b => b.classList.toggle('active', b === btn));
                     await loadHistory(btn.getAttribute('data-status'));
                 });
             });
+            // History view mode: Cards / List
+            const historyViewCards = document.getElementById('historyViewCards');
+            const historyViewList = document.getElementById('historyViewList');
+            if (historyViewCards) {
+                historyViewCards.addEventListener('click', function() {
+                    window.__historyViewMode = 'cards';
+                    historyViewCards.classList.add('active');
+                    if (historyViewList) historyViewList.classList.remove('active');
+                    const activeFilter = document.querySelector('.hist-filter.active');
+                    loadHistory(activeFilter ? activeFilter.getAttribute('data-status') : 'all');
+                });
+            }
+            if (historyViewList) {
+                historyViewList.addEventListener('click', function() {
+                    window.__historyViewMode = 'list';
+                    historyViewList.classList.add('active');
+                    if (historyViewCards) historyViewCards.classList.remove('active');
+                    const activeFilter = document.querySelector('.hist-filter.active');
+                    loadHistory(activeFilter ? activeFilter.getAttribute('data-status') : 'all');
+                });
+            }
             // Overtime filters
             document.querySelectorAll('.overtime-filter').forEach(btn => {
                 btn.addEventListener('click', async () => {
@@ -820,7 +832,7 @@
         }
 
         function setupTabs() {
-            const tabs = document.querySelectorAll('.tab-btn');
+            const tabs = document.querySelectorAll('.director-tab-exception');
             const panes = {
                 submit: document.getElementById('tab-submit'),
                 history: document.getElementById('tab-history'),
@@ -829,28 +841,26 @@
             };
             function activate(name) {
                 tabs.forEach(t => {
-                    const isActive = t.getAttribute('data-tab') === name;
-                    t.classList.toggle('border-blue-500', isActive);
-                    t.classList.toggle('text-blue-600', isActive);
-                    t.classList.toggle('text-gray-500', !isActive);
-                    t.classList.toggle('border-transparent', !isActive);
-                    if (isActive && name === 'history') loadHistory('all');
-                    if (isActive && name === 'extra') {
-                        loadOvertimeRequests('all');
-                        loadInvitations('pending');
-                    }
-                    if (isActive && name === 'invitations') {
-                        loadAllInvitations();
-                    }
+                    t.classList.toggle('active', t.getAttribute('data-tab') === name);
                 });
-                Object.keys(panes).forEach(k => panes[k].classList.toggle('hidden', k !== name));
+                Object.keys(panes).forEach(k => {
+                    const el = panes[k];
+                    if (el) el.classList.toggle('hidden', k !== name);
+                });
+                if (name === 'history') loadHistory('all');
+                if (name === 'extra') {
+                    loadOvertimeRequests('all');
+                    loadInvitations('pending');
+                }
+                if (name === 'invitations') loadAllInvitations();
             }
             tabs.forEach(t => t.addEventListener('click', () => activate(t.getAttribute('data-tab'))));
-            activate('submit');
+            activate('history');
         }
 
         async function loadHistory(status) {
             try {
+                document.querySelectorAll('.hist-filter').forEach(b => b.classList.toggle('active', b.getAttribute('data-status') === (status || 'all')));
                 const items = await API.getMyExceptions(status || 'all');
                 renderHistory(Array.isArray(items) ? items : (items.data || []));
             } catch (e) {
@@ -860,48 +870,112 @@
         }
 
         function renderHistory(rows) {
-            // Helper function to translate with fallback
             const t = (key, fallback) => {
-                if (typeof translate === 'function') {
-                    const result = translate(key);
+                if (typeof window.translate === 'function') {
+                    const result = window.translate(key);
                     return (result && result !== key) ? result : fallback;
                 }
                 return fallback;
             };
-
-            const tbody = document.getElementById('historyTbody');
+            const viewMode = window.__historyViewMode || 'cards';
+            const tableWrap = document.getElementById('historyTableWrap');
+            const cardsWrap = document.getElementById('historyCardsWrap');
             const empty = document.getElementById('historyEmpty');
-            tbody.innerHTML = '';
+            // Show/hide list vs cards explicitly
+            if (tableWrap) {
+                if (viewMode === 'list') {
+                    tableWrap.classList.remove('hidden');
+                    tableWrap.style.display = '';
+                } else {
+                    tableWrap.classList.add('hidden');
+                    tableWrap.style.display = 'none';
+                }
+            }
+            if (cardsWrap) {
+                if (viewMode === 'cards') {
+                    cardsWrap.classList.remove('hidden');
+                    cardsWrap.style.display = '';
+                } else {
+                    cardsWrap.classList.add('hidden');
+                    cardsWrap.style.display = 'none';
+                }
+            }
+
             if (!rows || rows.length === 0) {
+                if (tableWrap) { tableWrap.classList.add('hidden'); tableWrap.style.display = 'none'; }
+                if (cardsWrap) { cardsWrap.classList.add('hidden'); cardsWrap.style.display = 'none'; cardsWrap.innerHTML = ''; }
                 empty.classList.remove('hidden');
                 return;
             }
             empty.classList.add('hidden');
-            rows.forEach(r => {
-                const tr = document.createElement('tr');
-                // Translate status
-                const statusKey = `requests.${r.status.toLowerCase()}`;
-                const statusText = t(statusKey, r.status);
-                const statusBadge = `<span class="px-2 py-0.5 rounded text-xs ${badgeClass(r.status)}">${statusText}</span>`;
-                
-                // Translate type
-                const typeMap = {
-                    'MissingPunchFix': 'requests.missing_punch_fix',
-                    'LeaveRequest': 'requests.leave_request',
-                    'HolidayAssignment': 'requests.holiday_assignment',
-                    'ExtraHours': 'requests.extra_hours'
-                };
-                const typeKey = typeMap[r.type] || r.type;
-                const typeText = t(typeKey, r.type);
-                
-                tr.innerHTML = `
-                    <td class="px-4 py-2 text-sm text-gray-700">${escapeHtml(r.date)}${r.end_date ? ' → ' + escapeHtml(r.end_date) : ''}</td>
-                    <td class="px-4 py-2 text-sm text-gray-700">${typeText}</td>
-                    <td class="px-4 py-2 text-sm">${statusBadge}</td>
-                    <td class="px-4 py-2 text-sm text-gray-700 truncate max-w-xs">${escapeHtml(r.reason || (r.payload && (r.payload.reason || r.payload.description)) || '')}</td>
-                `;
-                tbody.appendChild(tr);
-            });
+
+            const typeMap = {
+                'MissingPunchFix': 'requests.missing_punch_fix',
+                'LeaveRequest': 'requests.leave_request',
+                'HolidayAssignment': 'requests.holiday_assignment',
+                'ExtraHours': 'requests.extra_hours'
+            };
+            const getTypeText = (r) => t(typeMap[r.type] || r.type, r.type);
+            const getStatusText = (r) => t('requests.' + (r.status || '').toLowerCase(), r.status);
+            const getReason = (r) => r.reason || (r.payload && (r.payload.reason || r.payload.description)) || '—';
+
+            if (viewMode === 'list') {
+                const tbody = document.getElementById('historyTbody');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                rows.forEach(r => {
+                    const tr = document.createElement('tr');
+                    const statusBadge = `<span class="px-2 py-0.5 rounded text-xs ${badgeClass(r.status)}">${getStatusText(r)}</span>`;
+                    tr.innerHTML = `
+                        <td class="px-4 py-3 text-sm text-gray-700">${escapeHtml(r.date || '')}</td>
+                        <td class="px-4 py-3 text-sm text-gray-700">${r.end_date ? escapeHtml(r.end_date) : '—'}</td>
+                        <td class="px-4 py-3 text-sm text-gray-700">${getTypeText(r)}</td>
+                        <td class="px-4 py-3 text-sm">${statusBadge}</td>
+                        <td class="px-4 py-3 text-sm text-gray-700 truncate max-w-md" title="${escapeHtml(getReason(r))}">${escapeHtml(getReason(r))}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                return;
+            }
+
+            // Card view
+            if (!cardsWrap) return;
+            const endDateLabel = t('requests.end_date', 'End Date');
+            const dateLabel = t('requests.date', 'Date');
+            const typeLabel = t('requests.type', 'Type');
+            const statusLabel = t('requests.status', 'Status');
+            const reasonLabel = t('requests.reason', 'Reason');
+            cardsWrap.innerHTML = rows.map(r => {
+                const typeText = getTypeText(r);
+                const statusText = getStatusText(r);
+                const reason = getReason(r);
+                return `
+                <div class="history-card-exception">
+                    <div class="flex items-center gap-2 mb-3 flex-wrap">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">${typeText}</span>
+                        <span class="px-2 py-0.5 rounded text-xs ${badgeClass(r.status)}">${statusText}</span>
+                    </div>
+                    <div class="info-block blue">
+                        <div class="icon-box"><i class="fas fa-calendar"></i></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="label">${dateLabel}</p>
+                            <p class="value">${escapeHtml(r.date || '')}${r.end_date ? ' → ' + escapeHtml(r.end_date) : ''}</p>
+                        </div>
+                    </div>
+                    ${r.end_date ? `
+                    <div class="info-block green">
+                        <div class="icon-box"><i class="fas fa-calendar-check"></i></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="label">${endDateLabel}</p>
+                            <p class="value">${escapeHtml(r.end_date)}</p>
+                        </div>
+                    </div>` : ''}
+                    <div class="mt-3 pt-3 border-t border-gray-100">
+                        <p class="label text-xs mb-1">${reasonLabel}</p>
+                        <p class="text-sm text-gray-700 line-clamp-3" title="${escapeHtml(reason)}">${escapeHtml(reason)}</p>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
         async function loadOvertimeRequests(status) {
@@ -1455,7 +1529,8 @@
                 
             } catch (error) {
                 console.error('Error loading invitations:', error);
-                showError('Failed to load invitations: ' + error.message);
+                const t = (key, fallback) => (typeof window.translate === 'function' ? window.translate(key) : null) || fallback || key;
+                showError(t('requests.failed_load_invitations', 'Failed to load invitations') + ': ' + error.message);
                 allInvitations = [];
                 renderInvitationsTable([]);
             }
@@ -1475,7 +1550,8 @@
                     const employees = Array.isArray(data) ? data : (data.data || []);
                     
                     const teacherFilter = document.getElementById('invitationTeacherFilter');
-                    teacherFilter.innerHTML = '<option value="">All Teachers</option>';
+                    const allTeachersText = (typeof window.translate === 'function' ? window.translate('common.all_teachers') : null) || 'All Teachers';
+                    teacherFilter.innerHTML = '<option value="">' + allTeachersText + '</option>';
                     
                     employees.forEach(emp => {
                         if (emp.position_name && emp.position_name.toLowerCase().includes('teacher')) {
@@ -1559,23 +1635,28 @@
                 const duration = `${(invitation.minutes / 60).toFixed(1)}h (${invitation.minutes}m)`;
                 const timeRange = `${invitation.start_time} - ${invitation.end_time}`;
                 
+                const t = (key, fallback) => (typeof window.translate === 'function' ? window.translate(key) : null) || fallback || key;
+                const unknown = t('common.unknown', 'Unknown');
+                const gradeLabel = t('common.grade', 'Grade');
+                const noLevelInfo = t('common.no_level_info', 'No level info');
+                const deleteInvTitle = t('common.delete', 'Delete');
                 row.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <div>${invitation.date}</div>
                         <div class="text-gray-500 text-xs">${timeRange}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ${invitation.absent_teacher_name || 'Unknown'}
+                        ${invitation.absent_teacher_name || unknown}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <div class="flex flex-wrap gap-1">
-                            ${invitation.grade_level ? `<span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Grade ${invitation.grade_level}</span>` : ''}
+                            ${invitation.grade_level ? `<span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">${gradeLabel} ${invitation.grade_level}</span>` : ''}
                             ${invitation.education_level ? `<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">${invitation.education_level}</span>` : ''}
-                            ${!invitation.grade_level && !invitation.education_level ? '<span class="text-gray-400 text-xs">No level info</span>' : ''}
+                            ${!invitation.grade_level && !invitation.education_level ? '<span class="text-gray-400 text-xs">' + noLevelInfo + '</span>' : ''}
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ${invitation.candidate_teacher_name || 'Unknown'}
+                        ${invitation.candidate_teacher_name || unknown}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         ${duration}
@@ -1589,7 +1670,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button onclick="deleteInvitation('${invitation.id}')" 
                                 class="text-red-600 hover:text-red-900 mr-2"
-                                title="Delete invitation">
+                                title="${deleteInvTitle}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -1600,12 +1681,18 @@
         }
 
         function getStatusBadge(status) {
+            const t = (key, fallback) => (typeof window.translate === 'function' ? window.translate(key) : null) || fallback || key;
+            const pending = t('requests.pending', 'Pending');
+            const accepted = t('requests.accepted', 'Accepted');
+            const taught = t('requests.taught', 'Taught');
+            const denied = t('requests.denied', 'Denied');
+            const dropped = t('requests.dropped', 'Dropped');
             const badges = {
-                pending: '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pending</span>',
-                accepted: '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Accepted</span>',
-                taught: '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Taught</span>',
-                denied: '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Denied</span>',
-                dropped: '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Dropped</span>'
+                pending: '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">' + pending + '</span>',
+                accepted: '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">' + accepted + '</span>',
+                taught: '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">' + taught + '</span>',
+                denied: '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">' + denied + '</span>',
+                dropped: '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">' + dropped + '</span>'
             };
             return badges[status] || badges.pending;
         }
@@ -1627,27 +1714,20 @@
         }
 
         async function deleteInvitation(invitationId) {
-            if (!confirm('Are you sure you want to delete this invitation? This will remove it from the teacher\'s view.')) {
-                return;
-            }
-            
+            const t = (key, fallback) => (typeof window.translate === 'function' ? window.translate(key) : null) || fallback || key;
+            const msg = t('message.confirm_delete_invitation', 'Are you sure you want to delete this invitation? This will remove it from the teacher\'s view.');
+            if (!confirm(msg)) return;
             try {
                 await API.deleteInvitation(invitationId);
-                
-                // Remove from local data
                 allInvitations = allInvitations.filter(inv => inv.id !== invitationId);
                 filteredInvitations = filteredInvitations.filter(inv => inv.id !== invitationId);
-                
-                // Re-render
                 renderInvitationsTable(filteredInvitations);
                 updatePagination();
                 updateInvitationStatistics();
-                
-                showSuccess('Invitation deleted successfully');
-                
+                showSuccess(t('requests.invitation_deleted_successfully', 'Invitation deleted successfully'));
             } catch (error) {
                 console.error('Error deleting invitation:', error);
-                showError('Failed to delete invitation: ' + error.message);
+                showError(t('requests.failed_delete_invitation', 'Failed to delete invitation') + ': ' + error.message);
             }
         }
 
@@ -1658,7 +1738,8 @@
                 successDiv = document.createElement('div');
                 successDiv.id = 'successMessage';
                 successDiv.className = 'hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4';
-                document.querySelector('.max-w-4xl').insertBefore(successDiv, document.querySelector('.max-w-4xl').firstChild);
+                const contentWrapper = document.querySelector('.main-content > div');
+            if (contentWrapper) contentWrapper.insertBefore(successDiv, contentWrapper.firstChild);
             }
             
             successDiv.innerHTML = `

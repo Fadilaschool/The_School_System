@@ -6,11 +6,37 @@
 	<title data-translate="page.complaints_employee.title">Complaints - Employee</title>
 	<script src="https://cdn.tailwindcss.com"></script>
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 	<link href="../assets/css/style.css" rel="stylesheet">
 	<style>
+		:root {
+			--director-indigo: #4338ca;
+			--director-blue: #2563eb;
+			--director-slate: #0f172a;
+			--director-surface: #f8fafc;
+		}
+		body {
+			font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+			background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+		}
 		.embed-container { height: calc(100vh - 96px); }
-		.embed-frame { width: 100%; height: 100%; border: 0; background: #fff; }
-
+		.embed-frame { width: 100%; height: 100%; border: 0; background: transparent; border-radius: 0 0 1rem 1rem; }
+		#complaintsPageHeader {
+			background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+			border-radius: 16px;
+			border: 1px solid rgba(148, 163, 184, 0.1);
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+		}
+		.page-title-complaints {
+			font-size: 1.5rem;
+			font-weight: 700;
+			color: #1e293b;
+			display: flex;
+			align-items: center;
+			gap: 0.75rem;
+		}
+		.page-title-complaints i { color: #3b82f6; font-size: 1.5rem; }
+		.page-subtitle-complaints { font-size: 1rem; color: #64748b; font-weight: 500; margin: 0; }
 		@media (max-width: 640px) {
 			.embed-container { height: calc(100vh - 132px); }
 		}
@@ -18,25 +44,26 @@
 </head>
 <body class="bg-gray-50">
 
-	<header class="bg-white border-b shadow-sm">
-		<div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
-			<div>
-				<h1 class="text-xl font-semibold text-gray-900" data-translate="page.complaints_employee.title">My Complaints</h1>
-				<p class="text-sm text-gray-600" data-translate="page.complaints_employee.subtitle">Submit and track your complaints</p>
-			</div>
-			<div class="flex items-center space-x-2">
-				<label for="languageSelector" class="text-sm font-medium text-gray-700" data-translate="profile.language">Language</label>
-				<select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm">
-					<option value="en" data-translate="common.english">English</option>
-					<option value="fr" data-translate="common.french">French</option>
-					<option value="ar" data-translate="common.arabic">Arabic</option>
-				</select>
-			</div>
+	<header id="complaintsPageHeader" class="max-w-7xl mx-auto mt-4 mb-2 px-6 py-5 flex flex-wrap items-center justify-between gap-4">
+		<div>
+			<h1 class="page-title-complaints" data-translate="page.complaints_employee.title">
+				<i class="fas fa-comments"></i>
+				My Complaints
+			</h1>
+			<p class="page-subtitle-complaints" data-translate="page.complaints_employee.subtitle">Submit and track your complaints</p>
+		</div>
+		<div class="flex items-center space-x-2">
+			<label for="languageSelector" class="text-sm font-medium text-gray-700" data-translate="profile.language">Language</label>
+			<select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+				<option value="en" data-translate="common.english">English</option>
+				<option value="fr" data-translate="common.french">French</option>
+				<option value="ar" data-translate="common.arabic">Arabic</option>
+			</select>
 		</div>
 	</header>
 
-	<main class="min-h-screen">
-		<div class="embed-container">
+	<main class="min-h-screen w-full">
+		<div class="embed-container w-full rounded-b-xl overflow-hidden shadow-sm border border-t-0 border-gray-200/80 bg-white">
 			<iframe id="complaintsEmployeeFrame" class="embed-frame" title="Employee Complaints"></iframe>
 		</div>
 	</main>

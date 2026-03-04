@@ -1,5 +1,41 @@
 // Main JavaScript utilities for HR Operations Platform
 
+// Suppress harmless browser extension errors (MetaMask, etc.)
+if (typeof window !== 'undefined') {
+  // Suppress MetaMask connection errors when extension is not installed
+  window.addEventListener('unhandledrejection', function(event) {
+    const reason = event.reason;
+    if (reason && (
+      (typeof reason === 'string' && reason.includes('MetaMask')) ||
+      (reason.message && reason.message.includes('MetaMask')) ||
+      (reason.message && reason.message.includes('extension not found'))
+    )) {
+      event.preventDefault();
+      console.debug('MetaMask extension not available (suppressed)');
+      return false;
+    }
+  });
+
+  // Suppress runtime.lastError from browser extensions
+  // These errors occur when browser extensions try to communicate but no receiver exists
+  // They are harmless and can be safely ignored
+  if (typeof chrome !== 'undefined' && chrome.runtime) {
+    // Override console.error to filter out runtime.lastError messages
+    const originalConsoleError = console.error;
+    console.error = function(...args) {
+      const message = args.join(' ');
+      if (message.includes('runtime.lastError') || 
+          message.includes('Receiving end does not exist') ||
+          message.includes('Could not establish connection')) {
+        // Suppress these harmless browser extension errors
+        console.debug('Browser extension communication error (suppressed):', ...args);
+        return;
+      }
+      originalConsoleError.apply(console, args);
+    };
+  }
+}
+
 // Ensure currentLanguage is defined (fallback if translations.js isn't loaded)
 // Check both window scope and global scope
 if (typeof window !== 'undefined' && typeof window.currentLanguage === 'undefined') {
@@ -310,6 +346,12 @@ class APIService {
         // Create error with status code for better error handling
         const error = new Error(errorMessage);
         error.status = response.status;
+        
+        // If it's a 401, add a more user-friendly message
+        if (response.status === 401) {
+          error.message = 'Authentication required. Please log in again.';
+        }
+        
         throw error;
       }
 
@@ -514,6 +556,7 @@ function handleSidebarNavigation() {
   });
 
   sidebar.addEventListener('mouseleave', () => {
+    if (window.matchMedia('(max-width: 768px)').matches && sidebar.classList.contains('mobile-open')) return;
     isExpanded = false;
     sidebar.classList.remove('w-64');
     sidebar.classList.add('w-16');
@@ -521,8 +564,10 @@ function handleSidebarNavigation() {
       label.classList.remove('opacity-100', 'visible');
       label.classList.add('opacity-0', 'invisible');
     });
-    document.querySelector('.school-title').classList.add('hidden');
-    document.querySelector('.school-subtitle').classList.add('hidden');
+    const st = document.querySelector('.school-title');
+    const ss = document.querySelector('.school-subtitle');
+    if (st) st.classList.add('hidden');
+    if (ss) ss.classList.add('hidden');
   });
 
   // Handle navigation clicks
@@ -538,7 +583,12 @@ function handleSidebarNavigation() {
       let href = this.getAttribute("href");
       if (href && href !== "#" && !href.startsWith("javascript:")) {
         // Check if this is an external link with onclick handler (should open in new window)
-        const isExternal = href.startsWith('http://') || href.startsWith('https://');
+        // But don't treat frontend pages as external even if they're absolute URLs
+        const isAbsoluteUrl = href.startsWith('http://') || href.startsWith('https://');
+        const isFrontendPage = href.includes('/frontend/pages/') || 
+                               href.includes('/pages/') ||
+                               (isAbsoluteUrl && (href.includes('localhost:5502') || href.includes('127.0.0.1:5502')));
+        const isExternal = isAbsoluteUrl && !isFrontendPage;
         const hasOnClick = this.getAttribute("onclick");
 
         // If external and has onclick handler, let the onclick handle it (don't navigate current page)
@@ -801,6 +851,7 @@ function getHRNavigationSections(mySpaceHref, mySpaceLabel) {
     {
       name: 'nav.management', items: [
         { href: 'employees-simple.html', icon: 'fa-users', label: 'nav.employees_management' },
+        { href: 'contract-management.html', icon: 'fa-file-contract', label: 'nav.contract_management' },
         { href: 'org-structure.html', icon: 'fa-sitemap', label: 'nav.org_structure' },
         { href: 'attendance.html', icon: 'fa-clock', label: 'nav.attendance' },
         { href: 'punch-management.html', icon: 'fa-file-upload', label: 'nav.punch_management' }
@@ -844,7 +895,7 @@ function getSidebarNavSectionsByRole(role) {
 
   // Check if Director is in HR system context (on HR pages)
   const currentPath = window.location.pathname.split('/').pop() || '';
-  const hrPages = ['hr-dashboard.html', 'employees-simple.html', 'org-structure.html', 'attendance.html',
+  const hrPages = ['hr-dashboard.html', 'employees-simple.html', 'contract-management.html', 'org-structure.html', 'attendance.html',
     'timetable-library.html', 'employee-assignments.html', 'salary-management.html',
     'payslips-admin.html', 'exceptions.html', 'punch-management.html', 'add-employee.html',
     'daily-attendance.html'];
@@ -883,7 +934,7 @@ function getSidebarNavSectionsByRole(role) {
           },
           {
             name: 'nav.hr_management', items: [
-              { href: 'hr-dashboard.html', icon: 'fa-users-cog', label: 'HR Management' }
+              { href: 'hr-dashboard.html', icon: 'fa-users-cog', label: 'nav.hr_management' }
             ]
           },
           {
@@ -894,7 +945,7 @@ function getSidebarNavSectionsByRole(role) {
         ];
       }
       // Otherwise, show HR navigation with "My Space" to employee space
-      return getHRNavigationSections('employee-dashboard.html', 'My Space');
+      return getHRNavigationSections('employee-dashboard.html', 'nav.my_space');
     case 'Employee':
       return [
         {
@@ -925,8 +976,7 @@ function getSidebarNavSectionsByRole(role) {
             { href: 'departments.html', icon: 'fa-building', label: 'nav.departments' },
             { href: 'salary-employee.html', icon: 'fa-money-check-alt', label: 'nav.salary' },
             { href: 'timetable-employee.html', icon: 'fa-calendar-alt', label: 'nav.timetable' },
-            // Use local wrapper so navigation replaces the page and embeds signals UI
-            { href: 'signals-responsible.html', icon: 'fa-signal', label: 'nav.signals' },
+            { href: 'signals-employee.html', icon: 'fa-tools', label: 'nav.maintenance_requests' },
             { href: 'complaints-employee.html', icon: 'fa-comment-dots', label: 'nav.complaints_employee' },
             { href: 'profile.html', icon: 'fa-user', label: 'nav.profile' }
           ]
@@ -941,7 +991,7 @@ function getSidebarNavSectionsByRole(role) {
       // If Director is in HR system context (on HR pages), show full HR navigation
       // and, at the end, give access back to Systems Space and My Space (director dashboard)
       if (isDirectorInHRContext) {
-        const hrSections = getHRNavigationSections('director-dashboard.html', 'My Space');
+        const hrSections = getHRNavigationSections('director-dashboard.html', 'nav.my_space');
         // Insert a "Systems Space" section just before the My Space + Account sections
         const baseSections = hrSections.slice(0, -2); // dashboard, management, timetables, salary, exceptions
         const tailSections = hrSections.slice(-2);    // my_space, account
@@ -963,7 +1013,7 @@ function getSidebarNavSectionsByRole(role) {
             { href: 'reportdir.html', icon: 'fa-chart-bar', label: 'nav.reports' },
             // Complaints & Signals (Director views) - using wrapper pages with authentication
             { href: 'complaints-director.html', icon: 'fa-exclamation-circle', label: 'nav.complaints' },
-            { href: '../../hr_tasks/hr_tasks/public/signals_responsible.html', icon: 'fa-signal', label: 'nav.signals' }
+            { href: 'signals-responsible.html', icon: 'fa-signal', label: 'nav.maintenance_requests' }
           ]
         },
         {
@@ -1016,15 +1066,45 @@ function initializeCollapsibleSidebar() {
   const isRTL = document.documentElement.getAttribute('dir') === 'rtl' || document.body.classList.contains('rtl');
   const sidebarPosition = isRTL ? 'right-0' : 'left-0';
   const sidebarMargin = isRTL ? 'mr-3' : 'ml-3';
-  // Use role-based text for sidebar subtitle
-  const isEmployee = role === 'Employee';
-  const sidebarSubtitle = isEmployee ? translateNav('nav.employee_space') : translateNav('nav.hr_management_system');
+
+  // Use role + context-based text for sidebar subtitle
+  const employeePages = ['employee-dashboard.html', 'my-tasks.html', 'rapportemp.html', 'submit-exception.html',
+    'signals-employee.html', 'complaints-employee.html',
+    'salary-employee.html', 'timetable-employee.html', 'profile.html'];
+  const hrPages = ['hr-dashboard.html', 'employees-simple.html', 'contract-management.html', 'org-structure.html', 'attendance.html',
+    'timetable-library.html', 'employee-assignments.html', 'salary-management.html',
+    'payslips-admin.html', 'exceptions.html', 'punch-management.html', 'add-employee.html',
+    'daily-attendance.html'];
+
+  const isHRManagerLike = role === 'HR_Manager' || role === 'HR Manager' ||
+    role === 'hr_manager' || role === 'hr-manager';
+  const isHRManagerInEmployeeContext = isHRManagerLike && employeePages.includes(currentPath);
+  const isDirectorInHRContext = role === 'Director' && hrPages.includes(currentPath);
+
+  let sidebarSubtitleKey;
+  if (role === 'Department_Responsible') {
+    // Responsible always sees their own space
+    sidebarSubtitleKey = 'nav.responsible_space';
+  } else if (role === 'Employee' || isHRManagerInEmployeeContext) {
+    // Pure employees, and HR managers when in My Space, see Employee Space
+    sidebarSubtitleKey = 'nav.employee_space';
+  } else if (role === 'Director') {
+    // Director: HR system vs Director space depending on context
+    sidebarSubtitleKey = isDirectorInHRContext ? 'nav.hr_management_system' : 'nav.director_space';
+  } else {
+    // HR managers and similar roles on HR pages see the HR management system
+    sidebarSubtitleKey = 'nav.hr_management_system';
+  }
+
+  const sidebarSubtitle = translateNav(sidebarSubtitleKey);
 
   // Detect if we're on attendance service (port 3000) and adjust navigation paths
-  const isOnAttendanceService = window.location.port === '3000' ||
-    (window.location.hostname === 'localhost' && window.location.port === '3000') ||
-    window.location.href.includes('attendance-service') ||
-    window.location.href.includes('attendance-master.html');
+  // Only consider it attendance service if port is 3000, not if it's 5502/5503 (frontend)
+  const currentPort = window.location.port;
+  const isOnAttendanceService = (currentPort === '3000') ||
+    (window.location.hostname === 'localhost' && currentPort === '3000') ||
+    (window.location.href.includes('attendance-service') && currentPort === '3000') ||
+    (window.location.href.includes('attendance-master.html') && currentPort === '3000');
 
   // Function to get the correct navigation path based on current location
   const getNavigationPath = (href) => {
@@ -1033,6 +1113,7 @@ function initializeCollapsibleSidebar() {
       return href;
     }
     // If we're on attendance service (port 3000), convert relative paths to absolute paths
+    // Otherwise, keep relative paths as-is for normal frontend navigation
     if (isOnAttendanceService) {
       // Try to get frontend base URL from localStorage or detect it
       let frontendBase = localStorage.getItem('frontendBaseURL');
@@ -1080,11 +1161,113 @@ function initializeCollapsibleSidebar() {
 
   // Get logo path - adjust if on attendance service
   const getLogoPath = () => {
-    if (isOnAttendanceService) {
-      const frontendBase = localStorage.getItem('frontendBaseURL') || 'http://127.0.0.1:5502/frontend/';
-      return `${frontendBase}assets/images/logo fadila.png`;
+    // Check current location to determine the best path
+    const currentPath = window.location.pathname;
+    const currentPort = window.location.port;
+    const currentHost = window.location.hostname;
+    const fullUrl = window.location.href;
+    
+    // Always use relative paths unless we're definitely on attendance service (port 3000)
+    // This is more reliable and avoids connection issues
+    const isDefinitelyAttendanceService = currentPort === '3000';
+    
+    // Debug logging
+    console.log('[getLogoPath] Debug:', {
+      path: currentPath,
+      port: currentPort,
+      hostname: currentHost,
+      fullUrl: fullUrl,
+      isAttendanceService: isDefinitelyAttendanceService
+    });
+    
+    // If NOT on attendance service (port 3000), try relative path first
+    if (!isDefinitelyAttendanceService) {
+      // Handle different path structures
+      let relativePath;
+      const isLiveServer = ['5502', '5503', '5504', '5505', '5506', '5507', '5508', '5518', '5520'].includes(currentPort);
+      // More robust detection: check path, filename, or if we're in attendance-service directory
+      const isAttendanceServicePage = currentPath.includes('/attendance-service/') || 
+                                      currentPath.includes('attendance-master.html') || 
+                                      currentPath.includes('daily-attendance.html') ||
+                                      currentPath.endsWith('/attendance-master.html') ||
+                                      currentPath.endsWith('/daily-attendance.html') ||
+                                      fullUrl.includes('attendance-master.html') ||
+                                      fullUrl.includes('daily-attendance.html');
+      
+      console.log('[getLogoPath] Detection:', {
+        isLiveServer,
+        isAttendanceServicePage,
+        currentPath
+      });
+      
+      // Check where main.js was loaded from to determine context
+      const scripts = Array.from(document.querySelectorAll('script[src]'));
+      const mainJsScript = scripts.find(s => s.src && s.src.includes('main.js'));
+      const mainJsSrc = mainJsScript ? mainJsScript.src : '';
+      const isMainJsFromFrontendPath = mainJsSrc.includes('/frontend/') || mainJsSrc.includes('../frontend/');
+      
+      console.log('[getLogoPath] Script context:', {
+        mainJsSrc,
+        isMainJsFromFrontendPath
+      });
+      
+      if (currentPath.includes('/pages/')) {
+        // From /frontend/pages/, go up one level to /frontend/, then into assets/images/
+        relativePath = '../assets/images/logo fadila.png';
+      } else if (isAttendanceServicePage || (isLiveServer && isMainJsFromFrontendPath && !currentPath.includes('/frontend/'))) {
+        // When accessed from attendance-service folder (detected by main.js being loaded from ../frontend/)
+        // Use relative path for Live Server to avoid cross-origin issues
+        // The relative path from attendance-service/ to frontend/assets/images/ is ../frontend/assets/images/
+        relativePath = '../frontend/assets/images/logo fadila.png';
+        console.log('[getLogoPath] Using relative path for attendance service page:', relativePath);
+      } else if (currentPath.includes('/frontend/') && !currentPath.includes('/pages/')) {
+        // If we're in /frontend/ but not in /pages/, go up one level then into assets/images/
+        relativePath = '../assets/images/logo fadila.png';
+      } else {
+        // Default: assume we're at root level, go into frontend/assets/images/
+        relativePath = 'frontend/assets/images/logo fadila.png';
+      }
+      console.log('[getLogoPath] Using relative path:', relativePath);
+      return relativePath;
     }
-    return '../assets/images/logo fadila.png';
+    
+    // We're on attendance service (port 3000), need absolute URL to frontend
+    // Try to get frontend URL from localStorage or detect from referrer
+    // Note: currentHost is already declared above as window.location.hostname
+    const currentProtocol = window.location.protocol;
+    let frontendBase = localStorage.getItem('frontendBaseURL');
+    
+    if (!frontendBase) {
+      // Try to detect from document.referrer
+      if (document.referrer) {
+        try {
+          const referrerUrl = new URL(document.referrer);
+          frontendBase = `${referrerUrl.protocol}//${referrerUrl.host}`;
+        } catch (e) {
+          // Use current host but different port
+          frontendBase = `${currentProtocol}//${currentHost}:5502`;
+        }
+      } else {
+        // Use current host but try common ports
+        frontendBase = `${currentProtocol}//${currentHost}:5502`;
+      }
+    } else {
+      // Extract just host from stored URL
+      try {
+        const url = new URL(frontendBase);
+        frontendBase = `${url.protocol}//${url.host}`;
+      } catch (e) {
+        const match = frontendBase.match(/^(https?:\/\/[^\/]+)/);
+        if (match) {
+          frontendBase = match[1];
+        } else {
+          frontendBase = `${currentProtocol}//${currentHost}:5502`;
+        }
+      }
+    }
+    
+    // Construct absolute path to logo
+    return `${frontendBase}/frontend/assets/images/logo fadila.png`;
   };
 
   let sidebarHTML = `
@@ -1093,15 +1276,19 @@ function initializeCollapsibleSidebar() {
         <div class="flex items-center justify-center" style="width: 100%;">
           <div class="flex-shrink-0">
             <div class="w-12 h-12 flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
-              <img src="${getLogoPath()}" alt="EL FADILA SCHOOL" class="h-10 w-10 object-contain rounded-lg" onerror="this.onerror=null; this.src='${getLogoPath()}';">
+              <img src="${getLogoPath()}" alt="EL FADILA SCHOOL" class="h-10 w-10 object-contain rounded-lg" onerror="(function(img){ let triedFallback = img.dataset.triedFallback === 'true'; if (triedFallback) { img.style.display='none'; return; } img.dataset.triedFallback = 'true'; const currentPath = window.location.pathname; const currentPort = window.location.port; const isLiveServer = ['5502', '5503', '5504', '5505', '5506', '5507', '5508', '5518', '5520'].includes(currentPort); const isAttendanceServicePage = currentPath.includes('/attendance-service/') || currentPath.includes('attendance-master.html') || currentPath.includes('daily-attendance.html'); const scripts = Array.from(document.querySelectorAll('script[src]')); const mainJsScript = scripts.find(s => s.src && s.src.includes('main.js')); const mainJsSrc = mainJsScript ? mainJsScript.src : ''; const isMainJsFromFrontendPath = mainJsSrc.includes('/frontend/') || mainJsSrc.includes('../frontend/'); let fallbackPath; if (currentPath.includes('/pages/')) { fallbackPath = '../../assets/images/logo fadila.png'; } else if (isAttendanceServicePage || (isLiveServer && isMainJsFromFrontendPath && !currentPath.includes('/frontend/'))) { fallbackPath = '../frontend/assets/images/logo fadila.png'; } else { fallbackPath = '../assets/images/logo fadila.png'; } console.log('[Logo fallback] Trying:', fallbackPath); img.src=fallbackPath; })(this);">
             </div>
           </div>
           <div class="${sidebarMargin} overflow-hidden hidden" ${isRTL ? 'dir="rtl" style="text-align: right;"' : ''}>
             <h1 class="school-title text-lg font-bold text-gray-900 whitespace-nowrap hidden transition-opacity duration-300" ${isRTL ? 'dir="rtl" style="text-align: right;"' : ''}>EL FADILA SCHOOL</h1>
-            <p class="school-subtitle text-sm text-gray-500 whitespace-nowrap hidden transition-opacity duration-300" data-translate="${isEmployee ? 'nav.employee_space' : 'nav.hr_management_system'}" ${isRTL ? 'dir="rtl" style="text-align: right;"' : ''}>${sidebarSubtitle}</p>
+            <p class="school-subtitle text-sm text-gray-500 whitespace-nowrap hidden transition-opacity duration-300" data-translate="${sidebarSubtitleKey}" ${isRTL ? 'dir="rtl" style="text-align: right;"' : ''}>${sidebarSubtitle}</p>
           </div>
         </div>
       </div>
+
+      <button type="button" class="sidebar-mobile-close" id="sidebarMobileCloseBtn" aria-label="Close menu">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
 
       <!-- Navigation Sections -->
       <nav class="flex-1 overflow-y-auto py-4" style="scrollbar-width: none; -ms-overflow-style: none;">`;
@@ -1129,7 +1316,12 @@ function initializeCollapsibleSidebar() {
           const iconOrder = isRTL ? 'order-2' : '';
           const labelOrder = isRTL ? 'order-1' : '';
           // Handle external URLs (starting with http:// or https://) by opening in new window
-          const isExternal = navHref.startsWith('http://') || navHref.startsWith('https://');
+          // But don't treat frontend pages as external even if they're absolute URLs
+          const isAbsoluteUrl = navHref.startsWith('http://') || navHref.startsWith('https://');
+          const isFrontendPage = navHref.includes('/frontend/pages/') || 
+                                 navHref.includes('/pages/') ||
+                                 (isAbsoluteUrl && (navHref.includes('localhost:5502') || navHref.includes('127.0.0.1:5502')));
+          const isExternal = isAbsoluteUrl && !isFrontendPage;
           const targetAttr = isExternal ? 'target="_blank" rel="noopener noreferrer"' : '';
           const onClickAttr = isExternal ? `onclick="window.open('${navHref}', '_blank'); return false;"` : '';
           sidebarHTML += `
@@ -1163,13 +1355,10 @@ function initializeCollapsibleSidebar() {
   // Insert new sidebar
   document.body.insertAdjacentHTML('afterbegin', sidebarHTML);
 
-  // Adjust padding based on RTL
-  if (isRTL) {
-    document.body.style.paddingRight = '4rem'; // 64px for collapsed sidebar
-    document.body.style.paddingLeft = '0';
-  } else {
-    document.body.style.paddingLeft = '4rem'; // 64px for collapsed sidebar
-    document.body.style.paddingRight = '0';
+  // Insert mobile sidebar overlay (for small screens; click to close menu)
+  const sidebarEl = document.getElementById('collapsibleSidebar');
+  if (sidebarEl) {
+    sidebarEl.insertAdjacentHTML('afterend', '<div id="sidebarOverlay" class="sidebar-overlay hidden" aria-hidden="true"></div>');
   }
 
   // Update translations for sidebar after it's created
@@ -1189,26 +1378,25 @@ function buildGlobalHeaderHTML() {
   return `
     <section class="page-hero">
       <div class="page-hero-content">
-        <div class="flex flex-wrap items-center justify-between gap-6">
-          <!-- Left: User Profile -->
-          <div class="header-user-section">
-            <div class="header-avatar" id="userAvatar">
-              <span id="userInitials">D</span>
-            </div>
-            <div class="header-user-info">
-              <h2 class="header-user-name" id="userName">Director</h2>
-              <span class="header-user-role" id="userRole">Director</span>
-            </div>
-          </div>
-
-          <!-- Right: Actions -->
-          <div class="header-actions">
-            <!-- Notification Bell -->
-            <div class="notification-bell" id="notificationBell" title="Notifications">
+        <div class="hero-inner">
+          <!-- Row 1: Menu (left) | Date + Language + Notification (right, next to each other) -->
+          <div class="hero-row hero-row-1">
+            <button type="button" id="headerMobileMenuBtn" class="header-mobile-menu-btn" aria-label="Toggle menu">
+              <i class="fas fa-bars" aria-hidden="true"></i>
+            </button>
+            <div class="hero-row-1-right">
+              <div class="header-date">
+                <i class="fas fa-calendar-alt"></i>
+                <span id="currentDate"></span>
+              </div>
+              <select id="languageSelector" class="hero-select hero-select-compact" title="Language">
+                <option value="en">En</option>
+                <option value="fr">Fr</option>
+                <option value="ar">Ar</option>
+              </select>
+              <div class="notification-bell" id="notificationBell" title="Notifications">
               <i class="fas fa-bell"></i>
               <span class="notification-badge" id="notificationCount">0</span>
-
-              <!-- Notification Dropdown Panel -->
               <div id="notificationDropdown" class="notification-dropdown hidden">
                 <div class="notification-dropdown-header">
                   <h3 class="notification-dropdown-title">
@@ -1219,23 +1407,16 @@ function buildGlobalHeaderHTML() {
                     <i class="fas fa-check-double"></i>
                   </button>
                 </div>
-
                 <div id="notificationList" class="notification-list">
-                  <!-- Loading state -->
                   <div id="notificationLoading" class="notification-loading">
                     <div class="loading-spinner"></div>
                     <span data-translate="notifications.loading">Loading notifications...</span>
                   </div>
-
-                  <!-- Empty state -->
                   <div id="notificationEmpty" class="notification-empty hidden">
                     <i class="fas fa-bell-slash"></i>
                     <p data-translate="notifications.empty">No notifications</p>
                   </div>
-
-                  <!-- Notifications will be inserted here -->
                 </div>
-
                 <div class="notification-dropdown-footer">
                   <a href="priorities.html" class="view-all-link">
                     <span data-translate="notifications.view_all">View all notifications</span>
@@ -1244,18 +1425,19 @@ function buildGlobalHeaderHTML() {
                 </div>
               </div>
             </div>
-
-            <!-- Language Switcher -->
-            <select id="languageSelector" class="hero-select">
-              <option value="en">English</option>
-              <option value="fr">Français</option>
-              <option value="ar">العربية</option>
-            </select>
-
-            <!-- Date Display -->
-            <div class="header-date">
-              <i class="fas fa-calendar-alt"></i>
-              <span id="currentDate"></span>
+            </div>
+          </div>
+          <!-- Row 2: spacer (same width as menu) so name block aligns with row 1 icons -->
+          <div class="hero-row hero-row-2 header-actions">
+            <div class="hero-row-2-spacer" aria-hidden="true"></div>
+            <div class="header-user-section">
+              <div class="header-avatar" id="userAvatar">
+                <span id="userInitials">D</span>
+              </div>
+              <div class="header-user-info">
+                <h2 class="header-user-name" id="userName">Director</h2>
+                <span class="header-user-role" id="userRole">Director</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1575,7 +1757,13 @@ async function loadReportNotifications() {
     const response = await fetch(`${base}/api/rapportemp/director/all-reports`, {
       headers: getHrTasksAuthHeaders()
     });
-    if (!response.ok) return [];
+    if (!response.ok) {
+      // Silently handle 404 or other errors - service might not be available
+      if (response.status === 404) {
+        return [];
+      }
+      return [];
+    }
     const data = await response.json();
     const reports = data.reports || [];
     const notifications = [];
@@ -1607,7 +1795,7 @@ async function loadReportNotifications() {
 
     return notifications.slice(0, 10);
   } catch (error) {
-    console.error('Error loading report notifications:', error);
+    // Silently handle network errors - service might not be available
     return [];
   }
 }
@@ -1618,7 +1806,13 @@ async function loadComplaintNotifications() {
     const response = await fetch(`${base}/api/director/complaints-statistics`, {
       headers: getHrTasksAuthHeaders()
     });
-    if (!response.ok) return [];
+    if (!response.ok) {
+      // Silently handle 404 or other errors - service might not be available
+      if (response.status === 404) {
+        return [];
+      }
+      return [];
+    }
     const data = await response.json();
     const overview = data.overview || {};
     const notifications = [];
@@ -1653,7 +1847,7 @@ async function loadComplaintNotifications() {
 
     return notifications;
   } catch (error) {
-    console.error('Error loading complaint notifications:', error);
+    // Silently handle network errors - service might not be available
     return [];
   }
 }
@@ -1664,7 +1858,13 @@ async function loadSignalNotifications() {
     const response = await fetch(`${base}/api/director/signals-stats`, {
       headers: getHrTasksAuthHeaders()
     });
-    if (!response.ok) return [];
+    if (!response.ok) {
+      // Silently handle 404 or other errors - service might not be available
+      if (response.status === 404) {
+        return [];
+      }
+      return [];
+    }
     const data = await response.json();
     const overview = data.overview || {};
     const notifications = [];
@@ -1789,6 +1989,57 @@ function startNotificationRefresh() {
   }, 30000);
 }
 
+// Mobile sidebar toggle: open/close sidebar and overlay on small screens
+function initializeMobileSidebarToggle() {
+  const btn = document.getElementById('headerMobileMenuBtn');
+  const sidebar = document.getElementById('collapsibleSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!btn || !sidebar || !overlay) return;
+
+  function closeSidebar() {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.add('hidden');
+    overlay.setAttribute('aria-hidden', 'true');
+    const icon = btn.querySelector('i');
+    if (icon) {
+      icon.classList.remove('fa-times');
+      icon.classList.add('fa-bars');
+    }
+  }
+
+  function openSidebar() {
+    sidebar.classList.add('mobile-open');
+    overlay.classList.remove('hidden');
+    overlay.setAttribute('aria-hidden', 'false');
+    const icon = btn.querySelector('i');
+    if (icon) {
+      icon.classList.remove('fa-bars');
+      icon.classList.add('fa-times');
+    }
+  }
+
+  btn.addEventListener('click', function () {
+    if (sidebar.classList.contains('mobile-open')) {
+      closeSidebar();
+    } else {
+      openSidebar();
+    }
+  });
+
+  overlay.addEventListener('click', closeSidebar);
+
+  const closeBtn = document.getElementById('sidebarMobileCloseBtn');
+  if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+
+  // Close sidebar when a nav link is clicked (navigation happens)
+  sidebar.querySelectorAll('.nav-item').forEach(function (item) {
+    if (item.getAttribute('data-action') === 'logout') return;
+    item.addEventListener('click', function () {
+      closeSidebar();
+    });
+  });
+}
+
 // Initialize page functionality
 document.addEventListener("DOMContentLoaded", async function () {
   // Initialize new sidebar navigation
@@ -1809,6 +2060,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     initializeHeaderNotifications();
   } catch (e) {
     console.warn('Header initialization skipped:', e);
+  }
+
+  // Wire mobile menu button and overlay (header + sidebar must exist)
+  try {
+    initializeMobileSidebarToggle();
+  } catch (e) {
+    console.warn('Mobile sidebar toggle skipped:', e);
   }
 
   loadUserProfileSidebar();
@@ -1910,6 +2168,25 @@ window.addEventListener("error", function (e) {
 
 // Handle unhandled promise rejections
 window.addEventListener("unhandledrejection", function (e) {
+  // Suppress MetaMask and browser extension errors
+  const reason = e.reason;
+  if (reason && (
+    (typeof reason === 'string' && (
+      reason.includes('MetaMask') || 
+      reason.includes('extension not found') ||
+      reason.includes('Failed to connect to MetaMask')
+    )) ||
+    (reason.message && (
+      reason.message.includes('MetaMask') || 
+      reason.message.includes('extension not found') ||
+      reason.message.includes('Failed to connect to MetaMask')
+    ))
+  )) {
+    e.preventDefault();
+    console.debug('MetaMask extension not available (suppressed)');
+    return;
+  }
+  
   console.error("Unhandled promise rejection:", e.reason);
   Utils.showNotification(
     "An error occurred while processing your request",

@@ -6,27 +6,168 @@
     <title>My Timetable - HR Operations Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
-    
     <style>
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+        }
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+        }
+        .page-header {
+            text-align: center;
+            margin: 1.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .page-title i { color: #3b82f6; font-size: 1.5rem; }
+        .page-subtitle { font-size: 0.95rem; color: #64748b; margin: 0; font-weight: 500; }
+        .director-panel {
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 28px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .director-panel:hover { box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.15); }
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+        [dir="rtl"] .director-panel-header { flex-direction: row-reverse; }
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        [dir="rtl"] .director-panel-title { flex-direction: row-reverse; text-align: right; }
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+        .btn-director-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-director-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        .btn-director-secondary {
+            padding: 0.5rem 0.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #475569;
+            transition: all 0.2s;
+        }
+        .btn-director-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
+        .input-director {
+            padding: 0.625rem 1rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-director:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .view-toggle-btn { color: #64748b; }
+        .view-toggle-btn:hover { color: #0f172a; background: #f1f5f9; }
+        .view-toggle-btn.active { background: #fff; color: #2563eb; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        /* Timetable info card - matches employee-info-card UI */
+        .timetable-info-card {
+            background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 100%);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 18px 35px rgba(67, 56, 202, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .timetable-info-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.25), transparent 50%);
+            pointer-events: none;
+        }
+        .timetable-info-content { position: relative; z-index: 1; }
+        .timetable-stat-pill {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Theme-matched timetable view styles */
         .time-slot {
             transition: all 0.2s ease;
         }
         .time-slot:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
         }
         .working-time {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
         }
         .break-time {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
         }
         .weekend-day {
-            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-color: #fcd34d;
         }
         .day-header {
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
         .hour-cell {
             border-left: 1px solid #e2e8f0;
@@ -36,12 +177,46 @@
         }
         .interval-bar {
             position: relative;
-            border-radius: 6px;
-            padding: 8px;
-            margin: 2px 0;
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin: 4px 0;
             color: white;
             font-size: 0.875rem;
             font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .tt-day-card {
+            border-radius: 16px;
+            padding: 1.25rem;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,252,0.95));
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+            transition: all 0.2s ease;
+        }
+        .tt-day-card:hover {
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+        }
+        
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            /* Hide view toggle buttons in mobile view */
+            #timetableViewToggle {
+                display: none !important;
+            }
+            
+            /* Hide weekly and daily views in mobile */
+            #weeklyView {
+                display: none !important;
+            }
+            
+            #dailyView {
+                display: none !important;
+            }
+            
+            /* Show only hourly view in mobile */
+            #hourlyView {
+                display: block !important;
+            }
         }
     </style>
 </head>
@@ -50,92 +225,59 @@
     
     <!-- Main Content -->
     <div class="main-content flex-1 flex flex-col overflow-hidden">
-        <!-- Content -->
-        <main class="flex-1 overflow-y-auto p-6">
-            <div class="max-w-7xl mx-auto">
+        <main class="flex-1 overflow-y-auto">
+            <div class="max-w-7xl mx-auto p-6">
                 <!-- Page Header -->
-                <div class="mb-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-2xl font-bold text-gray-900" data-translate="timetable.title">My Timetable</h1>
-                            <p class="text-gray-600" data-translate="timetable.description">View your weekly schedule and working hours</p>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <!-- Language Selector -->
-                            <select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="en">English</option>
-                                <option value="fr">Français</option>
-                                <option value="ar">العربية</option>
-                            </select>
-                            
-                            <!-- View Toggle -->
-                            <div class="bg-white rounded-lg border border-gray-200 p-1 flex">
-                                <button id="weeklyViewBtn" class="px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white transition-all" onclick="switchView('weekly')">
-                                    <i class="fas fa-calendar-week mr-1"></i><span data-translate="timetable.weekly">Weekly</span>
-                                </button>
-                                <button id="dailyViewBtn" class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition-all" onclick="switchView('daily')">
-                                    <i class="fas fa-calendar-day mr-1"></i><span data-translate="timetable.daily">Daily</span>
-                                </button>
-                                <button id="hourlyViewBtn" class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition-all" onclick="switchView('hourly')">
-                                    <i class="fas fa-clock mr-1"></i><span data-translate="timetable.hourly">Hourly</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="page-header mb-6">
+                    <h1 class="page-title" data-translate="timetable.title">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>My Timetable</span>
+                    </h1>
+                    <p class="page-subtitle" data-translate="timetable.description">View your weekly schedule and working hours</p>
                 </div>
 
-                <!-- Timetable Info Card -->
+                <!-- Timetable Info Card (matches employee-info-card UI) -->
                 <div id="timetableInfo" class="mb-6 hidden">
-                    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg overflow-hidden">
-                        <div class="p-6">
-                            <div class="flex items-start justify-between">
-                                <div class="flex-1">
-                                    <div class="flex items-center space-x-3 mb-4">
-                                        <div class="p-3 bg-white bg-opacity-20 rounded-lg">
-                                            <i class="fas fa-calendar-alt text-white text-2xl"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-2xl font-bold text-white" id="timetableName">-</h3>
-                                            <p class="text-blue-100 text-sm mt-1" id="timetableType">-</p>
-                                        </div>
+                    <div class="timetable-info-card">
+                        <div class="timetable-info-content">
+                            <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="h-14 w-14 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-calendar-alt text-white text-2xl"></i>
                                     </div>
-                                    
-                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-                                        <!-- Total Intervals -->
-                                        <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4">
-                                            <div class="flex items-center space-x-2 mb-2">
-                                                <i class="fas fa-clock text-blue-200"></i>
-                                                <p class="text-xs text-blue-200 font-medium" data-translate="timetable.total_intervals">Total Intervals</p>
-                                            </div>
-                                            <p class="text-2xl font-bold text-white" id="totalIntervals">0</p>
-                                        </div>
-                                        
-                                        <!-- Working Days -->
-                                        <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4">
-                                            <div class="flex items-center space-x-2 mb-2">
-                                                <i class="fas fa-calendar-check text-blue-200"></i>
-                                                <p class="text-xs text-blue-200 font-medium" data-translate="timetable.working_days">Working Days</p>
-                                            </div>
-                                            <p class="text-2xl font-bold text-white" id="workingDays">0</p>
-                                        </div>
-                                        
-                                        <!-- Effective From -->
-                                        <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4">
-                                            <div class="flex items-center space-x-2 mb-2">
-                                                <i class="fas fa-calendar-plus text-blue-200"></i>
-                                                <p class="text-xs text-blue-200 font-medium" data-translate="timetable.effective_from">Effective From</p>
-                                            </div>
-                                            <p class="text-lg font-semibold text-white" id="effectiveFrom">-</p>
-                                        </div>
-                                        
-                                        <!-- Effective To -->
-                                        <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4">
-                                            <div class="flex items-center space-x-2 mb-2">
-                                                <i class="fas fa-calendar-times text-blue-200"></i>
-                                                <p class="text-xs text-blue-200 font-medium" data-translate="timetable.effective_to">Effective To</p>
-                                            </div>
-                                            <p class="text-lg font-semibold text-white" id="effectiveTo">-</p>
-                                        </div>
+                                    <div>
+                                        <h3 class="text-2xl font-bold text-white" id="timetableName">-</h3>
+                                        <p class="text-blue-100 text-sm mt-1" id="timetableType">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="timetable-stat-pill">
+                                    <i class="fas fa-clock text-blue-200"></i>
+                                    <div>
+                                        <p class="text-xs text-blue-200 font-medium" data-translate="timetable.total_intervals">Total Intervals</p>
+                                        <p class="text-xl font-bold text-white" id="totalIntervals">0</p>
+                                    </div>
+                                </div>
+                                <div class="timetable-stat-pill">
+                                    <i class="fas fa-calendar-check text-blue-200"></i>
+                                    <div>
+                                        <p class="text-xs text-blue-200 font-medium" data-translate="timetable.working_days">Working Days</p>
+                                        <p class="text-xl font-bold text-white" id="workingDays">0</p>
+                                    </div>
+                                </div>
+                                <div class="timetable-stat-pill">
+                                    <i class="fas fa-calendar-plus text-blue-200"></i>
+                                    <div>
+                                        <p class="text-xs text-blue-200 font-medium" data-translate="timetable.effective_from">Effective From</p>
+                                        <p class="text-base font-semibold text-white" id="effectiveFrom">-</p>
+                                    </div>
+                                </div>
+                                <div class="timetable-stat-pill">
+                                    <i class="fas fa-calendar-times text-blue-200"></i>
+                                    <div>
+                                        <p class="text-xs text-blue-200 font-medium" data-translate="timetable.effective_to">Effective To</p>
+                                        <p class="text-base font-semibold text-white" id="effectiveTo">-</p>
                                     </div>
                                 </div>
                             </div>
@@ -143,85 +285,122 @@
                     </div>
                 </div>
 
-                <!-- Weekly View -->
-                <div id="weeklyView" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="p-4 border-b border-gray-200 bg-gray-50">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900" data-translate="timetable.weekly_schedule">Weekly Schedule</h3>
-                            <div class="flex items-center space-x-2">
-                                <button onclick="previousWeek()" class="p-2 hover:bg-gray-200 rounded-lg transition-colors">
-                                    <i class="fas fa-chevron-left"></i>
-                                </button>
-                                <span id="weekRange" class="text-sm font-medium text-gray-700">Week of ...</span>
-                                <button onclick="nextWeek()" class="p-2 hover:bg-gray-200 rounded-lg transition-colors">
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
-                                <button onclick="goToToday()" class="px-3 py-1 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                    <span data-translate="timetable.today">Today</span>
-                                </button>
+                <!-- View Toggle: Week / Day / Hour (right after info card) -->
+                <div id="timetableViewToggle" class="director-panel mb-6 hidden">
+                    <div class="director-panel-header flex-wrap gap-4">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900" data-translate="timetable.view">View</h3>
+                                <p class="text-xs text-gray-500 mt-0.5" data-translate="timetable.view_description">Switch between weekly, daily or hourly schedule</p>
                             </div>
                         </div>
-                    </div>
-                    <div class="p-6">
-                        <div id="weeklyCalendar" class="grid grid-cols-7 gap-4">
-                            <!-- Days will be rendered here -->
+                        <div class="inline-flex rounded-xl border border-gray-200 p-1.5 bg-gray-50">
+                            <button type="button" id="weeklyViewBtn" class="view-toggle-btn active px-4 py-2 rounded-lg text-sm font-medium transition-colors border-2 border-blue-200 bg-blue-50 text-blue-600" onclick="switchView('weekly')">
+                                <i class="fas fa-calendar-week mr-1"></i><span data-translate="timetable.weekly">Weekly</span>
+                            </button>
+                            <button type="button" id="dailyViewBtn" class="view-toggle-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors border-2 border-transparent" onclick="switchView('daily')">
+                                <i class="fas fa-calendar-day mr-1"></i><span data-translate="timetable.daily">Daily</span>
+                            </button>
+                            <button type="button" id="hourlyViewBtn" class="view-toggle-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors border-2 border-transparent" onclick="switchView('hourly')">
+                                <i class="fas fa-clock mr-1"></i><span data-translate="timetable.hourly">Hourly</span>
+                            </button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Weekly View -->
+                <div id="weeklyView" class="director-panel w-full">
+                    <div class="director-panel-header flex-wrap gap-4">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-calendar-week"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900" data-translate="timetable.weekly_schedule">Weekly Schedule</h3>
+                                <p class="text-sm font-medium text-gray-600 mt-0.5" id="weekRange">Week of ...</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="previousWeek()" class="btn-director-secondary p-2">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button type="button" onclick="nextWeek()" class="btn-director-secondary p-2">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <button type="button" onclick="goToToday()" class="btn-director-primary">
+                                <i class="fas fa-calendar-day"></i>
+                                <span data-translate="timetable.today">Today</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="weeklyCalendar" class="grid grid-cols-7 gap-4">
+                        <!-- Days will be rendered here -->
                     </div>
                 </div>
 
                 <!-- Daily View -->
-                <div id="dailyView" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hidden">
-                    <div class="p-4 border-b border-gray-200 bg-gray-50">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900" data-translate="timetable.daily_schedule">Daily Schedule</h3>
-                            <div class="flex items-center space-x-2">
-                                <button onclick="previousDay()" class="p-2 hover:bg-gray-200 rounded-lg transition-colors">
-                                    <i class="fas fa-chevron-left"></i>
-                                </button>
-                                <input type="date" id="dailyDatePicker" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" onchange="loadDailyView()">
-                                <button onclick="nextDay()" class="p-2 hover:bg-gray-200 rounded-lg transition-colors">
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
-                                <button onclick="goToTodayDaily()" class="px-3 py-1 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors ml-2">
-                                    <span data-translate="timetable.today">Today</span>
-                                </button>
+                <div id="dailyView" class="director-panel w-full hidden">
+                    <div class="director-panel-header flex-wrap gap-4">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900" data-translate="timetable.daily_schedule">Daily Schedule</h3>
+                                <p class="text-xs text-gray-500 mt-0.5" data-translate="timetable.select_date">Select a date</p>
                             </div>
                         </div>
-                    </div>
-                    <div class="p-6">
-                        <div id="dailyCalendar" class="space-y-4">
-                            <!-- Daily schedule will be rendered here -->
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="previousDay()" class="btn-director-secondary p-2">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <input type="date" id="dailyDatePicker" class="input-director" onchange="loadDailyView()">
+                            <button type="button" onclick="nextDay()" class="btn-director-secondary p-2">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <button type="button" onclick="goToTodayDaily()" class="btn-director-primary">
+                                <i class="fas fa-calendar-day"></i>
+                                <span data-translate="timetable.today">Today</span>
+                            </button>
                         </div>
+                    </div>
+                    <div id="dailyCalendar" class="space-y-4">
+                        <!-- Daily schedule will be rendered here -->
                     </div>
                 </div>
 
                 <!-- Hourly View -->
-                <div id="hourlyView" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hidden">
-                    <div class="p-4 border-b border-gray-200 bg-gray-50">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900" data-translate="timetable.hourly_schedule">Hourly Schedule</h3>
-                            <div class="flex items-center space-x-2">
-                                <select id="hourlyDaySelector" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" onchange="loadHourlyView()">
-                                    <option value="0">Sunday</option>
-                                    <option value="1">Monday</option>
-                                    <option value="2">Tuesday</option>
-                                    <option value="3">Wednesday</option>
-                                    <option value="4">Thursday</option>
-                                    <option value="5">Friday</option>
-                                    <option value="6">Saturday</option>
-                                </select>
+                <div id="hourlyView" class="director-panel w-full hidden">
+                    <div class="director-panel-header flex-wrap gap-4">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900" data-translate="timetable.hourly_schedule">Hourly Schedule</h3>
+                                <p class="text-xs text-gray-500 mt-0.5" data-translate="timetable.select_day">Select a day</p>
                             </div>
                         </div>
+                        <select id="hourlyDaySelector" class="input-director min-w-[140px]" onchange="loadHourlyView()">
+                            <option value="0">Sunday</option>
+                            <option value="1">Monday</option>
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Thursday</option>
+                            <option value="5">Friday</option>
+                            <option value="6">Saturday</option>
+                        </select>
                     </div>
-                    <div class="p-6">
-                        <div id="hourlyCalendar" class="space-y-2">
-                            <!-- Hourly schedule will be rendered here -->
-                        </div>
+                    <div id="hourlyCalendar" class="space-y-2">
+                        <!-- Hourly schedule will be rendered here -->
                     </div>
                 </div>
 
                 <!-- Empty State -->
-                <div id="emptyState" class="text-center py-12 hidden">
+                <div id="emptyState" class="text-center py-12 hidden rounded-xl border-2 border-dashed border-gray-200">
                     <div class="mx-auto h-24 w-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                         <i class="fas fa-calendar-times text-gray-400 text-3xl"></i>
                     </div>
@@ -452,8 +631,10 @@
                     return;
                 }
 
-                // Show timetable info
+                // Show timetable info and view toggle (filters)
                 document.getElementById('timetableInfo').classList.remove('hidden');
+                var toggleEl = document.getElementById('timetableViewToggle');
+                if (toggleEl) toggleEl.classList.remove('hidden');
                 
                 // Update basic info
                 document.getElementById('timetableName').textContent = data.assignment.timetable_name || 'Unnamed Timetable';
@@ -538,7 +719,7 @@
                 const intervals = intervalsByDay[weekday] || [];
 
                 const dayCard = document.createElement('div');
-                dayCard.className = `rounded-lg border-2 p-4 ${isWeekend ? 'bg-yellow-50 border-yellow-200' : 'bg-gray-50 border-gray-200'}`;
+                dayCard.className = `tt-day-card ${isWeekend ? 'weekend-day border-2 border-amber-200' : ''}`;
                 
                 const noScheduleText = (typeof translate === 'function') ? translate('timetable.no_schedule') : 'No schedule';
                 const breakText = (typeof translate === 'function') ? translate('timetable.break') : 'Break';
@@ -766,34 +947,35 @@
         function switchView(view) {
             currentView = view;
 
-            // Update buttons
-            document.getElementById('weeklyViewBtn').classList.remove('bg-blue-600', 'text-white');
-            document.getElementById('weeklyViewBtn').classList.add('text-gray-700', 'hover:bg-gray-100');
-            document.getElementById('dailyViewBtn').classList.remove('bg-blue-600', 'text-white');
-            document.getElementById('dailyViewBtn').classList.add('text-gray-700', 'hover:bg-gray-100');
-            document.getElementById('hourlyViewBtn').classList.remove('bg-blue-600', 'text-white');
-            document.getElementById('hourlyViewBtn').classList.add('text-gray-700', 'hover:bg-gray-100');
+            var weeklyBtn = document.getElementById('weeklyViewBtn');
+            var dailyBtn = document.getElementById('dailyViewBtn');
+            var hourlyBtn = document.getElementById('hourlyViewBtn');
 
-            // Hide all views
+            weeklyBtn.classList.remove('active', 'bg-blue-50', 'text-blue-600', 'border-blue-200');
+            weeklyBtn.classList.add('border-transparent');
+            dailyBtn.classList.remove('active', 'bg-blue-50', 'text-blue-600', 'border-blue-200');
+            dailyBtn.classList.add('border-transparent');
+            hourlyBtn.classList.remove('active', 'bg-blue-50', 'text-blue-600', 'border-blue-200');
+            hourlyBtn.classList.add('border-transparent');
+
             document.getElementById('weeklyView').classList.add('hidden');
             document.getElementById('dailyView').classList.add('hidden');
             document.getElementById('hourlyView').classList.add('hidden');
 
-            // Show selected view
             if (view === 'weekly') {
                 document.getElementById('weeklyView').classList.remove('hidden');
-                document.getElementById('weeklyViewBtn').classList.add('bg-blue-600', 'text-white');
-                document.getElementById('weeklyViewBtn').classList.remove('text-gray-700', 'hover:bg-gray-100');
+                weeklyBtn.classList.add('active', 'bg-blue-50', 'text-blue-600', 'border-blue-200');
+                weeklyBtn.classList.remove('border-transparent');
                 loadWeeklyView();
             } else if (view === 'daily') {
                 document.getElementById('dailyView').classList.remove('hidden');
-                document.getElementById('dailyViewBtn').classList.add('bg-blue-600', 'text-white');
-                document.getElementById('dailyViewBtn').classList.remove('text-gray-700', 'hover:bg-gray-100');
+                dailyBtn.classList.add('active', 'bg-blue-50', 'text-blue-600', 'border-blue-200');
+                dailyBtn.classList.remove('border-transparent');
                 loadDailyView();
             } else if (view === 'hourly') {
                 document.getElementById('hourlyView').classList.remove('hidden');
-                document.getElementById('hourlyViewBtn').classList.add('bg-blue-600', 'text-white');
-                document.getElementById('hourlyViewBtn').classList.remove('text-gray-700', 'hover:bg-gray-100');
+                hourlyBtn.classList.add('active', 'bg-blue-50', 'text-blue-600', 'border-blue-200');
+                hourlyBtn.classList.remove('border-transparent');
                 loadHourlyView();
             }
         }
@@ -872,6 +1054,8 @@
             document.getElementById('dailyView').classList.add('hidden');
             document.getElementById('hourlyView').classList.add('hidden');
             document.getElementById('timetableInfo').classList.add('hidden');
+            var toggleEl = document.getElementById('timetableViewToggle');
+            if (toggleEl) toggleEl.classList.add('hidden');
         }
     </script>
     <script src="../assets/js/navbar.js"></script>

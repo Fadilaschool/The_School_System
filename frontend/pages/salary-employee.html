@@ -6,26 +6,701 @@
     <title>My Salary - HR Operations Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
+        }
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+        }
+        .page-header {
+            text-align: center;
+            margin: 1.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .page-title i { color: #3b82f6; font-size: 1.5rem; }
+        .page-subtitle { font-size: 0.95rem; color: #64748b; margin: 0; font-weight: 500; }
+        .director-panel {
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 28px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .director-panel:hover { box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.15); }
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+        [dir="rtl"] .director-panel-header {
+            flex-direction: row-reverse;
+        }
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        [dir="rtl"] .director-panel-title {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+        [dir="rtl"] .director-panel-title > div:last-child {
+            text-align: right;
+        }
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+        .salary-table-wrap {
+            overflow-x: auto;
+            overflow-y: visible;
+            border-radius: 16px;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            width: 100%;
+        }
+        .salary-table-wrap table.salary-data-table,
+        .salary-table-wrap table {
+            width: 100%;
+            min-width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        .salary-table-wrap thead { background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); }
+        .salary-table-wrap th,
+        .salary-table-wrap td {
+            padding: 0.75rem 1rem;
+            padding-inline-start: 1rem;
+            padding-inline-end: 1rem;
+            vertical-align: middle;
+            box-sizing: border-box;
+        }
+        .salary-table-wrap th {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+        }
+        .salary-table-wrap td { border-top: 1px solid #e2e8f0; }
+        .salary-table-wrap tbody tr { transition: background 0.2s; }
+        .salary-table-wrap tbody tr:hover { background: rgba(248, 250, 252, 0.8); }
+        /* RTL (Arabic): keep table column order so header and data align */
+        [dir="rtl"] .salary-table-wrap table {
+            direction: ltr;
+        }
+        [dir="rtl"] .salary-table-wrap th,
+        [dir="rtl"] .salary-table-wrap td {
+            direction: rtl;
+            text-align: right;
+        }
+        [dir="rtl"] .salary-table-wrap th.text-right,
+        [dir="rtl"] .salary-table-wrap td.text-right {
+            text-align: right;
+        }
+        .salary-view-btn { color: #64748b; }
+        .salary-view-btn:hover { color: #0f172a; background: #f1f5f9; }
+        .salary-view-btn.active { background: #fff; color: #2563eb; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .salary-month-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,252,0.95));
+            border-radius: 16px;
+            padding: 1.25rem;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+            transition: all 0.2s ease;
+        }
+        .salary-month-card:hover { box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1); }
+        .btn-director-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-director-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        .btn-director-secondary {
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #475569;
+            transition: all 0.2s;
+        }
+        .btn-director-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
+        .input-director {
+            padding: 0.625rem 1rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-director:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .salary-stat-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .salary-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+        }
+        .modal-director {
+            border-radius: 24px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.15);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+        }
+        .modal-director .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+    </style>
     
     <style>
         .rtl .ml-2 { margin-left: 0; margin-right: 0.5rem; }
         .rtl .mr-2 { margin-right: 0; margin-left: 0.5rem; }
         .tab-active { 
-            border-bottom: 2px solid #3b82f6; 
-            color: #3b82f6; 
+            background: #eff6ff !important;
+            color: #2563eb !important;
+            border-color: #93c5fd !important;
             font-weight: 600;
         }
         .tab-inactive {
-            border-bottom: 2px solid transparent;
+            border: 2px solid transparent;
             color: #6b7280;
         }
         .tab-inactive:hover {
             color: #374151;
-            border-bottom-color: #d1d5db;
+            background: #f9fafb;
         }
-        .rtl .tab-active { border-bottom: 2px solid #3b82f6; }
-        .rtl .tab-inactive { border-bottom: 2px solid transparent; }
+        .rtl .tab-active { border-color: #93c5fd; }
+        .rtl .tab-inactive { border: 2px solid transparent; }
+        
+        /* Mobile Responsive Year Panel */
+        @media (max-width: 768px) {
+            .director-panel-header.flex-wrap {
+                flex-direction: column;
+                gap: 20px !important;
+            }
+            
+            .director-panel-header .director-panel-title {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+                margin-bottom: 8px;
+            }
+            
+            [dir="rtl"] .director-panel-header .director-panel-title {
+                text-align: center;
+                justify-content: center;
+            }
+            
+            .director-panel-header .director-panel-title > div {
+                text-align: center;
+            }
+            
+            .director-panel-header .flex.flex-wrap.items-center.gap-3 {
+                width: 100%;
+                flex-direction: column;
+                gap: 16px !important;
+                align-items: stretch !important;
+            }
+            
+            .director-panel-header .flex.flex-wrap.items-center.gap-3 > div {
+                width: 100%;
+            }
+            
+            .director-panel-header .flex.flex-wrap.items-center.gap-3 label {
+                display: block;
+                text-align: center;
+                margin-bottom: 8px;
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: #374151;
+            }
+            
+            .director-panel-header .flex.flex-wrap.items-center.gap-3 select {
+                width: 100%;
+                padding: 12px 16px;
+                font-size: 1rem;
+                text-align: center;
+                background: white;
+                border: 2px solid #e5e7eb;
+                border-radius: 12px;
+                transition: all 0.2s ease;
+            }
+            
+            .director-panel-header .flex.flex-wrap.items-center.gap-3 select:focus {
+                outline: none;
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            }
+            
+            .director-panel-header .flex.flex-wrap.items-center.gap-3 button {
+                width: 100%;
+                padding: 14px 20px;
+                font-size: 0.875rem;
+                font-weight: 600;
+                justify-content: center;
+                gap: 8px;
+                margin-top: 8px;
+            }
+            
+            [dir="rtl"] .director-panel-header .flex.flex-wrap.items-center.gap-3 select {
+                text-align: right;
+            }
+        }
+        
+        /* Mobile Responsive Salary Stats Cards */
+        @media (max-width: 768px) {
+            .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-5.gap-4.mb-6 {
+                grid-template-columns: 1fr;
+                gap: 16px !important;
+            }
+            
+            .salary-stat-card {
+                text-align: center;
+                padding: 20px 16px;
+            }
+            
+            .salary-stat-card .flex.items-center.gap-4 {
+                flex-direction: column;
+                justify-content: center;
+                gap: 16px !important;
+                text-align: center;
+            }
+            
+            .salary-stat-card .flex.items-center.gap-4 > div:first-child {
+                order: 2;
+            }
+            
+            .salary-stat-card .flex.items-center.gap-4 > div:last-child {
+                order: 1;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .salary-stat-card .p-3.rounded-xl {
+                margin: 0 auto;
+                width: 60px;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .salary-stat-card .p-3.rounded-xl i {
+                font-size: 1.5rem !important;
+            }
+            
+            .salary-stat-card .min-w-0 {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .salary-stat-card .min-w-0 p {
+                text-align: center;
+                justify-content: center;
+            }
+            
+            .salary-stat-card .min-w-0 .text-xl {
+                font-size: 1.5rem !important;
+                text-align: center;
+                justify-content: center;
+            }
+            
+            .salary-stat-card .min-w-0 .truncate {
+                text-align: center;
+                white-space: normal;
+                overflow: visible;
+            }
+            
+            /* Special styling for the status card with flex layout */
+            .salary-stat-card .min-w-0.flex-1 {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .salary-stat-card .min-w-0.flex-1 .flex.gap-3 {
+                justify-content: center;
+                gap: 24px !important;
+                margin-top: 8px;
+            }
+            
+            .salary-stat-card .min-w-0.flex-1 .flex.gap-3 > div {
+                text-align: center;
+            }
+            
+            .salary-stat-card .min-w-0.flex-1 .flex.gap-3 p {
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-5.gap-4.mb-6 {
+                gap: 12px !important;
+            }
+            
+            .salary-stat-card {
+                padding: 16px 12px;
+            }
+            
+            .salary-stat-card .flex.items-center.gap-4 {
+                gap: 12px !important;
+            }
+            
+            .salary-stat-card .p-3.rounded-xl {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .salary-stat-card .p-3.rounded-xl i {
+                font-size: 1.25rem !important;
+            }
+            
+            .salary-stat-card .min-w-0 .text-xl {
+                font-size: 1.25rem !important;
+            }
+            
+            .salary-stat-card .min-w-0.flex-1 .flex.gap-3 {
+                gap: 20px !important;
+            }
+        }
+        
+        /* Mobile Responsive Tabs */
+        @media (max-width: 768px) {
+            #salaryTabs {
+                display: flex;
+                flex-direction: column;
+                gap: 0 !important;
+                border-radius: 12px;
+                overflow: hidden;
+                border: 1px solid #e5e7eb;
+                background: #f9fafb;
+            }
+            
+            #salaryTabs button {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                width: 100%;
+                padding: 16px 20px !important;
+                border: none !important;
+                border-radius: 0 !important;
+                background: #f9fafb !important;
+                color: #6b7280 !important;
+                font-size: 0.875rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                border-bottom: 1px solid #e5e7eb !important;
+                gap: 12px;
+            }
+            
+            #salaryTabs button:last-child {
+                border-bottom: none !important;
+            }
+            
+            #salaryTabs button.tab-active {
+                background: #eff6ff !important;
+                color: #2563eb !important;
+                font-weight: 600;
+                border-left: 4px solid #2563eb !important;
+            }
+            
+            #salaryTabs button.tab-inactive:hover {
+                background: #f3f4f6 !important;
+                color: #374151 !important;
+            }
+            
+            #salaryTabs button i {
+                width: 20px;
+                text-align: center;
+                font-size: 1rem;
+            }
+            
+            #salaryTabs button span {
+                flex: 1;
+                text-align: left;
+            }
+            
+            [dir="rtl"] #salaryTabs button {
+                justify-content: flex-end;
+            }
+            
+            [dir="rtl"] #salaryTabs button span {
+                text-align: right;
+            }
+            
+            [dir="rtl"] #salaryTabs button.tab-active {
+                border-left: none !important;
+                border-right: 4px solid #2563eb !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #salaryTabs button {
+                padding: 14px 16px !important;
+                font-size: 0.8rem;
+            }
+            
+            #salaryTabs button i {
+                font-size: 0.9rem;
+                width: 18px;
+            }
+        }
+        
+        /* Hide view toggle buttons in mobile view and show only cards */
+        @media (max-width: 768px) {
+            .director-panel-header .flex.rounded-lg {
+                display: none !important;
+            }
+            
+            /* Ensure card view is visible and list view is hidden */
+            #salaryListView {
+                display: none !important;
+            }
+            
+            #salaryCardView {
+                display: grid !important;
+                grid-template-columns: 1fr;
+                gap: 16px !important;
+            }
+        }
+        
+        /* Mobile Responsive Payslips Section */
+        @media (max-width: 768px) {
+            /* Organize payslips header for mobile */
+            #panel-payslips .director-panel-header {
+                flex-direction: column;
+                gap: 20px !important;
+            }
+            
+            #panel-payslips .director-panel-title {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+                margin-bottom: 8px;
+            }
+            
+            [dir="rtl"] #panel-payslips .director-panel-title {
+                text-align: center;
+                justify-content: center;
+            }
+            
+            #panel-payslips .director-panel-title > div {
+                text-align: center;
+            }
+            
+            #panel-payslips .flex.flex-wrap.items-end.gap-3 {
+                width: 100%;
+                flex-direction: column;
+                gap: 16px !important;
+                align-items: stretch !important;
+            }
+            
+            #panel-payslips .flex.flex-wrap.items-end.gap-3 > div {
+                width: 100%;
+            }
+            
+            #panel-payslips .flex.flex-wrap.items-end.gap-3 label {
+                display: block;
+                text-align: center;
+                margin-bottom: 8px;
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: #374151;
+            }
+            
+            #panel-payslips .flex.flex-wrap.items-end.gap-3 select {
+                width: 100%;
+                padding: 12px 16px;
+                font-size: 1rem;
+                text-align: center;
+                background: white;
+                border: 2px solid #e5e7eb;
+                border-radius: 12px;
+                transition: all 0.2s ease;
+            }
+            
+            #panel-payslips .flex.flex-wrap.items-end.gap-3 select:focus {
+                outline: none;
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            }
+            
+            #panel-payslips .flex.flex-wrap.items-end.gap-3 button {
+                width: 100%;
+                padding: 14px 20px;
+                font-size: 0.875rem;
+                font-weight: 600;
+                justify-content: center;
+                gap: 8px;
+                margin-top: 8px;
+            }
+            
+            [dir="rtl"] #panel-payslips .flex.flex-wrap.items-end.gap-3 select {
+                text-align: right;
+            }
+            
+            /* Hide table and show card view for payslips */
+            #panel-payslips .salary-table-wrap {
+                display: none !important;
+            }
+            
+            /* Create card view for payslips */
+            #panel-payslips .director-panel.w-full {
+                position: relative;
+            }
+            
+            #panel-payslips .director-panel.w-full::after {
+                content: '';
+                display: block;
+                clear: both;
+            }
+            
+            /* Payslips card container */
+            #panel-payslips .director-panel.w-full::before {
+                content: '';
+                display: none;
+            }
+        }
+        
+        /* Payslips card styles */
+        /* Default desktop styles */
+        #payslipsCardContainer {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            /* Hide table in mobile view */
+            #panel-payslips .salary-table-wrap {
+                display: none !important;
+            }
+            
+            /* Show card container in mobile view */
+            #payslipsCardContainer {
+                display: block !important;
+            }
+            
+            .payslip-card {
+                background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,252,0.95));
+                border-radius: 16px;
+                padding: 1.25rem;
+                border: 1px solid rgba(15, 23, 42, 0.08);
+                box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+                transition: all 0.2s ease;
+                margin-bottom: 16px;
+                display: block;
+            }
+            
+            .payslip-card:hover {
+                box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+                transform: translateY(-2px);
+            }
+            
+            .payslip-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+                padding-bottom: 0.75rem;
+                border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+            }
+            
+            .payslip-card-title {
+                font-size: 1.125rem;
+                font-weight: 600;
+                color: #1e293b;
+                margin: 0;
+            }
+            
+            .payslip-card-year {
+                font-size: 0.875rem;
+                color: #64748b;
+                font-weight: 500;
+            }
+            
+            .payslip-card-content {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .payslip-card-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem 0;
+            }
+            
+            .payslip-card-label {
+                font-size: 0.875rem;
+                color: #64748b;
+                font-weight: 500;
+            }
+            
+            .payslip-card-value {
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: #1e293b;
+            }
+            
+            .payslip-card-file {
+                margin-top: 0.75rem;
+                padding-top: 0.75rem;
+                border-top: 1px solid rgba(15, 23, 42, 0.06);
+            }
+        }
     </style>
     
     <style>
@@ -90,101 +765,97 @@
     
     <!-- Main Content -->
     <div class="main-content flex-1 flex flex-col overflow-hidden">
-        <!-- Content -->
-        <main class="flex-1 overflow-y-auto p-6">
-            <div class="max-w-7xl mx-auto">
+        <main class="flex-1 overflow-y-auto">
+            <div class="max-w-7xl mx-auto p-6">
                 <!-- Page Header -->
-                <div class="mb-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-2xl font-bold text-gray-900" data-translate="salary.my_salary">My Salary</h1>
-                            <p class="text-gray-600" data-translate="salary.salary_details">View your salary details and statistics (DA Currency)</p>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <!-- Language Selector -->
-                            <select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="en">English</option>
-                                <option value="fr">Français</option>
-                                <option value="ar">العربية</option>
-                            </select>
-                        </div>
-                    </div>
+                <div class="page-header mb-6">
+                    <h1 class="page-title" data-translate="salary.my_salary">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>My Salary</span>
+                    </h1>
+                    <p class="page-subtitle" data-translate="salary.salary_details">View your salary details and statistics (DA Currency)</p>
                 </div>
 
                 <!-- Tabs Container -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-                    <div class="border-b border-gray-200">
-                        <nav class="flex space-x-8 px-6" aria-label="Tabs" id="salaryTabs">
-                            <button data-tab="details" id="tab-details" class="tab-active py-4 px-1 border-b-2 font-medium text-sm transition-colors">
-                                <i class="fas fa-money-bill-wave mr-2"></i>
-                                <span data-translate="salary.salary_details">Salary Details</span>
-                            </button>
-                            <button data-tab="payslips" id="tab-payslips" class="tab-inactive py-4 px-1 border-b-2 font-medium text-sm transition-colors">
-                                <i class="fas fa-file-invoice-dollar mr-2"></i>
-                                <span data-translate="salary.payslips">Payslips</span>
-                            </button>
-                        </nav>
-                    </div>
+                <div class="director-panel mb-6">
+                    <nav class="flex gap-4 flex-wrap" aria-label="Tabs" id="salaryTabs">
+                        <button data-tab="details" id="tab-details" class="tab-active py-3 px-5 rounded-xl font-medium text-sm transition-colors bg-blue-50 text-blue-600 border-2 border-blue-200">
+                            <i class="fas fa-money-bill-wave mr-2"></i>
+                            <span data-translate="salary.salary_details">Salary Details</span>
+                        </button>
+                        <button data-tab="payslips" id="tab-payslips" class="tab-inactive py-3 px-5 rounded-xl font-medium text-sm transition-colors border-2 border-transparent hover:bg-gray-50">
+                            <i class="fas fa-file-invoice-dollar mr-2"></i>
+                            <span data-translate="salary.payslips">Payslips</span>
+                        </button>
+                    </nav>
                 </div>
 
                 <!-- Tab Panel: Salary Details -->
                 <div id="panel-details" class="tab-panel">
                 <!-- Year Selector -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-                    <div class="flex flex-wrap items-center gap-4">
-                        <div class="period-selector text-white px-4 py-2 rounded-lg">
-                            <div class="flex items-center space-x-4">
-                                <div>
-                                    <label class="block text-xs font-medium mb-1" data-translate="salary.year">Year</label>
-                                    <select id="yearSelect" class="bg-white text-gray-900 border-0 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500">
-                                        <!-- Years will be populated by JavaScript -->
-                                    </select>
-                                </div>
+                <div class="director-panel mb-6">
+                    <div class="director-panel-header flex-wrap">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900" data-translate="salary.year">Year</h3>
+                                <p class="text-xs text-gray-500 mt-0.5" data-translate="salary.select_year">Select year and load data</p>
                             </div>
                         </div>
-                        <button onclick="loadYearlySalaries()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-                            <i class="fas fa-sync mr-2"></i><span data-translate="common.loading">Load Data</span>
-                        </button>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-translate="salary.year">Year</label>
+                                <select id="yearSelect" class="input-director min-w-[100px]">
+                                    <!-- Years will be populated by JavaScript -->
+                                </select>
+                            </div>
+                            <button type="button" onclick="loadYearlySalaries()" class="btn-director-primary">
+                                <i class="fas fa-sync"></i>
+                                <span data-translate="common.load">Load Data</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Summary Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-blue-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                    <div class="salary-stat-card">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 rounded-xl bg-blue-100 flex-shrink-0">
                                 <i class="fas fa-coins text-blue-600 text-xl"></i>
                             </div>
-                            <div class="ml-4">
+                            <div class="min-w-0">
                                 <p class="text-sm font-medium text-gray-600" data-translate="salary.total_salary">Total Salary</p>
-                                <p id="totalSalary" class="text-2xl font-semibold da-currency">0 DA</p>
+                                <p id="totalSalary" class="text-xl font-semibold da-currency truncate">0 DA</p>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-green-100">
+                    <div class="salary-stat-card">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 rounded-xl bg-green-100 flex-shrink-0">
                                 <i class="fas fa-calendar-check text-green-600 text-xl"></i>
                             </div>
-                            <div class="ml-4">
+                            <div class="min-w-0">
                                 <p class="text-sm font-medium text-gray-600" data-translate="attendance.worked_days">Total Worked Days</p>
-                                <p id="totalWorkedDays" class="text-2xl font-semibold text-gray-900">0</p>
+                                <p id="totalWorkedDays" class="text-xl font-semibold text-gray-900">0</p>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-purple-100">
+                    <div class="salary-stat-card">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 rounded-xl bg-purple-100 flex-shrink-0">
                                 <i class="fas fa-money-check-alt text-purple-600 text-xl"></i>
                             </div>
-                            <div class="ml-4 flex-1">
-                                <p class="text-sm font-medium text-gray-600 mb-2" data-translate="common.status">Payment Status</p>
-                                <div class="flex justify-between items-center">
-                                    <div class="text-center">
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-medium text-gray-600 mb-1" data-translate="common.status">Payment Status</p>
+                                <div class="flex gap-3">
+                                    <div>
                                         <p class="text-xs text-gray-500" data-translate="status.completed">Paid</p>
                                         <p id="paidCount" class="text-lg font-semibold text-green-600">0</p>
                                     </div>
-                                    <div class="text-center">
+                                    <div>
                                         <p class="text-xs text-gray-500" data-translate="status.pending">Pending</p>
                                         <p id="pendingCount" class="text-lg font-semibold text-orange-600">0</p>
                                     </div>
@@ -192,63 +863,91 @@
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-emerald-100">
+                    <div class="salary-stat-card">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 rounded-xl bg-emerald-100 flex-shrink-0">
                                 <i class="fas fa-arrow-up text-emerald-600 text-xl"></i>
                             </div>
-                            <div class="ml-4">
+                            <div class="min-w-0">
                                 <p class="text-sm font-medium text-gray-600" data-translate="attendance.hours_worked">Total Overtime</p>
-                                <p id="totalOvertime" class="text-2xl font-semibold text-emerald-600">0h</p>
+                                <p id="totalOvertime" class="text-xl font-semibold text-emerald-600">0h</p>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-yellow-100">
-                                <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                    <div class="salary-stat-card">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 rounded-xl bg-amber-100 flex-shrink-0">
+                                <i class="fas fa-clock text-amber-600 text-xl"></i>
                             </div>
-                            <div class="ml-4">
+                            <div class="min-w-0">
                                 <p class="text-sm font-medium text-gray-600" data-translate="salary.average_monthly">Average Monthly</p>
-                                <p id="averageMonthly" class="text-2xl font-semibold text-yellow-600">0 DA</p>
+                                <p id="averageMonthly" class="text-xl font-semibold text-amber-600">0 DA</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Monthly Salary Table -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900" data-translate="salary.payslips">Monthly Salary Breakdown</h3>
+                <!-- Monthly Salary Table / Card View -->
+                <div class="director-panel w-full">
+                    <div class="director-panel-header flex-wrap gap-4">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-table"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900" data-translate="salary.payslips">Monthly Salary Breakdown</h3>
+                                <p class="text-xs text-gray-500 mt-0.5" data-translate="salary.by_month">Per month summary</p>
+                            </div>
+                        </div>
+                        <div class="flex rounded-lg border border-gray-200 p-1 bg-gray-50">
+                            <button type="button" id="salaryViewList" class="salary-view-btn active px-3 py-2 rounded-md text-sm font-medium transition-colors" data-view="list" title="List view">
+                                <i class="fas fa-list mr-1"></i>
+                                <span data-translate="common.list">List</span>
+                            </button>
+                            <button type="button" id="salaryViewCard" class="salary-view-btn px-3 py-2 rounded-md text-sm font-medium transition-colors" data-view="card" title="Card view">
+                                <i class="fas fa-th-large mr-1"></i>
+                                <span data-translate="common.cards">Cards</span>
+                            </button>
+                        </div>
                     </div>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                    <!-- List view -->
+                    <div id="salaryListView" class="salary-table-wrap w-full block">
+                        <table class="salary-data-table">
+                            <colgroup>
+                                <col style="width:16%">
+                                <col style="width:14%">
+                                <col style="width:10%">
+                                <col style="width:18%">
+                                <col style="width:18%">
+                                <col style="width:24%">
+                            </colgroup>
+                            <thead>
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="salary.month">Month</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="attendance.worked_days">Worked Days</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="payment.overtime_rate">Overtime</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="salary.net_salary">Net Salary (DA)</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="common.status">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="common.actions">Actions</th>
+                                    <th class="text-left" data-translate="salary.month">Month</th>
+                                    <th class="text-left" data-translate="attendance.worked_days">Worked Days</th>
+                                    <th class="text-left" data-translate="payment.overtime_rate">Overtime</th>
+                                    <th class="text-left" data-translate="salary.net_salary">Net Salary (DA)</th>
+                                    <th class="text-left" data-translate="common.status">Status</th>
+                                    <th class="text-right" data-translate="common.actions">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="salaryTableBody" class="bg-white divide-y divide-gray-200">
+                            <tbody id="salaryTableBody">
                                 <!-- Salary rows will be loaded here -->
                             </tbody>
                         </table>
                     </div>
-                    
+                    <!-- Card view -->
+                    <div id="salaryCardView" class="hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <!-- Cards populated by JS -->
+                    </div>
                     <!-- Empty State -->
-                    <div id="emptyState" class="text-center py-12 hidden">
-                        <div class="mx-auto h-24 w-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                    <div id="emptyState" class="text-center py-12 hidden rounded-xl border-2 border-dashed border-gray-200 mt-4">
+                        <div class="h-24 w-24 bg-gray-100 rounded-full flex items-center justify-center mb-4 mx-auto">
                             <i class="fas fa-money-bill-wave text-gray-400 text-3xl"></i>
                         </div>
                         <h3 class="text-lg font-medium text-gray-900 mb-2" data-translate="message.no_data">No salary data found</h3>
                         <p class="text-gray-500" data-translate="common.filter">Try selecting a different year.</p>
                     </div>
-                    
                     <!-- Loading State -->
                     <div id="loadingState" class="text-center py-12 hidden">
                         <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -259,35 +958,44 @@
 
                 <!-- Tab Panel: Payslips -->
                 <div id="panel-payslips" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-                        <div class="flex flex-wrap items-center gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="time.start_month">Start Month</label>
-                                <select id="payslipStartMonth" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="">All time</option>
-                                    <option value="1">January</option>
-                                    <option value="2">February</option>
-                                    <option value="3">March</option>
-                                    <option value="4">April</option>
-                                    <option value="5">May</option>
-                                    <option value="6">June</option>
-                                    <option value="7">July</option>
-                                    <option value="8">August</option>
-                                    <option value="9">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
-                                </select>
+                    <div class="director-panel mb-6">
+                        <div class="director-panel-header flex-wrap gap-4">
+                            <div class="director-panel-title">
+                                <div class="director-panel-title-icon">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900" data-translate="salary.payslips">Payslips</h3>
+                                    <p class="text-xs text-gray-500 mt-0.5" data-translate="salary.filter_payslips">Filter by month and year</p>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="time.start_year">Start Year</label>
-                                <select id="payslipStartYear" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="">All years</option>
-                                </select>
-                            </div>
-                            <div class="flex items-end">
-                                <button onclick="loadPayslips()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
-                                    <i class="fas fa-search mr-2"></i>
+                            <div class="flex flex-wrap items-end gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1" data-translate="time.start_month">Start Month</label>
+                                    <select id="payslipStartMonth" class="input-director min-w-[120px]">
+                                        <option value="">All time</option>
+                                        <option value="1">January</option>
+                                        <option value="2">February</option>
+                                        <option value="3">March</option>
+                                        <option value="4">April</option>
+                                        <option value="5">May</option>
+                                        <option value="6">June</option>
+                                        <option value="7">July</option>
+                                        <option value="8">August</option>
+                                        <option value="9">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1" data-translate="time.start_year">Start Year</label>
+                                    <select id="payslipStartYear" class="input-director min-w-[100px]">
+                                        <option value="">All years</option>
+                                    </select>
+                                </div>
+                                <button type="button" onclick="loadPayslips()" class="btn-director-primary">
+                                    <i class="fas fa-search"></i>
                                     <span data-translate="btn.load">Load</span>
                                 </button>
                             </div>
@@ -295,32 +1003,42 @@
                     </div>
 
                     <!-- Payslips Table -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+                    <div class="director-panel w-full">
+                        <div class="salary-table-wrap w-full overflow-x-auto">
+                            <table class="w-full">
+                                <colgroup>
+                                    <col style="width:25%">
+                                    <col style="width:15%">
+                                    <col style="width:25%">
+                                    <col style="width:35%">
+                                </colgroup>
+                                <thead>
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="time.month">Month</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="time.year">Year</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="common.status">Status</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="common.file">File</th>
+                                        <th class="text-left" data-translate="time.month">Month</th>
+                                        <th class="text-left" data-translate="time.year">Year</th>
+                                        <th class="text-left" data-translate="common.status">Status</th>
+                                        <th class="text-left" data-translate="common.file">File</th>
                                     </tr>
                                 </thead>
-                                <tbody id="payslipsTableBody" class="bg-white divide-y divide-gray-200">
+                                <tbody id="payslipsTableBody">
                                     <!-- Table rows will be populated here -->
                                 </tbody>
                             </table>
                         </div>
-
+                        
+                        <!-- Payslips Card View (Mobile Only) -->
+                        <div id="payslipsCardContainer" class="payslips-card-container">
+                            <!-- Cards will be populated here by JavaScript -->
+                        </div>
+                        
                         <!-- Loading State -->
                         <div id="payslipsLoading" class="text-center py-12 hidden">
                             <div class="loading-spinner rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                            <p class="text-gray-500" data-translate="common.loading">Loading payslips data...</p>
+                            <p class="gray-500" data-translate="common.loading">Loading payslips data...</p>
                         </div>
-
                         <!-- Empty State -->
-                        <div id="payslipsEmpty" class="text-center py-12 hidden">
-                            <i class="fas fa-file-invoice-dollar text-6xl text-gray-300 mb-4"></i>
+                        <div id="payslipsEmpty" class="text-center py-12 hidden rounded-xl border-2 border-dashed border-gray-200 mt-4">
+                            <i class="fas fa-file-invoice-dollar text-6xl text-gray-300 mb-4 block"></i>
                             <p class="text-gray-500" data-translate="message.no_data">No payslips found</p>
                             <p class="text-sm text-gray-400" data-translate="salary.no_payslips">No records for the selected period</p>
                         </div>
@@ -331,19 +1049,16 @@
     </div>
 
     <!-- Salary Details Modal -->
-    <div id="salaryModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop modal-overlay hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-screen overflow-y-auto modal-content">
-                <div class="p-4 border-b border-gray-200 relative">
-                    <h2 id="salaryModalTitle" class="text-xl font-semibold text-gray-900" data-translate="salary.salary_details">Salary Details</h2>
-                    <button type="button" onclick="closeSalaryModal()" class="modal-close absolute top-3 right-3 text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div id="salaryModalContent" class="p-4">
-                    <!-- Salary details will be loaded here -->
-                </div>
+    <div id="salaryModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white modal-director max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="modal-header flex items-center justify-between sticky top-0 bg-white z-10">
+                <h2 id="salaryModalTitle" class="text-xl font-semibold text-gray-900" data-translate="salary.salary_details">Salary Details</h2>
+                <button type="button" onclick="closeSalaryModal()" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="salaryModalContent" class="p-6">
+                <!-- Salary details will be loaded here -->
             </div>
         </div>
     </div>
@@ -364,18 +1079,24 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize tabs
             initializeTabs();
-            
-            // Initialize language selector
-            const languageSelector = document.getElementById('languageSelector');
-            if (languageSelector) {
-                languageSelector.value = (typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'en'));
-                languageSelector.addEventListener('change', (e) => {
-                    if (typeof setLanguage === 'function') {
-                        setLanguage(e.target.value);
-                    }
-                    if (typeof updatePageTranslations === 'function') {
-                        updatePageTranslations();
-                    }
+
+            // Salary list/card view toggle
+            const salaryViewList = document.getElementById('salaryViewList');
+            const salaryViewCard = document.getElementById('salaryViewCard');
+            const salaryListView = document.getElementById('salaryListView');
+            const salaryCardView = document.getElementById('salaryCardView');
+            if (salaryViewList && salaryViewCard && salaryListView && salaryCardView) {
+                salaryViewList.addEventListener('click', function() {
+                    salaryViewList.classList.add('active');
+                    salaryViewCard.classList.remove('active');
+                    salaryListView.classList.remove('hidden');
+                    salaryCardView.classList.add('hidden');
+                });
+                salaryViewCard.addEventListener('click', function() {
+                    salaryViewCard.classList.add('active');
+                    salaryViewList.classList.remove('active');
+                    salaryCardView.classList.remove('hidden');
+                    salaryListView.classList.add('hidden');
                 });
             }
             
@@ -647,9 +1368,14 @@
 
         function displayMonthlyTable(data) {
             const tbody = document.getElementById('salaryTableBody');
-            
+            const cardsContainer = document.getElementById('salaryCardView');
+            const noDataText = typeof translate === 'function' ? (translate('message.no_data') || 'No salary data available for this year') : 'No salary data available for this year';
+
             if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">No salary data available for this year</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">' + noDataText + '</td></tr>';
+                if (cardsContainer) {
+                    cardsContainer.innerHTML = '<div class="col-span-full text-center py-12 rounded-xl border-2 border-dashed border-gray-200 text-gray-500">' + noDataText + '</div>';
+                }
                 return;
             }
 
@@ -666,7 +1392,6 @@
                               'July', 'August', 'September', 'October', 'November', 'December'];
 
             tbody.innerHTML = data.map(salary => {
-                // Ensure month is a valid number (1-12)
                 const monthNum = parseInt(salary.month) || 1;
                 const monthName = monthNames[monthNum - 1] || 'Unknown';
                 const statusClass = getStatusClass(salary.payment_status);
@@ -674,34 +1399,30 @@
 
                 return `
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">${monthName}</div>
                             <div class="text-xs text-gray-500">${parseInt(salary.year) || ''}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td class="whitespace-nowrap text-sm text-gray-900">
                             <div class="flex flex-col">
                                 <span class="font-medium">${salary.worked_days || 0}</span>
                                 ${salary.absent_days > 0 ? `<span class="text-xs text-gray-500">${t('attendance.absent', 'Absent')}: ${salary.absent_days || 0}</span>` : ''}
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            ${(salary.overtime_hours || 0).toFixed(1)}h
+                        <td class="whitespace-nowrap text-sm text-gray-900">${(salary.overtime_hours || 0).toFixed(1)}h</td>
+                        <td class="whitespace-nowrap">
+                            <div class="text-sm font-medium da-currency">${formatCurrency(salary.net_salary || 0)} DA</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium da-currency">
-                                ${formatCurrency(salary.net_salary || 0)} DA
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="whitespace-nowrap">
                             <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full text-white ${statusClass}">
                                 ${salary.payment_status || t('status.not_paid', 'Not Paid')}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <td class="whitespace-nowrap text-sm font-medium text-right">
                             ${canView ? `
-                                <button onclick="viewSalaryDetails(${monthNum}, ${parseInt(salary.year)})" 
-                                        class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
-                                    <i class="fas fa-eye mr-1"></i>
+                                <button type="button" onclick="viewSalaryDetails(${monthNum}, ${parseInt(salary.year)})" 
+                                        class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-blue-600 hover:bg-blue-50 transition-colors">
+                                    <i class="fas fa-eye"></i>
                                     ${t('common.view', 'View Details')}
                                 </button>
                             ` : `
@@ -711,6 +1432,51 @@
                     </tr>
                 `;
             }).join('');
+
+            // Populate card view (same data)
+            if (cardsContainer) {
+                cardsContainer.innerHTML = data.map(salary => {
+                    const monthNum = parseInt(salary.month) || 1;
+                    const monthName = monthNames[monthNum - 1] || 'Unknown';
+                    const statusClass = getStatusClass(salary.payment_status);
+                    const canView = salary.validation_status === 'Validated' || salary.net_salary > 0;
+
+                    return `
+                        <div class="salary-month-card">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-semibold text-gray-900">${monthName}</h4>
+                                <span class="text-xs text-gray-500">${parseInt(salary.year) || ''}</span>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">${t('attendance.worked_days', 'Worked Days')}</span>
+                                    <span class="font-medium">${salary.worked_days || 0}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">${t('payment.overtime_rate', 'Overtime')}</span>
+                                    <span class="font-medium">${(salary.overtime_hours || 0).toFixed(1)}h</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">${t('salary.net_salary', 'Net Salary')}</span>
+                                    <span class="font-semibold da-currency">${formatCurrency(salary.net_salary || 0)} DA</span>
+                                </div>
+                                <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full text-white ${statusClass}">
+                                        ${salary.payment_status || t('status.not_paid', 'Not Paid')}
+                                    </span>
+                                    ${canView ? `
+                                        <button type="button" onclick="viewSalaryDetails(${monthNum}, ${parseInt(salary.year)})" 
+                                                class="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium text-blue-600 hover:bg-blue-50 transition-colors">
+                                            <i class="fas fa-eye"></i>
+                                            ${t('common.view', 'View')}
+                                        </button>
+                                    ` : `<span class="text-gray-400 text-xs">${t('common.not_available', 'N/A')}</span>`}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
         }
 
         function updateSummaryCards(data) {
@@ -777,10 +1543,11 @@
         function showLoading(show) {
             const loadingState = document.getElementById('loadingState');
             const tableBody = document.getElementById('salaryTableBody');
-            
+            const cardsContainer = document.getElementById('salaryCardView');
             if (show) {
                 loadingState.classList.remove('hidden');
                 tableBody.innerHTML = '';
+                if (cardsContainer) cardsContainer.innerHTML = '';
             } else {
                 loadingState.classList.add('hidden');
             }
@@ -1344,6 +2111,7 @@
         
         function displayPayslips(payslips) {
             const tableBody = document.getElementById('payslipsTableBody');
+            const cardContainer = document.getElementById('payslipsCardContainer');
             
             if (!payslips || payslips.length === 0) {
                 showPayslipsEmpty();
@@ -1368,24 +2136,25 @@
             const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                               'July', 'August', 'September', 'October', 'November', 'December'];
             
+            // Populate table view (desktop)
             tableBody.innerHTML = payslips.map(payslip => {
                 const statusClass = getPayslipStatusClass(payslip.status);
                 const monthName = monthNames[payslip.month - 1];
                 
                 return `
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td class="whitespace-nowrap text-sm font-medium text-gray-900">
                             ${monthName}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td class="whitespace-nowrap text-sm text-gray-900">
                             ${payslip.year}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="whitespace-nowrap">
                             <span class="status-badge ${statusClass}">
                                 ${getPayslipStatusText(payslip.status)}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td class="whitespace-nowrap text-sm text-gray-900">
                             ${payslip.payslip_id ? 
                                 `<a href="#" data-dl="${payslip.payslip_id}" class="text-blue-600 hover:text-blue-900 flex items-center">
                                     <i class="fas fa-download mr-2"></i>
@@ -1398,15 +2167,71 @@
                 `;
             }).join('');
             
-            // Add download event listeners
+            // Populate card view (mobile)
+            cardContainer.innerHTML = payslips.map(payslip => {
+                const statusClass = getPayslipStatusClass(payslip.status);
+                const monthName = monthNames[payslip.month - 1];
+                
+                return `
+                    <div class="payslip-card">
+                        <div class="payslip-card-header">
+                            <h4 class="payslip-card-title">${monthName}</h4>
+                            <span class="payslip-card-year">${payslip.year}</span>
+                        </div>
+                        <div class="payslip-card-content">
+                            <div class="payslip-card-row">
+                                <span class="payslip-card-label">${t('common.status', 'Status')}</span>
+                                <span class="payslip-card-value">
+                                    <span class="status-badge ${statusClass}">
+                                        ${getPayslipStatusText(payslip.status)}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="payslip-card-file">
+                                <div class="payslip-card-row">
+                                    <span class="payslip-card-label">${t('common.file', 'File')}</span>
+                                    <span class="payslip-card-value">
+                                        ${payslip.payslip_id ? 
+                                            `<a href="#" data-dl="${payslip.payslip_id}" class="text-blue-600 hover:text-blue-900 flex items-center">
+                                                <i class="fas fa-download mr-2"></i>
+                                                ${t('common.download', 'Download')}
+                                            </a>` : 
+                                            `<span class="text-gray-400 italic">${t('salary.not_uploaded', 'Not uploaded')}</span>`
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Add download event listeners for both table and cards
             addDownloadEventListeners();
             hidePayslipsEmpty();
         }
         
         function addDownloadEventListeners() {
             const tableBody = document.getElementById('payslipsTableBody');
+            const cardContainer = document.getElementById('payslipsCardContainer');
             
+            // Add listeners for table view
             tableBody.querySelectorAll('a[data-dl]').forEach(a => {
+                a.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    
+                    try {
+                        const payslipId = a.getAttribute('data-dl');
+                        await downloadPayslip(payslipId);
+                    } catch (error) {
+                        console.error('Download error:', error);
+                        Utils.showNotification('Failed to download payslip', 'error');
+                    }
+                });
+            });
+            
+            // Add listeners for card view
+            cardContainer.querySelectorAll('a[data-dl]').forEach(a => {
                 a.addEventListener('click', async (e) => {
                     e.preventDefault();
                     

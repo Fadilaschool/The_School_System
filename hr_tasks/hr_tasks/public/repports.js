@@ -879,7 +879,7 @@ function getEmployeePersonalStats(tasks, user) {
 
 
 // Vue responsable (tableau simple)
-function  FponsibleView(reportsWindow, filteredTasks, targetEmployeeId = null) {
+function generateResponsibleView(reportsWindow, filteredTasks, targetEmployeeId = null) {
     return `
         <!-- Onglets -->
         <div class="bg-white rounded-lg shadow-sm p-4 mb-6">

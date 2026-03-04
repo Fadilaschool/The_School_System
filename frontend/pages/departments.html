@@ -8,7 +8,418 @@
     <title id="pageTitle">Department Management - HR Operations Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
+    <style>
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
+        }
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+        }
+        .page-header {
+            text-align: center;
+            margin: 1.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .page-title i { color: #3b82f6; font-size: 1.5rem; }
+        .page-subtitle { font-size: 0.95rem; color: #64748b; margin: 0; font-weight: 500; }
+        .director-panel {
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 28px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .director-panel:hover { box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.15); }
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+        .director-section-pill {
+            padding: 0.15rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: rgba(15, 23, 42, 0.04);
+            color: #64748b;
+        }
+        .employee-info-card {
+            background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 100%);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 18px 35px rgba(67, 56, 202, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .employee-info-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.25), transparent 50%);
+            pointer-events: none;
+        }
+        .employee-info-content { position: relative; z-index: 1; }
+        .dept-table-wrap {
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+        }
+        .dept-table-wrap table { min-width: 100%; }
+        .dept-table-wrap thead { background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); }
+        .dept-table-wrap th {
+            padding: 1rem 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+        }
+        .dept-table-wrap td { padding: 1rem 1.25rem; border-top: 1px solid #e2e8f0; }
+        .dept-table-wrap tbody tr { transition: background 0.2s; }
+        .dept-table-wrap tbody tr:hover { background: rgba(248, 250, 252, 0.8); }
+        .btn-director-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-director-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        .btn-director-secondary {
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #475569;
+            transition: all 0.2s;
+        }
+        .btn-director-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
+        .input-director {
+            width: 100%;
+            padding: 0.625rem 1rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-director:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .dept-list-card {
+            border-radius: 16px;
+            padding: 1.25rem;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            background: #fff;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dept-list-card:hover {
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+        .dept-list-card.selected {
+            box-shadow: 0 0 0 2px #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(99, 102, 241, 0.04));
+        }
+        .modal-director {
+            border-radius: 24px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.15);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+        }
+        .modal-director .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        /* Mobile Responsive - Table to Cards - Matching Page Theme */
+        @media (max-width: 768px) {
+            /* Hide table headers on mobile */
+            .employees-table thead {
+                display: none;
+            }
+            
+            /* Convert table rows to cards matching director-panel style */
+            .employees-table tbody tr {
+                display: block;
+                background: var(--director-card-bg);
+                border-radius: 22px;
+                padding: 0;
+                margin-bottom: 24px;
+                box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+                border: 1px solid rgba(15, 23, 42, 0.06);
+                overflow: hidden;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            .employees-table tbody tr:hover {
+                box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.15);
+                transform: translateY(-2px);
+            }
+            
+            /* Header section with name - matching director-panel-header */
+            .employees-table tbody tr td:first-child {
+                display: block;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+                padding: 20px 28px;
+                border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+                margin-bottom: 0;
+            }
+            
+            .employees-table tbody tr td:first-child::before {
+                display: none;
+            }
+            
+            /* Name styling - matching director-panel-title */
+            .employees-table tbody tr td:first-child .flex {
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .employees-table tbody tr td:first-child .flex i {
+                width: 32px;
+                height: 32px;
+                background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+                color: white;
+                border-radius: 9999px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem;
+                flex-shrink: 0;
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            }
+            
+            .employees-table tbody tr td:first-child .flex div {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #1e293b;
+                line-height: 1.3;
+            }
+            
+            /* Content section - matching panel content style */
+            .employees-table tbody tr td:not(:first-child):not(:last-child) {
+                display: flex;
+                align-items: center;
+                padding: 16px 28px;
+                border-bottom: 1px solid #e2e8f0;
+                margin-bottom: 0;
+                position: relative;
+                background: rgba(248, 250, 252, 0.5);
+                transition: background 0.2s;
+            }
+            
+            .employees-table tbody tr td:not(:first-child):not(:last-child):hover {
+                background: rgba(248, 250, 252, 0.8);
+            }
+            
+            .employees-table tbody tr td:not(:first-child):not(:last-child)::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 28px;
+                top: 8px;
+                font-size: 0.7rem;
+                font-weight: 500;
+                color: #64748b;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+            
+            .employees-table tbody tr td:not(:first-child):not(:last-child) div {
+                padding-top: 20px;
+                font-size: 0.875rem;
+                color: #374151;
+                font-weight: 500;
+                line-height: 1.4;
+            }
+            
+            /* Icons for fields - matching theme colors */
+            .employees-table tbody tr td[data-label="Email"] {
+                padding-left: 60px;
+            }
+            
+            .employees-table tbody tr td[data-label="Email"]::after {
+                content: '✉';
+                position: absolute;
+                left: 28px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #3b82f6;
+                font-size: 1rem;
+            }
+            
+            .employees-table tbody tr td[data-label="Phone"] {
+                padding-left: 60px;
+            }
+            
+            .employees-table tbody tr td[data-label="Phone"]::after {
+                content: '📞';
+                position: absolute;
+                left: 28px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #3b82f6;
+                font-size: 1rem;
+            }
+            
+            .employees-table tbody tr td[data-label="Position"] {
+                padding-left: 60px;
+            }
+            
+            .employees-table tbody tr td[data-label="Position"]::after {
+                content: '💼';
+                position: absolute;
+                left: 28px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #3b82f6;
+                font-size: 1rem;
+            }
+            
+            /* Action button section - matching btn-director-primary style */
+            .employees-table tbody tr td:last-child {
+                display: block;
+                padding: 20px 28px;
+                background: linear-gradient(135deg, rgba(248, 250, 252, 0.8), rgba(241, 245, 249, 0.9));
+                margin-bottom: 0;
+                border-top: 1px solid rgba(15, 23, 42, 0.06);
+            }
+            
+            .employees-table tbody tr td:last-child::before {
+                display: none;
+            }
+            
+            .employees-table tbody tr td:last-child button {
+                width: 100%;
+                padding: 0.5rem 1.25rem;
+                background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                font-size: 0.875rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            }
+            
+            .employees-table tbody tr td:last-child button:hover {
+                background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            }
+            
+            /* Responsible employee highlight - matching theme */
+            .employees-table tbody tr.bg-blue-50\/50 {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+            }
+            
+            .employees-table tbody tr.bg-blue-50\/50 td:first-child {
+                background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            }
+            
+            .employees-table tbody tr.bg-blue-50\/50 td:first-child .flex i {
+                background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .employees-table tbody tr {
+                margin-bottom: 20px;
+                border-radius: 18px;
+                padding: 0;
+            }
+            
+            .employees-table tbody tr td:first-child {
+                padding: 16px 20px;
+            }
+            
+            .employees-table tbody tr td:not(:first-child):not(:last-child) {
+                padding: 12px 20px;
+            }
+            
+            .employees-table tbody tr td:not(:first-child):not(:last-child)::before {
+                left: 20px;
+                top: 6px;
+                font-size: 0.65rem;
+            }
+            
+            .employees-table tbody tr td[data-label="Email"]::after,
+            .employees-table tbody tr td[data-label="Phone"]::after,
+            .employees-table tbody tr td[data-label="Position"]::after {
+                left: 20px;
+            }
+            
+            .employees-table tbody tr td[data-label="Email"],
+            .employees-table tbody tr td[data-label="Phone"],
+            .employees-table tbody tr td[data-label="Position"] {
+                padding-left: 52px;
+            }
+            
+            .employees-table tbody tr td:last-child {
+                padding: 16px 20px;
+            }
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
     <div class="flex h-screen">
@@ -120,57 +531,74 @@
             </header>
 
             <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto p-6">
+            <main class="flex-1 overflow-y-auto">
+                <!-- Page Header (shared) -->
+                <div class="page-header mb-6 p-6">
+                    <h1 class="page-title" data-translate="nav.departments">
+                        <i class="fas fa-building"></i>
+                        <span id="pageHeaderTitle">Departments</span>
+                    </h1>
+                    <p class="page-subtitle" id="pageHeaderSubtitle" data-translate="department.manage_departments">Manage departments and assign responsibles</p>
+                </div>
+
                 <!-- Responsible View (View-Only) -->
-                <div id="responsibleView" class="hidden">
+                <div id="responsibleView" class="hidden p-6">
                     <!-- Department Info Card -->
-                    <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-lg p-6 mb-6 text-white">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-4">
-                                <div class="h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
-                                    <i class="fas fa-building text-3xl"></i>
-                                </div>
-                                <div>
-                                    <h2 id="deptInfoName" class="text-2xl font-bold mb-1" data-translate="common.loading">Loading...</h2>
-                                    <div class="flex flex-wrap gap-4 text-sm">
-                                        <span id="deptInfoEmployees" class="flex items-center gap-2">
-                                            <i class="fas fa-users"></i>
-                                            <span data-translate="common.loading">Loading...</span>
-                                        </span>
+                    <div class="employee-info-card text-white mb-6">
+                        <div class="employee-info-content">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="h-16 w-16 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-building text-3xl"></i>
+                                    </div>
+                                    <div>
+                                        <h2 id="deptInfoName" class="text-2xl font-bold mb-1" data-translate="common.loading">Loading...</h2>
+                                        <div class="flex flex-wrap gap-4 text-sm text-white/90">
+                                            <span id="deptInfoEmployees" class="flex items-center gap-2">
+                                                <i class="fas fa-users"></i>
+                                                <span data-translate="common.loading">Loading...</span>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-sm opacity-90" data-translate="department.responsible">Department Responsible</div>
-                                <div class="text-lg font-semibold" id="deptInfoResponsible" data-translate="common.you">You</div>
+                                <div class="text-left sm:text-right">
+                                    <div class="text-sm text-white/80" data-translate="department.responsible">Department Responsible</div>
+                                    <div class="text-lg font-semibold" id="deptInfoResponsible" data-translate="common.you">You</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Employees Table -->
-                    <div class="bg-white rounded-lg shadow-sm">
-                        <div class="p-6 border-b">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-semibold text-gray-900" data-translate="department.employees">Department Employees</h3>
-                                <input type="text" id="employeeSearch" data-translate-placeholder="common.search_employees" placeholder="Search employees..." 
-                                       class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                    <div class="director-panel">
+                        <div class="director-panel-header flex-wrap gap-4">
+                            <div class="director-panel-title">
+                                <div class="director-panel-title-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900" data-translate="department.employees">Department Employees</h3>
+                                    <p class="text-xs text-gray-500 mt-0.5" data-translate="department.view_team">View your team members</p>
+                                </div>
                             </div>
+                            <input type="text" id="employeeSearch" data-translate-placeholder="common.search_employees" placeholder="Search employees..." 
+                                   class="input-director max-w-xs">
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+                        <div class="overflow-x-auto dept-table-wrap">
+                            <table class="employees-table">
+                                <thead>
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="employee.employee">Employee</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="employee.position">Position</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="employee.email">Email</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="employee.phone">Phone</th>
-                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="common.actions">Actions</th>
+                                        <th class="text-left" data-translate="employee.employee">Employee</th>
+                                        <th class="text-left" data-translate="employee.position">Position</th>
+                                        <th class="text-left" data-translate="employee.email">Email</th>
+                                        <th class="text-left" data-translate="employee.phone">Phone</th>
+                                        <th class="text-right" data-translate="common.actions">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="employeesTableBody" class="bg-white divide-y divide-gray-200">
+                                <tbody id="employeesTableBody">
                                     <tr>
-                                        <td colspan="5" class="px-6 py-8 text-center text-gray-500">
-                                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                        <td colspan="5" class="text-center py-8 text-gray-500">
+                                            <i class="fas fa-spinner fa-spin text-2xl mb-2 block"></i>
                                             <p data-translate="common.loading_employees">Loading employees...</p>
                                         </td>
                                     </tr>
@@ -185,28 +613,28 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <!-- Departments List -->
                         <div class="lg:col-span-2">
-                            <div class="bg-white rounded-lg shadow-sm">
-                                <div class="p-6 border-b">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <h3 class="text-lg font-semibold text-gray-900" data-translate="nav.departments">Departments</h3>
-                                        <button onclick="showAddDepartmentModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                                            <i class="fas fa-plus mr-2"></i>
-                                            <span data-translate="department.add_department">Add Department</span>
-                                        </button>
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <input type="text" id="departmentSearch" data-translate-placeholder="common.search_departments" placeholder="Search departments..." 
-                                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    </div>
-                                </div>
-                                
-                                <div class="p-6">
-                                    <div id="departmentsList" class="space-y-4">
-                                        <div class="text-center py-8 text-gray-500">
-                                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                                            <p>Loading departments...</p>
+                            <div class="director-panel">
+                                <div class="director-panel-header flex-wrap gap-4">
+                                    <div class="director-panel-title">
+                                        <div class="director-panel-title-icon">
+                                            <i class="fas fa-building"></i>
                                         </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-900" data-translate="nav.departments">Departments</h3>
+                                            <p class="text-xs text-gray-500 mt-0.5" data-translate="department.all_departments">All departments</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="showAddDepartmentModal()" class="btn-director-primary">
+                                        <i class="fas fa-plus"></i>
+                                        <span data-translate="department.add_department">Add Department</span>
+                                    </button>
+                                </div>
+                                <input type="text" id="departmentSearch" data-translate-placeholder="common.search_departments" placeholder="Search departments..." 
+                                       class="input-director mb-4">
+                                <div id="departmentsList" class="space-y-3">
+                                    <div class="text-center py-8 text-gray-500">
+                                        <i class="fas fa-spinner fa-spin text-2xl mb-2 block"></i>
+                                        <p>Loading departments...</p>
                                     </div>
                                 </div>
                             </div>
@@ -214,14 +642,22 @@
 
                         <!-- Department Details -->
                         <div class="lg:col-span-1">
-                            <div class="bg-white rounded-lg shadow-sm">
-                                <div class="p-6 border-b">
-                                    <h3 class="text-lg font-semibold text-gray-900" data-translate="department.details">Department Details</h3>
+                            <div class="director-panel">
+                                <div class="director-panel-header">
+                                    <div class="director-panel-title">
+                                        <div class="director-panel-title-icon">
+                                            <i class="fas fa-info-circle"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-900" data-translate="department.details">Department Details</h3>
+                                            <p class="text-xs text-gray-500 mt-0.5" data-translate="department.select_to_view">Select a department</p>
+                                        </div>
+                                    </div>
+                                    <span class="director-section-pill" data-translate="common.details">Details</span>
                                 </div>
-                                
-                                <div id="departmentDetails" class="p-6">
+                                <div id="departmentDetails">
                                     <div class="text-center py-8 text-gray-500">
-                                        <i class="fas fa-building text-4xl mb-2"></i>
+                                        <i class="fas fa-building text-4xl mb-2 block text-gray-300"></i>
                                         <p data-translate="department.select_to_view">Select a department to view details</p>
                                     </div>
                                 </div>
@@ -234,174 +670,129 @@
     </div>
 
     <!-- Add Department Modal -->
-    <div id="addDepartmentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg max-w-md w-full">
-                <div class="p-6 border-b">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-gray-900" data-translate="department.add_department">Add New Department</h3>
-                        <button onclick="hideAddDepartmentModal()" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <form id="addDepartmentForm" class="p-6 space-y-4">
-                    <div>
-                        <label for="departmentName" class="block text-sm font-medium text-gray-700 mb-2" data-translate="department.name">Department Name *</label>
-                        <input type="text" id="departmentName" name="name" required 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    
-                    <div>
-                        <label for="responsibleId" class="block text-sm font-medium text-gray-700 mb-2" data-translate="department.responsible">Department Responsible</label>
-                        <select id="responsibleId" name="responsible_id" 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="" data-translate="common.select_responsible">Select Responsible</option>
-                        </select>
-                    </div>
-
-                    <div id="addDepartmentError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                        <div class="flex">
-                            <i class="fas fa-exclamation-circle mr-2 mt-0.5"></i>
-                            <span id="addDepartmentErrorText"></span>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end space-x-4 pt-4">
-                        <button type="button" onclick="hideAddDepartmentModal()" 
-                                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                            <span data-translate="common.cancel">Cancel</span>
-                        </button>
-                        <button type="submit" id="addDepartmentSubmit" 
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-plus mr-2"></i>
-                            <span data-translate="department.add_department">Add Department</span>
-                        </button>
-                    </div>
-                </form>
+    <div id="addDepartmentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white modal-director max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="modal-header flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900" data-translate="department.add_department">Add New Department</h3>
+                <button type="button" onclick="hideAddDepartmentModal()" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
+            <form id="addDepartmentForm" class="p-6 space-y-4">
+                <div>
+                    <label for="departmentName" class="block text-sm font-medium text-gray-700 mb-2" data-translate="department.name">Department Name *</label>
+                    <input type="text" id="departmentName" name="name" required class="input-director">
+                </div>
+                <div>
+                    <label for="responsibleId" class="block text-sm font-medium text-gray-700 mb-2" data-translate="department.responsible">Department Responsible</label>
+                    <select id="responsibleId" name="responsible_id" class="input-director">
+                        <option value="" data-translate="common.select_responsible">Select Responsible</option>
+                    </select>
+                </div>
+                <div id="addDepartmentError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-start gap-2">
+                    <i class="fas fa-exclamation-circle mt-0.5 flex-shrink-0"></i>
+                    <span id="addDepartmentErrorText"></span>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onclick="hideAddDepartmentModal()" class="btn-director-secondary">
+                        <span data-translate="common.cancel">Cancel</span>
+                    </button>
+                    <button type="submit" id="addDepartmentSubmit" class="btn-director-primary">
+                        <i class="fas fa-plus"></i>
+                        <span data-translate="department.add_department">Add Department</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- Edit Department Modal -->
-    <div id="editDepartmentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg max-w-md w-full">
-                <div class="p-6 border-b">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-gray-900" data-translate="common.edit_department">Edit Department</h3>
-                        <button onclick="hideEditDepartmentModal()" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <form id="editDepartmentForm" class="p-6 space-y-4">
-                    <input type="hidden" id="editDepartmentId" name="id">
-                    <div>
-                        <label for="editDepartmentName" class="block text-sm font-medium text-gray-700 mb-2" data-translate="department.name">Department Name *</label>
-                        <input type="text" id="editDepartmentName" name="name" required 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    
-                    <div>
-                        <label for="editResponsibleId" class="block text-sm font-medium text-gray-700 mb-2" data-translate="department.responsible">Department Responsible</label>
-                        <select id="editResponsibleId" name="responsible_id" 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="" data-translate="common.select_responsible">Select Responsible</option>
-                        </select>
-                    </div>
-
-                    <div id="editDepartmentError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                        <div class="flex">
-                            <i class="fas fa-exclamation-circle mr-2 mt-0.5"></i>
-                            <span id="editDepartmentErrorText"></span>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end space-x-4 pt-4">
-                        <button type="button" onclick="hideEditDepartmentModal()" 
-                                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                            <span data-translate="common.cancel">Cancel</span>
-                        </button>
-                        <button type="submit" id="editDepartmentSubmit" 
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-save mr-2"></i>
-                            <span data-translate="common.save_changes">Save Changes</span>
-                        </button>
-                    </div>
-                </form>
+    <div id="editDepartmentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white modal-director max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="modal-header flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900" data-translate="common.edit_department">Edit Department</h3>
+                <button type="button" onclick="hideEditDepartmentModal()" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
+            <form id="editDepartmentForm" class="p-6 space-y-4">
+                <input type="hidden" id="editDepartmentId" name="id">
+                <div>
+                    <label for="editDepartmentName" class="block text-sm font-medium text-gray-700 mb-2" data-translate="department.name">Department Name *</label>
+                    <input type="text" id="editDepartmentName" name="name" required class="input-director">
+                </div>
+                <div>
+                    <label for="editResponsibleId" class="block text-sm font-medium text-gray-700 mb-2" data-translate="department.responsible">Department Responsible</label>
+                    <select id="editResponsibleId" name="responsible_id" class="input-director">
+                        <option value="" data-translate="common.select_responsible">Select Responsible</option>
+                    </select>
+                </div>
+                <div id="editDepartmentError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-start gap-2">
+                    <i class="fas fa-exclamation-circle mt-0.5 flex-shrink-0"></i>
+                    <span id="editDepartmentErrorText"></span>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onclick="hideEditDepartmentModal()" class="btn-director-secondary">
+                        <span data-translate="common.cancel">Cancel</span>
+                    </button>
+                    <button type="submit" id="editDepartmentSubmit" class="btn-director-primary">
+                        <i class="fas fa-save"></i>
+                        <span data-translate="common.save_changes">Save Changes</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- Employee Details Modal -->
-    <div id="employeeDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                <div class="p-6 border-b sticky top-0 bg-white z-10">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-gray-900" data-translate="employee.employee_details">Employee Details</h3>
-                        <button onclick="hideEmployeeDetailsModal()" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <div id="employeeDetailsContent" class="p-6">
-                    <div class="text-center py-8 text-gray-500">
-                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                        <p>Loading employee details...</p>
-                    </div>
+    <div id="employeeDetailsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white modal-director max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="modal-header flex items-center justify-between sticky top-0 bg-white z-10">
+                <h3 class="text-lg font-semibold text-gray-900" data-translate="employee.employee_details">Employee Details</h3>
+                <button type="button" onclick="hideEmployeeDetailsModal()" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="employeeDetailsContent" class="p-6">
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-spinner fa-spin text-2xl mb-2 block"></i>
+                    <p>Loading employee details...</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Assign Employee Modal -->
-    <div id="assignEmployeeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg max-w-md w-full">
-                <div class="p-6 border-b">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-gray-900" data-translate="department.assign_employee">Assign Employee to Department</h3>
-                        <button onclick="hideAssignEmployeeModal()" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <form id="assignEmployeeForm" class="p-6 space-y-4">
-                    <input type="hidden" id="assignDepartmentId" name="department_id">
-                    
-                    <div>
-                        <label for="assignEmployeeId" class="block text-sm font-medium text-gray-700 mb-2" data-translate="employee.select_employee">Select Employee *</label>
-                        <select id="assignEmployeeId" name="employee_id" required 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="" data-translate="employee.select_employee">Select Employee</option>
-                        </select>
-                    </div>
-
-                    <div id="assignEmployeeError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                        <div class="flex">
-                            <i class="fas fa-exclamation-circle mr-2 mt-0.5"></i>
-                            <span id="assignEmployeeErrorText"></span>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end space-x-4 pt-4">
-                        <button type="button" onclick="hideAssignEmployeeModal()" 
-                                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                            <span data-translate="common.cancel">Cancel</span>
-                        </button>
-                        <button type="submit" id="assignEmployeeSubmit" 
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-user-plus mr-2"></i>
-                            <span data-translate="department.assign_employee">Assign Employee</span>
-                        </button>
-                    </div>
-                </form>
+    <div id="assignEmployeeModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white modal-director max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="modal-header flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900" data-translate="department.assign_employee">Assign Employee to Department</h3>
+                <button type="button" onclick="hideAssignEmployeeModal()" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
+            <form id="assignEmployeeForm" class="p-6 space-y-4">
+                <input type="hidden" id="assignDepartmentId" name="department_id">
+                <div>
+                    <label for="assignEmployeeId" class="block text-sm font-medium text-gray-700 mb-2" data-translate="employee.select_employee">Select Employee *</label>
+                    <select id="assignEmployeeId" name="employee_id" required class="input-director">
+                        <option value="" data-translate="employee.select_employee">Select Employee</option>
+                    </select>
+                </div>
+                <div id="assignEmployeeError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-start gap-2">
+                    <i class="fas fa-exclamation-circle mt-0.5 flex-shrink-0"></i>
+                    <span id="assignEmployeeErrorText"></span>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onclick="hideAssignEmployeeModal()" class="btn-director-secondary">
+                        <span data-translate="common.cancel">Cancel</span>
+                    </button>
+                    <button type="submit" id="assignEmployeeSubmit" class="btn-director-primary">
+                        <i class="fas fa-user-plus"></i>
+                        <span data-translate="department.assign_employee">Assign Employee</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -451,7 +842,10 @@
                 document.getElementById('responsibleView').classList.remove('hidden');
                 document.getElementById('hrManagerView').classList.add('hidden');
                 document.getElementById('pageTitle').textContent = 'My Department - HR Operations Platform';
-                // Hide edit/add buttons in sidebar if needed
+                const titleEl = document.getElementById('pageHeaderTitle');
+                const subEl = document.getElementById('pageHeaderSubtitle');
+                if (titleEl) titleEl.textContent = typeof translate === 'function' ? (translate('department.my_department') || 'My Department') : 'My Department';
+                if (subEl) subEl.setAttribute('data-translate', 'department.view_team');
                 await loadResponsibleDepartment();
             } else {
                 isResponsibleView = false;
@@ -619,26 +1013,26 @@
                 const isResponsible = currentDepartment && String(emp.id) === String(currentDepartment.responsible_id);
 
                 return `
-                    <tr class="hover:bg-gray-50 ${isResponsible ? 'bg-blue-50' : ''}">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                    <tr class="${isResponsible ? 'bg-blue-50/50' : ''}">
+                        <td class="px-6 py-4 whitespace-nowrap" data-label="Name">
                             <div class="flex items-center">
                                 ${isResponsible ? '<i class="fas fa-user-shield text-blue-600 mr-2"></i>' : ''}
                                 <div class="text-sm font-medium text-gray-900">${fullName}</div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4 whitespace-nowrap" data-label="Position">
                             <div class="text-sm text-gray-900">${position}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4 whitespace-nowrap" data-label="Email">
                             <div class="text-sm text-gray-900">${email}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4 whitespace-nowrap" data-label="Phone">
                             <div class="text-sm text-gray-900">${phone}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button onclick="viewEmployeeDetails('${emp.id}')" 
-                                    class="text-blue-600 hover:text-blue-900 inline-flex items-center">
-                                <i class="fas fa-eye mr-1"></i>${typeof translate === 'function' ? translate('tasks.view_details') : 'View Details'}
+                        <td class="px-6 py-4 whitespace-nowrap text-right" data-label="Actions">
+                            <button type="button" onclick="viewEmployeeDetails('${emp.id}')" 
+                                    class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-blue-600 hover:bg-blue-50 transition-colors">
+                                <i class="fas fa-eye"></i>${typeof translate === 'function' ? translate('tasks.view_details') : 'View Details'}
                             </button>
                         </td>
                     </tr>
@@ -791,11 +1185,11 @@
                 const noDeptsText = typeof translate === 'function' ? translate('department.no_departments_found') : 'No departments found';
                 const addFirstText = typeof translate === 'function' ? translate('department.add_first') : 'Add your first department';
                 container.innerHTML = `
-                    <div class="text-center py-8 text-gray-500">
-                        <i class="fas fa-building text-4xl mb-2"></i>
-                        <p>${noDeptsText}</p>
-                        <button onclick="showAddDepartmentModal()" class="mt-4 text-blue-600 hover:text-blue-800">
-                            <i class="fas fa-plus mr-2"></i>
+                    <div class="text-center py-10 text-gray-500">
+                        <i class="fas fa-building text-4xl mb-3 block text-gray-300"></i>
+                        <p class="font-medium text-gray-600">${noDeptsText}</p>
+                        <button type="button" onclick="showAddDepartmentModal()" class="btn-director-primary mt-4">
+                            <i class="fas fa-plus"></i>
                             ${addFirstText}
                         </button>
                     </div>
@@ -804,23 +1198,23 @@
             }
 
             container.innerHTML = departments.map(dept => `
-                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer ${selectedDepartmentId === dept.id ? 'ring-2 ring-blue-500 bg-blue-50' : ''}" 
+                <div class="dept-list-card cursor-pointer ${selectedDepartmentId === dept.id ? 'selected' : ''}" 
                      onclick="selectDepartment('${dept.id}')">
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <h4 class="font-medium text-gray-900">${dept.name}</h4>
-                            <p class="text-sm text-gray-600">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-semibold text-gray-900">${dept.name}</h4>
+                            <p class="text-sm text-gray-600 mt-0.5">
                                 ${dept.responsible_first_name ? `Responsible: ${dept.responsible_first_name} ${dept.responsible_last_name}` : 'No responsible assigned'}
                             </p>
-                            <p class="text-sm text-gray-500">${dept.employee_count || 0} employees</p>
+                            <p class="text-xs text-gray-500 mt-1">${dept.employee_count || 0} employees</p>
                         </div>
-                        <div class="flex space-x-2">
-                            <button onclick="event.stopPropagation(); editDepartment('${dept.id}')" 
-                                    class="text-blue-600 hover:text-blue-800" title="Edit">
+                        <div class="flex gap-2 flex-shrink-0">
+                            <button type="button" onclick="event.stopPropagation(); editDepartment('${dept.id}')" 
+                                    class="w-9 h-9 rounded-lg flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button onclick="event.stopPropagation(); deleteDepartment('${dept.id}', '${dept.name}')" 
-                                    class="text-red-600 hover:text-red-800" title="Delete">
+                            <button type="button" onclick="event.stopPropagation(); deleteDepartment('${dept.id}', '${dept.name}')" 
+                                    class="w-9 h-9 rounded-lg flex items-center justify-center text-red-600 hover:bg-red-50 transition-colors" title="Delete">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -933,39 +1327,37 @@
             const removeTitle = typeof translate === 'function' ? translate('department.remove_employee') : 'Remove from department';
             
             container.innerHTML = `
-                <div class="space-y-4">
+                <div class="space-y-5">
                     <div>
-                        <h4 class="font-medium text-gray-900 text-lg">${department.name}</h4>
-                        <p class="text-sm text-gray-600">
+                        <h4 class="font-semibold text-gray-900 text-lg">${department.name}</h4>
+                        <p class="text-sm text-gray-600 mt-1">
                             ${department.responsible_first_name ? `${responsibleLabel}: ${department.responsible_first_name} ${department.responsible_last_name}` : noResponsibleText}
                         </p>
                     </div>
-                    
                     <div>
                         <div class="flex items-center justify-between mb-3">
                             <h5 class="font-medium text-gray-900">${employeesLabel} (${department.employees?.length || 0})</h5>
-                            <button onclick="showAssignEmployeeModal('${department.id}')" 
-                                    class="text-blue-600 hover:text-blue-800 text-sm">
-                                <i class="fas fa-user-plus mr-1"></i>
+                            <button type="button" onclick="showAssignEmployeeModal('${department.id}')" 
+                                    class="btn-director-primary text-sm py-2">
+                                <i class="fas fa-user-plus"></i>
                                 ${assignText}
                             </button>
                         </div>
-                        
-                        <div class="space-y-2 max-h-64 overflow-y-auto">
+                        <div class="space-y-2 max-h-64 overflow-y-auto thin-scrollbar">
                             ${department.employees?.length > 0 ? 
                                 department.employees.map(emp => `
-                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                    <div class="flex items-center justify-between p-3 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors">
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm font-medium text-gray-900 truncate">${emp.first_name} ${emp.last_name}</div>
                                             <div class="text-xs text-gray-500 truncate">${emp.position_name || noPositionText}</div>
                                         </div>
-                                        <button onclick="removeEmployeeFromDepartment('${department.id}', '${emp.id}', '${emp.first_name} ${emp.last_name}')" 
-                                                class="text-red-600 hover:text-red-800 text-sm ml-2 flex-shrink-0" title="${removeTitle}">
+                                        <button type="button" onclick="removeEmployeeFromDepartment('${department.id}', '${emp.id}', '${emp.first_name} ${emp.last_name}')" 
+                                                class="w-8 h-8 rounded-lg flex items-center justify-center text-red-600 hover:bg-red-50 flex-shrink-0 transition-colors" title="${removeTitle}">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </div>
                                 `).join('') : 
-                                `<p class="text-sm text-gray-500 text-center py-4">${noEmployeesText}</p>`
+                                `<p class="text-sm text-gray-500 text-center py-6 rounded-xl border-2 border-dashed border-gray-200">${noEmployeesText}</p>`
                             }
                         </div>
                     </div>
@@ -1167,23 +1559,23 @@
             
             const container = document.getElementById('departmentsList');
             container.innerHTML = filteredDepartments.map(dept => `
-                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer ${selectedDepartmentId === dept.id ? 'ring-2 ring-blue-500 bg-blue-50' : ''}" 
+                <div class="dept-list-card cursor-pointer ${selectedDepartmentId === dept.id ? 'selected' : ''}" 
                      onclick="selectDepartment('${dept.id}')">
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <h4 class="font-medium text-gray-900">${dept.name}</h4>
-                            <p class="text-sm text-gray-600">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-semibold text-gray-900">${dept.name}</h4>
+                            <p class="text-sm text-gray-600 mt-0.5">
                                 ${dept.responsible_first_name ? `Responsible: ${dept.responsible_first_name} ${dept.responsible_last_name}` : 'No responsible assigned'}
                             </p>
-                            <p class="text-sm text-gray-500">${dept.employee_count || 0} employees</p>
+                            <p class="text-xs text-gray-500 mt-1">${dept.employee_count || 0} employees</p>
                         </div>
-                        <div class="flex space-x-2">
-                            <button onclick="event.stopPropagation(); editDepartment('${dept.id}')" 
-                                    class="text-blue-600 hover:text-blue-800" title="Edit">
+                        <div class="flex gap-2 flex-shrink-0">
+                            <button type="button" onclick="event.stopPropagation(); editDepartment('${dept.id}')" 
+                                    class="w-9 h-9 rounded-lg flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button onclick="event.stopPropagation(); deleteDepartment('${dept.id}', '${dept.name}')" 
-                                    class="text-red-600 hover:text-red-800" title="Delete">
+                            <button type="button" onclick="event.stopPropagation(); deleteDepartment('${dept.id}', '${dept.name}')" 
+                                    class="w-9 h-9 rounded-lg flex items-center justify-center text-red-600 hover:bg-red-50 transition-colors" title="Delete">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>

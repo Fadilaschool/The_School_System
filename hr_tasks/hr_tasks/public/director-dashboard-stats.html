@@ -1854,11 +1854,36 @@
             }
         })();
 
-        // Helper for translations
+        // Helper for translations - use same localStorage keys as frontend (language, lang)
+        function getCurrentLanguage() {
+            return localStorage.getItem('language') || localStorage.getItem('lang') || localStorage.getItem('preferredLanguage') || 'en';
+        }
         function getTranslation(key) {
             if (typeof translations === 'undefined') return key;
-            const lang = localStorage.getItem('preferredLanguage') || 'en';
-            return (translations[lang] && translations[lang][key]) ? translations[lang][key] : key;
+            const lang = getCurrentLanguage();
+            return (translations[lang] && translations[lang][key]) ? translations[lang][key] : (translations.en && translations.en[key]) ? translations.en[key] : key;
+        }
+        // Apply translations to all [data-translate] elements (page has no updatePageTranslations from frontend)
+        function applyPageTranslations() {
+            var lang = getCurrentLanguage();
+            if (document.documentElement) {
+                document.documentElement.setAttribute('lang', lang === 'ar' ? 'ar' : lang === 'fr' ? 'fr' : 'en');
+                document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            }
+            if (typeof window !== 'undefined') window.currentLanguage = lang;
+            document.querySelectorAll('[data-translate]').forEach(function (el) {
+                var key = el.getAttribute('data-translate');
+                if (!key) return;
+                var text = getTranslation(key);
+                if (text && text !== key) {
+                    if (el.tagName === 'TITLE') {
+                        document.title = text;
+                        el.textContent = text;
+                    } else {
+                        el.textContent = text;
+                    }
+                }
+            });
         }
 
         // Auth headers helper
@@ -2913,32 +2938,17 @@
             performanceContainer.innerHTML = html;
         }
 
-        // Language handling
+        // Language handling (sync with frontend keys: language, lang)
         document.getElementById('languageSelector')?.addEventListener('change', function () {
-            const selectedLang = this.value;
+            var selectedLang = this.value;
             localStorage.setItem('preferredLanguage', selectedLang);
+            localStorage.setItem('language', selectedLang);
+            localStorage.setItem('lang', selectedLang);
 
-            // Update HTML lang and dir attributes
-            document.documentElement.lang = selectedLang === 'ar' ? 'ar' : selectedLang === 'fr' ? 'fr' : 'en';
-            document.documentElement.dir = selectedLang === 'ar' ? 'rtl' : 'ltr';
+            applyPageTranslations();
+            if (typeof updateDateDisplay === 'function') updateDateDisplay(selectedLang);
 
-            // Update current language in window object for translations.js
-            if (typeof window !== 'undefined') {
-                window.currentLanguage = selectedLang;
-            }
-
-            // Update date display
-            updateDateDisplay(selectedLang);
-
-            // Update translations
-            setTimeout(() => {
-                if (typeof updatePageTranslations === 'function') {
-                    updatePageTranslations();
-                }
-
-                // Reload dashboard data to update dynamic content
-                loadDashboardData();
-            }, 50);
+            setTimeout(function () { loadDashboardData(); }, 50);
         });
 
         // Initialize on load
@@ -2960,19 +2970,13 @@
             // Load user data from AuthManager
             loadUserData();
 
-            // Set language first
-            const savedLang = localStorage.getItem('preferredLanguage') || 'en';
+            // Set language first (same keys as frontend: language, lang)
+            const savedLang = getCurrentLanguage();
             const langSelector = document.getElementById('languageSelector');
             if (langSelector) langSelector.value = savedLang;
 
-            // Update HTML lang and dir attributes
-            document.documentElement.lang = savedLang === 'ar' ? 'ar' : savedLang === 'fr' ? 'fr' : 'en';
-            document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
-
-            // Set current language in window object for translations.js
-            if (typeof window !== 'undefined') {
-                window.currentLanguage = savedLang;
-            }
+            // Apply translations and set HTML lang/dir
+            applyPageTranslations();
 
             // Set current date with proper locale and Western numerals
             updateDateDisplay(savedLang);
@@ -2980,14 +2984,30 @@
             // Load data
             loadDashboardData();
 
-            // Update translations - use setTimeout to ensure translations.js is fully loaded
+            // Apply translations again after a short delay (in case DOM was not fully ready)
             setTimeout(() => {
-                if (typeof updatePageTranslations === 'function') {
-                    updatePageTranslations();
-                } else {
-                    console.error('updatePageTranslations function not found');
-                }
+                applyPageTranslations();
             }, 100);
+
+            // When language changes in parent (or same tab), re-apply translations
+            window.addEventListener('storage', function (e) {
+                if (e.key === 'language' || e.key === 'lang' || e.key === 'preferredLanguage') {
+                    if (typeof updateDateDisplay === 'function') updateDateDisplay(getCurrentLanguage());
+                    applyPageTranslations();
+                }
+            });
+            // When embedded in frontend iframe, parent can postMessage to sync language
+            window.addEventListener('message', function (e) {
+                if (e.data && (e.data.type === 'languageChanged' || e.data.language)) {
+                    var lang = e.data.language || e.data.lang;
+                    if (lang) {
+                        localStorage.setItem('language', lang);
+                        localStorage.setItem('lang', lang);
+                        if (typeof updateDateDisplay === 'function') updateDateDisplay(lang);
+                        applyPageTranslations();
+                    }
+                }
+            });
 
             // Refresh data every 30 seconds
             setInterval(loadDashboardData, 30000);

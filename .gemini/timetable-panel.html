@@ -1,0 +1,77 @@
+<!-- My Timetable Panel -->
+<div class="director-panel mb-8 p-6">
+    <div class="director-panel-header">
+        <div class="director-panel-title">
+            <div class="director-panel-title-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900">My Schedule</h3>
+                <p class="text-xs text-gray-500 mt-0.5">View your work schedule</p>
+            </div>
+        </div>
+        <span class="director-section-pill">Timetable</span>
+    </div>
+
+    <div id="scheduleContent">
+        <!-- Loading state -->
+        <div id="scheduleLoading" class="text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p class="mt-2 text-gray-600">Loading schedule...</p>
+        </div>
+
+        <!-- Schedule display -->
+        <div id="scheduleDisplay" class="hidden">
+            <!-- Schedule summary -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="report-stat-card-inline"
+                    style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));">
+                    <div class="report-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="report-stat-content">
+                        <p class="report-stat-label">Total Days</p>
+                        <p id="scheduleTotalDays" class="report-stat-value">0</p>
+                    </div>
+                </div>
+
+                <div class="report-stat-card-inline"
+                    style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));">
+                    <div class="report-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="report-stat-content">
+                        <p class="report-stat-label">Total Hours</p>
+                        <p id="scheduleTotalHours" class="report-stat-value">0h</p>
+                    </div>
+                </div>
+
+                <div class="report-stat-card-inline"
+                    style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.05));">
+                    <div class="report-stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <div class="report-stat-content">
+                        <p class="report-stat-label">This Week</p>
+                        <p id="scheduleThisWeek" class="report-stat-value">0 days</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View full schedule button -->
+            <div class="text-center">
+                <a href="timetable.html"
+                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    <span>View Full Schedule</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- No schedule message -->
+        <div id="scheduleEmpty" class="hidden text-center py-8">
+            <i class="fas fa-calendar-times text-gray-400 text-4xl mb-3"></i>
+            <p class="text-gray-600">No schedule found for this period</p>
+        </div>
+    </div>
+</div>

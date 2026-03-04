@@ -101,17 +101,37 @@ class AuthManager {
         }
 
         try {
+            // Add timeout to prevent hanging requests
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
             const response = await fetch(`${AUTH_API_BASE_URL}/auth/verify`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
                 },
+                signal: controller.signal
             });
 
+            clearTimeout(timeoutId);
+
+            // Check if response is ok before parsing
+            if (!response.ok) {
+                // Only log if it's not a 401 (which is expected for invalid tokens)
+                if (response.status !== 401) {
+                    console.warn('Token verification failed with status:', response.status);
+                }
+                return false;
+            }
+
             const data = await response.json();
-            return data.valid;
+            return data.valid || false;
         } catch (error) {
-            console.error('Token verification error:', error);
+            // Don't log network errors as they're expected when auth service is unavailable
+            // Only log unexpected errors
+            if (error.name !== 'AbortError' && !error.message?.includes('Failed to fetch')) {
+                console.error('Token verification error:', error);
+            }
             return false;
         }
     }
@@ -220,14 +240,15 @@ class AuthManager {
                 });
                 if (retryResponse.status === 401) {
                     // Still 401, token is truly invalid
-                    this.logout();
-                    throw new Error('Authentication required');
+                    // Don't logout immediately - let the calling code handle it
+                    // This allows for better error messages and user experience
+                    throw new Error('Authentication required. Please log in again.');
                 }
                 return retryResponse;
             }
-            // Token expired or invalid
-            this.logout();
-            throw new Error('Authentication required');
+            // Token expired or invalid - but don't logout immediately
+            // Let the calling code decide what to do (show error, redirect, etc.)
+            throw new Error('Authentication required. Please log in again.');
         }
 
         return response;

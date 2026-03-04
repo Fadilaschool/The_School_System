@@ -6,8 +6,148 @@
     <title>Profile - HR Operations Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
-    
+    <style>
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
+        }
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+        }
+        .page-header-profile {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .page-header-profile .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .page-header-profile .page-title i { color: #3b82f6; font-size: 1.75rem; }
+        .page-header-profile .page-subtitle { font-size: 1rem; color: #64748b; margin: 0; font-weight: 500; }
+        .director-panel-profile {
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 28px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .director-panel-profile::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(37, 99, 235, 0.06), rgba(124, 58, 237, 0.04));
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .director-panel-profile:hover { box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08); }
+        .director-panel-profile > * { position: relative; z-index: 1; }
+        .director-panel-header {
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+        .profile-input, .profile-select, .profile-textarea {
+            border-radius: 12px;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            padding: 0.75rem 1rem;
+            transition: all 0.2s ease;
+        }
+        .profile-input:focus, .profile-select:focus, .profile-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .btn-profile-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-profile-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+        .btn-profile-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-profile-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            background: rgba(248, 250, 252, 0.9);
+            color: #475569;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-profile-secondary:hover {
+            background: rgba(241, 245, 249, 1);
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+        .btn-profile-green {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .btn-profile-green:hover { background: linear-gradient(135deg, #059669, #047857); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35); }
+        .btn-profile-gray {
+            background: linear-gradient(135deg, #4b5563, #374151);
+            color: white;
+        }
+        .btn-profile-gray:hover { background: linear-gradient(135deg, #374151, #1f2937); }
+    </style>
 </head>
 <body class="bg-gray-50">
     <!-- The reusable navbar will be automatically inserted here -->
@@ -15,22 +155,21 @@
     <!-- Main Content -->
     <div class="main-content flex-1 flex flex-col overflow-hidden">
         <!-- Content -->
-        <main class="flex-1 overflow-y-auto p-6">
-                <div class="max-w-4xl mx-auto">
-                    <!-- Page Header -->
-                    <div class="mb-6">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h1 class="text-2xl font-bold text-gray-900" data-translate="profile.title">Profile</h1>
-                                <p class="text-gray-600" data-translate="profile.description">Manage your personal information and account settings</p>
-                            </div>
-                        </div>
+        <main class="flex-1 overflow-y-auto">
+                <div class="w-full p-6">
+                    <!-- Page Header (director style) -->
+                    <div class="page-header-profile mb-6">
+                        <h1 class="page-title" data-translate="profile.title">
+                            <i class="fas fa-user-circle"></i>
+                            Profile
+                        </h1>
+                        <p class="page-subtitle" data-translate="profile.description">Manage your personal information and account settings</p>
                     </div>
 
                     <!-- Loading Indicator -->
                     <div id="loadingIndicator" class="text-center py-8">
-                        <i class="fas fa-spinner fa-spin text-2xl text-blue-600"></i>
-                        <p class="mt-2 text-gray-600" data-translate="profile.loading">Loading profile...</p>
+                        <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                        <p class="mt-3 text-gray-600 font-medium" data-translate="profile.loading">Loading profile...</p>
                     </div>
 
                     <!-- Profile Content -->
@@ -38,12 +177,12 @@
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <!-- Profile Picture and Basic Info -->
                             <div class="lg:col-span-1">
-                                <div class="bg-white rounded-lg shadow-sm p-6">
+                                <div class="director-panel-profile p-6">
                                     <div class="text-center">
                                         <div class="relative inline-block">
                                             <img id="profileImage" class="h-32 w-32 rounded-full object-cover mx-auto" 
                                                  src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjNkI3MjgwIi8+CjxjaXJjbGUgY3g9Ijc1IiBjeT0iNTYiIHI9IjI4IiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMjYgMTEwQzM4IDEwNSA1NSAxMDUgNzUgMTA1Qzk1IDEwNSAxMTIgMTA1IDEyNCAxMTAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIvPgo8L3N2Zz4K" alt="Profile Picture">
-                                            <button id="changePhotoBtn" type="button" class="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 hover:bg-blue-700 transition-colors">
+                                            <button id="changePhotoBtn" type="button" class="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2.5 shadow-lg hover:bg-blue-700 hover:scale-105 transition-all duration-200">
                                                 <i class="fas fa-camera text-sm"></i>
                                             </button>
                                             <input type="file" id="photoInput" accept="image/*" class="hidden">
@@ -73,63 +212,52 @@
 
                             <!-- Profile Form -->
                             <div class="lg:col-span-2">
-                                <div class="bg-white rounded-lg shadow-sm">
-                                    <div class="px-6 py-4 border-b border-gray-200">
-                                        <h3 class="text-lg font-medium text-gray-900" data-translate="profile.personal_information">Personal Information</h3>
+                                <div class="director-panel-profile">
+                                    <div class="director-panel-header">
+                                        <h3 class="director-panel-title" data-translate="profile.personal_information">
+                                            <span class="director-panel-title-icon"><i class="fas fa-user"></i></span>
+                                            Personal Information
+                                        </h3>
                                     </div>
                                     
-                                    <form id="profileForm" class="p-6">
+                                    <form id="profileForm" class="p-0">
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <!-- Personal Information -->
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="employee.first_name">First Name *</label>
-                                                <input type="text" id="firstName" name="first_name" required 
-                                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <input type="text" id="firstName" name="first_name" required class="w-full profile-input">
                                             </div>
-                                            
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="employee.last_name">Last Name *</label>
-                                                <input type="text" id="lastName" name="last_name" required 
-                                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <input type="text" id="lastName" name="last_name" required class="w-full profile-input">
                                             </div>
-                                            
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="employee.email">Email *</label>
-                                                <input type="email" id="email" name="email" required 
-                                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <input type="email" id="email" name="email" required class="w-full profile-input">
                                             </div>
-                                            
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="employee.phone">Phone</label>
-                                                <input type="tel" id="phone" name="phone" 
-                                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <input type="tel" id="phone" name="phone" class="w-full profile-input">
                                             </div>
-                                            
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="employee.birth_date">Date of Birth</label>
-                                                <input type="date" id="birthDate" name="birth_date" 
-                                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <input type="date" id="birthDate" name="birth_date" class="w-full profile-input">
                                             </div>
-                                            
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="employee.gender">Gender</label>
-                                                <select id="gender" name="gender" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <select id="gender" name="gender" class="w-full profile-select">
                                                     <option value="" data-translate="employee.select_gender">Select Gender</option>
                                                     <option value="Male" data-translate="employee.male">Male</option>
                                                     <option value="Female" data-translate="employee.female">Female</option>
                                                     <option value="Other" data-translate="employee.other">Other</option>
                                                 </select>
                                             </div>
-                                            
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="employee.nationality">Nationality</label>
-                                                <input type="text" id="nationality" name="nationality" 
-                                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <input type="text" id="nationality" name="nationality" class="w-full profile-input">
                                             </div>
-                                            
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="employee.marital_status">Marital Status</label>
-                                                <select id="maritalStatus" name="marital_status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <select id="maritalStatus" name="marital_status" class="w-full profile-select">
                                                     <option value="" data-translate="employee.select_status">Select Status</option>
                                                     <option value="Single" data-translate="employee.single">Single</option>
                                                     <option value="Married" data-translate="employee.married">Married</option>
@@ -138,16 +266,13 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        
                                         <div class="mt-6">
                                             <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="employee.address">Address</label>
-                                            <textarea id="address" name="address" rows="3" 
-                                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                            <textarea id="address" name="address" rows="3" class="w-full profile-input profile-textarea"></textarea>
                                         </div>
-                                        
                                         <div class="flex justify-end mt-6">
-                                            <button type="submit" id="saveButton" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                                                <i class="fas fa-save mr-2"></i>
+                                            <button type="submit" id="saveButton" class="btn-profile-primary">
+                                                <i class="fas fa-save"></i>
                                                 <span id="saveButtonText" data-translate="profile.save_changes">Save Changes</span>
                                             </button>
                                         </div>
@@ -157,18 +282,20 @@
                         </div>
 
                         <!-- Security Settings -->
-                        <div class="mt-6 bg-white rounded-lg shadow-sm">
-                            <div class="px-6 py-4 border-b border-gray-200">
-                                <h3 class="text-lg font-medium text-gray-900" data-translate="profile.security_settings">Security Settings</h3>
+                        <div class="mt-6 director-panel-profile">
+                            <div class="director-panel-header">
+                                <h3 class="director-panel-title" data-translate="profile.security_settings">
+                                    <span class="director-panel-title-icon"><i class="fas fa-shield-alt"></i></span>
+                                    Security Settings
+                                </h3>
                             </div>
-                            
-                            <div class="p-6">
+                            <div class="pt-0">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <h4 class="text-sm font-medium text-gray-900 mb-2" data-translate="profile.change_password">Change Password</h4>
                                         <p class="text-sm text-gray-600 mb-4" data-translate="profile.update_password_secure">Update your password to keep your account secure</p>
-                                        <button id="changePasswordBtn" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-                                            <i class="fas fa-key mr-2"></i>
+                                        <button id="changePasswordBtn" type="button" class="btn-profile-primary btn-profile-gray">
+                                            <i class="fas fa-key"></i>
                                             <span data-translate="profile.change_password_btn">Change Password</span>
                                         </button>
                                     </div>
@@ -186,25 +313,26 @@
                         </div>
 
                         <!-- Preferences -->
-                        <div class="mt-6 bg-white rounded-lg shadow-sm">
-                            <div class="px-6 py-4 border-b border-gray-200">
-                                <h3 class="text-lg font-medium text-gray-900" data-translate="profile.preferences">Preferences</h3>
+                        <div class="mt-6 director-panel-profile">
+                            <div class="director-panel-header">
+                                <h3 class="director-panel-title" data-translate="profile.preferences">
+                                    <span class="director-panel-title-icon"><i class="fas fa-cog"></i></span>
+                                    Preferences
+                                </h3>
                             </div>
-                            
-                            <div class="p-6">
+                            <div class="pt-0">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="profile.language">Language</label>
-                                        <select id="languagePreference" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <select id="languagePreference" class="w-full profile-select">
                                             <option value="en">English</option>
                                             <option value="fr">Français</option>
                                             <option value="ar">العربية</option>
                                         </select>
                                     </div>
-                                    
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Theme</label>
-                                        <select id="themePreference" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <select id="themePreference" class="w-full profile-select">
                                             <option value="light">Light</option>
                                             <option value="dark">Dark</option>
                                             <option value="auto">Auto</option>
@@ -231,8 +359,8 @@
                                 </div>
                                 
                                 <div class="flex justify-end mt-6">
-                                    <button id="savePreferencesBtn" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                                        <i class="fas fa-save mr-2"></i>
+                                    <button id="savePreferencesBtn" type="button" class="btn-profile-primary btn-profile-green">
+                                        <i class="fas fa-save"></i>
                                         <span data-translate="profile.save_changes">Save Preferences</span>
                                     </button>
                                 </div>
@@ -245,62 +373,50 @@
     </div>
 
     <!-- Change Password Modal -->
-    <div id="changePasswordModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-gray-900" data-translate="profile.change_password">Change Password</h3>
-                        <button type="button" onclick="closeChangePasswordModal()" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times"></i>
-                        </button>
+    <div id="changePasswordModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm modal-backdrop hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-gray-200/80 overflow-hidden">
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2" data-translate="profile.change_password">
+                        <span class="director-panel-title-icon"><i class="fas fa-key"></i></span>
+                        Change Password
+                    </h3>
+                    <button type="button" onclick="closeChangePasswordModal()" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="changePasswordForm" class="p-6">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Current Password *</label>
+                        <input type="password" id="currentPassword" name="currentPassword" required class="w-full profile-input" placeholder="Enter your current password">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">New Password *</label>
+                        <input type="password" id="newPassword" name="newPassword" required minlength="6" class="w-full profile-input" placeholder="Enter your new password (min 6 characters)">
+                        <p class="text-xs text-gray-500 mt-1">Password must be at least 6 characters long</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password *</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6" class="w-full profile-input" placeholder="Confirm your new password">
                     </div>
                 </div>
-                
-                <form id="changePasswordForm" class="p-6">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Current Password *</label>
-                            <input type="password" id="currentPassword" name="currentPassword" required 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                   placeholder="Enter your current password">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">New Password *</label>
-                            <input type="password" id="newPassword" name="newPassword" required minlength="6"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                   placeholder="Enter your new password (min 6 characters)">
-                            <p class="text-xs text-gray-500 mt-1">Password must be at least 6 characters long</p>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password *</label>
-                            <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                   placeholder="Confirm your new password">
-                        </div>
+                <div id="passwordError" class="mt-4 hidden">
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl">
+                        <p class="text-sm text-red-700" id="passwordErrorText"></p>
                     </div>
-                    
-                    <div id="passwordError" class="mt-4 hidden">
-                        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
-                            <p class="text-sm text-red-700" id="passwordErrorText"></p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-end space-x-3 mt-6 pt-6 border-t border-gray-200">
-                        <button type="button" onclick="closeChangePasswordModal()" 
-                                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                            <span data-translate="common.cancel">Cancel</span>
-                        </button>
-                        <button type="submit" id="submitPasswordBtn" 
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                            <i class="fas fa-key mr-2"></i>
-                            <span id="submitPasswordBtnText" data-translate="profile.change_password_btn">Change Password</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-100">
+                    <button type="button" onclick="closeChangePasswordModal()" class="btn-profile-secondary">
+                        <span data-translate="common.cancel">Cancel</span>
+                    </button>
+                    <button type="submit" id="submitPasswordBtn" class="btn-profile-primary disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-key"></i>
+                        <span id="submitPasswordBtnText" data-translate="profile.change_password_btn">Change Password</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

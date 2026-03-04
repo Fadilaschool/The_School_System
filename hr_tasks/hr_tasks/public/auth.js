@@ -84,17 +84,37 @@ class AuthManager {
         }
 
         try {
+            // Add timeout to prevent hanging requests
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
             const response = await fetch(`${API_BASE_URL}/auth/verify`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
                 },
+                signal: controller.signal
             });
 
+            clearTimeout(timeoutId);
+
+            // Check if response is ok before parsing
+            if (!response.ok) {
+                // Only log if it's not a 401 (which is expected for invalid tokens)
+                if (response.status !== 401) {
+                    console.warn('Token verification failed with status:', response.status);
+                }
+                return false;
+            }
+
             const data = await response.json();
-            return data.valid;
+            return data.valid || false;
         } catch (error) {
-            console.error('Token verification error:', error);
+            // Don't log network errors as they're expected when auth service is unavailable
+            // Only log unexpected errors
+            if (error.name !== 'AbortError' && !error.message?.includes('Failed to fetch')) {
+                console.error('Token verification error:', error);
+            }
             return false;
         }
     }
@@ -132,7 +152,18 @@ class AuthManager {
         // Director role should redirect to frontend, not hr_tasks
         if (role === 'Director') {
             // Don't redirect if already on director dashboard or other director-specific pages
-            const directorPages = ['director-dashboard', 'director.html', 'reportdir.html', 'priorities.html', 'statistics.html', 'complaints_director.html', 'signals_responsible.html', 'director-systems.html', 'reports-director.html'];
+            const directorPages = [
+                'director-dashboard',
+                'director.html',
+                'reportdir.html',
+                'priorities.html',
+                'statistics.html',
+                'complaints_director.html',
+                'signals_responsible.html',
+                'parametres.html',
+                'director-systems.html',
+                'reports-director.html',
+            ];
             const isOnDirectorPage = directorPages.some(page => window.location.pathname.includes(page));
 
             if (!isOnDirectorPage) {

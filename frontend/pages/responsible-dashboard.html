@@ -1,15 +1,35 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Responsible Dashboard - HR Operations Platform</title>
 	<script src="https://cdn.tailwindcss.com"></script>
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+		rel="stylesheet">
 	<link href="../assets/css/style.css" rel="stylesheet">
 	<style>
-		/* Ensure header is positioned at the top without overlapping */
-		#dashboardHeader {
+		/* Director-themed base styles */
+		:root {
+			--director-indigo: #4338ca;
+			--director-blue: #2563eb;
+			--director-purple: #7c3aed;
+			--director-slate: #0f172a;
+			--director-card-bg: #ffffff;
+			--director-surface: #f8fafc;
+		}
+
+		body {
+			font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+			color: var(--director-slate);
+			background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+		}
+
+		/* Header / page-hero: same layout for all spaces (responsive rules in style.css) */
+		#dashboardHeader,
+		.page-hero {
 			position: relative !important;
 			top: 0 !important;
 			left: 0 !important;
@@ -20,66 +40,70 @@
 			z-index: 10;
 			flex-shrink: 0;
 		}
-		
+
 		#dashboardHeaderContainer,
-		.main-content > #dashboardHeader {
+		.main-content>#dashboardHeader,
+		.main-content> .page-hero {
 			margin: 0 !important;
 			padding: 0 !important;
 			width: 100% !important;
 			flex-shrink: 0 !important;
 		}
-		
+
 		/* Ensure main-content positions header correctly */
 		.main-content {
 			display: flex !important;
 			flex-direction: column !important;
 		}
-		
+
 		/* Ensure header container/header is at the very top */
-		.main-content > #dashboardHeaderContainer,
-		.main-content > #dashboardHeader {
+		.main-content>#dashboardHeaderContainer,
+		.main-content>#dashboardHeader,
+		.main-content> .page-hero {
 			order: -1;
 		}
-		
+
 		/* Ensure main content flows below header */
-		.main-content > main {
+		.main-content>main {
 			flex: 1 1 auto !important;
 			overflow-y: auto !important;
 			min-height: 0 !important;
 			width: 100% !important;
 		}
-		
+
 		/* Remove any margin/padding that might cause overlap */
 		body.bg-gray-50 {
 			margin: 0 !important;
 			padding-top: 0 !important;
 			padding-bottom: 0 !important;
 		}
-		
+
 		/* Ensure body height is correct */
-		html, body {
+		html,
+		body {
 			height: 100%;
 			overflow-x: hidden;
 		}
-		
+
 		/* Main content should fill available space */
 		.main-content {
 			height: 100vh;
 			margin-top: 0 !important;
 		}
-		
+
 		/* Account for sidebar width - more compatible approach */
-		body #collapsibleSidebar ~ .main-content,
+		body #collapsibleSidebar~.main-content,
 		body:has(#collapsibleSidebar) .main-content {
-			margin-left: 4rem; /* 64px for collapsed sidebar */
+			margin-left: 4rem;
+			/* 64px for collapsed sidebar */
 		}
-		
-		[dir="rtl"] body #collapsibleSidebar ~ .main-content,
+
+		[dir="rtl"] body #collapsibleSidebar~.main-content,
 		[dir="rtl"] body:has(#collapsibleSidebar) .main-content {
 			margin-left: 0;
 			margin-right: 4rem;
 		}
-		
+
 		/* Fix header layout for RTL (Arabic) - prevents rectangle shape */
 		[dir="rtl"] #dashboardHeader {
 			position: relative !important;
@@ -89,364 +113,1260 @@
 			margin: 0 !important;
 			padding: 0 !important;
 		}
-		
-		[dir="rtl"] #dashboardHeader > .flex.items-center.justify-between {
+
+		[dir="rtl"] #dashboardHeader>.flex.items-center.justify-between {
 			flex-direction: row !important;
 			direction: ltr;
 		}
-		
+
 		/* Keep header right controls in LTR order */
-		[dir="rtl"] #dashboardHeader > .flex.items-center.justify-between > div:last-child {
+		[dir="rtl"] #dashboardHeader>.flex.items-center.justify-between>div:last-child {
 			flex-direction: row !important;
 			direction: ltr;
 		}
-		
+
 		/* Fix space-x-4 spacing in header controls for RTL */
-		[dir="rtl"] #dashboardHeader .space-x-4 > * + * {
+		[dir="rtl"] #dashboardHeader .space-x-4>*+* {
 			margin-left: 1rem !important;
 			margin-right: 0 !important;
 		}
-		
+
 		/* Fix space-x-2 spacing in header for RTL */
-		[dir="rtl"] #dashboardHeader .space-x-2 > * + * {
+		[dir="rtl"] #dashboardHeader .space-x-2>*+* {
 			margin-left: 0.5rem !important;
 			margin-right: 0 !important;
 		}
-		
+
 		/* Ensure header maintains proper width */
-		[dir="rtl"] #dashboardHeader > .flex.items-center.justify-between {
+		[dir="rtl"] #dashboardHeader>.flex.items-center.justify-between {
 			width: 100%;
 			max-width: 100%;
 		}
-		
-		/* Dashboard card styles */
-		.stat-card {
+
+		/* Modern Employee Dashboard Card Styles */
+		.employee-stat-card {
+			background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+			border-radius: 20px;
+			padding: 24px;
+			border: 1px solid rgba(15, 23, 42, 0.08);
+			box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			position: relative;
+			overflow: hidden;
+		}
+
+		.employee-stat-card::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 55%);
+			pointer-events: none;
+		}
+
+		.employee-stat-card::after {
+			content: '';
+			position: absolute;
+			top: -50%;
+			right: -50%;
+			width: 200%;
+			height: 200%;
+			background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+			transform: rotate(45deg);
+			pointer-events: none;
+			transition: all 0.5s;
+		}
+
+		.employee-stat-card:hover {
+			transform: translateY(-6px) scale(1.02);
+			box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.15);
+		}
+
+		.employee-stat-card:hover::after {
+			top: -100%;
+			right: -100%;
+		}
+
+		.employee-stat-icon {
+			width: 56px;
+			height: 56px;
+			border-radius: 16px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-size: 1.4rem;
+			flex-shrink: 0;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+			margin-bottom: 18px;
+			position: relative;
+			z-index: 1;
 			transition: all 0.3s ease;
-			border: 2px solid transparent;
 		}
-		
-		.stat-card:hover {
+
+		.employee-stat-icon::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			border-radius: 16px;
+			background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+			pointer-events: none;
+		}
+
+		.employee-stat-title {
+			font-size: 1.1rem;
+			font-weight: 700;
+			color: #0f172a;
+			margin-bottom: 16px;
+			line-height: 1.3;
+			position: relative;
+			z-index: 1;
+			letter-spacing: -0.02em;
+		}
+
+		.employee-stat-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 14px;
+			position: relative;
+			z-index: 1;
+		}
+
+		.employee-stat-item {
+			text-align: center;
+			padding: 12px 8px;
+			border-radius: 12px;
+			background: rgba(248, 250, 252, 0.6);
+			border: 1px solid rgba(226, 232, 240, 0.8);
+			transition: all 0.2s ease;
+		}
+
+		.employee-stat-item:hover {
+			background: rgba(241, 245, 249, 0.9);
+			transform: translateY(-2px);
+		}
+
+		.employee-stat-label {
+			font-size: 0.7rem;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			color: #64748b;
+			font-weight: 600;
+			margin-bottom: 6px;
+		}
+
+		.employee-stat-value {
+			font-size: 1.6rem;
+			font-weight: 800;
+			color: #0f172a;
+			line-height: 1;
+			background: linear-gradient(135deg, #1e293b, #334155);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+		}
+
+		.employee-stat-link {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			margin-top: 18px;
+			color: #3b82f6;
+			font-size: 0.875rem;
+			font-weight: 600;
+			text-decoration: none;
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			position: relative;
+			z-index: 1;
+			padding: 8px 16px;
+			border-radius: 12px;
+			background: rgba(59, 130, 246, 0.1);
+		}
+
+		.employee-stat-link:hover {
+			color: #2563eb;
+			transform: translateX(4px) scale(1.05);
+			background: rgba(59, 130, 246, 0.15);
+			box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+		}
+
+		/* Responsible Info Card: tabs and view switching */
+		.responsible-info-tabs {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+		.responsible-info-tab {
+			background: #f1f5f9;
+			color: #475569;
+			border: 1px solid #e2e8f0;
+		}
+		.responsible-info-tab:hover {
+			background: #e2e8f0;
+			color: #334155;
+			border-color: #cbd5e1;
+		}
+		.responsible-info-tab--active {
+			background: linear-gradient(135deg, #4f46e5, #7c3aed);
+			color: #fff;
+			border-color: #4f46e5;
+		}
+		.responsible-info-tab--active:hover {
+			background: linear-gradient(135deg, #4338ca, #6d28d9);
+			color: #fff;
+		}
+		.responsible-view--hidden {
+			display: none !important;
+		}
+		@media (max-width: 640px) {
+			.responsible-info-tab {
+				flex: 1 1 auto;
+				justify-content: center;
+				min-width: 0;
+				text-align: center;
+			}
+			.responsible-info-tab span {
+				white-space: normal;
+				word-break: keep-all;
+				line-height: 1.25;
+			}
+		}
+
+		/* Page Header Styles */
+		.page-header {
+			text-align: center;
+			margin-bottom: 2rem;
+			padding: 2rem 0;
+			background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+			border-radius: 16px;
+			border: 1px solid rgba(148, 163, 184, 0.1);
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+		}
+
+		.page-title {
+			font-size: 2rem;
+			font-weight: 700;
+			color: #1e293b;
+			margin: 0 0 0.75rem 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.75rem;
+		}
+
+		.page-title i {
+			color: #3b82f6;
+			font-size: 1.75rem;
+		}
+
+		.page-subtitle {
+			font-size: 1rem;
+			color: #64748b;
+			margin: 0;
+			font-weight: 500;
+		}
+
+		/* Director panel styles */
+		.director-panel {
+			margin-top: 16px;
+			background: var(--director-card-bg);
+			border-radius: 22px;
+			padding: 28px;
+			box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+			border: 1px solid rgba(15, 23, 42, 0.06);
+			position: relative;
+			overflow: hidden;
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		}
+
+		.director-panel::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: linear-gradient(120deg,
+					rgba(37, 99, 235, 0.12),
+					rgba(124, 58, 237, 0.08),
+					rgba(56, 189, 248, 0.08));
+			opacity: 0.25;
+			pointer-events: none;
+			z-index: 0;
+		}
+
+		.director-panel::after {
+			content: '';
+			position: absolute;
+			top: -50%;
+			right: -50%;
+			width: 200%;
+			height: 200%;
+			background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+			transform: rotate(45deg);
+			pointer-events: none;
+			transition: all 0.5s;
+		}
+
+		.director-panel:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.15);
+		}
+
+		.director-panel:hover::after {
+			top: -100%;
+			right: -100%;
+		}
+
+		.director-panel>* {
+			position: relative;
+			z-index: 1;
+		}
+
+		.director-panel-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 0.75rem;
+			margin-bottom: 1.5rem;
+		}
+		/* Pill left, title right (keep in RTL: override global [dir="rtl"] .flex) */
+		.director-panel-header--pill-left {
+			direction: ltr;
+			flex-direction: row !important;
+		}
+		[dir="rtl"] .director-panel-header--pill-left {
+			flex-direction: row !important;
+		}
+		.director-panel-header--pill-left .director-panel-title {
+			text-align: right;
+		}
+		[dir="rtl"] .director-panel-header--pill-left .director-panel-title {
+			text-align: right;
+		}
+
+		.director-panel-title {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+		.director-panel-title-icon {
+			width: 32px;
+			height: 32px;
+			border-radius: 9999px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			background: radial-gradient(circle at top left,
+					rgba(37, 99, 235, 0.22),
+					rgba(37, 99, 235, 0.05));
+			color: #1d4ed8;
+		}
+
+		.director-section-pill {
+			padding: 0.15rem 0.7rem;
+			border-radius: 9999px;
+			font-size: 0.7rem;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			background: rgba(15, 23, 42, 0.04);
+			color: #64748b;
+		}
+
+		/* Report Stat Cards */
+		.report-stat-card-inline {
+			background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+			border-radius: 20px;
+			padding: 20px;
+			border: 1px solid rgba(15, 23, 42, 0.08);
+			box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+			transition: all 0.3s ease;
+			display: flex;
+			gap: 16px;
+			align-items: center;
+			flex: 1;
+			min-width: 200px;
+		}
+
+		.report-stat-card-inline:hover {
 			transform: translateY(-4px);
-			box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+			box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
 		}
-		
-		.gradient-bg-blue {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+		.report-stat-icon {
+			width: 56px;
+			height: 56px;
+			border-radius: 16px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-size: 1.5rem;
+			flex-shrink: 0;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 		}
-		
-		.gradient-bg-green {
-			background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+
+		.report-stat-content {
+			flex: 1;
+			min-width: 0;
 		}
-		
-		.gradient-bg-orange {
-			background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+
+		.report-stat-label {
+			font-size: 0.75rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+			color: #64748b;
+			font-weight: 600;
+			margin-bottom: 8px;
 		}
-		
-		.gradient-bg-purple {
-			background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+
+		.report-stat-value {
+			font-size: 2.25rem;
+			font-weight: 800;
+			color: #0f172a;
+			line-height: 1;
+			margin-bottom: 10px;
 		}
-		
-		.gradient-bg-yellow {
-			background: linear-gradient(135deg, #fad961 0%, #f76b1c 100%);
+
+		/* Report stat cards: phone view */
+		@media (max-width: 640px) {
+			.report-stat-card-inline {
+				padding: 12px 14px;
+				gap: 12px;
+				min-width: 0;
+				border-radius: 14px;
+			}
+			.report-stat-icon {
+				width: 44px;
+				height: 44px;
+				border-radius: 12px;
+				font-size: 1.15rem;
+			}
+			.report-stat-label {
+				font-size: 0.65rem;
+				margin-bottom: 4px;
+			}
+			.report-stat-value {
+				font-size: 1.5rem;
+				margin-bottom: 4px;
+			}
 		}
-		
-		.gradient-bg-indigo {
-			background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+
+		.report-stat-badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 6px 12px;
+			border-radius: 12px;
+			font-size: 0.75rem;
+			font-weight: 600;
 		}
-		
-		.loading-skeleton {
-			background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-			background-size: 200% 100%;
-			animation: loading 1.5s infinite;
+
+		/* Modern Employee Info Card */
+		.employee-info-card {
+			background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 100%);
+			border-radius: 24px;
+			padding: 28px;
+			box-shadow: 0 18px 35px rgba(67, 56, 202, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+			position: relative;
+			overflow: hidden;
+			border: 1px solid rgba(255, 255, 255, 0.1);
 		}
-		
-		@keyframes loading {
-			0% { background-position: 200% 0; }
-			100% { background-position: -200% 0; }
+
+		.employee-info-card::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.25), transparent 50%);
+			pointer-events: none;
 		}
-		
-		.responsible-info-card {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+		.employee-info-card::after {
+			content: '';
+			position: absolute;
+			top: -50%;
+			left: -50%;
+			width: 200%;
+			height: 200%;
+			background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+			transform: rotate(45deg);
+			pointer-events: none;
+			animation: shimmer 3s infinite;
+		}
+
+		@keyframes shimmer {
+			0% {
+				transform: translateX(-100%) translateY(-100%) rotate(45deg);
+			}
+
+			100% {
+				transform: translateX(100%) translateY(100%) rotate(45deg);
+			}
+		}
+
+		.employee-info-content {
+			position: relative;
+			z-index: 1;
+		}
+		@media (max-width: 640px) {
+			#responsibleInfoCard {
+				padding: 1rem;
+			}
+			.employee-info-content .employee-info-top-row {
+				flex-direction: column;
+				align-items: stretch;
+				gap: 1rem;
+			}
+			.employee-info-content .employee-info-profile {
+				flex-wrap: nowrap;
+				gap: 0.75rem;
+				min-width: 0;
+			}
+			.employee-info-content .employee-info-profile .employee-info-avatar {
+				flex-shrink: 0;
+			}
+			.employee-info-content .employee-info-profile .employee-info-text {
+				min-width: 0;
+				flex: 1;
+			}
+			.employee-info-content .employee-info-profile .employee-info-meta {
+				display: flex;
+				flex-direction: column;
+				gap: 0.25rem;
+				align-items: flex-start;
+			}
+			.employee-info-content .employee-info-filter {
+				width: 100%;
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				flex-wrap: wrap;
+			}
+			.employee-info-content .employee-info-filter select {
+				flex: 1;
+				min-width: 120px;
+				max-width: 100%;
+			}
+			.employee-info-content .responsible-info-tabs {
+				margin-top: 1rem;
+				padding-top: 1rem;
+			}
+			.employee-info-content .responsible-info-tabs .flex {
+				gap: 0.5rem;
+			}
+			.employee-info-content .responsible-info-tab {
+				flex: 1 1 auto;
+				min-width: min(140px, 45%);
+				justify-content: center;
+				padding: 0.5rem 0.75rem;
+				font-size: 0.8125rem;
+			}
+			.employee-info-content .responsible-info-tab span {
+				white-space: normal;
+				text-align: center;
+				line-height: 1.25;
+			}
+		}
+
+		/* Hourly schedule (timetable) */
+		.interval-bar {
+			position: relative;
+			border-radius: 12px;
+			padding: 10px 12px;
+			margin: 4px 0;
+			color: white;
+			font-size: 0.875rem;
+			font-weight: 500;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+		}
+		.working-time {
+			background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+			box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+		}
+		[dir="rtl"] .schedule-day-selector-row {
+			justify-content: flex-end;
+		}
+
+		@media (min-width: 1024px) {
+			/* Desktop: show hourly slots in columns instead of a long list */
+			.schedule-hourly-grid {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 8px;
+			}
+			.schedule-hourly-grid .schedule-hourly-row {
+				border-bottom-width: 0;
+				border-radius: 0.75rem;
+				background-color: #eff6ff;
+			}
 		}
 	</style>
 </head>
+
 <body class="bg-gray-50">
-    <!-- The reusable navbar will be automatically inserted here -->
-    
-    <!-- Main Content -->
-    <div class="main-content flex-1 flex flex-col overflow-hidden">
-        <!-- Header will be inserted here after sidebar initialization -->
-        <div id="dashboardHeaderContainer" class="flex-shrink-0"></div>
+	<!-- The reusable navbar will be automatically inserted here -->
 
-        <!-- Content -->
-	<main class="flex-1 overflow-y-auto p-6 rtl:mr-16 ltr:ml-16">
-		<div class="max-w-7xl mx-auto px-4 py-6">
-			<!-- Page Header with Filter -->
-			<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-				<div>
-					<h1 class="text-3xl font-bold text-gray-900 mb-2" data-translate="nav.dashboard">Responsible Dashboard</h1>
-					<p class="text-gray-600" data-translate="dashboard.welcome_responsible">View your department statistics and manage your team</p>
-				</div>
-				<div class="flex items-center gap-3">
-					<label class="text-sm font-medium text-gray-700" data-translate="common.filter">Filter:</label>
-					<select id="periodFilter" class="bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
-						<option value="current" data-translate="dashboard.current_month">Current Month</option>
-						<option value="last" data-translate="dashboard.last_month">Last Month</option>
-						<option value="week" data-translate="dashboard.last_week">Last Week</option>
-						<option value="year" data-translate="dashboard.this_year">This Year</option>
-					</select>
-				</div>
+	<!-- Content -->
+	<main class="flex-1 overflow-y-auto">
+		<div>
+			<!-- Page Header -->
+			<div class="page-header mb-6">
+				<h1 class="page-title" data-translate="responsible_dashboard.title">
+					<i class="fas fa-user-tie"></i>
+					Responsible Dashboard
+				</h1>
+				<p class="page-subtitle" data-translate="responsible_dashboard.welcome">View your department statistics
+					and manage your team</p>
 			</div>
 
-			<!-- Responsible Info Card -->
-			<div id="responsibleInfoCard" class="responsible-info-card rounded-xl shadow-lg p-6 mb-6 text-white">
-				<div class="flex items-center justify-between">
-					<div class="flex items-center gap-4">
-						<div class="h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
-							<i class="fas fa-user-tie text-2xl"></i>
+			<!-- Main Content Container -->
+			<div class="p-4 sm:p-6">
+
+				<!-- Responsible Info Card -->
+				<div id="responsibleInfoCard" class="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-6 border border-gray-100">
+					<div class="employee-info-content">
+						<div class="employee-info-top-row flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
+							<!-- Responsible Info Section -->
+							<div class="employee-info-profile flex items-center gap-3 sm:gap-4 flex-shrink-0 min-w-0">
+								<div class="employee-info-avatar h-12 w-12 sm:h-16 sm:w-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+									<i class="fas fa-user-tie text-white text-lg sm:text-2xl"></i>
+								</div>
+								<div class="employee-info-text min-w-0">
+									<h2 id="responsibleName" class="text-lg sm:text-2xl font-bold mb-1 truncate">Loading...</h2>
+									<div class="employee-info-meta flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+										<span id="responsibleDepartment" class="flex items-center gap-1.5 min-w-0">
+											<i class="fas fa-building text-gray-400 flex-shrink-0"></i>
+											<span class="truncate">Loading...</span>
+										</span>
+										<span id="departmentEmployeesCount" class="flex items-center gap-1.5">
+											<i class="fas fa-users text-gray-400 flex-shrink-0"></i>
+											<span>Loading...</span>
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<!-- Filter Controls -->
+							<div class="employee-info-filter flex items-center gap-2 sm:gap-4 flex-shrink-0">
+								<i class="fas fa-filter text-gray-400 flex-shrink-0"></i>
+								<label for="periodFilter" class="text-sm font-medium text-gray-700 whitespace-nowrap flex-shrink-0"
+									data-translate="common.filter">Filter:</label>
+								<select id="periodFilter"
+									class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-gray-800 min-w-0 max-w-[180px]">
+									<option value="current" data-translate="dashboard.current_month">Current Month</option>
+									<option value="last" data-translate="dashboard.last_month">Last Month</option>
+									<option value="week" data-translate="dashboard.last_week">Last Week</option>
+									<option value="year" data-translate="dashboard.this_year">This Year</option>
+								</select>
+							</div>
 						</div>
-						<div>
-							<h2 id="responsibleName" class="text-2xl font-bold mb-1">Loading...</h2>
-							<div class="flex flex-wrap gap-4 text-sm">
-								<span id="responsibleDepartment" class="flex items-center gap-2">
-									<i class="fas fa-building"></i>
-									<span>Loading...</span>
-								</span>
-								<span id="departmentEmployeesCount" class="flex items-center gap-2">
-									<i class="fas fa-users"></i>
-									<span>Loading...</span>
-								</span>
+
+						<!-- Tabs: Personal / Department (always next to each other) -->
+						<div class="responsible-info-tabs mt-4 pt-4 border-t border-gray-200">
+							<div class="flex flex-nowrap gap-2" role="tablist" aria-label="Switch between Personal and Department views">
+								<button type="button" id="responsibleTabPersonal" role="tab" aria-selected="true" aria-controls="responsibleViewPersonal"
+									class="responsible-info-tab responsible-info-tab--active px-4 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
+									<i class="fas fa-user"></i>
+									<span data-translate="responsible_dashboard.personal">Personal</span>
+								</button>
+								<button type="button" id="responsibleTabDepartment" role="tab" aria-selected="false" aria-controls="responsibleViewDepartment"
+									class="responsible-info-tab px-4 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
+									<i class="fas fa-users-cog"></i>
+									<span data-translate="responsible_dashboard.department_management">Department Management</span>
+								</button>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<!-- Statistics Grid -->
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-				<!-- Tasks Statistics -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-blue text-white">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="tasks.department_tasks">Department Tasks</h3>
-						<i class="fas fa-tasks text-2xl opacity-80"></i>
-					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="tasks.created_by_me">Created by Me</p>
-							<p id="tasksCreated" class="text-2xl font-bold">0</p>
-						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="tasks.completed_created">Completed</p>
-							<p id="tasksCreatedCompleted" class="text-2xl font-bold">0</p>
-						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="tasks.received_by_dept">Received by Dept</p>
-							<p id="tasksReceived" class="text-2xl font-bold">0</p>
-						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="tasks.completed_received">Completed</p>
-							<p id="tasksReceivedCompleted" class="text-2xl font-bold">0</p>
-						</div>
-					</div>
-					<a href="tasks.html" class="mt-4 inline-flex items-center text-white/90 hover:text-white text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
-					</a>
-				</div>
-
-				<!-- Reports Statistics -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-purple text-white">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="reports.department_reports">Department Reports</h3>
-						<i class="fas fa-file-alt text-2xl opacity-80"></i>
-					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="reports.total">Total</p>
-							<p id="reportsTotal" class="text-2xl font-bold">0</p>
-						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="reports.read">Read</p>
-							<p id="reportsRead" class="text-2xl font-bold">0</p>
-						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="reports.pending">Pending</p>
-							<p id="reportsPending" class="text-2xl font-bold">0</p>
-						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="reports.today">Today</p>
-							<p id="reportsToday" class="text-2xl font-bold">0</p>
-						</div>
-					</div>
-					<a href="rapportemp.html" class="mt-4 inline-flex items-center text-white/90 hover:text-white text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
-					</a>
-				</div>
-
-				<!-- Requests Statistics -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-indigo text-gray-800">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="requests.department_requests">Department Requests</h3>
-						<i class="fas fa-paper-plane text-2xl text-indigo-600"></i>
-					</div>
-					<div class="space-y-4">
-						<!-- Exceptions Section -->
-						<div class="border-b border-gray-200 pb-3">
-							<p class="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide" data-translate="requests.exceptions">Exceptions</p>
-							<div class="grid grid-cols-2 gap-3">
-								<div>
-									<p class="text-xs text-gray-500 mb-1" data-translate="requests.pending">Pending</p>
-									<p id="exceptionsPending" class="text-xl font-bold text-yellow-600">0</p>
-								</div>
-								<div>
-									<p class="text-xs text-gray-500 mb-1" data-translate="requests.accepted_this_month">Accepted This Month</p>
-									<p id="exceptionsAccepted" class="text-xl font-bold text-green-600">0</p>
-								</div>
+				<!-- Personal view -->
+				<div id="responsibleViewPersonal" class="responsible-view" role="tabpanel" aria-labelledby="responsibleTabPersonal">
+				<!-- Section Divider: My Personal Data (pill left, title right) -->
+				<div class="director-panel mb-6 p-4 sm:p-6">
+					<div class="director-panel-header director-panel-header--pill-left flex flex-row items-center justify-between gap-2">
+						<span class="director-section-pill flex-shrink-0" data-translate="responsible_dashboard.personal">Personal</span>
+						<div class="director-panel-title min-w-0 flex-1 justify-end text-end">
+							<div class="director-panel-title-icon flex-shrink-0">
+								<i class="fas fa-user"></i>
 							</div>
-						</div>
-						<!-- Extra Hours Section -->
-						<div>
-							<p class="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide" data-translate="requests.extra_hours">Extra Hours</p>
-							<div class="grid grid-cols-2 gap-3">
-								<div>
-									<p class="text-xs text-gray-500 mb-1" data-translate="requests.pending">Pending</p>
-									<p id="extraHoursPending" class="text-xl font-bold text-yellow-600">0</p>
-								</div>
-								<div>
-									<p class="text-xs text-gray-500 mb-1" data-translate="requests.accepted_this_month">Accepted This Month</p>
-									<p id="extraHoursAccepted" class="text-xl font-bold text-green-600">0</p>
-								</div>
+							<div class="min-w-0">
+								<h3 class="text-lg font-semibold text-gray-900" data-translate="responsible_dashboard.my_personal_data">My Personal Data</h3>
+								<p class="text-xs text-gray-500 mt-0.5" data-translate="responsible_dashboard.as_employee">As an employee of the institution</p>
 							</div>
 						</div>
 					</div>
-					<a href="submit-exception.html" class="mt-4 inline-flex items-center text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
-					</a>
 				</div>
 
-				<!-- Attendance Summary -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-green text-white">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="attendance.department_summary">Department Attendance</h3>
-						<i class="fas fa-calendar-check text-2xl opacity-80"></i>
+				<!-- Personal Employee Statistics Grid -->
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 p-6">
+					<!-- My Tasks -->
+					<div class="employee-stat-card">
+						<div class="employee-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+							<i class="fas fa-tasks"></i>
+						</div>
+						<h3 class="employee-stat-title" data-translate="employee_dashboard.my_tasks">My Tasks</h3>
+						<div class="employee-stat-grid">
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.total">Total</p>
+								<p id="myTasksTotal" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.completed">Completed</p>
+								<p id="myTasksCompleted" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.in_progress">In Progress</p>
+								<p id="myTasksInProgress" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.overdue">Overdue</p>
+								<p id="myTasksOverdue" class="employee-stat-value text-red-600">0</p>
+							</div>
+						</div>
+						<a href="tasks.html" class="employee-stat-link">
+							<span data-translate="employee_dashboard.view_all">View All</span>
+							<i class="fas fa-arrow-right"></i>
+						</a>
 					</div>
-					<div>
-						<p class="text-xs opacity-80 mb-1" data-translate="attendance.total_employees">Total Employees</p>
-						<p id="attendanceTotalEmployees" class="text-2xl font-bold">0</p>
-						<p id="attendanceSummary" class="text-sm mt-2 opacity-80">Loading...</p>
+
+					<!-- My Reports -->
+					<div class="employee-stat-card">
+						<div class="employee-stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+							<i class="fas fa-file-alt"></i>
+						</div>
+						<h3 class="employee-stat-title" data-translate="employee_dashboard.my_reports">My Reports</h3>
+						<div class="employee-stat-grid">
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.total">Total</p>
+								<p id="myReportsTotal" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.read">Read</p>
+								<p id="myReportsRead" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.pending">Pending</p>
+								<p id="myReportsPending" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.today">Today</p>
+								<p id="myReportsToday" class="employee-stat-value">0</p>
+							</div>
+						</div>
+						<a href="rapportemp.html" class="employee-stat-link">
+							<span data-translate="employee_dashboard.view_all">View All</span>
+							<i class="fas fa-arrow-right"></i>
+						</a>
 					</div>
-					<a href="attendance-overview.html" class="mt-4 inline-flex items-center text-white/90 hover:text-white text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
-					</a>
+
+					<!-- My Requests -->
+					<div class="employee-stat-card">
+						<div class="employee-stat-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+							<i class="fas fa-paper-plane"></i>
+						</div>
+						<h3 class="employee-stat-title" data-translate="employee_dashboard.my_requests">My Requests</h3>
+						<div class="employee-stat-grid">
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.exceptions">Exceptions</p>
+								<p id="myExceptionsCount" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.extra_hours">Extra Hours</p>
+								<p id="myExtraHoursCount" class="employee-stat-value text-green-600">0</p>
+							</div>
+						</div>
+						<a href="submit-exception.html" class="employee-stat-link">
+							<span data-translate="employee_dashboard.view_all">View All</span>
+							<i class="fas fa-arrow-right"></i>
+						</a>
+					</div>
+
+					<!-- My Salary -->
+					<div class="employee-stat-card">
+						<div class="employee-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+							<i class="fas fa-money-check-alt"></i>
+						</div>
+						<h3 class="employee-stat-title" data-translate="employee_dashboard.my_salary">My Salary</h3>
+						<div class="employee-stat-grid">
+							<div class="employee-stat-item col-span-2">
+								<p class="employee-stat-label" data-translate="employee_dashboard.net_salary">Net Salary</p>
+								<p id="myLastMonthSalary" class="employee-stat-value text-green-600">0 DA</p>
+							</div>
+						</div>
+						<p id="mySalaryStatus" class="text-sm mt-2 text-gray-600 font-medium" data-translate="employee_dashboard.paid">Paid</p>
+						<a href="salary-employee.html" class="employee-stat-link">
+							<span data-translate="employee_dashboard.view_all">View All</span>
+							<i class="fas fa-arrow-right"></i>
+						</a>
+					</div>
+				</div>
+
+				<!-- My Personal Data - Row 2 -->
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-6">
+					<!-- My Signals -->
+					<div class="employee-stat-card">
+						<div class="employee-stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+							<i class="fas fa-exclamation-triangle"></i>
+						</div>
+						<h3 class="employee-stat-title" data-translate="employee_dashboard.my_signals">My Signals</h3>
+						<div class="employee-stat-grid">
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.total">Total</p>
+								<p id="mySignalsTotal" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.pending">Pending</p>
+								<p id="mySignalsPending" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.treated">Treated</p>
+								<p id="mySignalsTreated" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.high_priority">High Priority</p>
+								<p id="mySignalsHighPriority" class="employee-stat-value">0</p>
+							</div>
+						</div>
+						<a href="signals-employee.html" class="employee-stat-link">
+							<span data-translate="employee_dashboard.view_all">View All</span>
+							<i class="fas fa-arrow-right"></i>
+						</a>
+					</div>
+
+					<!-- My Complaints -->
+					<div class="employee-stat-card">
+						<div class="employee-stat-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+							<i class="fas fa-comments"></i>
+						</div>
+						<h3 class="employee-stat-title" data-translate="employee_dashboard.my_complaints">My Complaints</h3>
+						<div class="employee-stat-grid">
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.total">Total</p>
+								<p id="myComplaintsTotal" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.pending">Pending</p>
+								<p id="myComplaintsPending" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.completed">Completed</p>
+								<p id="myComplaintsCompleted" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="employee_dashboard.overdue">Overdue</p>
+								<p id="myComplaintsOverdue" class="employee-stat-value">0</p>
+							</div>
+						</div>
+						<a href="complaints-employee.html" class="employee-stat-link">
+							<span data-translate="employee_dashboard.view_all">View All</span>
+							<i class="fas fa-arrow-right"></i>
+						</a>
+					</div>
+				</div>
+
+				<!-- Work Schedule Timetable -->
+				<div class="director-panel mb-8 p-6">
+				<div class="director-panel-header">
+					<div class="director-panel-title">
+						<div class="director-panel-title-icon">
+							<i class="fas fa-calendar-alt"></i>
+							</div>
+							<div>
+								<h3 class="text-lg font-semibold text-gray-900" data-translate="employee_dashboard.my_schedule">My Schedule</h3>
+								<p class="text-xs text-gray-500 mt-0.5" data-translate="responsible_dashboard.view_schedule_desc">View your work schedule</p>
+							</div>
+						</div>
+						<span class="director-section-pill" data-translate="employee_dashboard.timetable_label">Timetable</span>
+					</div>
+				
+				<div id="scheduleContent">
+					<!-- Loading state -->
+					<div id="scheduleLoading" class="text-center py-8">
+						<div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+						<p class="mt-2 text-gray-600" data-translate="employee_dashboard.loading_schedule">Loading schedule...</p>
+					</div>
+					
+					<!-- Schedule display -->
+					<div id="scheduleDisplay" class="hidden">
+						<!-- Schedule summary: Total Days + Total Hours only -->
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+							<div class="report-stat-card-inline" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));">
+								<div class="report-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+									<i class="fas fa-calendar-check"></i>
+								</div>
+								<div class="report-stat-content">
+									<p class="report-stat-label" data-translate="employee_dashboard.total_days">Total Days</p>
+									<p id="scheduleTotalDays" class="report-stat-value">1</p>
+								</div>
+							</div>
+							<div class="report-stat-card-inline" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));">
+								<div class="report-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+									<i class="fas fa-clock"></i>
+								</div>
+								<div class="report-stat-content">
+									<p class="report-stat-label" data-translate="employee_dashboard.total_hours">Total Hours</p>
+									<p id="scheduleTotalHours" class="report-stat-value">3.0h</p>
+								</div>
+							</div>
+						</div>
+
+						<!-- Hourly schedule: select day (default = today). In RTL/Arabic, selector on the left -->
+						<div class="schedule-day-selector-row flex flex-wrap items-center justify-between gap-3 mb-4">
+							<div>
+								<label for="scheduleHourlyDaySelector" class="text-sm font-semibold text-gray-700 block mb-1" data-translate="timetable.select_day">Select a day</label>
+								<div class="flex flex-wrap items-center gap-2">
+									<select id="scheduleHourlyDaySelector" class="rounded-lg border border-gray-200 px-3 py-2 text-sm bg-white min-w-[140px] focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500">
+										<option value="0">Sunday</option>
+										<option value="1">Monday</option>
+										<option value="2">Tuesday</option>
+										<option value="3">Wednesday</option>
+										<option value="4">Thursday</option>
+										<option value="5">Friday</option>
+										<option value="6">Saturday</option>
+									</select>
+									<button type="button" id="scheduleHourlyTodayBtn" class="px-3 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors flex items-center gap-1">
+										<i class="fas fa-calendar-day"></i>
+										<span data-translate="timetable.today">Today</span>
+									</button>
+								</div>
+							</div>
+						</div>
+						<div id="scheduleHourlyCalendar" class="space-y-1">
+							<!-- Hourly slots rendered by JS -->
+						</div>
+						
+						<!-- No schedule assigned message -->
+						<div id="noScheduleMessage" class="hidden text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+							<i class="fas fa-calendar-times text-gray-400 text-4xl mb-4"></i>
+							<p class="text-gray-600 font-medium" data-translate="employee_dashboard.no_schedule_assigned">No schedule assigned</p>
+							<p class="text-sm text-gray-500 mt-2" data-translate="employee_dashboard.contact_hr_schedule">Please contact HR to assign a work schedule</p>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<!-- Signals and Complaints Statistics -->
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-				<!-- Signals Statistics (for signals responsible is assigned to) -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-orange text-white">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="signals.assigned_signals">Assigned Signals</h3>
-						<i class="fas fa-exclamation-triangle text-2xl opacity-80"></i>
+
+				
+
+				<!-- My Personal Attendance Panel -->
+				<div class="director-panel mb-8 p-4 sm:p-6">
+					<div class="director-panel-header flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-0">
+						<div class="director-panel-title min-w-0">
+							<div class="director-panel-title-icon flex-shrink-0">
+								<i class="fas fa-calendar-check"></i>
+							</div>
+							<div class="min-w-0">
+								<h3 class="text-base sm:text-lg font-semibold text-gray-900" data-translate="responsible_dashboard.my_attendance_summary">My Attendance Summary</h3>
+								<p class="text-xs text-gray-500 mt-0.5" data-translate="responsible_dashboard.view_personal_attendance">View your personal attendance statistics</p>
+							</div>
+						</div>
+						<span class="director-section-pill flex-shrink-0" data-translate="responsible_dashboard.personal">Personal</span>
 					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="signals.total">Total</p>
-							<p id="signalsTotal" class="text-2xl font-bold">0</p>
+
+					<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+						<div class="report-stat-card-inline"
+							style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05)); margin-bottom: 8px;">
+							<div class="report-stat-icon"
+								style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+								<i class="fas fa-briefcase"></i>
+							</div>
+							<div class="report-stat-content">
+								<p class="report-stat-label" data-translate="responsible_dashboard.total_work_days">Total Work Days</p>
+								<p id="myAttendanceWorkDays" class="report-stat-value">0</p>
+								<span class="text-xs text-gray-500" data-translate="employee_dashboard.days">days</span>
+							</div>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="signals.pending">Pending</p>
-							<p id="signalsPending" class="text-2xl font-bold">0</p>
+
+						<div class="report-stat-card-inline"
+							style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05)); margin-bottom: 8px;">
+							<div class="report-stat-icon"
+								style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+								<i class="fas fa-user-times"></i>
+							</div>
+							<div class="report-stat-content">
+								<p class="report-stat-label" data-translate="responsible_dashboard.total_absent_days">Total Absent Days</p>
+								<p id="myAttendanceAbsentDays" class="report-stat-value">0</p>
+								<span class="text-xs text-gray-500" data-translate="employee_dashboard.days">days</span>
+							</div>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="signals.treated">Treated</p>
-							<p id="signalsTreated" class="text-2xl font-bold">0</p>
+
+						<div class="report-stat-card-inline"
+							style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05)); margin-bottom: 8px;">
+							<div class="report-stat-icon"
+								style="background: linear-gradient(135deg, #10b981, #059669);">
+								<i class="fas fa-clock"></i>
+							</div>
+							<div class="report-stat-content">
+								<p class="report-stat-label" data-translate="responsible_dashboard.total_overtime_hours">Total Overtime Hours</p>
+								<p id="myAttendanceOvertime" class="report-stat-value">0.0h</p>
+							</div>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="signals.high_priority">High Priority</p>
-							<p id="signalsHighPriority" class="text-2xl font-bold">0</p>
+
+						<div class="report-stat-card-inline"
+							style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05)); margin-bottom: 8px;">
+							<div class="report-stat-icon"
+								style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+								<i class="fas fa-hourglass-start"></i>
+							</div>
+							<div class="report-stat-content">
+								<p class="report-stat-label" data-translate="responsible_dashboard.total_late">Total Late</p>
+								<p id="myAttendanceLate" class="report-stat-value">0m</p>
+							</div>
+						</div>
+
+						<div class="report-stat-card-inline"
+							style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(234, 88, 12, 0.05)); margin-bottom: 8px;">
+							<div class="report-stat-icon"
+								style="background: linear-gradient(135deg, #f97316, #ea580c);">
+								<i class="fas fa-sign-out-alt"></i>
+							</div>
+							<div class="report-stat-content">
+								<p class="report-stat-label" data-translate="responsible_dashboard.total_early_leave">Total Early Leave</p>
+								<p id="myAttendanceEarly" class="report-stat-value">0m</p>
+							</div>
 						</div>
 					</div>
-					<a href="signals-responsible.html" class="mt-4 inline-flex items-center text-white/90 hover:text-white text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
-					</a>
 				</div>
 
-				<!-- Complaints Statistics (own complaints) -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-yellow text-white">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="complaints.my_complaints">My Complaints</h3>
-						<i class="fas fa-comments text-2xl opacity-80"></i>
-					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="complaints.total">Total</p>
-							<p id="complaintsTotal" class="text-2xl font-bold">0</p>
-						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="complaints.pending">Pending</p>
-							<p id="complaintsPending" class="text-2xl font-bold">0</p>
-						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="complaints.completed">Completed</p>
-							<p id="complaintsCompleted" class="text-2xl font-bold">0</p>
-						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="complaints.overdue">Overdue</p>
-							<p id="complaintsOverdue" class="text-2xl font-bold">0</p>
-						</div>
-					</div>
-					<a href="complaints-employee.html" class="mt-4 inline-flex items-center text-white/90 hover:text-white text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
-					</a>
 				</div>
-			</div>
+				<!-- /Personal view -->
 
-			<!-- Attendance Summary -->
-			<div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-				<div class="flex items-center justify-between mb-6">
-					<h3 class="text-xl font-semibold text-gray-900" data-translate="attendance.department_summary">Department Attendance Summary</h3>
-					<i class="fas fa-calendar-check text-blue-600 text-2xl"></i>
-				</div>
-				<div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-					<div class="text-center p-4 bg-blue-50 rounded-lg">
-						<p class="text-xs text-gray-600 mb-2" data-translate="attendance.total_worked_days">Total Work Days</p>
-						<p id="attendanceWorkDays" class="text-2xl font-bold text-blue-600">0</p>
-						<p class="text-xs text-gray-500 mt-1" data-translate="attendance.days">days</p>
-					</div>
-					<div class="text-center p-4 bg-red-50 rounded-lg">
-						<p class="text-xs text-gray-600 mb-2" data-translate="attendance.total_absent_days">Total Absent Days</p>
-						<p id="attendanceAbsentDays" class="text-2xl font-bold text-red-600">0</p>
-						<p class="text-xs text-gray-500 mt-1" data-translate="attendance.days">days</p>
-					</div>
-					<div class="text-center p-4 bg-green-50 rounded-lg">
-						<p class="text-xs text-gray-600 mb-2" data-translate="attendance.total_overtime_hours">Total Overtime Hours</p>
-						<p id="attendanceOvertime" class="text-2xl font-bold text-green-600">0.0h</p>
-					</div>
-					<div class="text-center p-4 bg-yellow-50 rounded-lg">
-						<p class="text-xs text-gray-600 mb-2" data-translate="attendance.total_late_minutes">Total Late</p>
-						<p id="attendanceLate" class="text-2xl font-bold text-yellow-600">0m</p>
-					</div>
-					<div class="text-center p-4 bg-orange-50 rounded-lg">
-						<p class="text-xs text-gray-600 mb-2" data-translate="attendance.total_early_leave">Total Early Leave</p>
-						<p id="attendanceEarly" class="text-2xl font-bold text-orange-600">0m</p>
+				<!-- Department view -->
+				<div id="responsibleViewDepartment" class="responsible-view responsible-view--hidden" role="tabpanel" aria-labelledby="responsibleTabDepartment">
+				<!-- Section Divider: Department Management -->
+				<div class="director-panel mb-6 p-6"
+					style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(59, 130, 246, 0.05));">
+					<div class="director-panel-header">
+						<div class="director-panel-title">
+							<div class="director-panel-title-icon"
+								style="background: radial-gradient(circle at top left, rgba(124, 58, 237, 0.22), rgba(124, 58, 237, 0.05)); color: #7c3aed;">
+								<i class="fas fa-users-cog"></i>
+							</div>
+							<div>
+								<h3 class="text-lg font-semibold text-gray-900" data-translate="responsible_dashboard.department_management">Department Management</h3>
+								<p class="text-xs text-gray-500 mt-0.5" data-translate="responsible_dashboard.department_oversight">Oversight and statistics for your department</p>
+							</div>
+						</div>
+						<span class="director-section-pill"
+							style="background: rgba(124, 58, 237, 0.1); color: #7c3aed;" data-translate="responsible_dashboard.management">Management</span>
 					</div>
 				</div>
-			</div>
 
-			<!-- No Data Message -->
-			<div id="noDataMessage" class="hidden text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
-				<i class="fas fa-info-circle text-gray-400 text-4xl mb-4"></i>
-				<p class="text-gray-600 font-medium" data-translate="message.no_data">No data available for the selected period</p>
+				<!-- Department Management Statistics Grid -->
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 p-6">
+					<!-- Tasks Statistics -->
+					<div class="employee-stat-card">
+						<div class="employee-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+							<i class="fas fa-tasks"></i>
+						</div>
+						<h3 class="employee-stat-title" data-translate="tasks.department_tasks">Department Tasks</h3>
+						<div class="employee-stat-grid">
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="tasks.created_by_me">Created by Me</p>
+								<p id="tasksCreated" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="tasks.completed_created">Completed</p>
+								<p id="tasksCreatedCompleted" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="tasks.received_by_dept">Received by Dept
+								</p>
+								<p id="tasksReceived" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="tasks.completed_received">Completed</p>
+								<p id="tasksReceivedCompleted" class="employee-stat-value">0</p>
+							</div>
+						</div>
+						<a href="tasks.html" class="employee-stat-link">
+							<span data-translate="common.view_all">View All</span>
+							<i class="fas fa-arrow-right"></i>
+						</a>
+					</div>
+
+					<!-- Reports Statistics -->
+					<div class="employee-stat-card">
+						<div class="employee-stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+							<i class="fas fa-file-alt"></i>
+						</div>
+						<h3 class="employee-stat-title" data-translate="reports.department_reports">Department Reports
+						</h3>
+						<div class="employee-stat-grid">
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="reports.total">Total</p>
+								<p id="reportsTotal" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="reports.read">Read</p>
+								<p id="reportsRead" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="reports.pending">Pending</p>
+								<p id="reportsPending" class="employee-stat-value">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="reports.today">Today</p>
+								<p id="reportsToday" class="employee-stat-value">0</p>
+							</div>
+						</div>
+						<a href="rapportemp.html" class="employee-stat-link">
+							<span data-translate="common.view_all">View All</span>
+							<i class="fas fa-arrow-right"></i>
+						</a>
+					</div>
+
+					<!-- Requests Statistics -->
+					<div class="employee-stat-card">
+						<div class="employee-stat-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+							<i class="fas fa-paper-plane"></i>
+						</div>
+						<h3 class="employee-stat-title" data-translate="requests.department_requests">Department
+							Requests</h3>
+						<div class="employee-stat-grid">
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="requests.exceptions">Exceptions</p>
+								<p id="exceptionsPending" class="employee-stat-value text-yellow-600">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="requests.accepted_this_month">Accepted
+								</p>
+								<p id="exceptionsAccepted" class="employee-stat-value text-green-600">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="requests.extra_hours">Extra Hours</p>
+								<p id="extraHoursPending" class="employee-stat-value text-yellow-600">0</p>
+							</div>
+							<div class="employee-stat-item">
+								<p class="employee-stat-label" data-translate="requests.accepted_this_month">Accepted
+								</p>
+								<p id="extraHoursAccepted" class="employee-stat-value text-green-600">0</p>
+							</div>
+						</div>
+						<a href="submit-exception.html" class="employee-stat-link">
+							<span data-translate="common.view_all">View All</span>
+							<i class="fas fa-arrow-right"></i>
+						</a>
+					</div>
+
+					<!-- Attendance Summary -->
+					<div class="employee-stat-card">
+						<div class="employee-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+							<i class="fas fa-calendar-check"></i>
+						</div>
+						<h3 class="employee-stat-title" data-translate="attendance.department_summary">Department
+							Attendance</h3>
+						<div class="employee-stat-grid">
+							<div class="employee-stat-item col-span-2">
+								<p class="employee-stat-label" data-translate="attendance.total_employees">Total
+									Employees</p>
+								<p id="attendanceTotalEmployees" class="employee-stat-value">0</p>
+							</div>
+						</div>
+						<p id="attendanceSummary" class="text-sm mt-2 text-gray-600 font-medium">Loading...</p>
+						<a href="attendance-overview.html" class="employee-stat-link">
+							<span data-translate="common.view_all">View All</span>
+							<i class="fas fa-arrow-right"></i>
+						</a>
+					</div>
+				</div>
+
+
+				<div class="director-panel mb-8 p-4 sm:p-6 department-attendance-panel">
+					<div class="director-panel-header flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-0">
+						<div class="director-panel-title min-w-0">
+							<div class="director-panel-title-icon flex-shrink-0">
+								<i class="fas fa-calendar-check"></i>
+							</div>
+							<div class="min-w-0">
+								<h3 class="text-base sm:text-lg font-semibold text-gray-900 truncate"
+									data-translate="responsible_dashboard.department_attendance_summary">Department Attendance Summary</h3>
+								<p class="text-xs text-gray-500 mt-0.5" data-translate="responsible_dashboard.view_department_attendance">View department attendance statistics</p>
+							</div>
+						</div>
+						<span class="director-section-pill flex-shrink-0" data-translate="responsible_dashboard.stats">Stats</span>
+					</div>
+
+					<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+						<div class="report-stat-card-inline"
+							style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05)); margin-bottom: 8px;">
+							<div class="report-stat-icon"
+								style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+								<i class="fas fa-briefcase"></i>
+							</div>
+							<div class="report-stat-content">
+								<p class="report-stat-label" data-translate="responsible_dashboard.total_work_days">Total Work
+									Days</p>
+								<p id="attendanceWorkDays" class="report-stat-value">0</p>
+								<span class="text-xs text-gray-500" data-translate="employee_dashboard.days">days</span>
+							</div>
+						</div>
+
+						<div class="report-stat-card-inline"
+							style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05)); margin-bottom: 8px;">
+							<div class="report-stat-icon"
+								style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+								<i class="fas fa-user-times"></i>
+							</div>
+							<div class="report-stat-content">
+								<p class="report-stat-label" data-translate="responsible_dashboard.total_absent_days">Total Absent
+									Days</p>
+								<p id="attendanceAbsentDays" class="report-stat-value">0</p>
+								<span class="text-xs text-gray-500" data-translate="employee_dashboard.days">days</span>
+							</div>
+						</div>
+
+						<div class="report-stat-card-inline"
+							style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05)); margin-bottom: 8px;">
+							<div class="report-stat-icon"
+								style="background: linear-gradient(135deg, #10b981, #059669);">
+								<i class="fas fa-clock"></i>
+							</div>
+							<div class="report-stat-content">
+								<p class="report-stat-label" data-translate="responsible_dashboard.total_overtime_hours">Total
+									Overtime Hours</p>
+								<p id="attendanceOvertime" class="report-stat-value">0.0h</p>
+							</div>
+						</div>
+
+						<div class="report-stat-card-inline"
+							style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05)); margin-bottom: 8px;">
+							<div class="report-stat-icon"
+								style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+								<i class="fas fa-hourglass-start"></i>
+							</div>
+							<div class="report-stat-content">
+								<p class="report-stat-label" data-translate="responsible_dashboard.total_late">Total Late
+								</p>
+								<p id="attendanceLate" class="report-stat-value">0m</p>
+							</div>
+						</div>
+
+						<div class="report-stat-card-inline"
+							style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(234, 88, 12, 0.05)); margin-bottom: 8px;">
+							<div class="report-stat-icon"
+								style="background: linear-gradient(135deg, #f97316, #ea580c);">
+								<i class="fas fa-sign-out-alt"></i>
+							</div>
+							<div class="report-stat-content">
+								<p class="report-stat-label" data-translate="responsible_dashboard.total_early_leave">Total Early
+									Leave</p>
+								<p id="attendanceEarly" class="report-stat-value">0m</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				</div>
+				<!-- /Department view -->
+
+				<!-- No Data Message -->
+				<div id="noDataMessage"
+					class="hidden text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+					<i class="fas fa-info-circle text-gray-400 text-4xl mb-4"></i>
+					<p class="text-gray-600 font-medium" data-translate="employee_dashboard.no_data_period">No data available for the
+						selected period</p>
+				</div>
 			</div>
 		</div>
 	</main>
-    </div>
 
 	<script src="../assets/js/auth.js"></script>
 	<script src="../assets/js/translations.js"></script>
@@ -457,102 +1377,101 @@
 		let currentDepartmentId = null;
 		let currentDepartmentEmployees = [];
 		let currentPeriod = 'current';
+		let scheduleTimetableData = null;
 
-		document.addEventListener('DOMContentLoaded', async function() {
+		document.addEventListener('DOMContentLoaded', async function () {
 			if (!requireAuth()) return;
 			const role = authManager.getUserRole();
 			if (role !== 'Department_Responsible') {
 				authManager.redirectToDashboard();
 				return;
 			}
-			
+
 			// Initialize sidebar first
 			initializeCollapsibleSidebar();
-			
-			// Wait a bit for sidebar to initialize, then add header
+
+			// Wait a bit for sidebar to initialize, then setup UI
 			setTimeout(() => {
-				createDashboardHeader();
 				syncLanguageSelector();
 				updateDashboardUserDisplayName();
 				setupDashboardNotificationsUI();
 			}, 100);
-			
+
 			// Load dashboard data
 			await loadResponsibleProfile();
 			await loadDepartmentEmployees();
 			await loadDashboardData();
-			
+
 			// Setup period filter
 			const periodFilter = document.getElementById('periodFilter');
 			if (periodFilter) {
-				periodFilter.addEventListener('change', async function() {
+				periodFilter.addEventListener('change', async function () {
 					currentPeriod = this.value;
 					await loadDashboardData();
 				});
 			}
+
+			// Tabs: switch between Personal and Department views
+			setupResponsibleViewTabs();
+
+			// Hourly schedule: day selector and Today button
+			const scheduleHourlyDaySelector = document.getElementById('scheduleHourlyDaySelector');
+			const scheduleHourlyTodayBtn = document.getElementById('scheduleHourlyTodayBtn');
+			if (scheduleHourlyDaySelector) {
+				scheduleHourlyDaySelector.addEventListener('change', function () {
+					renderScheduleHourlyView(parseInt(this.value, 10));
+				});
+			}
+			if (scheduleHourlyTodayBtn) {
+				scheduleHourlyTodayBtn.addEventListener('click', function () {
+					const today = new Date().getDay();
+					const sel = document.getElementById('scheduleHourlyDaySelector');
+					if (sel) {
+						sel.value = String(today);
+						renderScheduleHourlyView(today);
+					}
+				});
+			}
+
+			// Listen for language changes to update dynamic content
+			window.addEventListener('languageChanged', async function(event) {
+				// Reload schedule to update translated content and reorder for RTL
+				await loadSchedule();
+				reorderScheduleDays();
+			});
+			
+			// Reorder schedule days based on RTL/LTR on initial load
+			setTimeout(() => reorderScheduleDays(), 100);
 		});
-		
-		// Function to create the dashboard header after sidebar initialization
-		function createDashboardHeader() {
-			const container = document.getElementById('dashboardHeaderContainer');
-			if (!container) return;
-			
-			// Check if header already exists
-			if (document.getElementById('dashboardHeader')) return;
-			
-			const headerHTML = `
-				<header id="dashboardHeader" class="bg-white shadow-sm border-b">
-					<div class="flex items-center justify-between px-6 py-4">
-						<div class="flex items-center">
-						</div>
-						<div class="flex items-center space-x-4">
-							<select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-								<option value="en">English</option>
-								<option value="fr">Français</option>
-								<option value="ar">العربية</option>
-							</select>
-							<!-- Notifications bell -->
-							<div class="relative">
-								<button id="empNotifBell" class="relative w-10 h-10 rounded-full bg-white hover:bg-gray-50 border border-gray-200 flex items-center justify-center transition-all shadow-sm hover:shadow-md">
-									<i class="fas fa-bell text-gray-700 text-base"></i>
-									<span id="empNotifBadge" class="hidden absolute -top-1 -right-1 min-w-[16px] h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-white"></span>
-								</button>
-								<div id="empNotifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 border border-gray-200 transform transition-all duration-200 ease-out opacity-0 translate-y-2">
-									<div class="flex items-center justify-between p-3 border-b border-gray-100 bg-white">
-										<span class="text-sm font-semibold text-gray-800">Notifications</span>
-										<div class="flex items-center gap-3">
-											<button id="empNotifMarkAll" class="text-xs text-indigo-600 hover:text-indigo-700 font-medium px-3 py-1.5 rounded-md hover:bg-indigo-50 transition-colors border border-indigo-100">
-												Tout lire
-											</button>
-											<button id="empNotifClearAll" class="text-xs text-gray-600 hover:text-gray-800 font-medium px-3 py-1.5 rounded-md hover:bg-gray-100 transition-colors border border-gray-200">
-												Effacer
-											</button>
-										</div>
-									</div>
-									<div id="empNotifList" class="max-h-80 overflow-y-auto">
-										<div class="p-4 text-center text-sm text-gray-500">
-											<i class="fas fa-bell text-gray-300 text-lg mb-2 block"></i>
-											<span>Aucune notification</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="flex items-center space-x-2">
-								<img class="h-8 w-8 rounded-full object-cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23737486' font-size='16' font-family='Arial'%3EJD%3C/text%3E%3C/svg%3E" alt="Profile">
-								<span class="text-sm text-gray-700" id="userDisplayName">User</span>
-							</div>
-						</div>
-					</div>
-				</header>
-			`;
-			
-			// Insert header directly, replacing the container
-			const headerElement = document.createElement('div');
-			headerElement.innerHTML = headerHTML;
-			const header = headerElement.firstElementChild;
-			container.replaceWith(header);
+
+		function setupResponsibleViewTabs() {
+			const tabPersonal = document.getElementById('responsibleTabPersonal');
+			const tabDepartment = document.getElementById('responsibleTabDepartment');
+			const viewPersonal = document.getElementById('responsibleViewPersonal');
+			const viewDepartment = document.getElementById('responsibleViewDepartment');
+			if (!tabPersonal || !tabDepartment || !viewPersonal || !viewDepartment) return;
+
+			function showPersonal() {
+				tabPersonal.classList.add('responsible-info-tab--active');
+				tabPersonal.setAttribute('aria-selected', 'true');
+				tabDepartment.classList.remove('responsible-info-tab--active');
+				tabDepartment.setAttribute('aria-selected', 'false');
+				viewPersonal.classList.remove('responsible-view--hidden');
+				viewDepartment.classList.add('responsible-view--hidden');
+			}
+			function showDepartment() {
+				tabDepartment.classList.add('responsible-info-tab--active');
+				tabDepartment.setAttribute('aria-selected', 'true');
+				tabPersonal.classList.remove('responsible-info-tab--active');
+				tabPersonal.setAttribute('aria-selected', 'false');
+				viewDepartment.classList.remove('responsible-view--hidden');
+				viewPersonal.classList.add('responsible-view--hidden');
+			}
+
+			tabPersonal.addEventListener('click', showPersonal);
+			tabDepartment.addEventListener('click', showDepartment);
 		}
-		
+
 		// Load responsible profile to get responsible ID and department info
 		async function loadResponsibleProfile() {
 			try {
@@ -563,10 +1482,10 @@
 						'Content-Type': 'application/json'
 					}
 				});
-				
+
 				if (response.ok) {
 					const profile = await response.json();
-					
+
 					// Get employee ID for responsible
 					let employeeId = profile.id || profile.employee_id;
 					if (!employeeId && profile.user_id) {
@@ -587,9 +1506,9 @@
 							console.warn('Could not get employee ID from by-user endpoint:', e);
 						}
 					}
-					
+
 					currentResponsibleId = employeeId;
-					
+
 					// Find department where this employee is responsible
 					const deptApiBase = window.API_SERVICES?.departments || 'http://localhost:3003';
 					const deptResponse = await fetch(`${deptApiBase}/departments`, {
@@ -598,19 +1517,19 @@
 							'Content-Type': 'application/json'
 						}
 					});
-					
+
 					if (deptResponse.ok) {
 						const departments = await deptResponse.json();
 						const deptList = Array.isArray(departments) ? departments : (departments.departments || []);
 						const responsibleDept = deptList.find(d => String(d.responsible_id) === String(employeeId));
-						
+
 						if (responsibleDept) {
 							currentDepartmentId = responsibleDept.id;
-							
+
 							// Update responsible info card
 							const nameEl = document.getElementById('responsibleName');
 							const deptEl = document.getElementById('responsibleDepartment');
-							
+
 							if (nameEl && profile.first_name && profile.last_name) {
 								nameEl.textContent = `${profile.first_name} ${profile.last_name}`;
 							}
@@ -624,18 +1543,18 @@
 				console.error('Error loading responsible profile:', error);
 			}
 		}
-		
+
 		// Load department employees
 		async function loadDepartmentEmployees() {
 			if (!currentResponsibleId) {
 				await loadResponsibleProfile();
 			}
-			
+
 			if (!currentResponsibleId) {
 				console.warn('No responsible ID found');
 				return;
 			}
-			
+
 			try {
 				// Get employees in the department
 				const hrTasksApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
@@ -645,17 +1564,18 @@
 						'Content-Type': 'application/json'
 					}
 				});
-				
+
 				if (response.ok) {
 					const employees = await response.json();
 					currentDepartmentEmployees = Array.isArray(employees) ? employees : [];
-					
+
 					// Update employee count in info card
 					const countEl = document.getElementById('departmentEmployeesCount');
 					if (countEl) {
-						countEl.querySelector('span').textContent = `${currentDepartmentEmployees.length} Employees`;
+						const employeesText = typeof translate === 'function' ? translate('responsible_dashboard.employees') : 'Employees';
+						countEl.querySelector('span').textContent = `${currentDepartmentEmployees.length} ${employeesText}`;
 					}
-					
+
 					// Update attendance total employees
 					document.getElementById('attendanceTotalEmployees').textContent = currentDepartmentEmployees.length;
 				}
@@ -663,13 +1583,13 @@
 				console.error('Error loading department employees:', error);
 			}
 		}
-		
+
 		// Get date range based on period filter
 		function getDateRange(period) {
 			const now = new Date();
 			let startDate, endDate;
-			
-			switch(period) {
+
+			switch (period) {
 				case 'week':
 					startDate = new Date(now);
 					startDate.setDate(now.getDate() - 7);
@@ -691,7 +1611,7 @@
 					endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 					break;
 			}
-			
+
 			return {
 				start: startDate,
 				end: endDate,
@@ -699,7 +1619,7 @@
 				month: endDate.getMonth() + 1
 			};
 		}
-		
+
 		// Load all dashboard data
 		async function loadDashboardData() {
 			if (!currentResponsibleId) {
@@ -708,18 +1628,22 @@
 			if (!currentDepartmentEmployees.length) {
 				await loadDepartmentEmployees();
 			}
-			
-			const dateRange = getDateRange(currentPeriod);
-			const hasData = await Promise.all([
-				loadTasksStatistics(dateRange),
-				loadReportsStatistics(dateRange),
-				loadRequestsStatistics(dateRange),
-				loadAttendanceStatistics(dateRange),
-				loadSignalsStatistics(dateRange),
-				loadComplaintsStatistics(dateRange)
-			]);
-			
-			// Show/hide no data message
+
+		const dateRange = getDateRange(currentPeriod);
+		const hasData = await Promise.all([
+			// Personal data (My Personal Data section)
+			loadMyPersonalTasks(dateRange),
+			loadMyPersonalReports(dateRange),
+			loadMyPersonalRequests(dateRange),
+			loadMyPersonalSalary(dateRange),
+			loadMyPersonalAttendance(dateRange),
+			// Department data (Department Management section)
+			loadTasksStatistics(dateRange),
+			loadReportsStatistics(dateRange),
+			loadRequestsStatistics(dateRange),
+			loadAttendanceStatistics(dateRange),
+			loadSchedule()
+		]);
 			const noDataMsg = document.getElementById('noDataMessage');
 			if (noDataMsg) {
 				const hasAnyData = hasData.some(h => h);
@@ -730,7 +1654,456 @@
 				}
 			}
 		}
+
+		// ========== PERSONAL DATA LOADERS (My Personal Data Section) ==========
 		
+		// Load MY personal tasks (assigned TO me as an employee)
+		async function loadMyPersonalTasks(dateRange) {
+			try {
+				if (!currentResponsibleId) {
+					await loadResponsibleProfile();
+					if (!currentResponsibleId) {
+						document.getElementById('myTasksTotal').textContent = '0';
+						document.getElementById('myTasksCompleted').textContent = '0';
+						document.getElementById('myTasksInProgress').textContent = '0';
+						document.getElementById('myTasksOverdue').textContent = '0';
+						return false;
+					}
+				}
+
+				const tasksApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				const token = localStorage.getItem('jwt_token') || localStorage.getItem('token') || authManager.getToken();
+				if (!token) {
+					document.getElementById('myTasksTotal').textContent = '0';
+					document.getElementById('myTasksCompleted').textContent = '0';
+					document.getElementById('myTasksInProgress').textContent = '0';
+					document.getElementById('myTasksOverdue').textContent = '0';
+					return false;
+				}
+
+				const tasksResponse = await fetch(`${tasksApiBase}/tasks`, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				});
+
+				if (!tasksResponse.ok) {
+					document.getElementById('myTasksTotal').textContent = '0';
+					document.getElementById('myTasksCompleted').textContent = '0';
+					document.getElementById('myTasksInProgress').textContent = '0';
+					document.getElementById('myTasksOverdue').textContent = '0';
+					return false;
+				}
+
+				const tasksData = await tasksResponse.json();
+				let allTasks = Array.isArray(tasksData) ? tasksData : [];
+				if (!Array.isArray(tasksData) && tasksData.tasks) {
+					allTasks = Array.isArray(tasksData.tasks) ? tasksData.tasks : [];
+				}
+
+				// Filter tasks assigned to me (as an employee)
+				const myTasks = allTasks.filter(t => {
+					if (!t.assignees || !Array.isArray(t.assignees)) return false;
+					return t.assignees.some(assignee => 
+						String(assignee.id) === String(currentResponsibleId)
+					);
+				});
+
+				// Count statistics
+				let total = myTasks.length;
+				let completed = 0;
+				let inProgress = 0;
+				let overdue = 0;
+
+				myTasks.forEach(task => {
+					// Find my assignment status
+					const myAssignment = task.assignees?.find(a => String(a.id) === String(currentResponsibleId));
+					const assigneeStatus = (myAssignment?.status || task.status || '').toLowerCase();
+					
+					if (assigneeStatus === 'completed') {
+						completed++;
+					} else {
+						// Check if overdue
+						const dueDate = task.due_date ? new Date(task.due_date) : null;
+						if (dueDate && dueDate < new Date()) {
+							overdue++;
+						} else {
+							inProgress++;
+						}
+					}
+				});
+
+				document.getElementById('myTasksTotal').textContent = total;
+				document.getElementById('myTasksCompleted').textContent = completed;
+				document.getElementById('myTasksInProgress').textContent = inProgress;
+				document.getElementById('myTasksOverdue').textContent = overdue;
+				return total > 0;
+			} catch (error) {
+				console.error('Error loading my personal tasks:', error);
+				document.getElementById('myTasksTotal').textContent = '0';
+				document.getElementById('myTasksCompleted').textContent = '0';
+				document.getElementById('myTasksInProgress').textContent = '0';
+				document.getElementById('myTasksOverdue').textContent = '0';
+				return false;
+			}
+		}
+
+		// Load MY personal reports
+		async function loadMyPersonalReports(dateRange) {
+			try {
+				if (!currentResponsibleId) {
+					await loadResponsibleProfile();
+					if (!currentResponsibleId) {
+						document.getElementById('myReportsTotal').textContent = '0';
+						document.getElementById('myReportsRead').textContent = '0';
+						document.getElementById('myReportsPending').textContent = '0';
+						document.getElementById('myReportsToday').textContent = '0';
+						return false;
+					}
+				}
+
+				const reportsApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				
+				// Map dashboard period to reports period filter
+				let periodFilter = 'all';
+				if (currentPeriod === 'week') {
+					periodFilter = 'week';
+				} else if (currentPeriod === 'current') {
+					periodFilter = 'month';
+				} else {
+					periodFilter = 'all';
+				}
+
+				const response = await fetch(`${reportsApiBase}/api/rapportemp/employee/${currentResponsibleId}/reports?period=${periodFilter}`, {
+					headers: {
+						'Authorization': `Bearer ${authManager.getToken()}`,
+						'Content-Type': 'application/json'
+					}
+				});
+
+				if (!response.ok) {
+					document.getElementById('myReportsTotal').textContent = '0';
+					document.getElementById('myReportsRead').textContent = '0';
+					document.getElementById('myReportsPending').textContent = '0';
+					document.getElementById('myReportsToday').textContent = '0';
+					return false;
+				}
+
+				const data = await response.json();
+				let myReports = [];
+				if (Array.isArray(data)) {
+					myReports = data;
+				} else if (data.reports && Array.isArray(data.reports)) {
+					myReports = data.reports;
+				} else if (data.data && Array.isArray(data.data)) {
+					myReports = data.data;
+				}
+
+				// Filter by date range if needed (for last month)
+				if (currentPeriod === 'last') {
+					const now = new Date();
+					const lastMonth = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
+					const lastMonthYear = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+					const startDate = new Date(lastMonthYear, lastMonth, 1);
+					const endDate = new Date(lastMonthYear, lastMonth + 1, 0);
+					
+					myReports = myReports.filter(r => {
+						if (!r.created_at) return false;
+						const reportDate = new Date(r.created_at);
+						return reportDate >= startDate && reportDate <= endDate;
+					});
+				}
+
+				const total = myReports.length;
+				const now = new Date();
+				const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+				
+				let read = 0;
+				let pending = 0;
+				let todayCount = 0;
+
+				myReports.forEach(r => {
+					const status = (r.status || '').toLowerCase();
+					if (status === 'acknowledged' || status === 'read' || r.is_read || r.read_at) {
+						read++;
+					} else {
+						pending++;
+					}
+
+					if (r.created_at) {
+						const reportDate = new Date(r.created_at);
+						reportDate.setHours(0, 0, 0, 0);
+						if (reportDate.getTime() === today.getTime()) {
+							todayCount++;
+						}
+					}
+				});
+
+				document.getElementById('myReportsTotal').textContent = total;
+				document.getElementById('myReportsRead').textContent = read;
+				document.getElementById('myReportsPending').textContent = pending;
+				document.getElementById('myReportsToday').textContent = todayCount;
+				return total > 0;
+			} catch (error) {
+				console.error('Error loading my personal reports:', error);
+				document.getElementById('myReportsTotal').textContent = '0';
+				document.getElementById('myReportsRead').textContent = '0';
+				document.getElementById('myReportsPending').textContent = '0';
+				document.getElementById('myReportsToday').textContent = '0';
+				return false;
+			}
+		}
+
+		// Load MY personal requests (exceptions and extra hours)
+		async function loadMyPersonalRequests(dateRange) {
+			try {
+				if (!currentResponsibleId) {
+					await loadResponsibleProfile();
+					if (!currentResponsibleId) {
+						document.getElementById('myExceptionsCount').textContent = '0';
+						document.getElementById('myExtraHoursCount').textContent = '0';
+						return false;
+					}
+				}
+
+				const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3000';
+				let exceptionsCount = 0;
+				let extraHoursCount = 0;
+
+				// Get my exceptions
+				try {
+					const exceptionsResponse = await fetch(`${attendanceApiBase}/api/exceptions/mine?status=all`, {
+						headers: {
+							'Authorization': `Bearer ${authManager.getToken()}`,
+							'Content-Type': 'application/json'
+						}
+					});
+					if (exceptionsResponse.ok) {
+						const exceptionsData = await exceptionsResponse.json();
+						let exceptions = Array.isArray(exceptionsData) ? exceptionsData : [];
+						
+						// Filter by date range
+						if (currentPeriod !== 'current') {
+							exceptions = exceptions.filter(e => {
+								if (!e.created_at && !e.date) return false;
+								const exceptionDate = new Date(e.created_at || e.date);
+								const exceptionDateOnly = new Date(exceptionDate.getFullYear(), exceptionDate.getMonth(), exceptionDate.getDate());
+								const startDateOnly = new Date(dateRange.start.getFullYear(), dateRange.start.getMonth(), dateRange.start.getDate());
+								const endDateOnly = new Date(dateRange.end.getFullYear(), dateRange.end.getMonth(), dateRange.end.getDate());
+								return exceptionDateOnly >= startDateOnly && exceptionDateOnly <= endDateOnly;
+							});
+						}
+						exceptionsCount = exceptions.length;
+					}
+				} catch (e) {
+					console.warn('Error fetching exceptions:', e);
+				}
+
+				// Get my overtime requests
+				try {
+					const overtimeResponse = await fetch(`${attendanceApiBase}/api/attendance/overtime/my-requests`, {
+						headers: {
+							'Authorization': `Bearer ${authManager.getToken()}`,
+							'Content-Type': 'application/json'
+						}
+					});
+					if (overtimeResponse.ok) {
+						const overtimeData = await overtimeResponse.json();
+						let overtime = [];
+						if (overtimeData.success && overtimeData.data) {
+							overtime = Array.isArray(overtimeData.data) ? overtimeData.data : [];
+						} else if (Array.isArray(overtimeData)) {
+							overtime = overtimeData;
+						}
+						
+						// Filter by date range
+						if (currentPeriod !== 'current') {
+							overtime = overtime.filter(o => {
+								if (!o.date && !o.created_at) return false;
+								const overtimeDate = new Date(o.date || o.created_at);
+								const overtimeDateOnly = new Date(overtimeDate.getFullYear(), overtimeDate.getMonth(), overtimeDate.getDate());
+								const startDateOnly = new Date(dateRange.start.getFullYear(), dateRange.start.getMonth(), dateRange.start.getDate());
+								const endDateOnly = new Date(dateRange.end.getFullYear(), dateRange.end.getMonth(), dateRange.end.getDate());
+								return overtimeDateOnly >= startDateOnly && overtimeDateOnly <= endDateOnly;
+							});
+						}
+						extraHoursCount = overtime.length;
+					}
+				} catch (e) {
+					console.warn('Error fetching overtime:', e);
+				}
+
+				document.getElementById('myExceptionsCount').textContent = exceptionsCount;
+				document.getElementById('myExtraHoursCount').textContent = extraHoursCount;
+				return (exceptionsCount + extraHoursCount) > 0;
+			} catch (error) {
+				console.error('Error loading my personal requests:', error);
+				document.getElementById('myExceptionsCount').textContent = '0';
+				document.getElementById('myExtraHoursCount').textContent = '0';
+				return false;
+			}
+		}
+
+		// Load MY personal salary
+		async function loadMyPersonalSalary(dateRange) {
+			try {
+				if (!currentResponsibleId) {
+					await loadResponsibleProfile();
+					if (!currentResponsibleId) {
+						document.getElementById('myLastMonthSalary').textContent = '0 DA';
+						document.getElementById('mySalaryStatus').textContent = 'N/A';
+						return false;
+					}
+				}
+
+				const salaryApiBase = window.API_SERVICES?.salary || 'http://localhost:3010';
+				const now = new Date();
+				let month, year;
+
+				if (currentPeriod === 'last') {
+					month = now.getMonth() === 0 ? 12 : now.getMonth();
+					year = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+				} else if (currentPeriod === 'year') {
+					// For year, show current month or last available
+					month = now.getMonth() + 1;
+					year = now.getFullYear();
+				} else {
+					// Current month
+					month = now.getMonth() + 1;
+					year = now.getFullYear();
+				}
+
+				const response = await fetch(`${salaryApiBase}/salaries/${currentResponsibleId}?year=${year}&month=${month}`, {
+					headers: {
+						'Authorization': `Bearer ${authManager.getToken()}`,
+						'Content-Type': 'application/json'
+					}
+				});
+
+				if (!response.ok) {
+					document.getElementById('myLastMonthSalary').textContent = '0 DA';
+					document.getElementById('mySalaryStatus').textContent = 'N/A';
+					return false;
+				}
+
+				const data = await response.json();
+				const salary = data.net_salary !== undefined ? data : (data.salary || data);
+
+				if (salary && salary.net_salary !== undefined) {
+					const formattedSalary = parseFloat(salary.net_salary).toLocaleString('en-US');
+					document.getElementById('myLastMonthSalary').textContent = `${formattedSalary} DA`;
+					const status = salary.payment_status || salary.status || 'Pending';
+					document.getElementById('mySalaryStatus').textContent = status === 'Paid' ? 'Paid' : status;
+					return true;
+				} else {
+					document.getElementById('myLastMonthSalary').textContent = '0 DA';
+					document.getElementById('mySalaryStatus').textContent = 'N/A';
+					return false;
+				}
+			} catch (error) {
+				console.error('Error loading my personal salary:', error);
+				document.getElementById('myLastMonthSalary').textContent = '0 DA';
+				document.getElementById('mySalaryStatus').textContent = 'N/A';
+				return false;
+			}
+		}
+
+		// Load MY personal attendance
+		async function loadMyPersonalAttendance(dateRange) {
+			try {
+				if (!currentResponsibleId) {
+					await loadResponsibleProfile();
+					if (!currentResponsibleId) {
+						document.getElementById('myAttendanceWorkDays').textContent = '0';
+						document.getElementById('myAttendanceAbsentDays').textContent = '0';
+						document.getElementById('myAttendanceOvertime').textContent = '0.0h';
+						document.getElementById('myAttendanceLate').textContent = '0m';
+						document.getElementById('myAttendanceEarly').textContent = '0m';
+						return false;
+					}
+				}
+
+				const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3000';
+				const isYearFilter = currentPeriod === 'year';
+
+				let totalWorkDays = 0;
+				let totalAbsentDays = 0;
+				let totalOvertimeHours = 0;
+				let totalLateMinutes = 0;
+				let totalEarlyMinutes = 0;
+
+				// Load attendance for the period
+				const monthPromises = [];
+				const monthsToLoad = isYearFilter ? 12 : 1;
+				const startMonth = dateRange.month;
+
+				for (let monthOffset = 0; monthOffset < monthsToLoad; monthOffset++) {
+					const targetMonth = isYearFilter ? monthOffset + 1 : startMonth;
+					const targetYear = dateRange.year;
+
+					monthPromises.push(
+						fetch(`${attendanceApiBase}/api/attendance/monthly?employee_id=${currentResponsibleId}&year=${targetYear}&month=${targetMonth}&page=1&limit=1000`, {
+							headers: {
+								'Authorization': `Bearer ${authManager.getToken()}`,
+								'Content-Type': 'application/json'
+							}
+						}).then(response => {
+							if (response.ok) {
+								return response.json().then(data => {
+									let attendanceRecords = [];
+									if (Array.isArray(data)) {
+										attendanceRecords = data;
+									} else if (data.data && Array.isArray(data.data)) {
+										attendanceRecords = data.data;
+									} else if (data.attendance) {
+										// Single attendance record object
+										attendanceRecords = [data.attendance];
+									} else if (!Array.isArray(data) && data.worked_days !== undefined) {
+										// Single attendance record as object
+										attendanceRecords = [data];
+									}
+
+									// Process attendance records (should already be filtered by employee_id in query)
+									attendanceRecords.forEach(record => {
+										// Double-check it's for the right employee (in case API returns multiple)
+										if (!record.employee_id || String(record.employee_id) === String(currentResponsibleId)) {
+											totalWorkDays += parseInt(record.worked_days) || 0;
+											totalAbsentDays += parseInt(record.absence_days) || 0;
+											totalOvertimeHours += parseFloat(record.overtime_hours) || 0;
+											totalLateMinutes += parseInt(record.late_minutes) || 0;
+											totalEarlyMinutes += parseInt(record.early_minutes) || 0;
+										}
+									});
+
+									return null;
+								}).catch(() => null);
+							}
+							return null;
+						}).catch(() => null)
+					);
+				}
+
+				await Promise.all(monthPromises);
+
+				document.getElementById('myAttendanceWorkDays').textContent = totalWorkDays;
+				document.getElementById('myAttendanceAbsentDays').textContent = totalAbsentDays;
+				document.getElementById('myAttendanceOvertime').textContent = totalOvertimeHours.toFixed(1) + 'h';
+				document.getElementById('myAttendanceLate').textContent = totalLateMinutes + 'm';
+				document.getElementById('myAttendanceEarly').textContent = totalEarlyMinutes + 'm';
+
+				return totalWorkDays > 0 || totalAbsentDays > 0;
+			} catch (error) {
+				console.error('Error loading my personal attendance:', error);
+				document.getElementById('myAttendanceWorkDays').textContent = '0';
+				document.getElementById('myAttendanceAbsentDays').textContent = '0';
+				document.getElementById('myAttendanceOvertime').textContent = '0.0h';
+				document.getElementById('myAttendanceLate').textContent = '0m';
+				document.getElementById('myAttendanceEarly').textContent = '0m';
+				return false;
+			}
+		}
+
 		// Load tasks statistics - aggregated for department
 		async function loadTasksStatistics(dateRange) {
 			try {
@@ -738,15 +2111,15 @@
 					await loadResponsibleProfile();
 					if (!currentResponsibleId) return false;
 				}
-				
+
 				const tasksApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
 				const token = localStorage.getItem('jwt_token') || localStorage.getItem('token') || authManager.getToken();
-				
+
 				if (!token) {
 					console.warn('No token found for tasks API');
 					return false;
 				}
-				
+
 				// Get all tasks visible to responsible (tasks they created + tasks for their department)
 				const tasksResponse = await fetch(`${tasksApiBase}/tasks`, {
 					headers: {
@@ -754,55 +2127,55 @@
 						'Content-Type': 'application/json'
 					}
 				});
-				
+
 				if (!tasksResponse.ok) {
 					console.error('Tasks API response not OK:', tasksResponse.status);
 					return false;
 				}
-				
+
 				const tasksData = await tasksResponse.json();
 				let allTasks = Array.isArray(tasksData) ? tasksData : [];
 				if (!Array.isArray(tasksData) && tasksData.tasks) {
 					allTasks = Array.isArray(tasksData.tasks) ? tasksData.tasks : [];
 				}
-				
+
 				// Separate tasks created by responsible vs received by department
 				const tasksCreated = allTasks.filter(t => String(t.assigned_by) === String(currentResponsibleId));
 				const tasksReceived = allTasks.filter(t => {
 					// Task is received if assigned to any department employee
 					if (!t.assignees || !Array.isArray(t.assignees)) return false;
-					return t.assignees.some(assignee => 
+					return t.assignees.some(assignee =>
 						currentDepartmentEmployees.some(emp => String(emp.id) === String(assignee.id))
 					);
 				});
-				
+
 				// Count completed tasks
-				const tasksCreatedCompleted = tasksCreated.filter(t => 
+				const tasksCreatedCompleted = tasksCreated.filter(t =>
 					(t.status || '').toLowerCase() === 'completed'
 				).length;
-				
+
 				const tasksReceivedCompleted = tasksReceived.filter(t => {
 					// Check if all assignees completed (for multi-assignee tasks)
 					if (!t.assignees || !Array.isArray(t.assignees)) return false;
-					const deptAssignees = t.assignees.filter(a => 
+					const deptAssignees = t.assignees.filter(a =>
 						currentDepartmentEmployees.some(emp => String(emp.id) === String(a.id))
 					);
 					return deptAssignees.every(a => (a.status || '').toLowerCase() === 'completed');
 				}).length;
-				
+
 				// Update display
 				document.getElementById('tasksCreated').textContent = tasksCreated.length;
 				document.getElementById('tasksCreatedCompleted').textContent = tasksCreatedCompleted;
 				document.getElementById('tasksReceived').textContent = tasksReceived.length;
 				document.getElementById('tasksReceivedCompleted').textContent = tasksReceivedCompleted;
-				
+
 				return tasksCreated.length > 0 || tasksReceived.length > 0;
 			} catch (error) {
 				console.error('Error loading tasks statistics:', error);
 				return false;
 			}
 		}
-		
+
 		// Load reports statistics - aggregated for department
 		async function loadReportsStatistics(dateRange) {
 			try {
@@ -810,11 +2183,11 @@
 					await loadDepartmentEmployees();
 					if (!currentDepartmentEmployees.length) return false;
 				}
-				
+
 				const reportsApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
-				
+
 				// Get reports for all department employees
-				const reportPromises = currentDepartmentEmployees.map(emp => 
+				const reportPromises = currentDepartmentEmployees.map(emp =>
 					fetch(`${reportsApiBase}/api/rapportemp/employee/${emp.id}/reports?period=all`, {
 						headers: {
 							'Authorization': `Bearer ${authManager.getToken()}`,
@@ -822,10 +2195,10 @@
 						}
 					}).then(r => r.ok ? r.json() : null).catch(() => null)
 				);
-				
+
 				const reportsResults = await Promise.all(reportPromises);
 				let allReports = [];
-				
+
 				reportsResults.forEach(result => {
 					if (!result) return;
 					let reports = [];
@@ -838,7 +2211,7 @@
 					}
 					allReports = [...allReports, ...reports];
 				});
-				
+
 				// Filter by date range if needed
 				if (currentPeriod !== 'current') {
 					allReports = allReports.filter(r => {
@@ -850,7 +2223,7 @@
 						return reportDateOnly >= startDateOnly && reportDateOnly <= endDateOnly;
 					});
 				}
-				
+
 				// Calculate statistics
 				const stats = {
 					total: allReports.length,
@@ -858,10 +2231,10 @@
 					pending: 0,
 					today: 0
 				};
-				
+
 				const now = new Date();
 				const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-				
+
 				allReports.forEach(r => {
 					const status = (r.status || '').toLowerCase();
 					if (status === 'acknowledged' || status === 'read') {
@@ -869,7 +2242,7 @@
 					} else {
 						stats.pending++;
 					}
-					
+
 					if (r.created_at) {
 						const reportDate = new Date(r.created_at);
 						reportDate.setHours(0, 0, 0, 0);
@@ -878,19 +2251,19 @@
 						}
 					}
 				});
-				
+
 				document.getElementById('reportsTotal').textContent = stats.total;
 				document.getElementById('reportsRead').textContent = stats.acknowledged;
 				document.getElementById('reportsPending').textContent = stats.pending;
 				document.getElementById('reportsToday').textContent = stats.today;
-				
+
 				return stats.total > 0;
 			} catch (error) {
 				console.error('Error loading reports statistics:', error);
 				return false;
 			}
 		}
-		
+
 		// Load requests statistics - aggregated for department
 		async function loadRequestsStatistics(dateRange) {
 			try {
@@ -901,37 +2274,37 @@
 						return false;
 					}
 				}
-				
+
 				const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3000';
-				
+
 				// Get current month for accepted requests
 				const now = new Date();
 				const currentMonth = now.getMonth() + 1;
 				const currentYear = now.getFullYear();
-				
+
 				console.log(`📊 [Responsible Dashboard] Loading requests for department ${currentDepartmentId}, month ${currentMonth}/${currentYear}`);
-				
+
 				// Get PENDING exceptions
 				const pendingExceptionsParams = new URLSearchParams();
 				pendingExceptionsParams.append('departmentId', currentDepartmentId);
 				pendingExceptionsParams.append('page', '1');
 				pendingExceptionsParams.append('limit', '1000');
-				
+
 				const pendingExceptionsUrl = `${attendanceApiBase}/api/exceptions/pending?${pendingExceptionsParams.toString()}`;
 				console.log(`📊 [Responsible Dashboard] Fetching pending exceptions: ${pendingExceptionsUrl}`);
-				
+
 				const pendingExceptionsResponse = await fetch(pendingExceptionsUrl, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
 						'Content-Type': 'application/json'
 					}
 				});
-				
+
 				let pendingExceptions = [];
 				if (pendingExceptionsResponse.ok) {
 					const pendingExceptionsData = await pendingExceptionsResponse.json();
 					console.log(`📊 [Responsible Dashboard] Pending exceptions response:`, pendingExceptionsData);
-					
+
 					// API returns { success: true, exceptions: [...] }
 					if (pendingExceptionsData.success && pendingExceptionsData.exceptions) {
 						pendingExceptions = Array.isArray(pendingExceptionsData.exceptions) ? pendingExceptionsData.exceptions : [];
@@ -945,7 +2318,7 @@
 					const errorText = await pendingExceptionsResponse.text();
 					console.error(`❌ [Responsible Dashboard] Failed to fetch pending exceptions: ${pendingExceptionsResponse.status} - ${errorText}`);
 				}
-				
+
 				// Get ACCEPTED exceptions for current month
 				const acceptedExceptionsParams = new URLSearchParams();
 				acceptedExceptionsParams.append('departmentId', currentDepartmentId);
@@ -954,22 +2327,22 @@
 				acceptedExceptionsParams.append('month', currentMonth.toString());
 				acceptedExceptionsParams.append('page', '1');
 				acceptedExceptionsParams.append('limit', '1000');
-				
+
 				const acceptedExceptionsUrl = `${attendanceApiBase}/api/exceptions/history?${acceptedExceptionsParams.toString()}`;
 				console.log(`📊 [Responsible Dashboard] Fetching accepted exceptions: ${acceptedExceptionsUrl}`);
-				
+
 				const acceptedExceptionsResponse = await fetch(acceptedExceptionsUrl, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
 						'Content-Type': 'application/json'
 					}
 				});
-				
+
 				let acceptedExceptions = [];
 				if (acceptedExceptionsResponse.ok) {
 					const acceptedExceptionsData = await acceptedExceptionsResponse.json();
 					console.log(`📊 [Responsible Dashboard] Accepted exceptions response:`, acceptedExceptionsData);
-					
+
 					// API returns { success: true, exceptions: [...] }
 					if (acceptedExceptionsData.success && acceptedExceptionsData.exceptions) {
 						acceptedExceptions = Array.isArray(acceptedExceptionsData.exceptions) ? acceptedExceptionsData.exceptions : [];
@@ -983,28 +2356,28 @@
 					const errorText = await acceptedExceptionsResponse.text();
 					console.error(`❌ [Responsible Dashboard] Failed to fetch accepted exceptions: ${acceptedExceptionsResponse.status} - ${errorText}`);
 				}
-				
+
 				// Get PENDING overtime requests
 				const pendingOvertimeParams = new URLSearchParams();
 				pendingOvertimeParams.append('departmentId', currentDepartmentId);
 				pendingOvertimeParams.append('page', '1');
 				pendingOvertimeParams.append('limit', '1000');
-				
+
 				const pendingOvertimeUrl = `${attendanceApiBase}/api/attendance/overtime/pending?${pendingOvertimeParams.toString()}`;
 				console.log(`📊 [Responsible Dashboard] Fetching pending overtime: ${pendingOvertimeUrl}`);
-				
+
 				const pendingOvertimeResponse = await fetch(pendingOvertimeUrl, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
 						'Content-Type': 'application/json'
 					}
 				});
-				
+
 				let pendingOvertime = [];
 				if (pendingOvertimeResponse.ok) {
 					const pendingOvertimeData = await pendingOvertimeResponse.json();
 					console.log(`📊 [Responsible Dashboard] Pending overtime response:`, pendingOvertimeData);
-					
+
 					// API returns { success: true, data: [...] }
 					if (pendingOvertimeData.success && pendingOvertimeData.data) {
 						pendingOvertime = Array.isArray(pendingOvertimeData.data) ? pendingOvertimeData.data : [];
@@ -1018,7 +2391,7 @@
 					const errorText = await pendingOvertimeResponse.text();
 					console.error(`❌ [Responsible Dashboard] Failed to fetch pending overtime: ${pendingOvertimeResponse.status} - ${errorText}`);
 				}
-				
+
 				// Get ACCEPTED overtime requests for current month
 				const acceptedOvertimeParams = new URLSearchParams();
 				acceptedOvertimeParams.append('departmentId', currentDepartmentId);
@@ -1027,22 +2400,22 @@
 				acceptedOvertimeParams.append('month', currentMonth.toString());
 				acceptedOvertimeParams.append('page', '1');
 				acceptedOvertimeParams.append('limit', '1000');
-				
+
 				const acceptedOvertimeUrl = `${attendanceApiBase}/api/attendance/overtime/history?${acceptedOvertimeParams.toString()}`;
 				console.log(`📊 [Responsible Dashboard] Fetching accepted overtime: ${acceptedOvertimeUrl}`);
-				
+
 				const acceptedOvertimeResponse = await fetch(acceptedOvertimeUrl, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
 						'Content-Type': 'application/json'
 					}
 				});
-				
+
 				let acceptedOvertime = [];
 				if (acceptedOvertimeResponse.ok) {
 					const acceptedOvertimeData = await acceptedOvertimeResponse.json();
 					console.log(`📊 [Responsible Dashboard] Accepted overtime response:`, acceptedOvertimeData);
-					
+
 					// API returns { success: true, data: [...] }
 					if (acceptedOvertimeData.success && acceptedOvertimeData.data) {
 						acceptedOvertime = Array.isArray(acceptedOvertimeData.data) ? acceptedOvertimeData.data : [];
@@ -1056,15 +2429,15 @@
 					const errorText = await acceptedOvertimeResponse.text();
 					console.error(`❌ [Responsible Dashboard] Failed to fetch accepted overtime: ${acceptedOvertimeResponse.status} - ${errorText}`);
 				}
-				
+
 				// Update display with separate counts
 				document.getElementById('exceptionsPending').textContent = pendingExceptions.length;
 				document.getElementById('exceptionsAccepted').textContent = acceptedExceptions.length;
 				document.getElementById('extraHoursPending').textContent = pendingOvertime.length;
 				document.getElementById('extraHoursAccepted').textContent = acceptedOvertime.length;
-				
+
 				console.log(`✅ [Responsible Dashboard] Final counts - Exceptions: ${pendingExceptions.length} pending, ${acceptedExceptions.length} accepted this month | Overtime: ${pendingOvertime.length} pending, ${acceptedOvertime.length} accepted this month`);
-				
+
 				return pendingExceptions.length > 0 || acceptedExceptions.length > 0 || pendingOvertime.length > 0 || acceptedOvertime.length > 0;
 			} catch (error) {
 				console.error('❌ [Responsible Dashboard] Error loading requests statistics:', error);
@@ -1077,7 +2450,7 @@
 				return false;
 			}
 		}
-		
+
 		// Load attendance statistics - aggregated for department
 		async function loadAttendanceStatistics(dateRange) {
 			try {
@@ -1085,25 +2458,25 @@
 					await loadDepartmentEmployees();
 					if (!currentDepartmentEmployees.length) return false;
 				}
-				
+
 				const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3000';
 				const isYearFilter = currentPeriod === 'year';
-				
+
 				let totalWorkDays = 0;
 				let totalAbsentDays = 0;
 				let totalOvertimeHours = 0;
 				let totalLateMinutes = 0;
 				let totalEarlyMinutes = 0;
-				
+
 				// Load attendance for all department employees
 				const monthPromises = [];
 				const monthsToLoad = isYearFilter ? 12 : 1;
 				const startMonth = dateRange.month;
-				
+
 				for (let monthOffset = 0; monthOffset < monthsToLoad; monthOffset++) {
 					const targetMonth = isYearFilter ? monthOffset + 1 : startMonth;
 					const targetYear = dateRange.year;
-					
+
 					monthPromises.push(
 						fetch(`${attendanceApiBase}/api/attendance/monthly?year=${targetYear}&month=${targetMonth}&page=1&limit=1000`, {
 							headers: {
@@ -1119,12 +2492,12 @@
 									} else if (data.data && Array.isArray(data.data)) {
 										attendanceRecords = data.data;
 									}
-									
+
 									// Filter to only department employees
-									const deptAttendance = attendanceRecords.filter(record => 
+									const deptAttendance = attendanceRecords.filter(record =>
 										currentDepartmentEmployees.some(emp => String(emp.id) === String(record.employee_id))
 									);
-									
+
 									deptAttendance.forEach(attendance => {
 										totalWorkDays += parseInt(attendance.worked_days) || 0;
 										totalAbsentDays += parseInt(attendance.absence_days) || 0;
@@ -1132,7 +2505,7 @@
 										totalLateMinutes += parseInt(attendance.late_minutes) || 0;
 										totalEarlyMinutes += parseInt(attendance.early_minutes) || 0;
 									});
-									
+
 									return null;
 								}).catch(() => null);
 							}
@@ -1140,36 +2513,38 @@
 						}).catch(() => null)
 					);
 				}
-				
+
 				await Promise.all(monthPromises);
-				
+
 				document.getElementById('attendanceWorkDays').textContent = totalWorkDays;
 				document.getElementById('attendanceAbsentDays').textContent = totalAbsentDays;
 				document.getElementById('attendanceOvertime').textContent = totalOvertimeHours.toFixed(1) + 'h';
 				document.getElementById('attendanceLate').textContent = totalLateMinutes + 'm';
 				document.getElementById('attendanceEarly').textContent = totalEarlyMinutes + 'm';
-				
+
 				// Update summary
 				const summaryEl = document.getElementById('attendanceSummary');
 				if (summaryEl) {
-					const avgWorkDays = currentDepartmentEmployees.length > 0 
-						? (totalWorkDays / currentDepartmentEmployees.length).toFixed(1) 
+					const avgWorkDays = currentDepartmentEmployees.length > 0
+						? (totalWorkDays / currentDepartmentEmployees.length).toFixed(1)
 						: '0';
-					summaryEl.textContent = `Avg ${avgWorkDays} work days per employee`;
+					const avgText = typeof translate === 'function' ? translate('responsible_dashboard.avg_work_days') : 'Avg';
+					const workDaysText = typeof translate === 'function' ? translate('responsible_dashboard.work_days_per_employee') : 'work days per employee';
+					summaryEl.textContent = `${avgText} ${avgWorkDays} ${workDaysText}`;
 				}
-				
+
 				return totalWorkDays > 0 || totalAbsentDays > 0;
 			} catch (error) {
 				console.error('Error loading attendance statistics:', error);
 				return false;
 			}
 		}
-		
+
 		// Function to update user display name in dashboard header
 		async function updateDashboardUserDisplayName() {
 			const userDisplayNameEl = document.getElementById('userDisplayName');
 			if (!userDisplayNameEl) return;
-			
+
 			try {
 				const user = authManager.getUser();
 				if (user && (user.firstName || user.first_name) && (user.lastName || user.last_name)) {
@@ -1180,7 +2555,7 @@
 						return;
 					}
 				}
-				
+
 				const usersApiBase = window.API_SERVICES?.users || 'http://localhost:3002';
 				const response = await fetch(`${usersApiBase}/profile`, {
 					headers: {
@@ -1188,7 +2563,7 @@
 						'Content-Type': 'application/json'
 					}
 				});
-				
+
 				if (response.ok) {
 					const profile = await response.json();
 					if (profile.first_name && profile.last_name) {
@@ -1203,7 +2578,7 @@
 			} catch (error) {
 				console.warn('Failed to update user display name:', error);
 			}
-			
+
 			if (userDisplayNameEl.textContent === 'User') {
 				const user = authManager.getUser();
 				if (user && user.username) {
@@ -1211,21 +2586,21 @@
 				}
 			}
 		}
-		
+
 		// Sync language selector with current app language
 		function syncLanguageSelector() {
 			const languageSelector = document.getElementById('languageSelector');
 			if (!languageSelector) return;
-			
-			const currentLang = localStorage.getItem('language') || 
-			                   localStorage.getItem('lang') || 
-			                   (typeof window !== 'undefined' && window.currentLanguage) || 
-			                   'en';
-			
+
+			const currentLang = localStorage.getItem('language') ||
+				localStorage.getItem('lang') ||
+				(typeof window !== 'undefined' && window.currentLanguage) ||
+				'en';
+
 			languageSelector.value = currentLang;
-			
+
 			if (!languageSelector.hasAttribute('data-listener-added')) {
-				languageSelector.addEventListener('change', function() {
+				languageSelector.addEventListener('change', function () {
 					const newLang = this.value;
 					localStorage.setItem('language', newLang);
 					localStorage.setItem('lang', newLang);
@@ -1236,11 +2611,11 @@
 						setLanguage(newLang);
 					}
 				});
-				
+
 				languageSelector.setAttribute('data-listener-added', 'true');
 			}
 		}
-		
+
 		// Load signals statistics (for signals responsible is assigned to)
 		async function loadSignalsStatistics(dateRange) {
 			try {
@@ -1248,93 +2623,272 @@
 					await loadResponsibleProfile();
 					if (!currentResponsibleId) return false;
 				}
-				
+
 				const signalsApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
 				const from = dateRange.start.toISOString().split('T')[0];
 				const to = dateRange.end.toISOString().split('T')[0];
-				
+
 				const response = await fetch(`${signalsApiBase}/api/signals/responsible/${currentResponsibleId}/statistics?from=${from}&to=${to}`, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
 						'Content-Type': 'application/json'
 					}
 				});
-				
+
 				if (response.ok) {
 					const data = await response.json();
 					const overview = data.overview || {};
-					
-					document.getElementById('signalsTotal').textContent = overview.total || 0;
-					document.getElementById('signalsPending').textContent = overview.pending || 0;
-					document.getElementById('signalsTreated').textContent = overview.treated || 0;
-					document.getElementById('signalsHighPriority').textContent = overview.high_priority || 0;
-					
+
+					document.getElementById('assignedSignalsTotal').textContent = overview.total || 0;
+					document.getElementById('assignedSignalsPending').textContent = overview.pending || 0;
+					document.getElementById('assignedSignalsTreated').textContent = overview.treated || 0;
+					document.getElementById('assignedSignalsHighPriority').textContent = overview.high_priority || 0;
+
 					return (overview.total || 0) > 0;
 				} else {
 					console.warn('Signals statistics API response not OK:', response.status);
-					document.getElementById('signalsTotal').textContent = '0';
-					document.getElementById('signalsPending').textContent = '0';
-					document.getElementById('signalsTreated').textContent = '0';
-					document.getElementById('signalsHighPriority').textContent = '0';
+					document.getElementById('assignedSignalsTotal').textContent = '0';
+					document.getElementById('assignedSignalsPending').textContent = '0';
+					document.getElementById('assignedSignalsTreated').textContent = '0';
+					document.getElementById('assignedSignalsHighPriority').textContent = '0';
 					return false;
 				}
 			} catch (error) {
 				console.error('Error loading signals statistics:', error);
-				document.getElementById('signalsTotal').textContent = '0';
-				document.getElementById('signalsPending').textContent = '0';
-				document.getElementById('signalsTreated').textContent = '0';
-				document.getElementById('signalsHighPriority').textContent = '0';
+				document.getElementById('assignedSignalsTotal').textContent = '0';
+				document.getElementById('assignedSignalsPending').textContent = '0';
+				document.getElementById('assignedSignalsTreated').textContent = '0';
+				document.getElementById('assignedSignalsHighPriority').textContent = '0';
 				return false;
 			}
 		}
-		
-		// Load complaints statistics (own complaints)
-		async function loadComplaintsStatistics(dateRange) {
+
+		// Complaints are now handled in personal data section (loadMyPersonalComplaints)
+
+		// Load responsible schedule/timetable
+		async function loadSchedule() {
 			try {
 				if (!currentResponsibleId) {
 					await loadResponsibleProfile();
-					if (!currentResponsibleId) return false;
+					if (!currentResponsibleId) {
+						const scheduleLoading = document.getElementById('scheduleLoading');
+						const scheduleDisplay = document.getElementById('scheduleDisplay');
+						const noScheduleMessage = document.getElementById('noScheduleMessage');
+						if (scheduleLoading) scheduleLoading.classList.add('hidden');
+						if (scheduleDisplay) scheduleDisplay.classList.remove('hidden');
+						if (noScheduleMessage) noScheduleMessage.classList.remove('hidden');
+						return false;
+					}
 				}
 				
-				const complaintsApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
-				const from = dateRange.start.toISOString().split('T')[0];
-				const to = dateRange.end.toISOString().split('T')[0];
-				
-				const response = await fetch(`${complaintsApiBase}/api/complaints/employee/${currentResponsibleId}/statistics?from=${from}&to=${to}`, {
+				const timetableApiBase = window.API_SERVICES?.timetable || 'http://localhost:3011';
+				const response = await fetch(`${timetableApiBase}/employee-assignments/${currentResponsibleId}`, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
 						'Content-Type': 'application/json'
 					}
 				});
 				
-				if (response.ok) {
-					const data = await response.json();
-					const overview = data.overview || {};
-					
-					document.getElementById('complaintsTotal').textContent = overview.total || 0;
-					document.getElementById('complaintsPending').textContent = overview.pending || 0;
-					document.getElementById('complaintsCompleted').textContent = overview.completed || 0;
-					document.getElementById('complaintsOverdue').textContent = overview.overdue || 0;
-					
-					return (overview.total || 0) > 0;
-				} else {
-					console.warn('Complaints statistics API response not OK:', response.status);
-					document.getElementById('complaintsTotal').textContent = '0';
-					document.getElementById('complaintsPending').textContent = '0';
-					document.getElementById('complaintsCompleted').textContent = '0';
-					document.getElementById('complaintsOverdue').textContent = '0';
+				const scheduleLoading = document.getElementById('scheduleLoading');
+				const scheduleDisplay = document.getElementById('scheduleDisplay');
+				const noScheduleMessage = document.getElementById('noScheduleMessage');
+				
+				if (scheduleLoading) scheduleLoading.classList.add('hidden');
+				if (scheduleDisplay) scheduleDisplay.classList.remove('hidden');
+				
+				if (!response.ok) {
+					if (response.status === 404) {
+						if (noScheduleMessage) noScheduleMessage.classList.remove('hidden');
+						return false;
+					}
+					throw new Error('Failed to load schedule');
+				}
+				
+				const data = await response.json();
+				const intervals = data.intervals || [];
+				const assignment = data.assignment || null;
+				
+				if (!intervals || intervals.length === 0) {
+					if (noScheduleMessage) noScheduleMessage.classList.remove('hidden');
 					return false;
 				}
+				
+				if (noScheduleMessage) noScheduleMessage.classList.add('hidden');
+
+				scheduleTimetableData = { intervals, assignment };
+				
+				// Timetable name no longer displayed (cards removed)
+				
+				// Calculate statistics
+				const totalDays = intervals.length;
+				let totalHours = 0;
+				intervals.forEach(interval => {
+					if (interval.start_time && interval.end_time) {
+						const start = new Date(`2000-01-01T${interval.start_time}`);
+						const end = new Date(`2000-01-01T${interval.end_time}`);
+						totalHours += (end - start) / (1000 * 60 * 60);
+					}
+				});
+				const scheduleTotalDaysEl = document.getElementById('scheduleTotalDays');
+				const scheduleTotalHoursEl = document.getElementById('scheduleTotalHours');
+				if (scheduleTotalDaysEl) scheduleTotalDaysEl.textContent = totalDays;
+				if (scheduleTotalHoursEl) scheduleTotalHoursEl.textContent = totalHours.toFixed(1) + 'h';
+				
+				// Hourly view: default to today, update day selector options, render
+				const todayWeekday = new Date().getDay();
+				const daySel = document.getElementById('scheduleHourlyDaySelector');
+				if (daySel) {
+					daySel.value = String(todayWeekday);
+					updateScheduleDaySelectorOptions();
+					renderScheduleHourlyView(todayWeekday);
+				}
+				
+				return true;
 			} catch (error) {
-				console.error('Error loading complaints statistics:', error);
-				document.getElementById('complaintsTotal').textContent = '0';
-				document.getElementById('complaintsPending').textContent = '0';
-				document.getElementById('complaintsCompleted').textContent = '0';
-				document.getElementById('complaintsOverdue').textContent = '0';
+				console.error('Error loading schedule:', error);
+				const scheduleLoading = document.getElementById('scheduleLoading');
+				const scheduleDisplay = document.getElementById('scheduleDisplay');
+				const noScheduleMessage = document.getElementById('noScheduleMessage');
+				if (scheduleLoading) scheduleLoading.classList.add('hidden');
+				if (scheduleDisplay) scheduleDisplay.classList.remove('hidden');
+				if (noScheduleMessage) noScheduleMessage.classList.remove('hidden');
 				return false;
 			}
 		}
 		
+		// Format time string (HH:MM:SS) to HH:MM
+		function formatTime(timeString) {
+			if (!timeString) return '';
+			const parts = timeString.split(':');
+			return `${parts[0]}:${parts[1]}`;
+		}
+
+		function formatHour(hour) {
+			const ampm = hour >= 12 ? 'PM' : 'AM';
+			const displayHour = hour % 12 || 12;
+			return `${displayHour}:00 ${ampm}`;
+		}
+
+		function getScheduleTranslatedWeekday(index) {
+			const keys = [
+				'employee_dashboard.day_sunday',
+				'employee_dashboard.day_monday',
+				'employee_dashboard.day_tuesday',
+				'employee_dashboard.day_wednesday',
+				'employee_dashboard.day_thursday',
+				'employee_dashboard.day_friday',
+				'employee_dashboard.day_saturday'
+			];
+			return typeof translate === 'function' ? translate(keys[index]) : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][index];
+		}
+
+		function updateScheduleDaySelectorOptions() {
+			const sel = document.getElementById('scheduleHourlyDaySelector');
+			if (!sel) return;
+			for (let i = 0; i < 7; i++) {
+				const opt = sel.options[i];
+				if (opt) opt.textContent = getScheduleTranslatedWeekday(i);
+			}
+		}
+
+		function renderScheduleHourlyView(selectedWeekday) {
+			const container = document.getElementById('scheduleHourlyCalendar');
+			if (!container) return;
+			container.innerHTML = '';
+			if (!scheduleTimetableData || !scheduleTimetableData.intervals) return;
+
+			const intervals = scheduleTimetableData.intervals.filter(i => parseInt(i.weekday) === selectedWeekday);
+			intervals.sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''));
+
+			const noScheduleDayText = (typeof translate === 'function' ? translate('timetable.no_schedule_day') : 'No schedule for this day').replace('this day', getScheduleTranslatedWeekday(selectedWeekday));
+			const freeText = typeof translate === 'function' ? translate('timetable.free') : 'Free';
+			const breakText = typeof translate === 'function' ? translate('timetable.break') : 'Break';
+			const minText = typeof translate === 'function' ? translate('time.minute') : 'min';
+			const timeIntervalsSummaryText = typeof translate === 'function' ? translate('timetable.time_intervals_summary') : 'Time Intervals Summary';
+			const onCallText = typeof translate === 'function' ? translate('timetable.on_call') : 'On Call';
+			const overnightText = typeof translate === 'function' ? translate('timetable.overnight') : 'Overnight';
+
+			const hourlySlots = [];
+			for (let hour = 6; hour <= 23; hour++) {
+				const slotIntervals = intervals.filter(interval => {
+					const startHour = parseInt(String(interval.start_time).split(':')[0], 10);
+					const endHour = parseInt(String(interval.end_time).split(':')[0], 10);
+					return hour >= startHour && hour <= endHour;
+				});
+				hourlySlots.push({ hour, intervals: slotIntervals });
+			}
+
+			const wrap = document.createElement('div');
+			wrap.className = 'mb-4';
+			const dayTitle = document.createElement('h4');
+			dayTitle.className = 'text-xl font-semibold text-gray-900 mb-4';
+			dayTitle.textContent = getScheduleTranslatedWeekday(selectedWeekday);
+			wrap.appendChild(dayTitle);
+
+			if (intervals.length === 0) {
+				const empty = document.createElement('div');
+				empty.className = 'text-center py-8 bg-gray-50 rounded-lg';
+				empty.innerHTML = `<i class="fas fa-calendar-times text-4xl text-gray-400 mb-3"></i><p class="text-gray-500">${noScheduleDayText}</p>`;
+				wrap.appendChild(empty);
+			} else {
+				const slotList = document.createElement('div');
+				slotList.className = 'schedule-hourly-grid space-y-1';
+				hourlySlots.forEach(slot => {
+					const hasInterval = slot.intervals.length > 0;
+					if (!hasInterval) return;
+					const activeInterval = slot.intervals[0];
+					const row = document.createElement('div');
+					row.className = 'schedule-hourly-row flex items-center border-b border-gray-200 py-3 bg-blue-50';
+					const timeLabel = document.createElement('div');
+					timeLabel.className = 'w-24 font-semibold text-gray-700 flex-shrink-0';
+					timeLabel.textContent = formatHour(slot.hour);
+					const content = document.createElement('div');
+					content.className = 'flex-1 min-w-0';
+					content.innerHTML = `
+						<div class="interval-bar working-time inline-block">
+							<div class="font-semibold">${formatTime(activeInterval.start_time)} - ${formatTime(activeInterval.end_time)}</div>
+							${activeInterval.break_minutes > 0 ? `<div class="text-xs opacity-90 mt-1">${breakText}: ${activeInterval.break_minutes} ${minText}</div>` : ''}
+						</div>
+					`;
+					row.appendChild(timeLabel);
+					row.appendChild(content);
+					slotList.appendChild(row);
+				});
+				wrap.appendChild(slotList);
+				const summaryTitle = document.createElement('h5');
+				summaryTitle.className = 'font-semibold text-gray-900 mt-6 mb-2';
+				summaryTitle.textContent = timeIntervalsSummaryText;
+				wrap.appendChild(summaryTitle);
+				intervals.forEach(interval => {
+					const bar = document.createElement('div');
+					bar.className = 'interval-bar working-time p-3 rounded-lg mb-2';
+					bar.innerHTML = `
+						<div class="flex items-center justify-between flex-wrap gap-2">
+							<div>
+								<span class="font-semibold">${formatTime(interval.start_time)} - ${formatTime(interval.end_time)}</span>
+								${interval.break_minutes > 0 ? `<span class="text-sm opacity-90 ml-3">${breakText}: ${interval.break_minutes} ${minText}</span>` : ''}
+							</div>
+							<div>
+								${interval.on_call_flag ? `<span class="px-2 py-1 bg-white bg-opacity-30 rounded text-xs">${onCallText}</span>` : ''}
+								${interval.overnight ? `<span class="px-2 py-1 bg-white bg-opacity-30 rounded text-xs ml-2">${overnightText}</span>` : ''}
+							</div>
+						</div>
+					`;
+					wrap.appendChild(bar);
+				});
+			}
+			container.appendChild(wrap);
+		}
+		
+		// Reorder/update schedule UI (day selector labels and hourly view) for RTL/language
+		function reorderScheduleDays() {
+			updateScheduleDaySelectorOptions();
+			const sel = document.getElementById('scheduleHourlyDaySelector');
+			if (sel && scheduleTimetableData) {
+				renderScheduleHourlyView(parseInt(sel.value, 10));
+			}
+		}
+
 		// Setup notifications UI for dashboard
 		function setupDashboardNotificationsUI() {
 			try {
@@ -1342,7 +2896,7 @@
 				const dd = document.getElementById('empNotifDropdown');
 				const markAll = document.getElementById('empNotifMarkAll');
 				const clearAll = document.getElementById('empNotifClearAll');
-				
+
 				if (bell && dd) {
 					bell.addEventListener('click', (e) => {
 						e.stopPropagation();
@@ -1360,7 +2914,7 @@
 							}, 200);
 						}
 					});
-					
+
 					document.addEventListener('click', (e) => {
 						if (!dd.contains(e.target) && e.target !== bell && !bell.contains(e.target)) {
 							dd.classList.remove('opacity-100', 'translate-y-0');
@@ -1371,13 +2925,13 @@
 						}
 					});
 				}
-				
+
 				if (markAll) {
 					markAll.addEventListener('click', async () => {
 						console.log('Mark all notifications as read');
 					});
 				}
-				
+
 				if (clearAll) {
 					clearAll.addEventListener('click', async () => {
 						console.log('Clear all notifications');
@@ -1390,4 +2944,5 @@
 	</script>
 	<script src="../assets/js/navbar.js"></script>
 </body>
+
 </html>

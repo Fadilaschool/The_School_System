@@ -28,7 +28,7 @@ if (typeof translations === 'undefined') {
 
             // Navigation
             'nav.hr_manager': 'HR Manager',
-            'nav.hr_management_system': 'HR Management System',
+            'nav.hr_management_system': 'Director Space',
             'nav.employee_space': 'Employee Portal',
             'nav.systems_space': 'Systems Space',
             'nav.dashboard': 'Dashboard',
@@ -3380,7 +3380,7 @@ if (typeof translations === 'undefined') {
             'nav.hr': 'RH',
             'nav.department': 'Département',
             'nav.all_views': 'Toutes les Vues',
-            'nav.hr_management_system': 'Système de Gestion RH',
+            'nav.hr_management_system': 'Director Space',
             'nav.employee_space': 'Portail Employé',
             'nav.systems_space': 'Espace Systèmes',
         },
@@ -4877,6 +4877,7 @@ if (typeof translations === 'undefined') {
 
             // Reports
             'report.title': 'التقارير',
+            'report.description': 'إدارة تقارير النشاط',
             'report.employee_report': 'تقرير الموظف',
             'report.department_report': 'تقرير القسم',
             'report.salary_report': 'تقرير الراتب',
@@ -4912,7 +4913,7 @@ if (typeof translations === 'undefined') {
             'report.missing_employee_id': 'يرجى الوصول إلى هذه الصفحة باستخدام المعاملات المناسبة في عنوان URL.',
             'report.url_example': 'مثال: ?employee_id=xxx&first=John&last=Doe',
             'report.total': 'إجمالي التقارير',
-            'report.acknowledge_all': 'إقرار الكل',
+            'report.acknowledge_all': 'إقرار كل المعلّقة',
             'report.all': 'الكل',
             'report.apply': 'تطبيق',
             'report.reports': 'التقارير',
@@ -5099,7 +5100,7 @@ if (typeof translations === 'undefined') {
             'nav.hr': 'الموارد البشرية',
             'nav.department': 'القسم',
             'nav.all_views': 'جميع العروض',
-            'nav.hr_management_system': 'نظام إدارة الموارد البشرية',
+            'nav.hr_management_system': 'director space',
             'nav.employee_space': 'بوابة الموظف',
         }
     };

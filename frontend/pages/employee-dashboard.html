@@ -1,28 +1,238 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Employee Dashboard - HR Operations Platform</title>
 	<script src="https://cdn.tailwindcss.com"></script>
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 	<link href="../assets/css/style.css" rel="stylesheet">
 	<style>
-		/* Ensure header is positioned at the top without overlapping */
-		#dashboardHeader {
+		/* Director-themed base styles */
+		:root {
+			--director-indigo: #4338ca;
+			--director-blue: #2563eb;
+			--director-purple: #7c3aed;
+			--director-slate: #0f172a;
+			--director-card-bg: #ffffff;
+			--director-surface: #f8fafc;
+		}
+
+		body {
+			font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+			color: var(--director-slate);
+			background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+		}
+
+		/* KPI cards */
+		.kpi-card {
+			background: var(--director-card-bg);
+			border-radius: 24px;
+			padding: 22px;
+			position: relative;
+			overflow: hidden;
+			border: 1px solid rgba(15, 23, 42, 0.06);
+			box-shadow: 0 18px 35px rgba(15, 23, 42, 0.07);
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.kpi-card::after {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 55%);
+			pointer-events: none;
+		}
+
+		.kpi-card:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 25px 45px rgba(15, 23, 42, 0.12);
+		}
+
+		.kpi-icon {
+			width: 48px;
+			height: 48px;
+			border-radius: 16px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(99, 102, 241, 0.35));
+			color: var(--director-indigo);
+			margin-bottom: 16px;
+			position: relative;
+			z-index: 1;
+		}
+
+		.director-panel {
+			margin-top: 16px;
+			background: var(--director-card-bg);
+			border-radius: 22px;
+			padding: 28px;
+			box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+			border: 1px solid rgba(15, 23, 42, 0.06);
+			position: relative;
+			overflow: hidden;
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		}
+
+		.director-panel::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: linear-gradient(120deg,
+					rgba(37, 99, 235, 0.12),
+					rgba(124, 58, 237, 0.08),
+					rgba(56, 189, 248, 0.08));
+			opacity: 0.25;
+			pointer-events: none;
+			z-index: 0;
+		}
+
+		.director-panel::after {
+			content: '';
+			position: absolute;
+			top: -50%;
+			right: -50%;
+			width: 200%;
+			height: 200%;
+			background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+			transform: rotate(45deg);
+			pointer-events: none;
+			transition: all 0.5s;
+		}
+
+		.director-panel:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.15);
+		}
+
+		.director-panel:hover::after {
+			top: -100%;
+			right: -100%;
+		}
+
+		.director-panel>* {
+			position: relative;
+			z-index: 1;
+		}
+
+		.director-panel-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 0.75rem;
+			margin-bottom: 1.5rem;
+		}
+
+		.director-panel-title {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+		.director-panel-title-icon {
+			width: 32px;
+			height: 32px;
+			border-radius: 9999px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			background: radial-gradient(circle at top left,
+					rgba(37, 99, 235, 0.22),
+					rgba(37, 99, 235, 0.05));
+			color: #1d4ed8;
+		}
+
+		.director-section-pill {
+			padding: 0.15rem 0.7rem;
+			border-radius: 9999px;
+			font-size: 0.7rem;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			background: rgba(15, 23, 42, 0.04);
+			color: #64748b;
+		}
+
+		/* Report Stat Cards */
+		.report-stat-card-inline {
+			background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+			border-radius: 20px;
+			padding: 20px;
+			border: 1px solid rgba(15, 23, 42, 0.08);
+			box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+			transition: all 0.3s ease;
+			display: flex;
+			gap: 16px;
+			align-items: center;
+			flex: 1;
+			min-width: 200px;
+		}
+
+		.report-stat-card-inline:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+		}
+
+		.report-stat-icon {
+			width: 56px;
+			height: 56px;
+			border-radius: 16px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-size: 1.5rem;
+			flex-shrink: 0;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+		}
+
+		.report-stat-content {
+			flex: 1;
+		}
+
+		.report-stat-label {
+			font-size: 0.75rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+			color: #64748b;
+			font-weight: 600;
+			margin-bottom: 8px;
+		}
+
+		.report-stat-value {
+			font-size: 2.25rem;
+			font-weight: 800;
+			color: #0f172a;
+			line-height: 1;
+			margin-bottom: 10px;
+		}
+
+		.report-stat-badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 6px 12px;
+			border-radius: 12px;
+			font-size: 0.75rem;
+			font-weight: 600;
+		}
+		/* Header / page-header: same layout for all spaces (responsive rules in style.css) */
+		#dashboardHeader,
+		.page-header {
 			position: relative !important;
 			top: 0 !important;
 			left: 0 !important;
 			right: 0 !important;
 			width: 100% !important;
 			margin: 0 !important;
-			padding: 0 !important;
 			z-index: 10;
 			flex-shrink: 0;
 		}
 		
 		#dashboardHeaderContainer,
-		.main-content > #dashboardHeader {
+		.main-content > #dashboardHeader,
+		.main-content > .page-header {
 			margin: 0 !important;
 			padding: 0 !important;
 			width: 100% !important;
@@ -37,7 +247,8 @@
 		
 		/* Ensure header container/header is at the very top */
 		.main-content > #dashboardHeaderContainer,
-		.main-content > #dashboardHeader {
+		.main-content > #dashboardHeader,
+		.main-content > .page-header {
 			order: -1;
 		}
 		
@@ -68,20 +279,21 @@
 			margin-top: 0 !important;
 		}
 		
-		/* Account for sidebar width - more compatible approach */
+		/* Account for sidebar width – matches style.css (desktop margin-left from main.js/sidebar) */
 		body #collapsibleSidebar ~ .main-content,
 		body:has(#collapsibleSidebar) .main-content {
-			margin-left: 4rem; /* 64px for collapsed sidebar */
+			margin-left: 0;
 		}
 		
 		[dir="rtl"] body #collapsibleSidebar ~ .main-content,
 		[dir="rtl"] body:has(#collapsibleSidebar) .main-content {
 			margin-left: 0;
-			margin-right: 4rem;
+			margin-right: 0;
 		}
 		
-		/* Fix header layout for RTL (Arabic) - prevents rectangle shape */
-		[dir="rtl"] #dashboardHeader {
+		/* RTL header layout (legacy #dashboardHeader; .page-header RTL in style.css) */
+		[dir="rtl"] #dashboardHeader,
+		[dir="rtl"] .page-header {
 			position: relative !important;
 			top: 0 !important;
 			left: 0 !important;
@@ -95,63 +307,345 @@
 			direction: ltr;
 		}
 		
-		/* Keep header right controls in LTR order */
 		[dir="rtl"] #dashboardHeader > .flex.items-center.justify-between > div:last-child {
 			flex-direction: row !important;
 			direction: ltr;
 		}
 		
-		/* Fix space-x-4 spacing in header controls for RTL */
 		[dir="rtl"] #dashboardHeader .space-x-4 > * + * {
 			margin-left: 1rem !important;
 			margin-right: 0 !important;
 		}
 		
-		/* Fix space-x-2 spacing in header for RTL */
 		[dir="rtl"] #dashboardHeader .space-x-2 > * + * {
 			margin-left: 0.5rem !important;
 			margin-right: 0 !important;
 		}
 		
-		/* Ensure header maintains proper width */
 		[dir="rtl"] #dashboardHeader > .flex.items-center.justify-between {
 			width: 100%;
 			max-width: 100%;
 		}
 		
-		/* Dashboard card styles */
-		.stat-card {
+		/* Modern Employee Dashboard Card Styles */
+		.employee-stat-card {
+			background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+			border-radius: 20px;
+			padding: 24px;
+			border: 1px solid rgba(15, 23, 42, 0.08);
+			box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			position: relative;
+			overflow: hidden;
+		}
+
+		.employee-stat-card::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 55%);
+			pointer-events: none;
+		}
+
+		.employee-stat-card::after {
+			content: '';
+			position: absolute;
+			top: -50%;
+			right: -50%;
+			width: 200%;
+			height: 200%;
+			background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+			transform: rotate(45deg);
+			pointer-events: none;
+			transition: all 0.5s;
+		}
+
+		.employee-stat-card:hover {
+			transform: translateY(-6px) scale(1.02);
+			box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.15);
+		}
+
+		.employee-stat-card:hover::after {
+			top: -100%;
+			right: -100%;
+		}
+
+		.employee-stat-icon {
+			width: 56px;
+			height: 56px;
+			border-radius: 16px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-size: 1.4rem;
+			flex-shrink: 0;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+			margin-bottom: 18px;
+			position: relative;
+			z-index: 1;
 			transition: all 0.3s ease;
-			border: 2px solid transparent;
 		}
-		
-		.stat-card:hover {
-			transform: translateY(-4px);
-			box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+
+		.employee-stat-icon::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			border-radius: 16px;
+			background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+			pointer-events: none;
 		}
-		
-		.gradient-bg-blue {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+		.employee-stat-title {
+			font-size: 1.1rem;
+			font-weight: 700;
+			color: #0f172a;
+			margin-bottom: 16px;
+			line-height: 1.3;
+			position: relative;
+			z-index: 1;
+			letter-spacing: -0.02em;
 		}
-		
-		.gradient-bg-green {
-			background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+
+		.employee-stat-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 14px;
+			position: relative;
+			z-index: 1;
 		}
-		
-		.gradient-bg-orange {
-			background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+
+		.employee-stat-item {
+			text-align: center;
+			padding: 12px 8px;
+			border-radius: 12px;
+			background: rgba(248, 250, 252, 0.6);
+			border: 1px solid rgba(226, 232, 240, 0.8);
+			transition: all 0.2s ease;
 		}
-		
-		.gradient-bg-purple {
-			background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+
+		.employee-stat-item:hover {
+			background: rgba(241, 245, 249, 0.9);
+			transform: translateY(-2px);
 		}
-		
-		.gradient-bg-yellow {
-			background: linear-gradient(135deg, #fad961 0%, #f76b1c 100%);
+
+		.employee-stat-label {
+			font-size: 0.7rem;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			color: #64748b;
+			font-weight: 600;
+			margin-bottom: 6px;
 		}
-		
-		.gradient-bg-indigo {
-			background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+
+		.employee-stat-value {
+			font-size: 1.6rem;
+			font-weight: 800;
+			color: #0f172a;
+			line-height: 1;
+			background: linear-gradient(135deg, #1e293b, #334155);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+		}
+
+		.employee-stat-link {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			margin-top: 18px;
+			color: #3b82f6;
+			font-size: 0.875rem;
+			font-weight: 600;
+			text-decoration: none;
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			position: relative;
+			z-index: 1;
+			padding: 8px 16px;
+			border-radius: 12px;
+			background: rgba(59, 130, 246, 0.1);
+		}
+
+		.employee-stat-link:hover {
+			color: #2563eb;
+			transform: translateX(4px) scale(1.05);
+			background: rgba(59, 130, 246, 0.15);
+			box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+		}
+
+		/* Page Header Styles - Match Responsible Dashboard */
+		.page-header {
+			text-align: center;
+			margin-bottom: 2rem;
+			padding: 2rem 0;
+			background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+			border-radius: 16px;
+			border: 1px solid rgba(148, 163, 184, 0.1);
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+		}
+
+		.page-title {
+			font-size: 2rem;
+			font-weight: 700;
+			color: #1e293b;
+			margin: 0 0 0.75rem 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.75rem;
+		}
+
+		.page-title i {
+			color: #3b82f6;
+			font-size: 1.75rem;
+		}
+
+		.page-subtitle {
+			font-size: 1rem;
+			color: #64748b;
+			margin: 0;
+			font-weight: 500;
+		}
+
+		/* Header User Section Styles – compact on mobile (global style.css); full on desktop */
+		.header-user-section {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			background: rgba(255, 255, 255, 0.1);
+			backdrop-filter: blur(10px);
+			border-radius: 16px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			transition: all 0.3s ease;
+		}
+		@media (min-width: 769px) {
+			.header-user-section {
+				padding: 12px 20px;
+				margin: 3rem 2rem;
+			}
+		}
+
+		.header-user-section:hover {
+			background: rgba(255, 255, 255, 0.2);
+			transform: translateY(-2px);
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+		}
+
+		.header-avatar {
+			width: 56px;
+			height: 56px;
+			border-radius: 16px;
+			background: linear-gradient(135deg, #ffffff, #f1f5f9);
+			color: #4338ca;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.5rem;
+			font-weight: 800;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			flex-shrink: 0;
+			border: 2px solid rgba(255, 255, 255, 0.5);
+		}
+
+		.header-user-info {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+			min-width: 0;
+		}
+
+		.header-user-name {
+			font-size: 1.1rem;
+			font-weight: 700;
+			color: #ffffff;
+			margin: 0;
+			line-height: 1.2;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.header-user-role {
+			font-size: 0.75rem;
+			font-weight: 600;
+			color: rgba(255, 255, 255, 0.85);
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+			background: rgba(255, 255, 255, 0.15);
+			padding: 4px 10px;
+			border-radius: 8px;
+			display: inline-block;
+			width: fit-content;
+		}
+
+		.notification-bell {
+			position: relative;
+			width: 48px;
+			height: 48px;
+			border-radius: 14px;
+			background: rgba(255, 255, 255, 0.15);
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(255, 255, 255, 0.25);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			color: #ffffff;
+			font-size: 1.2rem;
+		}
+
+		.notification-bell:hover {
+			background: rgba(255, 255, 255, 0.25);
+			transform: translateY(-2px);
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+		}
+
+		.notification-bell:active {
+			transform: translateY(0);
+		}
+
+		.notification-badge {
+			position: absolute;
+			top: -4px;
+			right: -4px;
+			background: linear-gradient(135deg, #ef4444, #dc2626);
+			color: white;
+			font-size: 0.65rem;
+			font-weight: 700;
+			padding: 2px 6px;
+			border-radius: 10px;
+			min-width: 18px;
+			height: 18px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+			border: 2px solid rgba(255, 255, 255, 0.3);
+		}
+
+		.notification-badge:empty {
+			display: none;
+		}
+
+		.header-date {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			background: rgba(255, 255, 255, 0.15);
+			backdrop-filter: blur(10px);
+			padding: 12px 18px;
+			border-radius: 14px;
+			border: 1px solid rgba(255, 255, 255, 0.25);
+			color: #ffffff;
+			font-size: 0.9rem;
+			font-weight: 600;
+			white-space: nowrap;
+		}
+
+		.header-date i {
+			font-size: 1rem;
+			opacity: 0.9;
 		}
 		
 		.loading-skeleton {
@@ -165,8 +659,312 @@
 			100% { background-position: -200% 0; }
 		}
 		
+		/* Modern Employee Info Card */
 		.employee-info-card {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 100%);
+			border-radius: 24px;
+			padding: 28px;
+			box-shadow: 0 18px 35px rgba(67, 56, 202, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+			position: relative;
+			overflow: hidden;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+		.employee-info-card::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.25), transparent 50%);
+			pointer-events: none;
+		}
+
+		.employee-info-card::after {
+			content: '';
+			position: absolute;
+			top: -50%;
+			left: -50%;
+			width: 200%;
+			height: 200%;
+			background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+			transform: rotate(45deg);
+			pointer-events: none;
+			animation: shimmer 3s infinite;
+		}
+
+		@keyframes shimmer {
+			0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+			100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+		}
+
+		.employee-info-content {
+			position: relative;
+			z-index: 1;
+		}
+		
+		/* Mobile Responsive Styles - Match Responsible Dashboard */
+		@media (max-width: 640px) {
+			/* Employee Info Card Mobile Styles */
+			#employeeInfoCard {
+				padding: 1rem;
+				border-radius: 16px;
+			}
+			
+			.employee-info-content .employee-info-top-row {
+				flex-direction: column;
+				align-items: stretch;
+				gap: 1rem;
+			}
+			
+			.employee-info-content .employee-info-profile {
+				flex-wrap: nowrap;
+				gap: 0.75rem;
+				min-width: 0;
+			}
+			
+			.employee-info-content .employee-info-profile .employee-info-avatar {
+				flex-shrink: 0;
+			}
+			
+			.employee-info-content .employee-info-profile .employee-info-text {
+				min-width: 0;
+				flex: 1;
+			}
+			
+			.employee-info-content .employee-info-profile .employee-info-meta {
+				display: flex;
+				flex-direction: column;
+				gap: 0.25rem;
+				align-items: flex-start;
+			}
+			
+			/* Filter Controls Mobile Styles */
+			.p-6 .flex.items-center.gap-4 {
+				width: 100%;
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				flex-wrap: wrap;
+				padding: 1rem !important;
+			}
+			
+			.p-6 .flex.items-center.gap-4 select {
+				flex: 1;
+				min-width: 120px;
+				max-width: 100%;
+			}
+			
+			/* Page Header Mobile Styles */
+			.page-header {
+				padding: 1.5rem 1rem;
+				margin: 1rem;
+				border-radius: 12px;
+			}
+			
+			.page-title {
+				font-size: 1.5rem !important;
+				flex-direction: column;
+				gap: 0.5rem;
+				text-align: center;
+			}
+			
+			.page-title i {
+				font-size: 1.5rem !important;
+			}
+			
+			.page-subtitle {
+				font-size: 0.875rem !important;
+				text-align: center;
+			}
+			
+			/* Statistics Grid Mobile Styles */
+			.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4 {
+				grid-template-columns: 1fr;
+				gap: 1rem !important;
+				padding: 1rem !important;
+			}
+			
+			.grid.grid-cols-1.md\\:grid-cols-2 {
+				grid-template-columns: 1fr;
+				gap: 1rem !important;
+				padding: 1rem !important;
+			}
+			
+			/* Employee Stat Cards Mobile Styles */
+			.employee-stat-card {
+				padding: 1.25rem;
+				border-radius: 16px;
+				margin-bottom: 0.5rem;
+			}
+			
+			.employee-stat-icon {
+				width: 48px;
+				height: 48px;
+				font-size: 1.25rem;
+				margin-bottom: 1rem;
+			}
+			
+			.employee-stat-title {
+				font-size: 1rem;
+				margin-bottom: 1rem;
+				text-align: center;
+			}
+			
+			.employee-stat-grid {
+				grid-template-columns: 1fr 1fr;
+				gap: 0.75rem;
+			}
+			
+			.employee-stat-item {
+				padding: 0.75rem 0.5rem;
+				border-radius: 10px;
+			}
+			
+			.employee-stat-label {
+				font-size: 0.65rem;
+				margin-bottom: 0.25rem;
+			}
+			
+			.employee-stat-value {
+				font-size: 1.25rem;
+			}
+			
+			.employee-stat-link {
+				margin-top: 1rem;
+				padding: 0.75rem 1rem;
+				font-size: 0.8rem;
+				justify-content: center;
+				width: 100%;
+			}
+			
+			/* Director Panel Mobile Styles */
+			.director-panel {
+				padding: 1.25rem;
+				border-radius: 16px;
+				margin: 1rem !important;
+			}
+			
+			.director-panel-header {
+				flex-direction: column;
+				gap: 1rem;
+				align-items: stretch;
+			}
+			
+			.director-panel-title {
+				flex-direction: column;
+				text-align: center;
+				gap: 0.5rem;
+			}
+			
+			.director-panel-title-icon {
+				align-self: center;
+			}
+			
+			.director-panel-title > div {
+				text-align: center;
+			}
+			
+			.director-section-pill {
+				align-self: center;
+				margin-top: 0.5rem;
+			}
+			
+			/* Report Stat Cards Mobile Styles */
+			.report-stat-card-inline {
+				padding: 12px 14px;
+				gap: 12px;
+				min-width: 0;
+				border-radius: 14px;
+				margin-bottom: 0.5rem;
+			}
+			
+			.report-stat-icon {
+				width: 44px;
+				height: 44px;
+				border-radius: 12px;
+				font-size: 1.15rem;
+			}
+			
+			.report-stat-label {
+				font-size: 0.65rem;
+				margin-bottom: 4px;
+			}
+			
+			.report-stat-value {
+				font-size: 1.5rem;
+				margin-bottom: 4px;
+			}
+			
+			/* Grid adjustments for mobile */
+			.grid.grid-cols-2.md\\:grid-cols-5 {
+				grid-template-columns: 1fr 1fr;
+				gap: 0.75rem;
+			}
+			
+			/* Container padding adjustments */
+		.p-6 {
+			padding: 1rem !important;
+		}
+		
+		.mb-8 {
+			margin-bottom: 1rem !important;
+		}
+		
+		.mb-6 {
+			margin-bottom: 1rem !important;
+		}
+		
+		.m-6 {
+			margin: 1rem !important;
+		}
+		}
+		
+		@media (max-width: 480px) {
+			/* Extra small mobile adjustments */
+			.employee-stat-card {
+				padding: 1rem;
+			}
+			
+			.employee-stat-icon {
+				width: 40px;
+				height: 40px;
+				font-size: 1.125rem;
+			}
+			
+			.employee-stat-title {
+				font-size: 0.9rem;
+			}
+			
+			.employee-stat-grid {
+				gap: 0.5rem;
+			}
+			
+			.employee-stat-item {
+				padding: 0.5rem;
+			}
+			
+			.employee-stat-value {
+				font-size: 1.125rem;
+			}
+			
+			.report-stat-card-inline {
+				padding: 10px 12px;
+				gap: 10px;
+			}
+			
+			.report-stat-icon {
+				width: 40px;
+				height: 40px;
+				font-size: 1rem;
+			}
+			
+			.report-stat-value {
+				font-size: 1.25rem;
+			}
+			
+			.grid.grid-cols-2.md\\:grid-cols-5 {
+				grid-template-columns: 1fr;
+				gap: 0.5rem;
+			}
 		}
 	</style>
 </head>
@@ -175,311 +973,436 @@
     
     <!-- Main Content -->
     <div class="main-content flex-1 flex flex-col overflow-hidden">
-        <!-- Header will be inserted here after sidebar initialization -->
-        <div id="dashboardHeaderContainer" class="flex-shrink-0"></div>
-
         <!-- Content -->
-	<main class="flex-1 overflow-y-auto p-6 rtl:mr-16 ltr:ml-16">
-		<div class="max-w-7xl mx-auto px-4 py-6">
-			<!-- Page Header with Filter -->
-			<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-				<div>
-					<h1 class="text-3xl font-bold text-gray-900 mb-2" data-translate="nav.dashboard">Employee Dashboard</h1>
-					<p class="text-gray-600" data-translate="dashboard.welcome">View your statistics and manage your work</p>
-				</div>
-				<div class="flex items-center gap-3">
-					<label class="text-sm font-medium text-gray-700" data-translate="common.filter">Filter:</label>
-					<select id="periodFilter" class="bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
-						<option value="current" data-translate="dashboard.current_month">Current Month</option>
-						<option value="last" data-translate="dashboard.last_month">Last Month</option>
-						<option value="week" data-translate="dashboard.last_week">Last Week</option>
-						<option value="year" data-translate="dashboard.this_year">This Year</option>
-					</select>
-				</div>
+	<main class="flex-1 overflow-y-auto">
+		<div class="p-6">
+			<!-- Page Header -->
+			<div class="page-header m-6">
+				<h1 class="page-title" data-translate="employee_dashboard.title">
+					<i class="fas fa-user-tie"></i>
+					Employee Dashboard
+				</h1>
+				<p class="page-subtitle" data-translate="employee_dashboard.welcome">View your statistics and manage your work</p>
 			</div>
 
 			<!-- Employee Info Card -->
-			<div id="employeeInfoCard" class="employee-info-card rounded-xl shadow-lg p-6 mb-6 text-white">
-				<div class="flex items-center justify-between">
-					<div class="flex items-center gap-4">
-						<div class="h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
-							<i class="fas fa-user text-2xl"></i>
-						</div>
-						<div>
-							<h2 id="employeeName" class="text-2xl font-bold mb-1">Loading...</h2>
-							<div class="flex flex-wrap gap-4 text-sm">
-								<span id="employeePosition" class="flex items-center gap-2">
-									<i class="fas fa-briefcase"></i>
-									<span>Loading...</span>
-								</span>
-								<span id="employeeDepartment" class="flex items-center gap-2">
-									<i class="fas fa-building"></i>
-									<span>Loading...</span>
-								</span>
+			<div id="employeeInfoCard" class="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-6 border border-gray-100">
+				<div class="employee-info-content">
+					<div class="employee-info-top-row flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
+						<!-- Employee Info Section -->
+						<div class="employee-info-profile flex items-center gap-3 sm:gap-4 flex-shrink-0 min-w-0">
+							<div class="employee-info-avatar h-12 w-12 sm:h-16 sm:w-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+								<i class="fas fa-user text-white text-lg sm:text-2xl"></i>
+							</div>
+							<div class="employee-info-text min-w-0">
+								<h2 id="employeeName" class="text-lg sm:text-2xl font-bold mb-1 truncate">Loading...</h2>
+								<div class="employee-info-meta flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+									<span id="employeePosition" class="flex items-center gap-1.5 min-w-0">
+										<i class="fas fa-briefcase text-gray-400 flex-shrink-0"></i>
+										<span class="truncate">Loading...</span>
+									</span>
+									<span id="employeeDepartment" class="flex items-center gap-1.5">
+										<i class="fas fa-building text-gray-400 flex-shrink-0"></i>
+										<span>Loading...</span>
+									</span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 
+			<!-- Filter Controls -->
+			<div class="flex items-center gap-4 p-6">
+				<i class="fas fa-filter text-gray-500"></i>
+				<label for="periodFilter" class="text-sm font-medium text-gray-700" data-translate="common.filter">تصفية</label>
+				<select id="periodFilter" class="bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+					<option value="current" data-translate="dashboard.current_month">الشهر الحالي</option>
+					<option value="last" data-translate="dashboard.last_month">الشهر الماضي</option>
+					<option value="week" data-translate="dashboard.last_week">الأسبوع الماضي</option>
+					<option value="year" data-translate="dashboard.this_year">هذا العام</option>
+				</select>
+			</div>
+
 			<!-- Statistics Grid -->
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 p-6">
 				<!-- Tasks Statistics -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-blue text-white">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="tasks.my_tasks">My Tasks</h3>
-						<i class="fas fa-tasks text-2xl opacity-80"></i>
+				<div class="employee-stat-card">
+					<div class="employee-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+						<i class="fas fa-tasks"></i>
 					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="tasks.total">Total</p>
-							<p id="tasksTotal" class="text-2xl font-bold">0</p>
+					<h3 class="employee-stat-title" data-translate="employee_dashboard.my_tasks">My Tasks</h3>
+					<div class="employee-stat-grid">
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.total">Total</p>
+							<p id="tasksTotal" class="employee-stat-value">7</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="tasks.completed">Completed</p>
-							<p id="tasksCompleted" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.completed">Completed</p>
+							<p id="tasksCompleted" class="employee-stat-value">2</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="tasks.in_progress">In Progress</p>
-							<p id="tasksInProgress" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.in_progress">In Progress</p>
+							<p id="tasksInProgress" class="employee-stat-value">0</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="tasks.overdue">Overdue</p>
-							<p id="tasksOverdue" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.overdue">Overdue</p>
+							<p id="tasksOverdue" class="employee-stat-value text-red-600">5</p>
 						</div>
 					</div>
-					<a href="tasks.html" class="mt-4 inline-flex items-center text-white/90 hover:text-white text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
+					<a href="tasks.html" class="employee-stat-link">
+						<span data-translate="employee_dashboard.view_all">View All</span>
+						<i class="fas fa-arrow-right"></i>
 					</a>
 				</div>
 
 				<!-- Reports Statistics -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-purple text-white">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="reports.my_reports">My Reports</h3>
-						<i class="fas fa-file-alt text-2xl opacity-80"></i>
+				<div class="employee-stat-card">
+					<div class="employee-stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+						<i class="fas fa-file-alt"></i>
 					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="reports.total">Total</p>
-							<p id="reportsTotal" class="text-2xl font-bold">0</p>
+					<h3 class="employee-stat-title" data-translate="employee_dashboard.my_reports">My Reports</h3>
+					<div class="employee-stat-grid">
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.total">Total</p>
+							<p id="reportsTotal" class="employee-stat-value">0</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="reports.read">Read</p>
-							<p id="reportsRead" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.read">Read</p>
+							<p id="reportsRead" class="employee-stat-value">0</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="reports.pending">Pending</p>
-							<p id="reportsPending" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.pending">Pending</p>
+							<p id="reportsPending" class="employee-stat-value">0</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="reports.today">Today</p>
-							<p id="reportsToday" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.today">Today</p>
+							<p id="reportsToday" class="employee-stat-value">0</p>
 						</div>
 					</div>
-					<a href="rapportemp.html" class="mt-4 inline-flex items-center text-white/90 hover:text-white text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
+					<a href="rapportemp.html" class="employee-stat-link">
+						<span data-translate="employee_dashboard.view_all">View All</span>
+						<i class="fas fa-arrow-right"></i>
 					</a>
 				</div>
 
 				<!-- Requests Statistics -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-indigo text-gray-800">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="requests.title">Requests</h3>
-						<i class="fas fa-paper-plane text-2xl text-indigo-600"></i>
+				<div class="employee-stat-card">
+					<div class="employee-stat-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+						<i class="fas fa-paper-plane"></i>
 					</div>
-					<div class="space-y-3">
-						<div>
-							<p class="text-xs text-gray-600 mb-1" data-translate="requests.exceptions">Exceptions</p>
-							<p id="exceptionsCount" class="text-xl font-bold text-gray-900">0</p>
+					<h3 class="employee-stat-title" data-translate="employee_dashboard.my_requests">My Requests</h3>
+					<div class="employee-stat-grid">
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.exceptions">Exceptions</p>
+							<p id="exceptionsCount" class="employee-stat-value">1</p>
 						</div>
-						<div>
-							<p class="text-xs text-gray-600 mb-1" data-translate="requests.extra_hours">Extra Hours</p>
-							<p id="extraHoursCount" class="text-xl font-bold text-gray-900">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.extra_hours">Extra Hours (Overtime)</p>
+							<p id="extraHoursCount" class="employee-stat-value text-green-600">0</p>
 						</div>
 					</div>
-					<a href="submit-exception.html" class="mt-4 inline-flex items-center text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
+					<a href="submit-exception.html" class="employee-stat-link">
+						<span data-translate="employee_dashboard.view_all">View All</span>
+						<i class="fas fa-arrow-right"></i>
 					</a>
 				</div>
 
 				<!-- Salary Statistics -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-green text-white">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="salary.my_salary">Last Month Salary</h3>
-						<i class="fas fa-money-check-alt text-2xl opacity-80"></i>
+				<div class="employee-stat-card">
+					<div class="employee-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+						<i class="fas fa-money-check-alt"></i>
 					</div>
-					<div id="salaryStats">
-						<p class="text-xs opacity-80 mb-1" data-translate="salary.net_salary">Net Salary</p>
-						<p id="lastMonthSalary" class="text-2xl font-bold">0 DA</p>
-						<p id="salaryStatus" class="text-sm mt-2 opacity-80">Loading...</p>
+					<h3 class="employee-stat-title" data-translate="employee_dashboard.my_salary">My Salary</h3>
+					<div class="employee-stat-grid">
+						<div class="employee-stat-item col-span-2">
+							<p class="employee-stat-label" data-translate="employee_dashboard.net_salary">Net Salary</p>
+							<p id="lastMonthSalary" class="employee-stat-value text-green-600">0 DA</p>
+						</div>
 					</div>
-					<a href="salary-employee.html" class="mt-4 inline-flex items-center text-white/90 hover:text-white text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
+					<p id="salaryStatus" class="text-sm mt-2 text-gray-600 font-medium" data-translate="employee_dashboard.paid">Paid</p>
+					<a href="salary-employee.html" class="employee-stat-link">
+						<span data-translate="employee_dashboard.view_all">View All</span>
+						<i class="fas fa-arrow-right"></i>
 					</a>
 				</div>
 			</div>
 
 			<!-- Signals and Complaints Statistics -->
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-6">
 				<!-- Signals Statistics -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-orange text-white">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="signals.my_signals">My Signals</h3>
-						<i class="fas fa-exclamation-triangle text-2xl opacity-80"></i>
+				<div class="employee-stat-card">
+					<div class="employee-stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+						<i class="fas fa-exclamation-triangle"></i>
 					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="signals.total">Total</p>
-							<p id="signalsTotal" class="text-2xl font-bold">0</p>
+					<h3 class="employee-stat-title" data-translate="employee_dashboard.my_signals">My Signals</h3>
+					<div class="employee-stat-grid">
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.total">Total</p>
+							<p id="signalsTotal" class="employee-stat-value">0</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="signals.pending">Pending</p>
-							<p id="signalsPending" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.pending">Pending</p>
+							<p id="signalsPending" class="employee-stat-value">0</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="signals.treated">Treated</p>
-							<p id="signalsTreated" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.treated">Treated</p>
+							<p id="signalsTreated" class="employee-stat-value">0</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="signals.high_priority">High Priority</p>
-							<p id="signalsHighPriority" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.high_priority">High Priority</p>
+							<p id="signalsHighPriority" class="employee-stat-value">0</p>
 						</div>
 					</div>
-					<a href="signals-employee.html" class="mt-4 inline-flex items-center text-white/90 hover:text-white text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
+					<a href="signals-employee.html" class="employee-stat-link">
+						<span data-translate="employee_dashboard.view_all">View All</span>
+						<i class="fas fa-arrow-right"></i>
 					</a>
 				</div>
 
 				<!-- Complaints Statistics -->
-				<div class="stat-card bg-white rounded-xl shadow-lg p-6 gradient-bg-yellow text-white">
-					<div class="flex items-center justify-between mb-4">
-						<h3 class="text-lg font-semibold" data-translate="complaints.my_complaints">My Complaints</h3>
-						<i class="fas fa-comments text-2xl opacity-80"></i>
+				<div class="employee-stat-card">
+					<div class="employee-stat-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+						<i class="fas fa-comments"></i>
 					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="complaints.total">Total</p>
-							<p id="complaintsTotal" class="text-2xl font-bold">0</p>
+					<h3 class="employee-stat-title" data-translate="employee_dashboard.my_complaints">My Complaints</h3>
+					<div class="employee-stat-grid">
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.total">Total</p>
+							<p id="complaintsTotal" class="employee-stat-value">0</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="complaints.pending">Pending</p>
-							<p id="complaintsPending" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.pending">Pending</p>
+							<p id="complaintsPending" class="employee-stat-value">0</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="complaints.completed">Completed</p>
-							<p id="complaintsCompleted" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.completed">Completed</p>
+							<p id="complaintsCompleted" class="employee-stat-value">0</p>
 						</div>
-						<div>
-							<p class="text-xs opacity-80 mb-1" data-translate="complaints.overdue">Overdue</p>
-							<p id="complaintsOverdue" class="text-2xl font-bold">0</p>
+						<div class="employee-stat-item">
+							<p class="employee-stat-label" data-translate="employee_dashboard.overdue">Overdue</p>
+							<p id="complaintsOverdue" class="employee-stat-value">0</p>
 						</div>
 					</div>
-					<a href="complaints-employee.html" class="mt-4 inline-flex items-center text-white/90 hover:text-white text-sm font-medium">
-						<span data-translate="common.view_all">View All</span>
-						<i class="fas fa-arrow-right ml-2"></i>
+					<a href="complaints-employee.html" class="employee-stat-link">
+						<span data-translate="employee_dashboard.view_all">View All</span>
+						<i class="fas fa-arrow-right"></i>
 					</a>
 				</div>
 			</div>
 
 			<!-- Attendance Summary -->
-			<div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-				<div class="flex items-center justify-between mb-6">
-					<h3 class="text-xl font-semibold text-gray-900" data-translate="attendance.summary">Attendance Summary</h3>
-					<i class="fas fa-calendar-check text-blue-600 text-2xl"></i>
+			<div class="director-panel mb-8 p-6">
+				<div class="director-panel-header">
+					<div class="director-panel-title">
+						<div class="director-panel-title-icon">
+							<i class="fas fa-calendar-check"></i>
+						</div>
+						<div>
+							<h3 class="text-lg font-semibold text-gray-900" data-translate="employee_dashboard.attendance_summary">Attendance Summary</h3>
+							<p class="text-xs text-gray-500 mt-0.5" data-translate="employee_dashboard.attendance_summary">View your attendance statistics</p>
+						</div>
+					</div>
+					<span class="director-section-pill" data-translate="employee_dashboard.stats">Stats</span>
 				</div>
+				
 				<div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-					<div class="text-center p-4 bg-blue-50 rounded-lg">
-						<p class="text-xs text-gray-600 mb-2" data-translate="attendance.worked_days">Work Days</p>
-						<p id="attendanceWorkDays" class="text-2xl font-bold text-blue-600">0</p>
-						<p class="text-xs text-gray-500 mt-1" data-translate="attendance.days">days</p>
+					<div class="report-stat-card-inline" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05)); margin-bottom: 8px;">
+						<div class="report-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+							<i class="fas fa-briefcase"></i>
+						</div>
+						<div class="report-stat-content">
+							<p class="report-stat-label" data-translate="employee_dashboard.work_days">Work Days</p>
+							<p id="attendanceWorkDays" class="report-stat-value">0</p>
+							<span class="text-xs text-gray-500" data-translate="employee_dashboard.days">days</span>
+						</div>
 					</div>
-					<div class="text-center p-4 bg-red-50 rounded-lg">
-						<p class="text-xs text-gray-600 mb-2" data-translate="attendance.absent_days">Absent Days</p>
-						<p id="attendanceAbsentDays" class="text-2xl font-bold text-red-600">0</p>
-						<p class="text-xs text-gray-500 mt-1" data-translate="attendance.days">days</p>
+					
+					<div class="report-stat-card-inline" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05)); margin-bottom: 8px;">
+						<div class="report-stat-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+							<i class="fas fa-user-times"></i>
+						</div>
+						<div class="report-stat-content">
+							<p class="report-stat-label" data-translate="employee_dashboard.absent_days">Absent Days</p>
+							<p id="attendanceAbsentDays" class="report-stat-value">4</p>
+							<span class="text-xs text-gray-500" data-translate="employee_dashboard.days">days</span>
+						</div>
 					</div>
-					<div class="text-center p-4 bg-green-50 rounded-lg">
-						<p class="text-xs text-gray-600 mb-2" data-translate="attendance.overtime_hours">Overtime Hours</p>
-						<p id="attendanceOvertime" class="text-2xl font-bold text-green-600">0.0h</p>
+					
+					<div class="report-stat-card-inline" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05)); margin-bottom: 8px;">
+						<div class="report-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+							<i class="fas fa-clock"></i>
+						</div>
+						<div class="report-stat-content">
+							<p class="report-stat-label" data-translate="employee_dashboard.overtime">Overtime</p>
+							<p id="attendanceOvertime" class="report-stat-value">2.0h</p>
+						</div>
 					</div>
-					<div class="text-center p-4 bg-yellow-50 rounded-lg">
-						<p class="text-xs text-gray-600 mb-2" data-translate="attendance.late_minutes">Late</p>
-						<p id="attendanceLate" class="text-2xl font-bold text-yellow-600">0m</p>
+					
+					<div class="report-stat-card-inline" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05)); margin-bottom: 8px;">
+						<div class="report-stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+							<i class="fas fa-hourglass-start"></i>
+						</div>
+						<div class="report-stat-content">
+							<p class="report-stat-label" data-translate="employee_dashboard.late">Late</p>
+							<p id="attendanceLate" class="report-stat-value">0m</p>
+						</div>
 					</div>
-					<div class="text-center p-4 bg-orange-50 rounded-lg">
-						<p class="text-xs text-gray-600 mb-2" data-translate="attendance.early_leave">Early Leave</p>
-						<p id="attendanceEarly" class="text-2xl font-bold text-orange-600">0m</p>
+					
+					<div class="report-stat-card-inline" style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(234, 88, 12, 0.05)); margin-bottom: 8px;">
+						<div class="report-stat-icon" style="background: linear-gradient(135deg, #f97316, #ea580c);">
+							<i class="fas fa-sign-out-alt"></i>
+						</div>
+						<div class="report-stat-content">
+							<p class="report-stat-label" data-translate="employee_dashboard.early_departure">Early Departure</p>
+							<p id="attendanceEarly" class="report-stat-value">0m</p>
+						</div>
 					</div>
 				</div>
 			</div>
 
 			<!-- Work Schedule Timetable -->
-			<div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-				<div class="flex items-center justify-between mb-6">
-					<div>
-						<h3 class="text-xl font-semibold text-gray-900" data-translate="schedule.my_schedule">My Work Schedule</h3>
-						<p class="text-sm text-gray-600 mt-1" data-translate="schedule.view_schedule">View your weekly work schedule and assigned timetables</p>
+			<div class="director-panel mb-8 p-6">
+				<div class="director-panel-header">
+					<div class="director-panel-title">
+						<div class="director-panel-title-icon">
+							<i class="fas fa-calendar-alt"></i>
+						</div>
+						<div>
+							<h3 class="text-lg font-semibold text-gray-900" data-translate="employee_dashboard.my_schedule">My Schedule</h3>
+							<p class="text-xs text-gray-500 mt-0.5" data-translate="employee_dashboard.view_schedule">View Schedule</p>
+						</div>
 					</div>
-					<i class="fas fa-calendar-alt text-blue-600 text-2xl"></i>
+					<span class="director-section-pill" data-translate="employee_dashboard.timetable_label">Timetable</span>
 				</div>
 				
 				<div id="scheduleContent">
 					<!-- Loading state -->
 					<div id="scheduleLoading" class="text-center py-8">
 						<div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-						<p class="mt-2 text-gray-600" data-translate="common.loading">Loading schedule...</p>
+						<p class="mt-2 text-gray-600" data-translate="employee_dashboard.loading_schedule">Loading schedule...</p>
 					</div>
 					
 					<!-- Schedule display -->
 					<div id="scheduleDisplay" class="hidden">
 						<!-- Schedule summary -->
 						<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-							<div class="bg-blue-50 rounded-lg p-4">
-								<div class="flex items-center">
-									<i class="fas fa-calendar-check text-blue-600 text-xl mr-3"></i>
-									<div>
-										<p class="text-sm text-gray-600" data-translate="schedule.total_days">Total Working Days</p>
-										<p id="scheduleTotalDays" class="text-2xl font-bold text-blue-600">0</p>
-									</div>
+							<div class="report-stat-card-inline" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));">
+								<div class="report-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+									<i class="fas fa-calendar-check"></i>
+								</div>
+								<div class="report-stat-content">
+									<p class="report-stat-label" data-translate="employee_dashboard.total_days">Total Days</p>
+									<p id="scheduleTotalDays" class="report-stat-value">1</p>
 								</div>
 							</div>
-							<div class="bg-green-50 rounded-lg p-4">
-								<div class="flex items-center">
-									<i class="fas fa-clock text-green-600 text-xl mr-3"></i>
-									<div>
-										<p class="text-sm text-gray-600" data-translate="schedule.total_hours">Total Hours/Week</p>
-										<p id="scheduleTotalHours" class="text-2xl font-bold text-green-600">0h</p>
-									</div>
+							
+							<div class="report-stat-card-inline" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));">
+								<div class="report-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+									<i class="fas fa-clock"></i>
+								</div>
+								<div class="report-stat-content">
+									<p class="report-stat-label" data-translate="employee_dashboard.total_hours">Total Hours</p>
+									<p id="scheduleTotalHours" class="report-stat-value">3.0h</p>
 								</div>
 							</div>
-							<div class="bg-purple-50 rounded-lg p-4">
-								<div class="flex items-center">
-									<i class="fas fa-calendar-week text-purple-600 text-xl mr-3"></i>
-									<div>
-										<p class="text-sm text-gray-600" data-translate="schedule.timetable_type">Timetable Type</p>
-										<p id="scheduleType" class="text-lg font-semibold text-purple-600">-</p>
-									</div>
+							
+							<div class="report-stat-card-inline" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.05));">
+								<div class="report-stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+									<i class="fas fa-calendar-week"></i>
+								</div>
+								<div class="report-stat-content">
+									<p class="report-stat-label" data-translate="employee_dashboard.timetable_type">Timetable Type</p>
+									<p id="scheduleType" class="report-stat-value" style="font-size: 1.5rem;">Template</p>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Timetable Info -->
+						<div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6 border border-blue-100">
+							<div class="flex items-center gap-3">
+								<i class="fas fa-info-circle text-blue-600 text-lg"></i>
+								<div>
+									<p class="text-sm font-semibold text-gray-800" data-translate="employee_dashboard.timetable">Timetable: monday half day</p>
+									<p class="text-xs text-gray-600" data-translate="employee_dashboard.current_weekly_schedule">Your current weekly schedule template</p>
 								</div>
 							</div>
 						</div>
 						
 						<!-- Weekly timetable -->
 						<div id="timetableName" class="text-sm text-gray-600 mb-4"></div>
-						<div class="grid grid-cols-1 md:grid-cols-7 gap-3">
-							<!-- Days will be populated by JavaScript -->
+						<div class="grid grid-cols-1 md:grid-cols-7 gap-3" id="scheduleDaysContainer">
+							<!-- Days will be dynamically reordered based on RTL/LTR -->
+							<!-- Sunday -->
+							<div class="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-lg transition-all" data-day-index="0">
+								<div class="text-center">
+									<div class="text-xs font-semibold text-gray-500 mb-2" data-translate="employee_dashboard.day_sun">Sun</div>
+									<div class="text-sm font-medium text-gray-800" data-translate="employee_dashboard.day_sunday">Sunday</div>
+									<div class="mt-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium" data-translate="employee_dashboard.day_off">Day Off</div>
+								</div>
+							</div>
+							
+							<!-- Monday -->
+							<div class="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-lg transition-all" data-day-index="1">
+								<div class="text-center">
+									<div class="text-xs font-semibold text-gray-500 mb-2" data-translate="employee_dashboard.day_mon">Mon</div>
+									<div class="text-sm font-medium text-gray-800" data-translate="employee_dashboard.day_monday">Monday</div>
+									<div class="mt-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">13:00 - 16:00</div>
+									<div class="mt-1 text-xs font-semibold text-green-600">3.0h</div>
+								</div>
+							</div>
+							
+							<!-- Tuesday -->
+							<div class="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-lg transition-all" data-day-index="2">
+								<div class="text-center">
+									<div class="text-xs font-semibold text-gray-500 mb-2" data-translate="employee_dashboard.day_tue">Tue</div>
+									<div class="text-sm font-medium text-gray-800" data-translate="employee_dashboard.day_tuesday">Tuesday</div>
+									<div class="mt-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium" data-translate="employee_dashboard.day_off">Day Off</div>
+								</div>
+							</div>
+							
+							<!-- Wednesday -->
+							<div class="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-lg transition-all" data-day-index="3">
+								<div class="text-center">
+									<div class="text-xs font-semibold text-gray-500 mb-2" data-translate="employee_dashboard.day_wed">Wed</div>
+									<div class="text-sm font-medium text-gray-800" data-translate="employee_dashboard.day_wednesday">Wednesday</div>
+									<div class="mt-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium" data-translate="employee_dashboard.day_off">Day Off</div>
+								</div>
+							</div>
+							
+							<!-- Thursday -->
+							<div class="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-lg transition-all" data-day-index="4">
+								<div class="text-center">
+									<div class="text-xs font-semibold text-gray-500 mb-2" data-translate="employee_dashboard.day_thu">Thu</div>
+									<div class="text-sm font-medium text-gray-800" data-translate="employee_dashboard.day_thursday">Thursday</div>
+									<div class="mt-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium" data-translate="employee_dashboard.day_off">Day Off</div>
+								</div>
+							</div>
+							
+							<!-- Friday -->
+							<div class="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-lg transition-all" data-day-index="5">
+								<div class="text-center">
+									<div class="text-xs font-semibold text-gray-500 mb-2" data-translate="employee_dashboard.day_fri">Fri</div>
+									<div class="text-sm font-medium text-gray-800" data-translate="employee_dashboard.day_friday">Friday</div>
+									<div class="mt-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium" data-translate="employee_dashboard.day_off">Day Off</div>
+								</div>
+							</div>
+							
+							<!-- Saturday -->
+							<div class="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-lg transition-all" data-day-index="6">
+								<div class="text-center">
+									<div class="text-xs font-semibold text-gray-500 mb-2" data-translate="employee_dashboard.day_sat">Sat</div>
+									<div class="text-sm font-medium text-gray-800" data-translate="employee_dashboard.day_saturday">Saturday</div>
+									<div class="mt-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium" data-translate="employee_dashboard.day_off">Day Off</div>
+								</div>
+							</div>
 						</div>
 						
 						<!-- No schedule assigned message -->
 						<div id="noScheduleMessage" class="hidden text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
 							<i class="fas fa-calendar-times text-gray-400 text-4xl mb-4"></i>
-							<p class="text-gray-600 font-medium" data-translate="schedule.no_schedule">No schedule assigned</p>
-							<p class="text-sm text-gray-500 mt-2" data-translate="schedule.contact_hr">Please contact HR to assign a work schedule</p>
+							<p class="text-gray-600 font-medium" data-translate="employee_dashboard.no_schedule_assigned">No schedule assigned</p>
+							<p class="text-sm text-gray-500 mt-2" data-translate="employee_dashboard.contact_hr_schedule">Please contact HR to assign a work schedule</p>
 						</div>
 					</div>
 				</div>
@@ -488,7 +1411,7 @@
 			<!-- No Data Message -->
 			<div id="noDataMessage" class="hidden text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
 				<i class="fas fa-info-circle text-gray-400 text-4xl mb-4"></i>
-				<p class="text-gray-600 font-medium" data-translate="message.no_data">No data available for the selected period</p>
+				<p class="text-gray-600 font-medium" data-translate="employee_dashboard.no_data_period">No data available for the selected period</p>
 			</div>
 		</div>
 	</main>
@@ -513,13 +1436,10 @@
 			// Initialize sidebar first
 			initializeCollapsibleSidebar();
 			
-			// Wait a bit for sidebar to initialize, then add header
-			setTimeout(() => {
-				createDashboardHeader();
-				syncLanguageSelector();
-				updateDashboardUserDisplayName();
-				setupDashboardNotificationsUI();
-			}, 100);
+			// Initialize other components
+			syncLanguageSelector();
+			updateDashboardUserDisplayName();
+			setupDashboardNotificationsUI();
 			
 			// Load dashboard data
 			await loadEmployeeProfile();
@@ -533,67 +1453,36 @@
 					await loadDashboardData();
 				});
 			}
+			
+			// Listen for language changes to update dynamic content
+			window.addEventListener('languageChanged', async function(event) {
+				// Reload dashboard data to update translated dynamic content
+				await loadDashboardData();
+				// Reorder schedule days for RTL
+				reorderScheduleDays();
+			});
+			
+			// Reorder schedule days based on RTL/LTR on initial load
+			setTimeout(() => reorderScheduleDays(), 100);
 		});
 		
-		// Function to create the dashboard header after sidebar initialization
-		function createDashboardHeader() {
-			const container = document.getElementById('dashboardHeaderContainer');
+		// Function to reorder schedule days for RTL support
+		function reorderScheduleDays() {
+			const container = document.getElementById('scheduleDaysContainer');
 			if (!container) return;
 			
-			// Check if header already exists
-			if (document.getElementById('dashboardHeader')) return;
+			const isRTL = document.documentElement.getAttribute('dir') === 'rtl' || 
+			              (typeof window !== 'undefined' && window.currentLanguage === 'ar');
 			
-			const headerHTML = `
-				<header id="dashboardHeader" class="bg-white shadow-sm border-b">
-					<div class="flex items-center justify-between px-6 py-4">
-						<div class="flex items-center">
-						</div>
-						<div class="flex items-center space-x-4">
-							<select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-								<option value="en">English</option>
-								<option value="fr">Français</option>
-								<option value="ar">العربية</option>
-							</select>
-							<!-- Notifications bell -->
-							<div class="relative">
-								<button id="empNotifBell" class="relative w-10 h-10 rounded-full bg-white hover:bg-gray-50 border border-gray-200 flex items-center justify-center transition-all shadow-sm hover:shadow-md">
-									<i class="fas fa-bell text-gray-700 text-base"></i>
-									<span id="empNotifBadge" class="hidden absolute -top-1 -right-1 min-w-[16px] h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-white"></span>
-								</button>
-								<div id="empNotifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 border border-gray-200 transform transition-all duration-200 ease-out opacity-0 translate-y-2">
-									<div class="flex items-center justify-between p-3 border-b border-gray-100 bg-white">
-										<span class="text-sm font-semibold text-gray-800">Notifications</span>
-										<div class="flex items-center gap-3">
-											<button id="empNotifMarkAll" class="text-xs text-indigo-600 hover:text-indigo-700 font-medium px-3 py-1.5 rounded-md hover:bg-indigo-50 transition-colors border border-indigo-100">
-												Tout lire
-											</button>
-											<button id="empNotifClearAll" class="text-xs text-gray-600 hover:text-gray-800 font-medium px-3 py-1.5 rounded-md hover:bg-gray-100 transition-colors border border-gray-200">
-												Effacer
-											</button>
-										</div>
-									</div>
-									<div id="empNotifList" class="max-h-80 overflow-y-auto">
-										<div class="p-4 text-center text-sm text-gray-500">
-											<i class="fas fa-bell text-gray-300 text-lg mb-2 block"></i>
-											<span>Aucune notification</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="flex items-center space-x-2">
-								<img class="h-8 w-8 rounded-full object-cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23737486' font-size='16' font-family='Arial'%3EJD%3C/text%3E%3C/svg%3E" alt="Profile">
-								<span class="text-sm text-gray-700" id="userDisplayName">User</span>
-							</div>
-						</div>
-					</div>
-				</header>
-			`;
-			
-			// Insert header directly, replacing the container
-			const headerElement = document.createElement('div');
-			headerElement.innerHTML = headerHTML;
-			const header = headerElement.firstElementChild;
-			container.replaceWith(header);
+			if (isRTL) {
+				// Get all day elements
+				const days = Array.from(container.children);
+				// Reverse the order for RTL (Saturday first, Sunday last)
+				const reversedDays = days.reverse();
+				// Clear container and append in reversed order
+				container.innerHTML = '';
+				reversedDays.forEach(day => container.appendChild(day));
+			}
 		}
 		
 		// Load employee profile to get employee ID and info
@@ -1469,13 +2358,15 @@
 					// Update UI with sum of all salaries for the year
 					if (totalMonths > 0) {
 						document.getElementById('lastMonthSalary').textContent = formatCurrency(totalSalary) + ' DA';
-						const statusText = paidMonths === totalMonths ? 'All Paid' : `${paidMonths}/${totalMonths} Paid`;
+						const statusText = paidMonths === totalMonths ? 
+							(typeof translate === 'function' ? translate('employee_dashboard.all_paid') : 'All Paid') : 
+							`${paidMonths}/${totalMonths} ${typeof translate === 'function' ? translate('employee_dashboard.paid') : 'Paid'}`;
 						document.getElementById('salaryStatus').textContent = statusText;
 						return true;
 					} else {
 						// No data found for any month in this year
 						document.getElementById('lastMonthSalary').textContent = '0 DA';
-						document.getElementById('salaryStatus').textContent = 'No data';
+						document.getElementById('salaryStatus').textContent = typeof translate === 'function' ? translate('employee_dashboard.no_data') : 'No data';
 						return false;
 					}
 				} else {
@@ -1496,7 +2387,9 @@
 								if (salary && salary.net_salary !== undefined) {
 									document.getElementById('lastMonthSalary').textContent = formatCurrency(salary.net_salary || 0) + ' DA';
 									const status = salary.payment_status || salary.status || 'Pending';
-									const statusText = status === 'Paid' ? 'Paid' : 'Pending';
+									const statusText = status === 'Paid' ? 
+										(typeof translate === 'function' ? translate('employee_dashboard.paid') : 'Paid') : 
+										(typeof translate === 'function' ? translate('employee_dashboard.pending') : 'Pending');
 									document.getElementById('salaryStatus').textContent = statusText;
 									return true;
 								}
@@ -1507,19 +2400,19 @@
 						
 						// 500 or other errors usually mean attendance not validated - show "Not Calculated" silently
 						document.getElementById('lastMonthSalary').textContent = '0 DA';
-						document.getElementById('salaryStatus').textContent = 'Not Calculated';
+						document.getElementById('salaryStatus').textContent = typeof translate === 'function' ? translate('employee_dashboard.not_calculated') : 'Not Calculated';
 						return false;
 					} catch (error) {
 						// Silently ignore all errors
 						document.getElementById('lastMonthSalary').textContent = '0 DA';
-						document.getElementById('salaryStatus').textContent = 'Not Calculated';
+						document.getElementById('salaryStatus').textContent = typeof translate === 'function' ? translate('employee_dashboard.not_calculated') : 'Not Calculated';
 						return false;
 					}
 				}
 			} catch (error) {
 				// Silently ignore errors - don't log to console
 				document.getElementById('lastMonthSalary').textContent = '0 DA';
-				document.getElementById('salaryStatus').textContent = 'No data';
+				document.getElementById('salaryStatus').textContent = typeof translate === 'function' ? translate('employee_dashboard.no_data') : 'No data';
 				return false;
 			}
 		}
@@ -1679,7 +2572,8 @@
 				
 				// Display timetable name
 				if (assignment && assignment.timetable_name) {
-					document.getElementById('timetableName').textContent = `Timetable: ${assignment.timetable_name}`;
+					const timetableLabel = typeof translate === 'function' ? translate('employee_dashboard.timetable') : 'Timetable';
+					document.getElementById('timetableName').textContent = `${timetableLabel}: ${assignment.timetable_name}`;
 					if (assignment.timetable_type) {
 						document.getElementById('scheduleType').textContent = assignment.timetable_type.charAt(0).toUpperCase() + assignment.timetable_type.slice(1);
 					}
@@ -1705,12 +2599,44 @@
 				// Display weekly schedule
 				const daysContainer = document.querySelector('#scheduleDisplay .grid.grid-cols-1.md\\:grid-cols-7');
 				if (daysContainer) {
-					const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-					const dayNamesShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+					// Check if RTL (Arabic)
+					const isRTL = document.documentElement.getAttribute('dir') === 'rtl' || 
+					              (typeof window !== 'undefined' && window.currentLanguage === 'ar');
+					
+					// Get translated day names
+					const getDayName = (index) => {
+						const keys = [
+							'employee_dashboard.day_sunday',
+							'employee_dashboard.day_monday',
+							'employee_dashboard.day_tuesday',
+							'employee_dashboard.day_wednesday',
+							'employee_dashboard.day_thursday',
+							'employee_dashboard.day_friday',
+							'employee_dashboard.day_saturday'
+						];
+						return typeof translate === 'function' ? translate(keys[index]) : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][index];
+					};
+					
+					const getDayNameShort = (index) => {
+						const keys = [
+							'employee_dashboard.day_sun',
+							'employee_dashboard.day_mon',
+							'employee_dashboard.day_tue',
+							'employee_dashboard.day_wed',
+							'employee_dashboard.day_thu',
+							'employee_dashboard.day_fri',
+							'employee_dashboard.day_sat'
+						];
+						return typeof translate === 'function' ? translate(keys[index]) : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][index];
+					};
 					
 					daysContainer.innerHTML = '';
 					
-					for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+					// Create array of day indices, reversed for RTL
+					const dayIndices = isRTL ? [6, 5, 4, 3, 2, 1, 0] : [0, 1, 2, 3, 4, 5, 6];
+					
+					for (let i = 0; i < 7; i++) {
+						const dayIndex = dayIndices[i];
 						const dayIntervals = intervals.filter(i => parseInt(i.weekday) === dayIndex);
 						const hasSchedule = dayIntervals.length > 0;
 						
@@ -1719,11 +2645,11 @@
 						
 						const dayName = document.createElement('div');
 						dayName.className = `font-semibold mb-2 ${hasSchedule ? 'text-blue-900' : 'text-gray-500'}`;
-						dayName.textContent = dayNamesShort[dayIndex];
+						dayName.textContent = getDayNameShort(dayIndex);
 						
 						const dayNameFull = document.createElement('div');
 						dayNameFull.className = `text-xs mb-3 ${hasSchedule ? 'text-blue-700' : 'text-gray-400'}`;
-						dayNameFull.textContent = dayNames[dayIndex];
+						dayNameFull.textContent = getDayName(dayIndex);
 						
 						dayCard.appendChild(dayName);
 						dayCard.appendChild(dayNameFull);
@@ -1761,7 +2687,8 @@
 						} else {
 							const offDay = document.createElement('div');
 							offDay.className = 'text-sm text-gray-400 italic';
-							offDay.textContent = 'Day Off';
+							offDay.setAttribute('data-translate', 'employee_dashboard.day_off');
+							offDay.textContent = typeof translate === 'function' ? translate('employee_dashboard.day_off') : 'Day Off';
 							dayCard.appendChild(offDay);
 						}
 						

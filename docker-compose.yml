@@ -1,0 +1,300 @@
+version: '3.9'
+
+services:
+
+  # ─── DATABASE ─────────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: hr_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./current.sql:/docker-entrypoint-initdb.d/01_schema.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hr_network
+
+  # ─── AUTH SERVICE ─────────────────────────────────────────────────────────────
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: hr_auth_service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── USER MANAGEMENT SERVICE ──────────────────────────────────────────────────
+  user-management-service:
+    build:
+      context: ./user-management-service
+      dockerfile: Dockerfile
+    container_name: hr_user_management
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3002
+    ports:
+      - "3002:3002"
+    volumes:
+      - uploads_user:/app/uploads
+      - ./user-management-service/contract-templates:/app/contract-templates:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── DEPARTMENT SERVICE ───────────────────────────────────────────────────────
+  department-service:
+    build:
+      context: ./department-service
+      dockerfile: Dockerfile
+    container_name: hr_department_service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3003
+    ports:
+      - "3003:3003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── TASK SERVICE ─────────────────────────────────────────────────────────────
+  task-service:
+    build:
+      context: ./task-service
+      dockerfile: Dockerfile
+    container_name: hr_task_service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3004
+    ports:
+      - "3004:3004"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── MEETING SERVICE ──────────────────────────────────────────────────────────
+  meeting-service:
+    build:
+      context: ./meeting-service
+      dockerfile: Dockerfile
+    container_name: hr_meeting_service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3005
+    ports:
+      - "3005:3005"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── PAYMENT SERVICE ──────────────────────────────────────────────────────────
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: hr_payment_service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3006
+    ports:
+      - "3006:3006"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── NOTIFICATION SERVICE ─────────────────────────────────────────────────────
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: hr_notification_service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3007
+    ports:
+      - "3007:3007"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── ATTENDANCE SERVICE ───────────────────────────────────────────────────────
+  attendance-service:
+    build:
+      context: ./attendance-service
+      dockerfile: Dockerfile
+    container_name: hr_attendance_service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads_attendance:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── REQUEST SERVICE ──────────────────────────────────────────────────────────
+  request-service:
+    build:
+      context: ./request-service
+      dockerfile: Dockerfile
+    container_name: hr_request_service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3009
+    ports:
+      - "3009:3009"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── TIMETABLE SERVICE ────────────────────────────────────────────────────────
+  timetable-service:
+    build:
+      context: ./timetable-service
+      dockerfile: Dockerfile
+    container_name: hr_timetable_service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3011
+      TIMETABLE_SERVICE_PORT: 3011
+    ports:
+      - "3011:3011"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── SALARY SERVICE ───────────────────────────────────────────────────────────
+  salary-service:
+    build:
+      context: ./salary-service
+      dockerfile: Dockerfile
+    container_name: hr_salary_service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3010
+      SaLARY_SERVICE_PORT: 3010
+    ports:
+      - "3010:3010"
+    volumes:
+      - uploads_salary:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── HR TASKS SERVICE ─────────────────────────────────────────────────────────
+  hr-tasks-service:
+    build:
+      context: ./hr_tasks/hr_tasks
+      dockerfile: Dockerfile
+    container_name: hr_tasks_service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      PORT: 3020
+      TASK_SERVICE_PORT: 3020
+    ports:
+      - "3020:3020"
+    volumes:
+      - uploads_hr_tasks:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hr_network
+
+  # ─── FRONTEND (Nginx) ─────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hr_frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - auth-service
+      - attendance-service
+      - salary-service
+      - user-management-service
+    networks:
+      - hr_network
+
+# ─── VOLUMES ──────────────────────────────────────────────────────────────────
+volumes:
+  postgres_data:
+    driver: local
+  uploads_user:
+    driver: local
+  uploads_attendance:
+    driver: local
+  uploads_salary:
+    driver: local
+  uploads_hr_tasks:
+    driver: local
+
+# ─── NETWORKS ─────────────────────────────────────────────────────────────────
+networks:
+  hr_network:
+    driver: bridge

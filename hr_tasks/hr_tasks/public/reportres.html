@@ -31,30 +31,768 @@
             overflow-y: auto;
             width: 100%;
             height: 100%;
-            padding: 1.5rem;
+        }
+        
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            main {
+               
+            }
+            
+            html, body {
+                overflow: auto;
+            }
+        }
+        
+        /* Enhanced Statistics Cards - Matching Tasks Tab */
+        .stat-card {
+            background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            padding: 1.25rem 1.5rem;
+            border: 2px solid rgba(148, 163, 184, 0.15);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 88px;
+            min-width: 280px;
+            flex: 1;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .stat-card.blue::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .stat-card.green::before { background: linear-gradient(90deg, #10b981, #34d399); }
+        .stat-card.yellow::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .stat-card.purple::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+        
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1), 0 8px 16px rgba(0, 0, 0, 0.06);
+            border-color: rgba(148, 163, 184, 0.35);
+        }
+        
+        .stat-card:hover::after { opacity: 1; }
+        
+        .stat-card .flex.items-center { position: relative; z-index: 1; min-width: 0; }
+        
+        @media (max-width: 768px) {
+            .stat-card {
+                padding: 20px 16px;
+                min-width: 0;
+                flex: 1 1 100%;
+                max-width: 100%;
+                margin-bottom: 12px;
+            }
+            
+            .stat-card > .flex.items-center {
+                gap: 16px;
+            }
+            
+            .stat-icon {
+                width: 48px !important;
+                height: 48px !important;
+                min-width: 48px !important;
+                font-size: 1.2rem !important;
+            }
+            
+            .stat-value {
+                font-size: 1.75rem !important;
+            }
+            
+            .stat-label {
+                font-size: 0.7rem !important;
+                margin-bottom: 6px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stat-card {
+                flex: 1 1 100%;
+                max-width: 100%;
+                padding: 16px 12px;
+                margin-bottom: 8px;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem !important;
+            }
+        }
+                        .stat-icon {
+            width: 56px;
+            height: 56px;
+            min-width: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            z-index: 2;
+            margin-inline-start: 4px;
+        }
+        
+        .stat-card:hover .stat-icon {
+            transform: scale(1.05);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-card.blue .stat-icon {
+            background: linear-gradient(145deg, #3b82f6, #2563eb);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+        }
+        .stat-card.blue:hover .stat-icon { box-shadow: 0 12px 28px rgba(59, 130, 246, 0.45); }
+        
+        .stat-card.green .stat-icon {
+            background: linear-gradient(145deg, #10b981, #059669);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+        }
+        .stat-card.green:hover .stat-icon { box-shadow: 0 12px 28px rgba(16, 185, 129, 0.45); }
+        
+        .stat-card.yellow .stat-icon {
+            background: linear-gradient(145deg, #f59e0b, #d97706);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.35);
+        }
+        .stat-card.yellow:hover .stat-icon { box-shadow: 0 12px 28px rgba(245, 158, 11, 0.45); }
+        
+        .stat-card.purple .stat-icon {
+            background: linear-gradient(145deg, #8b5cf6, #7c3aed);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+        }
+        .stat-card.purple:hover .stat-icon { box-shadow: 0 12px 28px rgba(139, 92, 246, 0.45); }
+        .stat-icon::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .stat-card:hover .stat-icon::after {
+            opacity: 1;
+        }
+                        .stat-content {
+            flex: 1;
+            min-width: 0;
+            padding-inline-start: 8px;
+        }
+        .stat-label {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #64748b;
+            letter-spacing: 0.02em;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 0;
+        }
+        
+        /* Premium Filter Section - Matching Tasks Tab */
+        .premium-filter-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        @media (max-width: 768px) {
+            .premium-filter-section {
+                padding: 12px 16px;
+                margin-bottom: 16px;
+            }
+            
+            .premium-filter-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                width: 100%;
+            }
+            
+            /* RTL Mobile Support */
+            [dir="rtl"] .premium-filter-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+            
+            .director-filters {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+                order: 1;
+            }
+            
+            /* RTL Director Filters Mobile */
+            [dir="rtl"] .director-filters {
+                align-items: stretch;
+            }
+            
+            .filter-group {
+                width: 100%;
+                flex-wrap: wrap;
+                gap: 8px;
+                order: 2;
+            }
+            
+            /* RTL Filter Group Mobile */
+            [dir="rtl"] .filter-group {
+                justify-content: stretch;
+            }
+            
+            .filter-button {
+                flex: 1 1 calc(50% - 8px);
+                min-width: 0;
+                font-size: 0.75rem;
+                padding: 8px 12px;
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                word-wrap: break-word !important;
+                hyphens: auto !important;
+                text-align: center;
+                min-height: auto;
+                height: auto;
+            }
+            
+            /* Custom Date Range Filter Mobile */
+            .flex.flex-wrap.items-center.gap-2.mb-3 {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px !important;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+            
+            .flex.flex-wrap.items-center.gap-2.mb-3 input {
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                flex: 1 !important;
+                box-sizing: border-box;
+            }
+            
+            .flex.flex-wrap.items-center.gap-2.mb-3 span.text-gray-500 {
+                display: none; /* Hide only arrow span on mobile */
+            }
+            
+            .flex.flex-wrap.items-center.gap-2.mb-3 button {
+                width: 100% !important;
+                margin-top: 8px;
+                flex: none !important;
+            }
+            
+            /* RTL Custom Date Range Mobile */
+            [dir="rtl"] .flex.flex-wrap.items-center.gap-2.mb-3 {
+                direction: rtl;
+            }
+            
+            .date-filters {
+                flex-direction: column;
+                gap: 8px;
+                width: 100%;
+                order: 3;
+                max-width: 100%;
+                overflow: hidden;
+            }
+            
+            /* RTL Date Filters Mobile */
+            [dir="rtl"] .date-filters {
+                align-items: stretch;
+            }
+            
+            .date-filters input {
+                width: 100%;
+                min-width: 0;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            /* RTL Date Input Mobile */
+            [dir="rtl"] .date-filters input {
+                text-align: right;
+            }
+        }
+        
+        /* Pending Custom Date Filter - Vertical Stacking on Mobile */
+        .flex.flex-wrap.items-center.gap-2:not(.mb-3) {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px !important;
+            width: 100%;
+        }
+        
+        .flex.flex-wrap.items-center.gap-2:not(.mb-3) input {
+            width: 100% !important;
+            margin-bottom: 0;
+        }
+        
+        .flex.flex-wrap.items-center.gap-2:not(.mb-3) button {
+            width: 100% !important;
+            margin-top: 8px;
+        }
+        
+        .flex.flex-wrap.items-center.gap-2:not(.mb-3) span.text-gray-500 {
+            display: none; /* Hide arrow when stacked */
+        }
+        
+        /* Filter Button Groups - Text Wrapping Fix */
+        .flex.flex-wrap.gap-2.mb-3 .filter-button {
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            word-wrap: break-word !important;
+            hyphens: auto !important;
+            text-align: center;
+            min-height: auto;
+            height: auto;
+        }
+        
+        /* Pending Custom Date Filter - Text Wrapping Fix */
+        .flex.flex-wrap.items-center.gap-2 .filter-button {
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            word-wrap: break-word !important;
+            hyphens: auto !important;
+            text-align: center;
+            min-height: auto;
+            height: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .flex.flex-wrap.gap-2.mb-3 .filter-button {
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                word-wrap: break-word !important;
+                hyphens: auto !important;
+                text-align: center;
+                min-height: auto;
+                height: auto;
+            }
+            
+            .flex.flex-wrap.items-center.gap-2 .filter-button {
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                word-wrap: break-word !important;
+                hyphens: auto !important;
+                text-align: center;
+                min-height: auto;
+                height: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .flex.flex-wrap.gap-2.mb-3 .filter-button {
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                word-wrap: break-word !important;
+                hyphens: auto !important;
+                text-align: center;
+                min-height: auto;
+                height: auto;
+            }
+            
+            .flex.flex-wrap.items-center.gap-2 .filter-button {
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                word-wrap: break-word !important;
+                hyphens: auto !important;
+                text-align: center;
+                min-height: auto;
+                height: auto;
+            }
+        }
+        @media (max-width: 480px) {
+            .filter-button {
+                font-size: 12px;
+                padding: 6px 12px;
+                flex: 1 1 100%;
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                word-wrap: break-word !important;
+                hyphens: auto !important;
+                text-align: center;
+                min-height: auto;
+                height: auto;
+            }
+            
+            .search-input-wrapper input {
+                font-size: 12px;
+                padding: 6px 12px 6px 32px !important;
+            }
+        }
+        
+        /* Premium Filter Header Styles */
+        .premium-filter-header {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        /* RTL Support for Arabic */
+        [dir="rtl"] .premium-filter-header {
+            justify-content: flex-end;
+            text-align: right;
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .filter-icon-title {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .director-filters {
+            justify-content: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .filter-group {
+            justify-content: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .date-filters {
+            justify-content: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .search-input-wrapper {
+            direction: rtl;
+        }
+        
+        [dir="rtl"] .search-input-wrapper input {
+            text-align: right;
+            padding-right: 32px !important;
+            padding-left: 12px !important;
+        }
+        
+        [dir="rtl"] .search-icon {
+            right: auto;
+            left: 12px;
+        }
+        .filter-icon-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+        .filter-icon-title i {
+            color: #3b82f6;
+            font-size: 15px;
+        }
+        .filter-icon-title span {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .premium-filter-section .director-filters {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .filter-button {
-            padding: 0.5rem 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
+            padding: 8px 14px;
+            font-size: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+            color: #374151;
+            transition: all 0.2s;
             cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         .filter-button:hover {
-            background-color: #f9fafb;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         .filter-button.active {
-            background-color: #2563eb;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
             color: white;
             border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
+        .search-input-wrapper {
+            position: relative;
+        }
+        .search-input-wrapper input {
+            padding: 8px 14px 8px 36px !important;
+            font-size: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+            color: #374151;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+        .search-input-wrapper input:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .search-input-wrapper input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .search-input-wrapper .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #64748b;
+            font-size: 13px;
+        }
+        
+        /* Premium Panel - Matching Tasks Tab */
+        .premium-panel {
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+        .premium-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .premium-panel:hover::before {
+            opacity: 1;
+        }
+        
+        /* Premium Report Card - Matching Task Card Style */
         .report-card {
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(148, 163, 184, 0.15);
+            border-radius: 20px;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+            overflow: hidden;
+            padding: 24px;
+            cursor: pointer;
+            position: relative;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .report-card {
+                padding: 16px;
+                margin-bottom: 12px;
+                gap: 16px;
+            }
+            
+            .report-card-header {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 12px !important;
+            }
+            
+            .report-card-title {
+                font-size: 1.1rem !important;
+                line-height: 1.4 !important;
+            }
+            
+            .report-card-meta {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+            
+            .report-card-meta-item {
+                padding: 12px !important;
+            }
+            
+            .report-card-actions {
+                flex-direction: column;
+                gap: 8px;
+                padding-top: 12px;
+            }
+            
+            .dir-table-action {
+                justify-content: center;
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
         }
         .report-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+            border-color: #3B82F6;
         }
+        .report-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        .report-card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 8px 0;
+            line-height: 1.3;
+        }
+        .report-card-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        .report-card-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.04));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 14px;
+        }
+        .report-card-meta-item i {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3B82F6, #2563EB);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+            font-size: 1rem;
+        }
+        .report-card-meta-item i.fa-paper-plane {
+            background: linear-gradient(135deg, #3B82F6, #2563EB);
+        }
+        .report-card-meta-item i.fa-user {
+            background: linear-gradient(135deg, #3B82F6, #2563EB);
+        }
+        .report-card-meta-item i.fa-calendar {
+            background: linear-gradient(135deg, #10B981, #059669);
+        }
+        .report-card-meta-item i.fa-tag {
+            background: linear-gradient(135deg, #7C3AED, #6D28D9);
+        }
+        .report-card-meta-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .report-card-meta-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+        .report-card-meta-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #3B82F6;
+            margin: 0 0 4px 0;
+            font-weight: 600;
+        }
+        .report-card-meta-value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .report-card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(148, 163, 184, 0.15);
+        }
+        .dir-table-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border: 1.5px solid rgba(148, 163, 184, 0.25);
+            background: #ffffff;
+            color: #475569;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .dir-table-action:hover {
+            border-color: #3B82F6;
+            background: rgba(59, 130, 246, 0.05);
+            color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15);
+        }
+        .dir-table-action.primary {
+            background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+        .dir-table-action.primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.4);
+        }
+        
         .modal {
             backdrop-filter: blur(4px);
         }
@@ -91,6 +829,239 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        
+        /* Premium Modal Styling */
+        .premium-modal {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.15);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+            position: relative;
+            max-height: 95vh;
+            margin: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .premium-modal {
+                margin: 10px;
+                border-radius: 16px;
+                max-height: 98vh;
+            }
+            
+            .premium-modal-header {
+                padding: 16px 20px !important;
+            }
+            
+            .premium-modal-header h3 {
+                font-size: 1.2rem !important;
+            }
+            
+            .premium-modal-content {
+                padding: 20px !important;
+                max-height: calc(90vh - 140px) !important;
+            }
+            
+            .premium-modal-footer {
+                padding: 16px 20px !important;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .dir-table-action {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .modal-info-grid {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+            
+            .modal-info-item {
+                padding: 16px !important;
+            }
+        }
+        .premium-modal-header {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 24px 28px;
+            border-bottom: 2px solid rgba(148, 163, 184, 0.15);
+        }
+        .premium-modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .premium-modal-header h3 i {
+            color: #3b82f6;
+            font-size: 1.25rem;
+        }
+        .premium-modal-close-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(148, 163, 184, 0.1);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .premium-modal-close-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            transform: scale(1.05);
+        }
+        .premium-modal-content {
+            padding: 28px;
+            background: #f9fafb;
+            max-height: calc(90vh - 200px);
+            overflow-y: auto;
+        }
+        .premium-modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .premium-modal-content::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .premium-modal-content::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .premium-modal-content::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .premium-modal-footer {
+            padding: 20px 28px;
+            background: #ffffff;
+            border-top: 2px solid rgba(148, 163, 184, 0.15);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .modal-info-section {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        }
+        .modal-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .modal-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .modal-info-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+        .modal-info-icon.blue {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+            color: #3b82f6;
+        }
+        .modal-info-icon.green {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            color: #10b981;
+        }
+        .modal-info-icon.purple {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));
+            color: #8b5cf6;
+        }
+        .modal-info-icon.orange {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+            color: #f59e0b;
+        }
+        .modal-info-content {
+            flex: 1;
+        }
+        .modal-info-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .modal-info-value {
+            font-size: 0.95rem;
+            color: #0f172a;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .modal-acknowledgements-section {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        }
+        .modal-acknowledgements-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .modal-acknowledgements-header h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+        }
+        .modal-acknowledgements-header i {
+            color: #3b82f6;
+            font-size: 1.1rem;
+        }
+        .acknowledgement-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .acknowledgement-item:last-child {
+            margin-bottom: 0;
+        }
+        .acknowledgement-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .acknowledgement-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .acknowledgement-status.acknowledged {
+            color: #10b981;
+        }
+        .acknowledgement-status.pending {
+            color: #f59e0b;
+        }
         .acknowledge-btn {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             transition: all 0.3s ease;
@@ -115,6 +1086,376 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* Action buttons styling */
+        .action-buttons-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        @media (max-width: 768px) {
+            .action-buttons-container {
+                padding: 12px 16px;
+                margin-bottom: 16px;
+            }
+            
+            .action-buttons-container .flex {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .action-buttons-container .flex.gap-4 {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .dir-table-action {
+                width: 100%;
+                justify-content: center;
+                padding: 12px 16px;
+            }
+        }
+        
+        /* View Mode Toggle - Matching Tasks Tab */
+        .view-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(248, 250, 252, 0.6);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            flex-wrap: wrap;
+        }
+        .view-mode-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            min-width: 0;
+            flex: 1;
+            justify-content: center;
+        }
+        .view-mode-btn:hover {
+            background: rgba(241, 245, 249, 0.8);
+            color: #1f2937;
+        }
+        .view-mode-btn.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+        .view-mode-btn i {
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            .view-mode-toggle {
+                width: 100%;
+                justify-content: stretch;
+                gap: 8px;
+                padding: 6px;
+            }
+            
+            .view-mode-btn {
+                padding: 10px 12px;
+                font-size: 0.75rem;
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .view-mode-btn span {
+                font-size: 0.7rem;
+            }
+            
+            /* Hide card/list toggle on mobile - keep received/generated */
+            .flex.items-center.gap-3:nth-child(2) {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .view-mode-toggle {
+                flex-direction: column;
+                gap: 6px;
+            }
+            
+            .view-mode-btn {
+                padding: 8px 12px;
+                font-size: 0.7rem;
+                width: 100%;
+            }
+            
+            .view-mode-btn span.hidden.sm\\:inline {
+                display: inline !important;
+            }
+            
+            .view-mode-btn span.sm\\:hidden {
+                display: none !important;
+            }
+            
+            /* Hide card/list toggle on small mobile - keep received/generated */
+            .flex.items-center.gap-3:nth-child(2) {
+                display: none !important;
+            }
+        }
+        
+        /* Additional Mobile Responsive Improvements */
+        @media (max-width: 768px) {
+            /* Stack statistics cards vertically on mobile */
+            .flex.flex-wrap.justify-center.gap-4.mb-6.px-2 {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .flex.flex-wrap.justify-center.gap-4.mb-6.px-2 > div {
+                width: 100% !important;
+               
+            }
+            
+            /* Hide some elements on very small screens */
+            .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+                margin-top: 1rem;
+            }
+            
+            /* Improve touch targets */
+            .filter-button, .view-mode-btn, .dir-table-action {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            /* Better form inputs on mobile */
+            input[type="date"], input[type="time"], input[type="text"], textarea {
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+            
+            /* Modal Responsive Improvements */
+            @media (max-width: 768px) {
+                .modal-content {
+                    margin: 0;
+                    max-height: 100vh;
+                    width: 100vw;
+                    padding: 0 !important;
+                    border-radius: 0;
+                }
+                
+                .modal-scroll {
+                    padding: 0 !important;
+                    max-height: calc(100vh - 120px);
+                }
+                
+                .modal-header {
+                    padding: 12px !important;
+                }
+                
+                .modal-body {
+                    padding: 12px !important;
+                }
+                
+                .modal-footer {
+                    padding: 12px !important;
+                }
+            }
+            
+            @media (max-width: 480px) {
+                .modal-content {
+                    margin: 0;
+                    max-height: 100vh;
+                    width: 100vw;
+                    padding: 0 !important;
+                    border-radius: 0;
+                }
+                
+                .modal-scroll {
+                    padding: 0 !important;
+                    max-height: calc(100vh - 100px);
+                }
+                
+                .modal-header {
+                    padding: 8px !important;
+                }
+                
+                .modal-body {
+                    padding: 8px !important;
+                }
+                
+                .modal-footer {
+                    padding: 8px !important;
+                }
+            }    
+            /* Better spacing in mobile */
+            .premium-panel {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+            
+            /* Mobile-friendly search */
+            .search-input-wrapper {
+                width: 100%;
+            }
+            
+            /* Responsive view toggle */
+            .view-mode-toggle {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            /* Better button layout on mobile */
+            .report-card-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .report-card-actions .dir-table-action {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .report-card {
+                padding: 12px;
+                border-radius: 12px;
+                margin-bottom: 8px;
+            }
+            
+            .report-card-header {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 8px !important;
+            }
+            
+            .report-card-title {
+                font-size: 0.9rem !important;
+                line-height: 1.2 !important;
+                margin-bottom: 4px;
+            }
+            
+            .report-card-meta {
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
+            }
+            
+            .report-card-meta-item {
+                padding: 8px !important;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+            
+            .report-card-meta-item i {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 0.8rem !important;
+            }
+            
+            .report-card-meta-content {
+                width: 100%;
+            }
+            
+            .report-card-meta-text {
+                font-size: 0.75rem !important;
+                line-height: 1.3;
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                word-wrap: break-word !important;
+                hyphens: auto !important;
+            }
+            
+            .report-card-meta-label {
+                font-size: 0.65rem !important;
+                margin-bottom: 2px;
+            }
+            
+            .report-card-meta-value {
+                font-size: 0.7rem !important;
+                line-height: 1.2;
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                word-wrap: break-word !important;
+                hyphens: auto !important;
+            }
+            
+            .report-card-actions {
+                flex-direction: column;
+                gap: 6px;
+                padding-top: 8px;
+            }
+            
+            .report-card-actions .dir-table-action {
+                width: 100% !important;
+                justify-content: center;
+                padding: 8px 12px !important;
+                font-size: 0.75rem !important;
+            }
+        }
+        
+        /* Ensure proper scrolling on mobile */
+        @media (max-width: 768px) {
+            html, body {
+                overflow-x: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            main {
+                overflow-x: hidden;
+            }
+        }
+        .premium-table thead th:first-child {
+            border-top-left-radius: 12px;
+        }
+        .premium-table thead th:last-child {
+            border-top-right-radius: 12px;
+        }
+        .premium-table tbody tr {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid #f1f5f9;
+            background: #ffffff;
+            cursor: pointer;
+        }
+        .premium-table tbody tr:hover {
+            background: linear-gradient(120deg, rgba(99, 102, 241, 0.08), rgba(244, 114, 182, 0.08));
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+            border-left: 4px solid #6366f1;
+        }
+        .premium-table tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 12px;
+        }
+        .premium-table tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 12px;
+        }
+        .premium-table tbody td {
+            padding: 18px 24px;
+            font-size: 0.9rem;
+            color: #334155;
+            vertical-align: middle;
+        }
+        .premium-table tbody td:first-child {
+            font-weight: 500;
+        }
+        .premium-table-container {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            overflow: hidden;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -122,145 +1463,184 @@
     <main>
         <div class="space-y-6">
             <!-- Statistiques -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
-                    <div class="flex items-center">
-                        <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-inbox text-blue-600 text-xl"></i>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm text-gray-600" data-translate="report.total">Total Rapports</p>
-                            <p id="totalReports" class="text-2xl font-bold text-gray-900">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
-                    <div class="flex items-center">
-                        <div class="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm text-gray-600" data-translate="report.acknowledged">Accusés</p>
-                            <p id="acknowledgedReports" class="text-2xl font-bold text-gray-900">0</p>
+            <div class="flex flex-wrap justify-center gap-4 mb-6 px-2">
+                <div class="flex-shrink-0 min-w-[280px] sm:min-w-[320px] transform transition-all duration-300 hover:scale-105">
+                    <div class="stat-card blue">
+                        <div class="flex items-center">
+                            <div class="stat-icon bg-blue-100 text-blue-600">
+                                <i class="fas fa-inbox"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="stat-label" data-translate="report.total">Total Rapports</p>
+                                <p class="stat-value" id="totalReports">0</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
-                    <div class="flex items-center">
-                        <div class="h-12 w-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-clock text-yellow-600 text-xl"></i>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm text-gray-600" data-translate="report.pending">En Attente</p>
-                            <p id="pendingReports" class="text-2xl font-bold text-gray-900">0</p>
+                <div class="flex-shrink-0 min-w-[280px] sm:min-w-[320px] transform transition-all duration-300 hover:scale-105">
+                    <div class="stat-card green">
+                        <div class="flex items-center">
+                            <div class="stat-icon bg-green-100 text-green-600">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="stat-label" data-translate="report.acknowledged">Accusés</p>
+                                <p class="stat-value" id="acknowledgedReports">0</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
-                    <div class="flex items-center">
-                        <div class="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-calendar-day text-purple-600 text-xl"></i>
+                <div class="flex-shrink-0 min-w-[280px] sm:min-w-[320px] transform transition-all duration-300 hover:scale-105">
+                    <div class="stat-card yellow">
+                        <div class="flex items-center">
+                            <div class="stat-icon bg-yellow-100 text-yellow-600">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="stat-label" data-translate="report.pending">En Attente</p>
+                                <p class="stat-value" id="pendingReports">0</p>
+                            </div>
                         </div>
-                        <div class="ml-4">
-                            <p class="text-sm text-gray-600" data-translate="report.today">Aujourd'hui</p>
-                            <p id="todayReports" class="text-2xl font-bold text-gray-900">0</p>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 min-w-[280px] sm:min-w-[320px] transform transition-all duration-300 hover:scale-105">
+                    <div class="stat-card purple">
+                        <div class="flex items-center">
+                            <div class="stat-icon bg-purple-100 text-purple-600">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="stat-label" data-translate="report.today">Aujourd'hui</p>
+                                <p class="stat-value" id="todayReports">0</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Actions -->
-            <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="action-buttons-container">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-semibold text-gray-900" data-translate="report.actions">Actions</h2>
                 </div>
                 <div class="flex gap-4">
-                    <button id="acknowledgeAllBtn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                    <button id="acknowledgeAllBtn" class="dir-table-action primary flex items-center gap-2">
                         <i class="fas fa-check-double"></i> <span data-translate="report.acknowledge_all">Accuser Tous</span>
                     </button>
-                    <button id="generateReportBtn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                    <button id="generateReportBtn" class="dir-table-action primary flex items-center gap-2">
                         <i class="fas fa-plus"></i>
                         <span data-translate="report.generate_new">Générer Nouveau Rapport</span>
                     </button>
                 </div>
-                
             </div>
 
             <!-- Filtres -->
-            <div class="bg-white rounded-lg shadow-sm p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4" data-translate="report.filters">Filtres</h3>
-                <div class="flex flex-col md:flex-row md:justify-between gap-4">
-                    <!-- Groupe Status -->
-                    <div class="flex flex-wrap gap-2">
-                        <button class="filter-button active" data-status="all" data-translate="report.all">Tous</button>
-                        <button class="filter-button" data-status="pending" data-translate="report.pending">En Attente</button>
-                        <button class="filter-button" data-status="acknowledged" data-translate="report.acknowledged">Accusés</button>
+            <div class="premium-filter-section">
+                <div class="premium-filter-header">
+                    <!-- Filter Icon and Title -->
+                    <div class="filter-icon-title">
+                        <i class="fas fa-filter"></i>
+                        <span data-translate="report.filters">Filtres</span>
                     </div>
-                    <!-- Groupe Period -->
-                    <div class="flex flex-wrap gap-2">
-                        <button class="filter-button active" data-period="all" data-translate="report.all_periods">Toutes Périodes</button>
-                        <button class="filter-button" data-period="today" data-translate="report.today">Aujourd'hui</button>
-                        <button class="filter-button" data-period="week" data-translate="report.this_week">Cette Semaine</button>
-                        <button class="filter-button" data-period="month" data-translate="report.this_month">Ce Mois</button>
+
+                    <!-- Filters -->
+                    <div class="director-filters w-full">
+                        <!-- Groupe Status -->
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <button class="filter-button active" data-status="all" data-translate="report.all">Tous</button>
+                            <button class="filter-button" data-status="pending" data-translate="report.pending">En Attente</button>
+                            <button class="filter-button" data-status="acknowledged" data-translate="report.acknowledged">Accusés</button>
+                        </div>
+                        <!-- Groupe Period -->
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <button class="filter-button active" data-period="all" data-translate="report.all_periods">Toutes Périodes</button>
+                            <button class="filter-button" data-period="today" data-translate="report.today">Aujourd'hui</button>
+                            <button class="filter-button" data-period="week" data-translate="report.this_week">Cette Semaine</button>
+                            <button class="filter-button" data-period="month" data-translate="report.this_month">Ce Mois</button>
+                        </div>
+                        <!-- Période personnalisée -->
+                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                            <input id="customStart" type="date" class="px-2 py-1 text-sm border border-gray-300 rounded flex-1 min-w-[120px]" />
+                            <span class="text-gray-500">→</span>
+                            <input id="customEnd" type="date" class="px-2 py-1 text-sm border border-gray-300 rounded flex-1 min-w-[120px]" />
+                            <button id="applyCustomDate" type="button" class="filter-button" data-translate="report.apply">Appliquer</button>
+                        </div>
+                        <!-- Search -->
+                        <div class="search-input-wrapper w-full">
+                            <input type="text" id="textSearch" data-translate-placeholder="report.search_placeholder" placeholder="Rechercher (titre, objet, destinataire, contenu, employé)">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
                     </div>
-                    <!-- Période personnalisée -->
-                    <div class="flex flex-wrap items-center gap-2">
-                        <input id="customStart" type="date" class="px-2 py-1 text-sm border border-gray-300 rounded" />
-                        <span class="text-gray-500">→</span>
-                        <input id="customEnd" type="date" class="px-2 py-1 text-sm border border-gray-300 rounded" />
-                        <button id="applyCustomDate" type="button" class="filter-button" data-translate="report.apply">Appliquer</button>
-                    </div>
-                </div>
-                <!-- Barre de recherche (ligne séparée) -->
-                <div class="mt-6">
-                    <input id="textSearch" type="text" data-translate-placeholder="report.search_placeholder" placeholder="Rechercher (titre, objet, destinataire, contenu, employé)" class="w-full px-3 py-2 text-sm border border-gray-300 rounded" />
                 </div>
             </div>
 
             <!-- Liste des rapports -->
-            <!-- Liste des rapports -->
-<div class="bg-white rounded-lg shadow-sm">
-    <div class="p-6 border-b">
-        <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900" data-translate="report.reports">Rapports</h3>
-            <div class="flex gap-2">
-                <button id="receivedReportsTab" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium" data-translate="report.received_reports">
-                    Rapports Reçus
-                </button>
-                <button id="generatedReportsTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300" data-translate="report.my_generated_reports">
-                    Mes Rapports Générés
-                </button>
+            <div class="premium-panel">
+                <div class="px-4 sm:px-6 py-4 border-b border-gray-200 mb-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <!-- Received/Generated Toggle -->
+                            <div class="view-mode-toggle">
+                                <button id="receivedReportsTab" class="view-mode-btn active" data-translate="report.received_reports">
+                                    <i class="fas fa-inbox"></i>
+                                    <span class="hidden sm:inline">Rapports Reçus</span>
+                                    <span class="sm:hidden">Reçus</span>
+                                </button>
+                                <button id="generatedReportsTab" class="view-mode-btn" data-translate="report.my_generated_reports">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span class="hidden sm:inline">Mes Rapports Générés</span>
+                                    <span class="sm:hidden">Générés</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <!-- Grid/List View Toggle -->
+                            <div class="view-mode-toggle">
+                                <button id="reportsViewModeGrid" class="view-mode-btn active" title="Grid View">
+                                    <i class="fas fa-border-all"></i>
+                                </button>
+                                <button id="reportsViewModeList" class="view-mode-btn" title="List View">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="reportsList" class="space-y-4">
+                    <div class="flex justify-center items-center py-12">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+                        <span class="ml-3 text-gray-600" data-translate="report.loading_reports">Chargement des rapports...</span>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div id="reportsList" class="p-6">
-        <div class="flex justify-center items-center py-12">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-            <span class="ml-3 text-gray-600" data-translate="report.loading_reports">Chargement des rapports...</span>
-        </div>
-    </div>
-</div>
         </div>
     </main>
 
     <!-- Modal de détails du rapport -->
-    <div id="reportDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div class="p-4 border-b flex justify-between items-center">
-                <h3 class="text-lg font-semibold" data-translate="report.details">Détails du Rapport</h3>
-                <button onclick="closeReportDetails()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
+    <div id="reportDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 modal flex items-center justify-center z-50 p-4">
+        <div class="premium-modal max-w-4xl w-full max-h-[90vh] flex flex-col">
+            <div class="premium-modal-header">
+                <div class="flex items-center justify-between">
+                    <h3 data-translate="report.details">
+                        <i class="fas fa-file-alt"></i>
+                        Détails du Rapport
+                    </h3>
+                    <button onclick="closeReportDetails()" class="premium-modal-close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
-            <div id="modalContent" class="p-6 overflow-y-auto max-h-[70vh]">
+            <div id="modalContent" class="premium-modal-content">
                 <!-- Contenu chargé dynamiquement -->
             </div>
-            <div class="p-4 border-t flex justify-end gap-2">
-                <button id="modalAcknowledgeBtn" class="px-4 py-2 acknowledge-btn text-white rounded hover:bg-green-700 mr-2 hidden">
-                    <i class="fas fa-check mr-1"></i><span data-translate="report.acknowledge_receipt">Accuser Réception</span>
+            <div class="premium-modal-footer">
+                <button id="modalAcknowledgeBtn" class="dir-table-action acknowledge-btn hidden">
+                    <i class="fas fa-check"></i>
+                    <span data-translate="report.acknowledge_receipt">Accuser Réception</span>
                 </button>
-                <button onclick="closeReportDetails()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300" data-translate="report.close">
-                    Fermer
+                <button onclick="closeReportDetails()" class="dir-table-action" data-translate="report.close">
+                    <i class="fas fa-times"></i>
+                    <span>Fermer</span>
                 </button>
             </div>
         </div>
@@ -281,7 +1661,7 @@
                     <!-- En-tête du rapport -->
                     <div class="bg-gray-50 rounded-lg p-3">
                         <h4 class="font-semibold text-gray-900 mb-2 text-sm" data-translate="report.header">En-tête du Rapport</h4>
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-medium text-gray-700 mb-1" data-translate="report.date">Date</label>
                                 <input type="date" id="reportDate" class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" required>
@@ -343,11 +1723,11 @@
                 </form>
             </div>
             <!-- Boutons d'action -->
-            <div class="flex justify-end gap-3 p-4 border-t flex-shrink-0">
+            <div class="flex flex-col sm:flex-row justify-end gap-3 p-4 border-t flex-shrink-0">
                 <button type="button" id="cancelReport" class="px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 transition-colors" data-translate="report.cancel">
                     Annuler
                 </button>
-                <button type="submit" form="reportForm" class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center gap-2">
+                <button type="submit" form="reportForm" class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
                     <i class="fas fa-file-pdf"></i>
                     <span data-translate="report.generate_pdf">Générer PDF</span>
                 </button>
@@ -956,6 +2336,39 @@ async function populateEmployeesList() {
                     closeReportModal();
                 }
             });
+            
+            // View Mode Toggle
+            const gridBtn = document.getElementById('reportsViewModeGrid');
+            const listBtn = document.getElementById('reportsViewModeList');
+            
+            if (gridBtn && listBtn) {
+                // Initialize view mode
+                window.__reportsDisplayMode = window.__reportsDisplayMode || 'grid';
+                
+                const setDisplayMode = (mode) => {
+                    window.__reportsDisplayMode = mode;
+                    if (mode === 'grid') {
+                        gridBtn.classList.add('active');
+                        listBtn.classList.remove('active');
+                    } else {
+                        listBtn.classList.add('active');
+                        gridBtn.classList.remove('active');
+                    }
+                    displayReports();
+                };
+                
+                // Set initial state
+                if (window.__reportsDisplayMode === 'grid') {
+                    gridBtn.classList.add('active');
+                    listBtn.classList.remove('active');
+                } else {
+                    listBtn.classList.add('active');
+                    gridBtn.classList.remove('active');
+                }
+                
+                gridBtn.addEventListener('click', () => setDisplayMode('grid'));
+                listBtn.addEventListener('click', () => setDisplayMode('list'));
+            }
         }
 // Ouvrir le modal de génération de rapport
         function openReportModal() {
@@ -993,15 +2406,11 @@ function switchView(viewType) {
     const generatedTab = document.getElementById('generatedReportsTab');
     
     if (viewType === 'received') {
-        receivedTab.classList.add('bg-blue-600', 'text-white');
-        receivedTab.classList.remove('bg-gray-200', 'text-gray-700');
-        generatedTab.classList.add('bg-gray-200', 'text-gray-700');
-        generatedTab.classList.remove('bg-blue-600', 'text-white');
+        receivedTab.classList.add('active');
+        generatedTab.classList.remove('active');
     } else {
-        generatedTab.classList.add('bg-blue-600', 'text-white');
-        generatedTab.classList.remove('bg-gray-200', 'text-gray-700');
-        receivedTab.classList.add('bg-gray-200', 'text-gray-700');
-        receivedTab.classList.remove('bg-blue-600', 'text-white');
+        generatedTab.classList.add('active');
+        receivedTab.classList.remove('active');
     }
     
     // Recharger les rapports appropriés
@@ -1177,6 +2586,7 @@ async function loadReports() {
 function displayReports() {
     const filteredReports = getFilteredReports();
     const reportsList = document.getElementById('reportsList');
+    const displayMode = window.__reportsDisplayMode || 'grid';
 
     if (filteredReports.length === 0) {
         const noReportsText = currentView === 'received' 
@@ -1191,61 +2601,197 @@ function displayReports() {
         return;
     }
 
+    // Remove space-y-4 class when in list view to prevent spacing issues
+    if (displayMode === 'list') {
+        reportsList.classList.remove('space-y-4');
+        renderReportsTable(filteredReports);
+    } else {
+        reportsList.classList.add('space-y-4');
+        renderReportsGrid(filteredReports);
+    }
+}
+
+// Render reports in grid (card) view
+function renderReportsGrid(filteredReports) {
+    const reportsList = document.getElementById('reportsList');
+    
     reportsList.innerHTML = filteredReports.map(report => {
         const isAcknowledged = report.status === 'acknowledged';
         const isGeneratedReport = currentView === 'generated';
         
         return `
-        <div class="report-card bg-white border border-gray-200 rounded-lg p-4 mb-3">
-            <div class="flex items-start justify-between">
-                <div class="flex-1">
-                    <div class="flex items-start justify-between mb-2">
-                        <h4 class="text-base font-semibold text-gray-900">${report.title || t('report.reports', 'Rapport')}</h4>
-                        <div class="flex items-center gap-2">
-                            ${isGeneratedReport ? `
-                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                                    ${t('report.generated', 'Généré')}
-                                </span>
-                            ` : ''}
-                            <span class="px-3 py-1 text-xs rounded-full ${getStatusClass(report.status)}">
-                                ${getStatusText(report.status)}
+        <div class="report-card" onclick="viewReportDetails('${report.id}')">
+            <!-- Header Section -->
+            <div class="report-card-header">
+                <div style="flex: 1; min-width: 0;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+                        <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #64748b;">${t('report.reports', 'Rapport')}</span>
+                        ${isGeneratedReport ? `
+                            <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: linear-gradient(135deg, #dbeafe, #bfdbfe); border: 1px solid #3b82f6; border-radius: 999px; font-size: 0.7rem; font-weight: 700; color: #1e40af;">
+                                <i class="fas fa-paper-plane"></i>
+                                ${t('report.generated', 'Généré')}
                             </span>
+                        ` : ''}
+                    </div>
+                    <h4 class="report-card-title">${report.title || t('report.reports', 'Rapport')}</h4>
+                    ${report.subject ? `<p style="font-size: 0.9rem; color: #64748b; line-height: 1.5; margin: 0;">${report.subject}</p>` : ''}
+                </div>
+                <span style="display: inline-block; padding: 6px 14px; font-size: 0.75rem; font-weight: 600; border-radius: 999px; white-space: normal; word-wrap: break-word; hyphens: auto;" class="${getStatusClass(report.status)}">${getStatusText(report.status)}</span>
+            </div>
+            
+            <!-- Info Grid -->
+            <div class="report-card-meta">
+                ${isGeneratedReport ? `
+                    <div class="report-card-meta-item">
+                        <i class="fas fa-paper-plane"></i>
+                        <div class="report-card-meta-content">
+                            <p class="report-card-meta-label">${t('report.sent_to', 'Envoyé à')}</p>
+                            <p class="report-card-meta-value" title="${formatRecipientDisplay(report.remarks) || t('report.not_specified', 'Non spécifié')}">${formatRecipientDisplay(report.remarks) || t('report.not_specified', 'Non spécifié')}</p>
                         </div>
                     </div>
-                    <div class="text-sm text-gray-600 space-y-1">
-                        ${isGeneratedReport ? `
-                            <p><i class="fas fa-paper-plane mr-2"></i>${t('report.sent_to', 'Envoyé à')}: ${formatRecipientDisplay(report.remarks) || t('report.not_specified', 'Non spécifié')}</p>
-                        ` : `
-                            <p><i class="fas fa-user mr-2"></i>${t('report.from', 'De')}: ${report.employee_name}</p>
-                        `}
-                        <p><i class="fas fa-calendar mr-2"></i>${t('report.date', 'Date')}: ${new Date(report.created_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
-                        ${report.subject ? `<p><i class="fas fa-tag mr-2"></i>${t('report.subject_label', 'Sujet')}: ${report.subject}</p>` : ''}
+                ` : `
+                    <div class="report-card-meta-item">
+                        <i class="fas fa-user"></i>
+                        <div class="report-card-meta-content">
+                            <p class="report-card-meta-label">${t('report.from', 'De')}</p>
+                            <p class="report-card-meta-value" title="${report.employee_name || t('report.not_specified', 'Non spécifié')}">${report.employee_name || t('report.not_specified', 'Non spécifié')}</p>
+                        </div>
+                    </div>
+                `}
+                <div class="report-card-meta-item" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.04)); border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <i class="fas fa-calendar"></i>
+                    <div class="report-card-meta-content">
+                        <p class="report-card-meta-label" style="color: #10B981;">${t('report.date', 'Date')}</p>
+                        <p class="report-card-meta-value">${new Date(report.created_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    ${report.pdf_url ? `
-                        <a href="${report.pdf_url}" target="_blank" class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-download mr-1"></i>${t('report.download', 'Télécharger')}
-                        </a>
-                    ` : ''}
-                    <button onclick="viewReportDetails('${report.id}')" class="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 transition-colors">
-                        <i class="fas fa-eye mr-1"></i>${t('report.view', 'Voir')}
+                ${report.subject ? `
+                    <div class="report-card-meta-item" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(124, 58, 237, 0.04)); border: 1px solid rgba(124, 58, 237, 0.2);">
+                        <i class="fas fa-tag"></i>
+                        <div class="report-card-meta-content">
+                            <p class="report-card-meta-label" style="color: #7C3AED;">${t('report.subject_label', 'Sujet')}</p>
+                            <p class="report-card-meta-value">${report.subject}</p>
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+            
+            <!-- Actions -->
+            <div class="report-card-actions">
+                ${report.pdf_url ? `
+                    <a href="${report.pdf_url}" target="_blank" onclick="event.stopPropagation();" class="dir-table-action primary">
+                        <i class="fas fa-download"></i>
+                        <span>${t('report.download', 'Télécharger')}</span>
+                    </a>
+                ` : ''}
+                <button onclick="event.stopPropagation(); viewReportDetails('${report.id}')" class="dir-table-action">
+                    <i class="fas fa-eye"></i>
+                    <span>${t('report.view', 'Voir')}</span>
+                </button>
+                ${!isGeneratedReport && !isAcknowledged ? `
+                    <button onclick="event.stopPropagation(); acknowledgeReport('${report.id}')" class="dir-table-action acknowledge-btn">
+                        <i class="fas fa-check"></i>
+                        <span>${t('report.acknowledged_badge', 'Accusé')}</span>
                     </button>
-                    ${!isGeneratedReport && !isAcknowledged ? `
-                        <button onclick="acknowledgeReport('${report.id}')" class="px-3 py-1 acknowledge-btn text-white text-sm rounded hover:bg-green-700 transition-colors">
-                            <i class="fas fa-check mr-1"></i>${t('report.acknowledged_badge', 'Accusé')}
-                        </button>
-                    ` : ''}
-                    ${!isGeneratedReport && isAcknowledged ? `
-                        <span class="px-3 py-1 acknowledged-badge text-white text-sm rounded">
-                            <i class="fas fa-check-circle mr-1"></i>${t('report.acknowledged_badge', 'Accusé')}
-                        </span>
-                    ` : ''}
-                </div>
+                ` : ''}
+                ${!isGeneratedReport && isAcknowledged ? `
+                    <span class="dir-table-action acknowledged-badge" style="cursor: default;">
+                        <i class="fas fa-check-circle"></i>
+                        <span>${t('report.acknowledged_badge', 'Accusé')}</span>
+                    </span>
+                ` : ''}
             </div>
         </div>
         `;
     }).join('');
+}
+
+// Render reports in table (list) view
+function renderReportsTable(filteredReports) {
+    const reportsList = document.getElementById('reportsList');
+    
+    try {
+        const tableHTML = `
+            <div class="premium-table-container">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th data-translate="report.title_label_modal">${t('report.title_label_modal', 'Titre')}</th>
+                            <th data-translate="report.status_label">${t('report.status_label', 'Statut')}</th>
+                            ${currentView === 'generated' ? `
+                                <th data-translate="report.sent_to">${t('report.sent_to', 'Envoyé à')}</th>
+                            ` : `
+                                <th data-translate="report.from">${t('report.from', 'De')}</th>
+                            `}
+                            <th data-translate="report.date">${t('report.date', 'Date')}</th>
+                            <th data-translate="report.subject_label">${t('report.subject_label', 'Sujet')}</th>
+                            <th class="text-right" data-translate="director.actions">${t('director.actions', 'Actions')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filteredReports.map(report => {
+                            const isAcknowledged = report.status === 'acknowledged';
+                            const isGeneratedReport = currentView === 'generated';
+                            
+                            return `
+                                <tr class="hover:bg-gray-50" onclick="viewReportDetails('${report.id}')">
+                                    <td>
+                                        <div class="text-sm font-medium text-gray-900">${report.title || t('report.reports', 'Rapport')}</div>
+                                        ${report.subject ? `<div class="text-sm text-gray-500">${report.subject}</div>` : ''}
+                                    </td>
+                                    <td>
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(report.status)}">
+                                            ${getStatusText(report.status)}
+                                        </span>
+                                    </td>
+                                    <td class="text-sm text-gray-500">
+                                        ${isGeneratedReport 
+                                            ? formatRecipientDisplay(report.remarks) || t('report.not_specified', 'Non spécifié')
+                                            : report.employee_name || t('report.not_specified', 'Non spécifié')
+                                        }
+                                    </td>
+                                    <td class="text-sm text-gray-500">${new Date(report.created_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
+                                    <td class="text-sm text-gray-500">${report.subject || '-'}</td>
+                                    <td class="text-right text-sm font-medium">
+                                        <div class="flex justify-end gap-2" onclick="event.stopPropagation();">
+                                            ${report.pdf_url ? `
+                                                <a href="${report.pdf_url}" target="_blank" class="dir-table-action primary" title="${t('report.download', 'Télécharger')}">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                            ` : ''}
+                                            <button class="dir-table-action" onclick="viewReportDetails('${report.id}')" title="${t('report.view', 'Voir')}">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            ${!isGeneratedReport && !isAcknowledged ? `
+                                                <button class="dir-table-action acknowledge-btn" onclick="acknowledgeReport('${report.id}')" title="${t('report.acknowledged_badge', 'Accusé')}">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            ` : ''}
+                                            ${!isGeneratedReport && isAcknowledged ? `
+                                                <span class="dir-table-action acknowledged-badge" style="cursor: default;" title="${t('report.acknowledged_badge', 'Accusé')}">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </span>
+                                            ` : ''}
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        
+        reportsList.innerHTML = tableHTML;
+    } catch (error) {
+        console.error('Error rendering reports table:', error);
+        reportsList.innerHTML = `
+            <div class="text-center py-12 text-red-600">
+                <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                <p>Error rendering reports</p>
+            </div>
+        `;
+    }
 }
 
         // Accuser réception d'un rapport
@@ -1359,41 +2905,124 @@ function displayReports() {
 
                 const modalContent = document.getElementById('modalContent');
                 modalContent.innerHTML = `
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div><strong>${t('report.title_label_modal', 'Titre')}:</strong> ${report.title || t('report.not_specified', 'Non spécifié')}</div>
-                        <div><strong>${t('report.status_label', 'Statut')}:</strong> <span class="${getStatusClass(report.status)} px-2 py-1 rounded">${getStatusText(report.status)}</span></div>
-                        <div><strong>${t('report.from', 'De')}:</strong> ${report.first_name} ${report.last_name}</div>
-                        <div><strong>${t('report.date', 'Date')}:</strong> ${formatDate(report.created_at)}</div>
-                        <div><strong>${t('report.department_label', 'Département')}:</strong> ${report.department_name || t('report.not_specified', 'Non spécifié')}</div>
-                        ${report.subject ? `<div><strong>${t('report.subject_label', 'Sujet')}:</strong> ${report.subject}</div>` : ''}
+                    <!-- Report Information Section -->
+                    <div class="modal-info-section">
+                        <div class="modal-info-grid">
+                            <div class="modal-info-item">
+                                <div class="modal-info-icon blue">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="modal-info-content">
+                                    <div class="modal-info-label">${t('report.title_label_modal', 'Titre')}</div>
+                                    <div class="modal-info-value">${report.title || t('report.not_specified', 'Non spécifié')}</div>
+                                </div>
+                            </div>
+                            <div class="modal-info-item">
+                                <div class="modal-info-icon ${report.status === 'acknowledged' ? 'green' : 'orange'}">
+                                    <i class="fas fa-${report.status === 'acknowledged' ? 'check-circle' : 'clock'}"></i>
+                                </div>
+                                <div class="modal-info-content">
+                                    <div class="modal-info-label">${t('report.status_label', 'Statut')}</div>
+                                    <div class="modal-info-value">
+                                        <span class="${getStatusClass(report.status)} px-3 py-1 rounded-full text-xs font-semibold">${getStatusText(report.status)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-info-item">
+                                <div class="modal-info-icon purple">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="modal-info-content">
+                                    <div class="modal-info-label">${t('report.from', 'De')}</div>
+                                    <div class="modal-info-value">${report.first_name} ${report.last_name}</div>
+                                </div>
+                            </div>
+                            <div class="modal-info-item">
+                                <div class="modal-info-icon green">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="modal-info-content">
+                                    <div class="modal-info-label">${t('report.date', 'Date')}</div>
+                                    <div class="modal-info-value">${formatDateTime(report.created_at)}</div>
+                                </div>
+                            </div>
+                            <div class="modal-info-item">
+                                <div class="modal-info-icon blue">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div class="modal-info-content">
+                                    <div class="modal-info-label">${t('report.department_label', 'Département')}</div>
+                                    <div class="modal-info-value">${report.department_name || t('report.not_specified', 'Non spécifié')}</div>
+                                </div>
+                            </div>
+                            ${report.subject ? `
+                                <div class="modal-info-item">
+                                    <div class="modal-info-icon purple">
+                                        <i class="fas fa-tag"></i>
+                                    </div>
+                                    <div class="modal-info-content">
+                                        <div class="modal-info-label">${t('report.subject_label', 'Sujet')}</div>
+                                        <div class="modal-info-value">${report.subject}</div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        ${report.content ? `
+                            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(148, 163, 184, 0.15);">
+                                <div class="modal-info-label" style="margin-bottom: 12px;">${t('report.report_content', 'Contenu')}</div>
+                                <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 16px; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.1); line-height: 1.6; color: #334155; white-space: pre-wrap;">${report.content}</div>
+                            </div>
+                        ` : ''}
                     </div>
                     
                     <!-- Section Accusés de réception -->
-                    <div class="border-t pt-4 mb-4">
-                        <h4 class="font-semibold mb-2">${t('report.acknowledgements_label', 'Accusés de réception')}:</h4>
-                        <div class="bg-gray-50 p-4 rounded">
-                            <p class="text-sm mb-2">${acknowledgedCount}/${totalRecipients} ${t('report.recipients_acknowledged', 'destinataires ont accusé réception')}</p>
-                            ${acknowledgements.length > 0 ? `
-                                <div class="space-y-2 mt-2">
-                                    ${acknowledgements.map(ack => `
-                                        <div class="flex items-center justify-between text-sm">
-                                            <span>${ack.first_name} ${ack.last_name}${ack.department_name ? ` (${ack.department_name})` : ''}</span>
-                                            <span class="${ack.acknowledged ? 'text-green-600' : 'text-yellow-600'}">
-                                                ${ack.acknowledged ? `✔️ ${t('report.acknowledged_on', 'Accusé le')} ${formatDateTime(ack.acknowledged_at)}` : `⏳ ${t('report.waiting', 'En attente')}`}
-                                            </span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            ` : `
-                                <p class="text-gray-500 text-sm">${t('report.no_recipients', 'Aucun destinataire spécifié')}</p>
-                            `}
+                    <div class="modal-acknowledgements-section">
+                        <div class="modal-acknowledgements-header">
+                            <i class="fas fa-check-double"></i>
+                            <h4>${t('report.acknowledgements_label', 'Accusés de réception')}</h4>
                         </div>
+                        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 16px; border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                            <p style="font-size: 0.875rem; font-weight: 600; color: #059669; margin: 0;">
+                                <i class="fas fa-info-circle"></i> ${acknowledgedCount}/${totalRecipients} ${t('report.recipients_acknowledged', 'destinataires ont accusé réception')}
+                            </p>
+                        </div>
+                        ${acknowledgements.length > 0 ? `
+                            <div>
+                                ${acknowledgements.map(ack => `
+                                    <div class="acknowledgement-item">
+                                        <div class="acknowledgement-info">
+                                            <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.875rem; font-weight: 700;">
+                                                ${(ack.first_name || '').charAt(0).toUpperCase()}${(ack.last_name || '').charAt(0).toUpperCase()}
+                                            </div>
+                                            <div>
+                                                <div style="font-weight: 600; color: #0f172a; font-size: 0.9rem;">${ack.first_name} ${ack.last_name}</div>
+                                                ${ack.department_name ? `<div style="font-size: 0.75rem; color: #64748b;">${ack.department_name}</div>` : ''}
+                                            </div>
+                                        </div>
+                                        <div class="acknowledgement-status ${ack.acknowledged ? 'acknowledged' : 'pending'}">
+                                            ${ack.acknowledged ? `
+                                                <i class="fas fa-check-circle"></i>
+                                                <span>${t('report.acknowledged_on', 'Accusé le')} ${formatDateTime(ack.acknowledged_at)}</span>
+                                            ` : `
+                                                <i class="fas fa-clock"></i>
+                                                <span>${t('report.waiting', 'En attente')}</span>
+                                            `}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : `
+                            <div style="text-align: center; padding: 24px; color: #64748b;">
+                                <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 8px; opacity: 0.5;"></i>
+                                <p style="font-size: 0.875rem; margin: 0;">${t('report.no_recipients', 'Aucun destinataire spécifié')}</p>
+                            </div>
+                        `}
                     </div>
                 `;
 
                 // Gérer le bouton d'accusé de réception dans le modal
                 const modalAckBtn = document.getElementById('modalAcknowledgeBtn');
-                if (report.status === 'pending') {
+                if (report.status === 'pending' && currentView === 'received') {
                     modalAckBtn.classList.remove('hidden');
                     modalAckBtn.onclick = () => {
                         acknowledgeReport(reportId);
@@ -1572,4 +3201,5 @@ window.clearAllRecipients = clearAllRecipients;
 window.removeRecipient = removeRecipient;
     </script>
 </body>
+</html>
 </html>

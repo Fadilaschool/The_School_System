@@ -7,48 +7,332 @@
     <title>Payslips Manager - HR Operations Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../components/api.js"></script>
     <style>
-        .stat-chip {
+        /* Director-themed base styles matching reference files */
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-purple: #7c3aed;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+        }
+
+        /* Page Header Styles */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: #3b82f6;
+            font-size: 1.75rem;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Director panel styling */
+        .director-panel {
+            margin-top: 16px;
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .director-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .director-panel>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left,
+                    rgba(37, 99, 235, 0.22),
+                    rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+
+        /* Enhanced Buttons */
+        .director-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            min-width: 180px;
+            height: 44px;
+            flex: 0 0 auto;
+        }
+
+        .director-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .director-btn.primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .director-btn.primary:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        /* Enhanced Form Elements */
+        .filter-select {
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            background: #ffffff;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            background-color: #f9fafb;
+        }
+
+        .filter-select:hover {
+            border-color: #94a3b8;
+            background-color: #f8fafc;
+        }
+
+        /* Enhanced Table Styles */
+        .director-table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .director-table thead {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+
+        .director-table th {
+            padding: 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .director-table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        .director-table tbody tr {
             transition: all 0.2s ease;
         }
 
-        .stat-chip:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        .director-table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.04), rgba(99, 102, 241, 0.02));
+            transform: translateX(2px);
         }
 
+        /* Enhanced Status Badges */
         .status-badge {
             display: inline-flex;
             align-items: center;
-            padding: 0.25rem 0.5rem;
-            border-radius: 9999px;
+            gap: 0.375rem;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
             font-size: 0.75rem;
-            font-weight: 500;
-            width: fit-content;
-            min-width: auto;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
         }
 
         .status-uploaded {
-            background-color: #d1fae5;
-            color: #065f46;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
         }
 
         .status-not_uploaded {
-            background-color: #fecaca;
-            color: #991b1b;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
         }
 
         .status-unmatched {
-            background-color: #fef3c7;
-            color: #92400e;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
         }
 
         .table-row:hover {
-            background-color: #f9fafb;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.04), rgba(99, 102, 241, 0.02));
+            transform: translateX(2px);
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 0;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.15);
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            position: relative;
+            overflow: hidden;
+            width: 90%;
+            max-width: 75rem;
+            margin: 2rem auto;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .modal-content > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-header {
+            padding: 24px 28px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.98));
+        }
+
+        .modal-body {
+            padding: 28px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.5);
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.7);
+        }
+
+        .modal-footer {
+            padding: 24px 28px;
+            border-top: 1px solid rgba(148, 163, 184, 0.15);
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.98));
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.025em;
+        }
+
+        .form-label.required::after {
+            content: ' *';
+            color: #ef4444;
         }
 
         .loading-spinner {
@@ -73,112 +357,110 @@
     <!-- Main Content -->
     <div class="main-content flex-1 overflow-y-auto">
         <!-- Content -->
-        <main class="flex-1 overflow-y-auto p-6">
-            <div class="max-w-7xl mx-auto">
-                <!-- Header -->
-                <div class="bg-white rounded-lg shadow-sm mb-6 p-6">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <h1 class="text-2xl font-semibold text-gray-900 mb-2"
-                                data-translate="salary.payslips_manager">Payslips Manager</h1>
-                            <p class="text-gray-600" data-translate="salary.payslips_description">Upload and manage
-                                monthly payslips for all employees</p>
+        <main class="flex-1 overflow-y-auto">
+            <div class="w-full">
+                <!-- Page Header -->
+                <div class="page-header mx-6 mt-6">
+                    <h1 class="page-title" data-translate="salary.payslips_manager">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        Payslips Manager
+                    </h1>
+                    <p class="page-subtitle" data-translate="salary.payslips_description">Upload and manage monthly payslips for all employees</p>
+                </div>
+
+                <!-- Filters Panel -->
+                <div class="director-panel mx-6 mb-6">
+                    <div class="director-panel-header">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-filter"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-900" data-translate="payslips.filter_title">Filter Payslips</h2>
+                                <p class="text-sm text-gray-500" data-translate="payslips.filter_description">Search and filter payslips by various criteria</p>
+                            </div>
                         </div>
                         <div class="flex items-center space-x-4">
-                            <!-- Language Selector -->
-                            <select id="languageSelector"
-                                class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="en">English</option>
-                                <option value="fr">Français</option>
-                                <option value="ar">العربية</option>
-                            </select>
-                            <button id="openUploadModal"
-                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
-                                <i class="fas fa-upload mr-2"></i>
-                                Upload Batch
+                            <button id="openUploadModal" class="director-btn primary">
+                                <i class="fas fa-upload"></i>
+                                <span data-translate="payslips.upload_batch">Upload Batch</span>
                             </button>
-                            <button id="refreshBtn"
-                                class="bg-gray-200 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-300 transition-colors text-sm"
-                                title="Refresh">
+                            <button id="refreshBtn" class="director-btn" data-translate-title="payslips.refresh" title="Refresh">
                                 <i class="fas fa-rotate"></i>
+                                <span data-translate="payslips.refresh">Refresh</span>
                             </button>
                         </div>
                     </div>
-                </div>
-
-                <!-- Filters -->
-                <div class="bg-white rounded-lg shadow-sm mb-6 p-6">
                     <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="payslips.employee">Employee</label>
                             <div class="relative">
-                                <i class="fas fa-search absolute left-3 top-2.5 text-gray-400 text-sm"></i>
-                                <input id="filterEmployee" type="text" placeholder="Search employee name..."
-                                    class="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400 text-sm"></i>
+                                <input id="filterEmployee" type="text" data-translate-placeholder="payslips.employee_search_placeholder" placeholder="Search employee name..."
+                                    class="filter-select w-full pl-9" />
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                            <select id="filterDept"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">All Departments</option>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="payslips.department">Department</label>
+                            <select id="filterDept" class="filter-select w-full">
+                                <option value="" data-translate="payslips.all_departments">All Departments</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Month</label>
-                            <select id="filterMonth"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="1">January</option>
-                                <option value="2">February</option>
-                                <option value="3">March</option>
-                                <option value="4">April</option>
-                                <option value="5">May</option>
-                                <option value="6">June</option>
-                                <option value="7">July</option>
-                                <option value="8">August</option>
-                                <option value="9">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="payslips.month">Month</label>
+                            <select id="filterMonth" class="filter-select w-full">
+                                <option value="1" data-translate="salary.january">January</option>
+                                <option value="2" data-translate="salary.february">February</option>
+                                <option value="3" data-translate="salary.march">March</option>
+                                <option value="4" data-translate="salary.april">April</option>
+                                <option value="5" data-translate="salary.may">May</option>
+                                <option value="6" data-translate="salary.june">June</option>
+                                <option value="7" data-translate="salary.july">July</option>
+                                <option value="8" data-translate="salary.august">August</option>
+                                <option value="9" data-translate="salary.september">September</option>
+                                <option value="10" data-translate="salary.october">October</option>
+                                <option value="11" data-translate="salary.november">November</option>
+                                <option value="12" data-translate="salary.december">December</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
-                            <select id="filterYear"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="payslips.year">Year</label>
+                            <select id="filterYear" class="filter-select w-full">
                             </select>
                         </div>
                         <div class="flex items-end">
-                            <button onclick="loadPayslips()"
-                                class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
-                                <i class="fas fa-search mr-2"></i>
-                                Load
+                            <button onclick="loadPayslips()" class="director-btn primary">
+                                <i class="fas fa-search"></i>
+                                <span data-translate="payslips.load">Load</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Main Table -->
-                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <!-- Main Table Panel -->
+                <div class="director-panel mx-6 mb-6">
+                    <div class="director-panel-header">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-table"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-900" data-translate="payslips.data_title">Payslips Data</h2>
+                                <p class="text-sm text-gray-500" data-translate="payslips.data_description">View and manage employee payslips</p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                        <table class="director-table w-full">
+                            <thead>
                                 <tr>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Employee</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Department</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        File</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status</th>
+                                    <th data-translate="payslips.table_employee">Employee</th>
+                                    <th data-translate="payslips.table_department">Department</th>
+                                    <th data-translate="payslips.table_file">File</th>
+                                    <th data-translate="payslips.table_status">Status</th>
                                 </tr>
                             </thead>
-                            <tbody id="payslipsTableBody" class="bg-white divide-y divide-gray-200">
+                            <tbody id="payslipsTableBody" class="divide-y divide-gray-100">
                                 <!-- Table rows will be populated here -->
                             </tbody>
                         </table>
@@ -187,14 +469,14 @@
                     <!-- Loading State -->
                     <div id="payslipsLoading" class="text-center py-12 hidden">
                         <div class="loading-spinner rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                        <p class="text-gray-500">Loading payslips data...</p>
+                        <p class="text-gray-500" data-translate="payslips.loading">Loading payslips data...</p>
                     </div>
 
                     <!-- Empty State -->
                     <div id="payslipsEmpty" class="text-center py-12 hidden">
                         <i class="fas fa-file-invoice-dollar text-6xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">No payslips found</p>
-                        <p class="text-sm text-gray-400">No records for the selected period</p>
+                        <p class="text-gray-500" data-translate="payslips.empty_title">No payslips found</p>
+                        <p class="text-sm text-gray-400" data-translate="payslips.empty_subtitle">No records for the selected period</p>
                     </div>
                 </div>
             </div>
@@ -203,53 +485,49 @@
 
     <!-- Upload Modal -->
     <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg max-w-lg w-full mx-4 max-h-screen overflow-y-auto">
-            <div class="p-6 border-b border-gray-200">
+        <div class="modal-content">
+            <div class="modal-header">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-medium text-gray-900">Upload Payslips Batch</h3>
+                    <h3 class="text-lg font-medium text-gray-900" data-translate="payslips.upload_modal_title">Upload Payslips Batch</h3>
                     <button onclick="closeUploadModal()" class="text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="p-6">
+            <div class="modal-body">
                 <form id="uploadForm">
                     <div class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Month</label>
-                                <select id="upMonth"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="1">January</option>
-                                    <option value="2">February</option>
-                                    <option value="3">March</option>
-                                    <option value="4">April</option>
-                                    <option value="5">May</option>
-                                    <option value="6">June</option>
-                                    <option value="7">July</option>
-                                    <option value="8">August</option>
-                                    <option value="9">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
+                                <label class="form-label" data-translate="payslips.upload_month">Month</label>
+                                <select id="upMonth" class="filter-select w-full">
+                                    <option value="1" data-translate="salary.january">January</option>
+                                    <option value="2" data-translate="salary.february">February</option>
+                                    <option value="3" data-translate="salary.march">March</option>
+                                    <option value="4" data-translate="salary.april">April</option>
+                                    <option value="5" data-translate="salary.may">May</option>
+                                    <option value="6" data-translate="salary.june">June</option>
+                                    <option value="7" data-translate="salary.july">July</option>
+                                    <option value="8" data-translate="salary.august">August</option>
+                                    <option value="9" data-translate="salary.september">September</option>
+                                    <option value="10" data-translate="salary.october">October</option>
+                                    <option value="11" data-translate="salary.november">November</option>
+                                    <option value="12" data-translate="salary.december">December</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
-                                <select id="upYear"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <label class="form-label" data-translate="payslips.upload_year">Year</label>
+                                <select id="upYear" class="filter-select w-full">
                                 </select>
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">PDF Files</label>
-                            <input type="file" id="upFiles" accept="application/pdf" multiple
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                            <p class="text-xs text-gray-500 mt-2">
+                            <label class="form-label" data-translate="payslips.upload_pdf_files">PDF Files</label>
+                            <input type="file" id="upFiles" accept="application/pdf" multiple class="filter-select w-full" />
+                            <p class="text-xs text-gray-500 mt-2" data-translate="payslips.upload_info">
                                 <i class="fas fa-info-circle mr-1"></i>
-                                You can select multiple PDF files (up to 100+). Files will be automatically matched to
-                                employees.
+                                You can select multiple PDF files (up to 100+). Files will be automatically matched to employees.
                             </p>
                         </div>
                         <div id="uploadProgress" class="hidden">
@@ -257,37 +535,35 @@
                                 <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300"
                                     style="width: 0%"></div>
                             </div>
-                            <p id="progressText" class="text-sm text-gray-600 mt-2">Uploading...</p>
+                            <p id="progressText" class="text-sm text-gray-600 mt-2" data-translate="payslips.uploading">Uploading...</p>
                         </div>
                     </div>
-
-                    <div class="flex justify-end space-x-3 mt-6">
-                        <button type="button" onclick="closeUploadModal()"
-                            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                            Cancel
-                        </button>
-                        <button type="button" onclick="doUpload()"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-upload mr-2"></i>
-                            Upload Files
-                        </button>
-                    </div>
                 </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" onclick="closeUploadModal()" class="director-btn" data-translate="common.cancel">
+                    Cancel
+                </button>
+                <button type="button" onclick="doUpload()" class="director-btn primary">
+                    <i class="fas fa-upload"></i>
+                    <span data-translate="payslips.upload_files">Upload Files</span>
+                </button>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification -->
     <div id="toast" class="fixed top-4 right-4 z-50 hidden">
-        <div class="bg-white rounded-lg shadow-lg border-l-4 p-4 max-w-sm">
-            <div class="flex">
+        <div class="modal-content max-w-sm">
+            <div class="flex items-center gap-3">
                 <div class="flex-shrink-0">
                     <i id="toastIcon" class="text-xl"></i>
                 </div>
-                <div class="ml-3">
+                <div class="flex-1">
                     <p id="toastMessage" class="text-sm font-medium text-gray-900"></p>
                 </div>
-                <div class="ml-auto pl-3">
+                <div class="flex-shrink-0">
                     <button onclick="hideToast()" class="text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times"></i>
                     </button>
@@ -322,6 +598,18 @@
             if (typeof updatePageTranslations === 'function') {
                 updatePageTranslations();
             }
+            
+            // Listen for language changes
+            document.addEventListener('languageChanged', function() {
+                if (typeof updatePageTranslations === 'function') {
+                    updatePageTranslations();
+                }
+                // Reload payslips to update dynamic content
+                if (typeof loadPayslips === 'function') {
+                    loadPayslips();
+                }
+            });
+            
             if (!requireAuth()) return;
 
             // Check role access (with Live Server dev bypass)
@@ -391,7 +679,7 @@
                 await loadPayslips();
             } catch (error) {
                 console.error('Initialize page error:', error);
-                showToast('error', 'Failed to initialize page');
+                showToast('error', t('payslips.init_failed', 'Failed to initialize page'));
             }
         }
 
@@ -402,11 +690,15 @@
                 currentDepartments = (result && (result.departments || result.items)) || [];
 
                 const deptSelect = document.getElementById('filterDept');
-                deptSelect.innerHTML = '<option value="">All Departments</option>' +
+                deptSelect.innerHTML = `<option value="" data-translate="payslips.all_departments">${t('payslips.all_departments', 'All Departments')}</option>` +
                     currentDepartments.map(dept => `<option value="${dept.id}">${dept.name}</option>`).join('');
+                // Update translations for the new option
+                if (typeof updatePageTranslations === 'function') {
+                    updatePageTranslations();
+                }
             } catch (error) {
                 console.error('Load departments error:', error);
-                showToast('error', 'Failed to load departments');
+                showToast('error', t('payslips.dept_load_failed', 'Failed to load departments'));
             }
         }
 
@@ -448,12 +740,21 @@
 
             } catch (error) {
                 console.error('Load payslips error:', error);
-                showToast('error', error.message || 'Failed to load payslips');
+                showToast('error', error.message || t('payslips.load_failed', 'Failed to load payslips'));
                 showPayslipsEmpty();
             } finally {
                 isLoading = false;
                 hidePayslipsLoading();
             }
+        }
+
+        // Helper function to translate with fallback
+        function t(key, fallback = '') {
+            if (typeof translate === 'function') {
+                const result = translate(key);
+                return (result && result !== key) ? result : fallback;
+            }
+            return fallback || key;
         }
 
         function displayPayslips(employees) {
@@ -469,10 +770,10 @@
                 return `
                     <tr class="table-row cursor-pointer" data-employee-id="${emp.employee_id}">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            ${emp.employee_name || 'Unknown Employee'}
+                            ${emp.employee_name || t('payslips.unknown_employee', 'Unknown Employee')}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            ${emp.department_name || 'No Department'}
+                            ${emp.department_name || t('payslips.no_department', 'No Department')}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             ${emp.payslip_id ?
@@ -480,7 +781,7 @@
                                     <i class="fas fa-file-pdf text-red-600 mr-2"></i>
                                     ${emp.original_name || 'payslip.pdf'}
                                 </a>` :
-                        '<span class="text-gray-400 italic">No file uploaded</span>'
+                        `<span class="text-gray-400 italic">${t('payslips.no_file_uploaded', 'No file uploaded')}</span>`
                     }
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -520,7 +821,7 @@
                         await downloadPayslip(payslipId);
                     } catch (error) {
                         console.error('Download error:', error);
-                        showToast('error', 'Failed to download payslip');
+                        showToast('error', t('payslips.download_failed', 'Failed to download payslip'));
                     }
                 });
             });
@@ -548,7 +849,7 @@
                 link.remove();
                 URL.revokeObjectURL(url);
 
-                showToast('success', 'Payslip downloaded successfully');
+                showToast('success', t('payslips.download_success', 'Payslip downloaded successfully'));
             } catch (error) {
                 throw error;
             }
@@ -571,7 +872,7 @@
                 const files = document.getElementById('upFiles').files;
 
                 if (!files || files.length === 0) {
-                    showToast('warning', 'Please select PDF files to upload');
+                    showToast('warning', t('payslips.upload_warning', 'Please select PDF files to upload'));
                     return;
                 }
 
@@ -585,7 +886,8 @@
 
                 // Show progress
                 document.getElementById('uploadProgress').classList.remove('hidden');
-                document.getElementById('progressText').textContent = `Uploading ${files.length} files...`;
+                const uploadingText = t('payslips.uploading', 'Uploading...');
+                document.getElementById('progressText').textContent = `${uploadingText} ${files.length} files...`;
 
                 const response = await fetch('http://localhost:3010/payslips/upload-batch', {
                     method: 'POST',
@@ -618,13 +920,14 @@
 
                 const result = await response.json();
 
-                showToast('success', `Successfully uploaded ${result.uploaded} files`);
+                const successMsg = t('payslips.upload_success', 'Successfully uploaded {count} files').replace('{count}', result.uploaded);
+                showToast('success', successMsg);
                 closeUploadModal();
                 loadPayslips();
 
             } catch (error) {
                 console.error('Upload error:', error && (error.stack || error.message || error));
-                showToast('error', error.message || 'Failed to upload payslips');
+                showToast('error', error.message || t('payslips.upload_failed', 'Failed to upload payslips'));
                 document.getElementById('uploadProgress').classList.add('hidden');
             }
         }
@@ -640,9 +943,9 @@
 
         function getStatusText(status) {
             switch (status) {
-                case 'uploaded': return 'Uploaded';
-                case 'unmatched': return 'Unmatched';
-                default: return 'Not Uploaded';
+                case 'uploaded': return t('salary.uploaded', 'Uploaded');
+                case 'unmatched': return t('salary.unmatched', 'Unmatched');
+                default: return t('salary.not_uploaded', 'Not Uploaded');
             }
         }
 
@@ -670,28 +973,23 @@
             const messageEl = document.getElementById('toastMessage');
 
             // Set icon and colors based on type
-            let iconClass, borderColor;
+            let iconClass;
             switch (type) {
                 case 'success':
                     iconClass = 'fas fa-check-circle text-green-600';
-                    borderColor = 'border-green-600';
                     break;
                 case 'error':
                     iconClass = 'fas fa-exclamation-circle text-red-600';
-                    borderColor = 'border-red-600';
                     break;
                 case 'warning':
                     iconClass = 'fas fa-exclamation-triangle text-yellow-600';
-                    borderColor = 'border-yellow-600';
                     break;
                 default:
                     iconClass = 'fas fa-info-circle text-blue-600';
-                    borderColor = 'border-blue-600';
             }
 
             icon.className = iconClass;
             messageEl.textContent = message;
-            toast.querySelector('div').className = `bg-white rounded-lg shadow-lg border-l-4 p-4 max-w-sm ${borderColor}`;
 
             toast.classList.remove('hidden');
 

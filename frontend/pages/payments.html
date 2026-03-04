@@ -7,10 +7,336 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
-    
+    <style>
+        /* Director-themed base styles matching director-dashboard-stats.html */
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-purple: #7c3aed;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+        }
+
+        /* Hide elements when embedded */
+        body.embedded #localSidebar,
+        body.embedded header {
+            display: none !important;
+        }
+        
+        body.embedded #mainLayout {
+            height: 100vh !important;
+            overflow: hidden !important;
+        }
+        
+        body.embedded #mainContent {
+            padding: 0 !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+        }
+        
+        body.embedded main {
+            height: 100% !important;
+            overflow: hidden !important;
+            padding: 0.5rem !important;
+            max-height: 100vh !important;
+        }
+        
+        body.embedded {
+            height: 100vh !important;
+            overflow: hidden !important;
+            margin: 0 !important;
+            position: fixed !important;
+            width: 100% !important;
+        }
+        
+        html.embedded {
+            height: 100vh !important;
+            overflow: hidden !important;
+        }
+        
+        /* Additional styles to hide page headers when embedded */
+        body.embedded .page-header,
+        body.embedded .page-hero,
+        body.embedded .bg-gradient-to-r,
+        body.embedded header[class*="bg-"] {
+            display: none !important;
+        }
+        
+        /* Force remove overflow from all containers when embedded */
+        body.embedded * {
+            overflow: visible !important;
+        }
+        
+        /* But ensure modals work properly when embedded */
+        body.embedded #positionModal:not(.hidden),
+        body.embedded #salaryModal:not(.hidden) {
+            overflow: visible !important;
+            position: absolute !important;
+            z-index: 9999 !important;
+            display: block !important;
+            background: transparent !important;
+        }
+        
+        body.embedded #positionModal.hidden,
+        body.embedded #salaryModal.hidden {
+            display: none !important;
+        }
+        
+        body.embedded .fixed.inset-0:not(.hidden) {
+            position: absolute !important;
+            z-index: 9998 !important;
+            background: transparent !important;
+            backdrop-filter: none !important;
+        }
+        
+        /* Position modal content near the clicked button */
+        body.embedded #positionModal .bg-white,
+        body.embedded #salaryModal .bg-white {
+            position: absolute !important;
+            max-width: 400px !important;
+            max-height: 70vh !important;
+            overflow-y: auto !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+            border-radius: 16px !important;
+        }
+        
+        /* Ensure modal backdrop is transparent */
+        body.embedded .bg-black.bg-opacity-50 {
+            position: absolute !important;
+            background: transparent !important;
+        }
+        
+        body.embedded main,
+        body.embedded .overflow-y-auto,
+        body.embedded .overflow-x-auto {
+            overflow: visible !important;
+        }
+        
+        /* Ensure content fits without scrolling */
+        body.embedded .grid {
+            max-height: calc(100vh - 2rem);
+            overflow: visible !important;
+        }
+
+        /* Director Panel Styles */
+        .director-panel {
+            margin-top: 16px;
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .director-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .director-panel>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left,
+                    rgba(37, 99, 235, 0.22),
+                    rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+
+        /* Enhanced button styling */
+        .director-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            min-width: 140px;
+            height: 44px;
+            flex: 0 0 auto;
+        }
+
+        .director-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .director-btn.primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .director-btn.primary:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        /* Enhanced table styling */
+        .director-table {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+        }
+
+        .director-table thead {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+
+        .director-table th {
+            padding: 16px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .director-table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        .director-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .director-table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.04), rgba(99, 102, 241, 0.02));
+            transform: translateX(2px);
+        }
+
+        /* Action buttons styling */
+        .action-btn {
+            padding: 8px 12px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #64748b;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .action-btn.edit {
+            color: #2563eb;
+            border-color: rgba(37, 99, 235, 0.3);
+        }
+
+        .action-btn.edit:hover {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: #2563eb;
+            color: #1d4ed8;
+        }
+
+        .action-btn.delete {
+            color: #dc2626;
+            border-color: rgba(220, 38, 38, 0.3);
+        }
+
+        .action-btn.delete:hover {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: #dc2626;
+            color: #b91c1c;
+        }
+
+        /* Search input styling */
+        .director-search {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .director-search:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+    </style>
+    <script>
+        // Check for embed parameter immediately and add class to body
+        (function() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('embed') === '1') {
+                    document.documentElement.classList.add('embedded');
+                    if (document.body) {
+                        document.body.classList.add('embedded');
+                    } else {
+                        document.addEventListener('DOMContentLoaded', function() {
+                            document.body.classList.add('embedded');
+                        });
+                    }
+                }
+            } catch (_) {}
+        })();
+    </script>
 </head>
 <body class="bg-gray-50">
-    <div class="flex h-screen">
+    <div class="flex h-screen" id="mainLayout">
         <!-- Sidebar -->
         <div class="bg-white w-64 shadow-lg" id="localSidebar">
             <div class="p-6 border-b">
@@ -123,28 +449,34 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- Positions Management -->
                     <div class="lg:col-span-1 lg:order-2">
-                        <div class="bg-white rounded-lg shadow-sm">
-                            <div class="p-6 border-b">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-lg font-semibold text-gray-900" data-translate="position.title">Positions</h3>
-                                    <button onclick="showAddPositionModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                                        <i class="fas fa-plus mr-2"></i>
-                                        <span data-translate="position.add">Add Position</span>
-                                    </button>
+                        <div class="director-panel">
+                            <div class="director-panel-header">
+                                <div class="director-panel-title">
+                                    <div class="director-panel-title-icon">
+                                        <i class="fas fa-briefcase"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900" data-translate="position.title">Positions</h3>
+                                        <p class="text-sm text-gray-500">Manage job positions</p>
+                                    </div>
                                 </div>
-                                
-                                <div class="mb-4">
-                                    <input type="text" id="positionSearch" data-translate-placeholder="position.search_placeholder" placeholder="Search positions..." 
-                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
+                                <button onclick="showAddPositionModal(event)" class="director-btn primary">
+                                    <i class="fas fa-plus"></i>
+                                    <span data-translate="position.add">Add Position</span>
+                                </button>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <input type="text" id="positionSearch" data-translate-placeholder="position.search_placeholder" placeholder="Search positions..." 
+                                       class="director-search w-full">
                             </div>
                             
                             <div class="overflow-x-auto">
-                                <table class="w-full">
+                                <table class="director-table w-full">
                                     <thead>
-                                        <tr class="border-b bg-gray-50">
-                                            <th class="text-left py-3 px-4 font-semibold text-gray-700" data-translate="position.name">Position</th>
-                                            <th class="text-left py-3 px-4 font-semibold text-gray-700" data-translate="position.actions">Actions</th>
+                                        <tr>
+                                            <th data-translate="position.name">Position</th>
+                                            <th data-translate="position.actions">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody id="positionsTable">
@@ -162,24 +494,31 @@
 
                     <!-- Position Salaries -->
                     <div class="lg:col-span-2 lg:order-1">
-                        <div class="bg-white rounded-lg shadow-sm">
-                            <div class="p-6 border-b">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-lg font-semibold text-gray-900" data-translate="position_salary.title">Position Salaries</h3>
-                                    <button onclick="showAddSalaryModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                                        <i class="fas fa-plus mr-2"></i>
-                                        <span data-translate="position_salary.set_salary">Set Salary</span>
-                                    </button>
+                        <div class="director-panel">
+                            <div class="director-panel-header">
+                                <div class="director-panel-title">
+                                    <div class="director-panel-title-icon">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900" data-translate="position_salary.title">Position Salaries</h3>
+                                        <p class="text-sm text-gray-500">Manage salary configurations</p>
+                                    </div>
                                 </div>
+                                <button onclick="showAddSalaryModal(event)" class="director-btn primary">
+                                    <i class="fas fa-plus"></i>
+                                    <span data-translate="position_salary.set_salary">Set Salary</span>
+                                </button>
                             </div>
+                            
                             <div class="overflow-x-auto">
-                                <table class="w-full">
+                                <table class="director-table w-full">
                                     <thead>
-                                        <tr class="border-b bg-gray-50">
-                                            <th class="text-left py-3 px-4 font-semibold text-gray-700" data-translate="position_salary.position">Position</th>
-                                            <th class="text-left py-3 px-4 font-semibold text-gray-700" data-translate="position_salary.type">Type</th>
-                                            <th class="text-left py-3 px-4 font-semibold text-gray-700" data-translate="position_salary.amount">Amount</th>
-                                            <th class="text-left py-3 px-4 font-semibold text-gray-700" data-translate="position.actions">Actions</th>
+                                        <tr>
+                                            <th data-translate="position_salary.position">Position</th>
+                                            <th data-translate="position_salary.type">Type</th>
+                                            <th data-translate="position_salary.amount">Amount</th>
+                                            <th data-translate="position.actions">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody id="positionSalariesTable">
@@ -349,19 +688,126 @@
         });
         
         // Hide local sidebar/header when embedded via org-structure iframe
-        (function() {
+        // This runs on DOMContentLoaded to ensure all elements exist
+        document.addEventListener('DOMContentLoaded', function() {
             try {
                 const params = new URLSearchParams(window.location.search);
                 if (params.get('embed') === '1') {
+                    // Add embedded class if not already added
+                    document.body.classList.add('embedded');
+                    document.documentElement.classList.add('embedded');
+                    
+                    // Double-check elements are hidden (CSS should handle it, but this ensures it)
                     const sidebar = document.getElementById('localSidebar');
                     if (sidebar) sidebar.style.display = 'none';
+                    
                     const header = document.querySelector('header');
                     if (header) header.style.display = 'none';
-                    const main = document.getElementById('mainContent');
-                    if (main) main.classList.remove('overflow-y-auto');
+                    
+                    // Ensure no scrolling on body and html
+                    document.body.style.overflow = 'hidden';
+                    document.documentElement.style.overflow = 'hidden';
+                    document.body.style.position = 'fixed';
+                    document.body.style.width = '100%';
+                    document.body.style.height = '100vh';
+                    
+                    // Prevent any scrollbars from appearing
+                    const mainContent = document.querySelector('main');
+                    if (mainContent) {
+                        mainContent.style.maxHeight = '100vh';
+                    }
+                    
+                    // Function to update iframe height
+                    let lastHeight = 0;
+                    let updateTimeout;
+                    let isUpdating = false;
+                    
+                    function updateIframeHeight() {
+                        // Prevent multiple simultaneous updates
+                        if (isUpdating) return;
+                        isUpdating = true;
+                        
+                        // Clear any pending update
+                        if (updateTimeout) {
+                            clearTimeout(updateTimeout);
+                        }
+                        
+                        // Debounce the update
+                        updateTimeout = setTimeout(() => {
+                            try {
+                                // Get the actual content height using multiple methods
+                                const body = document.body;
+                                const html = document.documentElement;
+                                const main = document.querySelector('main');
+                                
+                                // Calculate height more comprehensively
+                                let height = Math.max(
+                                    body.scrollHeight,
+                                    body.offsetHeight,
+                                    html.clientHeight,
+                                    html.scrollHeight,
+                                    html.offsetHeight
+                                );
+                                
+                                // If main element exists, use its scroll height as well
+                                if (main) {
+                                    height = Math.max(height, main.scrollHeight, main.offsetHeight);
+                                }
+                                
+                                // Only update if height actually changed significantly (more than 50px)
+                                if (Math.abs(height - lastHeight) > 50) {
+                                    lastHeight = height;
+                                    
+                                    // Add some padding to ensure no scrollbars
+                                    const finalHeight = height + 40;
+                                    
+                                    console.log('Updating iframe height to:', finalHeight); // Debug log
+                                    
+                                    if (window.parent && window.parent.postMessage) {
+                                        window.parent.postMessage({
+                                            type: 'resize',
+                                            height: finalHeight,
+                                            iframeId: 'positionsIframe'
+                                        }, '*');
+                                    }
+                                }
+                            } finally {
+                                isUpdating = false;
+                            }
+                        }, 500); // Increased debounce to 500ms
+                    }
+                    
+                    // Initial height update
+                    setTimeout(updateIframeHeight, 500);
+                    
+                    // Update height when content changes
+                    const observer = new MutationObserver((mutations) => {
+                        let shouldUpdate = false;
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                                shouldUpdate = true;
+                            }
+                        });
+                        if (shouldUpdate) {
+                            updateIframeHeight();
+                        }
+                    });
+                    
+                    observer.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
+                    
+                    // Update height when images load
+                    const images = document.querySelectorAll('img');
+                    images.forEach(img => {
+                        if (!img.complete) {
+                            img.addEventListener('load', updateIframeHeight);
+                        }
+                    });
                 }
             } catch (_) {}
-        })();
+        });
         
         // Check authentication
         if (!requireAuth()) {
@@ -467,12 +913,17 @@
                 const addFirstMsg = typeof translate === 'function' ? translate('position.add_first') : 'Add your first position';
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="2" class="text-center py-8 text-gray-500">
-                            <i class="fas fa-briefcase text-4xl mb-2"></i>
-                            <p>${noDataMsg}</p>
-                            <button onclick=\"showAddPositionModal()\" class=\"mt-4 text-blue-600 hover:text-blue-800\">
-                                <i class=\"fas fa-plus mr-2\"></i> ${addFirstMsg}
-                            </button>
+                        <td colspan="2" class="text-center py-12">
+                            <div class="flex flex-col items-center">
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center mb-4">
+                                    <i class="fas fa-briefcase text-2xl text-blue-600"></i>
+                                </div>
+                                <p class="text-gray-600 font-medium mb-2">${noDataMsg}</p>
+                                <button onclick="showAddPositionModal()" class="director-btn primary text-sm">
+                                    <i class="fas fa-plus"></i>
+                                    <span>${addFirstMsg}</span>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -480,17 +931,26 @@
             }
 
             tbody.innerHTML = positions.map(pos => `
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="py-3 px-4">
-                        <div class="font-medium text-gray-900">${pos.name}</div>
+                <tr class="border-b border-gray-100 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200">
+                    <td class="py-4 px-4">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mr-3">
+                                <i class="fas fa-briefcase text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-900">${pos.name}</div>
+                            </div>
+                        </div>
                     </td>
-                    <td class="py-3 px-4">
-                        <div class="flex space-x-2">
-                            <button onclick="editPosition('${pos.id}', '${pos.name.replace(/'/g, "&#39;")}')" class="text-blue-600 hover:text-blue-800" title="${editTitle}">
+                    <td class="py-4 px-4">
+                        <div class="flex items-center gap-2">
+                            <button onclick="editPosition('${pos.id}', '${pos.name.replace(/'/g, "&#39;")}', event)" class="action-btn edit" title="${editTitle}">
                                 <i class="fas fa-edit"></i>
+                                <span>${editTitle}</span>
                             </button>
-                            <button onclick="deletePosition('${pos.id}', '${pos.name.replace(/'/g, "&#39;")}')" class="text-red-600 hover:text-red-800" title="${deleteTitle}">
+                            <button onclick="deletePosition('${pos.id}', '${pos.name.replace(/'/g, "&#39;")}')" class="action-btn delete" title="${deleteTitle}">
                                 <i class="fas fa-trash"></i>
+                                <span>${deleteTitle}</span>
                             </button>
                         </div>
                     </td>
@@ -500,8 +960,9 @@
 
         function renderPositionSalaries() {
             const tbody = document.getElementById('positionSalariesTable');
-            const editTitle = typeof translate === 'function' ? translate('position.edit') : 'Edit';
-            const deleteTitle = typeof translate === 'function' ? translate('position.delete') : 'Delete';
+            // Use salary-specific labels, not generic position labels
+            const editTitle = typeof translate === 'function' ? translate('position_salary.edit_salary') : 'Edit Salary';
+            const deleteTitle = typeof translate === 'function' ? translate('position_salary.delete') : 'Delete Salary';
             const typeFixed = typeof translate === 'function' ? translate('position_salary.type_fixed') : 'Fixed';
             const typeHourly = typeof translate === 'function' ? translate('position_salary.type_hourly') : 'Hourly';
             const typeNA = typeof translate === 'function' ? translate('position_salary.type_na') : 'N/A';
@@ -511,12 +972,17 @@
                 const setFirstMsg = typeof translate === 'function' ? translate('position_salary.set_first') : 'Set your first salary';
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="4" class="text-center py-8 text-gray-500">
-                            <i class="fas fa-money-bill-wave text-4xl mb-2"></i>
-                            <p>${noDataMsg}</p>
-                            <button onclick=\"showAddSalaryModal()\" class=\"mt-4 text-blue-600 hover:text-blue-800\">
-                                <i class=\"fas fa-plus mr-2\"></i> ${setFirstMsg}
-                            </button>
+                        <td colspan="4" class="text-center py-12">
+                            <div class="flex flex-col items-center">
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center mb-4">
+                                    <i class="fas fa-money-bill-wave text-2xl text-green-600"></i>
+                                </div>
+                                <p class="text-gray-600 font-medium mb-2">${noDataMsg}</p>
+                                <button onclick="showAddSalaryModal()" class="director-btn primary text-sm">
+                                    <i class="fas fa-plus"></i>
+                                    <span>${setFirstMsg}</span>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -524,28 +990,47 @@
             }
 
             tbody.innerHTML = positionSalaries.map(row => {
-                const type = row.base_salary ? typeFixed : row.hourly_rate ? typeHourly : typeNA;
-                const amount = row.base_salary ? `${row.base_salary} DA/month` : row.hourly_rate ? `${row.hourly_rate} DA/hour` : '-';
+                // Determine type - check for base_salary or hourly_rate, handle null/undefined/0
+                const hasBaseSalary = row.base_salary && parseFloat(row.base_salary) > 0;
+                const hasHourlyRate = row.hourly_rate && parseFloat(row.hourly_rate) > 0;
+                const type = hasBaseSalary ? typeFixed : hasHourlyRate ? typeHourly : typeNA;
+                const amount = hasBaseSalary ? `${row.base_salary} DA/month` : hasHourlyRate ? `${row.hourly_rate} DA/hour` : '-';
+                const typeClass = hasBaseSalary ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' :
+                                 hasHourlyRate ? 'bg-gradient-to-r from-green-500 to-green-600 text-white' :
+                                 'bg-gradient-to-r from-gray-500 to-gray-600 text-white';
+                
                 return `
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="py-3 px-4">
-                            <div class="font-medium text-gray-900">${row.position_name}</div>
+                    <tr class="border-b border-gray-100 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all duration-200">
+                        <td class="py-4 px-4">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mr-3">
+                                    <i class="fas fa-money-bill-wave text-white text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">${row.position_name || '-'}</div>
+                                </div>
+                            </div>
                         </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2 py-1 rounded-full text-xs font-medium ${
-                                row.base_salary ? 'bg-blue-100 text-blue-800' :
-                                row.hourly_rate ? 'bg-green-100 text-green-800' :
-                                'bg-gray-100 text-gray-800'
-                            }">${type}</span>
+                        <td class="py-4 px-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${typeClass}">
+                                <i class="fas fa-${hasBaseSalary ? 'calendar' : hasHourlyRate ? 'clock' : 'question'} mr-1"></i>
+                                ${type}
+                            </span>
                         </td>
-                        <td class="py-3 px-4 text-gray-600">${amount}</td>
-                        <td class="py-3 px-4">
-                            <div class="flex space-x-2">
-                                <button onclick=\"editPositionSalary('${row.position_id}', '${row.id}')\" class="text-blue-600 hover:text-blue-800" title="${editTitle}">
+                        <td class="py-4 px-4">
+                            <div class="flex items-center">
+                                <span class="font-semibold text-gray-900">${amount}</span>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="flex items-center gap-2">
+                                <button onclick="editPositionSalary('${row.position_id}', '${row.id}', event)" class="action-btn edit" title="${editTitle}">
                                     <i class="fas fa-edit"></i>
+                                    <span>${editTitle}</span>
                                 </button>
-                                <button onclick=\"deletePositionSalary('${row.id}', '${row.position_name.replace(/'/g, "&#39;")}')\" class="text-red-600 hover:text-red-800" title="${deleteTitle}">
+                                <button onclick="deletePositionSalary('${row.id}', '${row.position_name.replace(/'/g, "&#39;")}')" class="action-btn delete" title="${deleteTitle}">
                                     <i class="fas fa-trash"></i>
+                                    <span>${deleteTitle}</span>
                                 </button>
                             </div>
                         </td>
@@ -560,42 +1045,81 @@
             let errorMessage = typeof translate === 'function' ? translate('position_salary.error_server') : 'Failed to load positions';
             let errorIcon = 'fas fa-exclamation-triangle';
             let errorColor = 'text-red-500';
+            let iconBg = 'from-red-50 to-red-100';
+            let iconColor = 'text-red-600';
 
             // Check error status first, then message content
             if (error.status === 403 || (error.message && error.message.includes('403'))) {
                 errorMessage = typeof translate === 'function' ? translate('position_salary.error_access_denied') : 'Access denied. HR Manager role required to view position salaries.';
                 errorIcon = 'fas fa-lock';
+                iconBg = 'from-orange-50 to-orange-100';
+                iconColor = 'text-orange-600';
             } else if (error.status === 401 || (error.message && error.message.includes('401'))) {
                 errorMessage = typeof translate === 'function' ? translate('position_salary.error_auth') : 'Authentication required. Please log in again.';
                 errorIcon = 'fas fa-sign-in-alt';
+                iconBg = 'from-yellow-50 to-yellow-100';
+                iconColor = 'text-yellow-600';
             } else if (error.status === 404) {
                 errorMessage = typeof translate === 'function' ? translate('position_salary.error_not_found') : 'Position salaries endpoint not found. Please check if the payment service is running.';
                 errorIcon = 'fas fa-unlink';
+                iconBg = 'from-gray-50 to-gray-100';
+                iconColor = 'text-gray-600';
             } else if (error.status >= 500) {
                 errorMessage = typeof translate === 'function' ? translate('position_salary.error_server') : 'Server error. Please try again later.';
                 errorIcon = 'fas fa-server';
+                iconBg = 'from-purple-50 to-purple-100';
+                iconColor = 'text-purple-600';
             }
 
             const tryAgainMsg = typeof translate === 'function' ? translate('position_salary.try_again') : 'Try Again';
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="2" class="text-center py-8 ${errorColor}">
-                        <i class="${errorIcon} text-4xl mb-2"></i>
-                        <p>${errorMessage}</p>
-                        <button onclick="loadPositions()" class="mt-4 text-blue-600 hover:text-blue-800">
-                            <i class="fas fa-refresh mr-2"></i>
-                            ${tryAgainMsg}
-                        </button>
+                    <td colspan="2" class="text-center py-12">
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br ${iconBg} flex items-center justify-center mb-4">
+                                <i class="${errorIcon} text-2xl ${iconColor}"></i>
+                            </div>
+                            <p class="text-gray-600 font-medium mb-2">${errorMessage}</p>
+                            <button onclick="loadPositions()" class="director-btn primary text-sm">
+                                <i class="fas fa-refresh"></i>
+                                <span>${tryAgainMsg}</span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `;
         }
-        function showAddPositionModal() {
+        function showAddPositionModal(event) {
             const title = typeof translate === 'function' ? translate('position.add_title') : 'Add Position';
             document.getElementById('positionModalTitle').textContent = title;
             document.getElementById('positionForm').reset();
             document.getElementById('positionEditId').value = '';
-            document.getElementById('positionModal').classList.remove('hidden');
+            
+            const modal = document.getElementById('positionModal');
+            const modalContent = modal.querySelector('.bg-white');
+            
+            // If we have a click event (from the header button), position near it
+            if (event && event.target && modalContent) {
+                const buttonRect = event.target.getBoundingClientRect();
+                
+                let left = buttonRect.right + 10;
+                let top = buttonRect.top;
+                
+                if (left + 400 > window.innerWidth) {
+                    left = buttonRect.left - 410;
+                }
+                
+                if (top + 300 > window.innerHeight) {
+                    top = window.innerHeight - 310;
+                }
+                
+                modalContent.style.position = 'fixed';
+                modalContent.style.left = left + 'px';
+                modalContent.style.top = top + 'px';
+                modalContent.style.transform = 'none';
+            }
+
+            modal.classList.remove('hidden');
         }
 
         function hidePositionModal() {
@@ -603,12 +1127,39 @@
             document.getElementById('positionError').classList.add('hidden');
         }
 
-        function editPosition(id, name) {
+        function editPosition(id, name, event) {
             const title = typeof translate === 'function' ? translate('position.edit_title') : 'Edit Position';
             document.getElementById('positionModalTitle').textContent = title;
             document.getElementById('positionEditId').value = id;
             document.getElementById('positionName').value = name;
-            document.getElementById('positionModal').classList.remove('hidden');
+            
+            // Position modal near the clicked button
+            const modal = document.getElementById('positionModal');
+            const modalContent = modal.querySelector('.bg-white');
+            
+            if (event && event.target) {
+                const buttonRect = event.target.getBoundingClientRect();
+                
+                // Position to the right of the button, with some spacing
+                let left = buttonRect.right + 10;
+                let top = buttonRect.top;
+                
+                // Ensure modal doesn't go off screen
+                if (left + 400 > window.innerWidth) {
+                    left = buttonRect.left - 410;
+                }
+                
+                if (top + 300 > window.innerHeight) {
+                    top = window.innerHeight - 310;
+                }
+                
+                modalContent.style.position = 'fixed';
+                modalContent.style.left = left + 'px';
+                modalContent.style.top = top + 'px';
+                modalContent.style.transform = 'none';
+            }
+            
+            modal.classList.remove('hidden');
         }
 
         document.getElementById('positionForm').addEventListener('submit', async function(e) {
@@ -660,14 +1211,39 @@
             });
         }
 
-        function showAddSalaryModal() {
+        function showAddSalaryModal(event) {
             const title = typeof translate === 'function' ? translate('position_salary.set_salary') : 'Set Position Salary';
             document.getElementById('salaryModalTitle').textContent = title;
             document.getElementById('salaryForm').reset();
             document.getElementById('salaryId').value = '';
             populatePositionDropdowns();
             document.getElementById('effectiveDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('salaryModal').classList.remove('hidden');
+            
+            const modal = document.getElementById('salaryModal');
+            const modalContent = modal.querySelector('.bg-white');
+
+            // Position near the clicked button if available
+            if (event && event.target && modalContent) {
+                const buttonRect = event.target.getBoundingClientRect();
+
+                let left = buttonRect.right + 10;
+                let top = buttonRect.top;
+
+                if (left + 400 > window.innerWidth) {
+                    left = buttonRect.left - 410;
+                }
+
+                if (top + 300 > window.innerHeight) {
+                    top = window.innerHeight - 310;
+                }
+
+                modalContent.style.position = 'fixed';
+                modalContent.style.left = left + 'px';
+                modalContent.style.top = top + 'px';
+                modalContent.style.transform = 'none';
+            }
+
+            modal.classList.remove('hidden');
         }
 
         function hideSalaryModal() {
@@ -675,7 +1251,7 @@
             document.getElementById('salaryError').classList.add('hidden');
         }
 
-        async function editPositionSalary(positionId, salaryId) {
+        async function editPositionSalary(positionId, salaryId, event) {
             populatePositionDropdowns();
             const title = typeof translate === 'function' ? translate('position_salary.edit_salary') : 'Edit Position Salary';
             document.getElementById('salaryModalTitle').textContent = title;
@@ -688,7 +1264,34 @@
             document.getElementById('overtimeRate').value = rec.overtime_rate || '';
             document.getElementById('bonusRate').value = rec.bonus_rate || '';
             document.getElementById('effectiveDate').value = (rec.effective_date || new Date().toISOString().split('T')[0]).split('T')[0];
-            document.getElementById('salaryModal').classList.remove('hidden');
+            
+            // Position modal near the clicked button
+            const modal = document.getElementById('salaryModal');
+            const modalContent = modal.querySelector('.bg-white');
+            
+            if (event && event.target) {
+                const buttonRect = event.target.getBoundingClientRect();
+                
+                // Position to the right of the button, with some spacing
+                let left = buttonRect.right + 10;
+                let top = buttonRect.top;
+                
+                // Ensure modal doesn't go off screen
+                if (left + 400 > window.innerWidth) {
+                    left = buttonRect.left - 410;
+                }
+                
+                if (top + 300 > window.innerHeight) {
+                    top = window.innerHeight - 310;
+                }
+                
+                modalContent.style.position = 'fixed';
+                modalContent.style.left = left + 'px';
+                modalContent.style.top = top + 'px';
+                modalContent.style.transform = 'none';
+            }
+            
+            modal.classList.remove('hidden');
         }
 
         document.getElementById('salaryForm').addEventListener('submit', async function(e) {

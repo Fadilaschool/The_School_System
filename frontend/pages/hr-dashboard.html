@@ -7,10 +7,602 @@
     <title>HR Manager Dashboard - HR Operations Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
     <style>
+        /* Director-themed base styles */
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-purple: #7c3aed;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+        }
+
+        /* KPI cards */
+        .kpi-card {
+            background: var(--director-card-bg);
+            border-radius: 24px;
+            padding: 22px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            box-shadow: 0 18px 35px rgba(15, 23, 42, 0.07);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 55%);
+            pointer-events: none;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 45px rgba(15, 23, 42, 0.12);
+        }
+
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(99, 102, 241, 0.35));
+            color: var(--director-indigo);
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .director-panel {
+            margin-top: 16px;
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .director-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .director-panel>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left,
+                    rgba(37, 99, 235, 0.22),
+                    rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+
+        .director-section-pill {
+            padding: 0.15rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: rgba(15, 23, 42, 0.04);
+            color: #64748b;
+        }
+
+        /* Report Stat Cards */
+        .report-stat-card-inline {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .report-stat-card-inline:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+        }
+
+        .report-stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .report-stat-content {
+            flex: 1;
+        }
+
+        .report-stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .report-stat-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .report-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Task Stat Cards */
+        .task-stat-card-vertical {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .task-stat-card-vertical:hover {
+            transform: translateX(4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+        }
+
+        .task-stat-icon-badge {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .task-stat-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .task-stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .task-progress-wrapper {
+            margin-top: 16px;
+        }
+
+        .task-progress-bar {
+            height: 8px;
+            background: rgba(15, 23, 42, 0.06);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .task-progress-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.6s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .task-progress-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Enhanced Quick Action Cards - Director Dashboard Style */
+        .quick-action-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .quick-action-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .quick-action-main-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .quick-action-badge {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            min-width: 24px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .quick-action-content {
+            margin-bottom: 16px;
+        }
+
+        .quick-action-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .quick-action-desc {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .quick-action-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .quick-action-stat-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: rgba(248, 250, 252, 0.8);
+            border-radius: 8px;
+            border: 1px solid rgba(226, 232, 240, 0.6);
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-stat-item:hover {
+            background: rgba(241, 245, 249, 0.9);
+            transform: translateX(2px);
+        }
+
+        .quick-action-stat-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quick-action-stat-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .quick-action-stat-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: white;
+        }
+
+        /* Chart container */
+        .chart-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+        }
+
+        /* Page Hero Styles – cosmetic only; responsive layout is in style.css for all spaces */
+        .page-hero {
+            background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 100%);
+            color: white;
+            border-radius: 0;
+            box-shadow: 0 25px 60px rgba(67, 56, 202, 0.25);
+            z-index: 40;
+        }
+        @media (min-width: 769px) {
+            .page-hero {
+                padding: 32px;
+                position: sticky;
+                top: 0;
+                margin-bottom: 2rem;
+            }
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.25), transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-hero-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 769px) {
+            .page-hero-content {
+                gap: 24px;
+                margin: 2rem 0;
+            }
+        }
+
+        .hero-chip {
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hero-select {
+            background: rgba(15, 23, 42, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px 16px;
+            min-width: 180px;
+            backdrop-filter: blur(6px);
+        }
+
+        .hero-select option {
+            background: #1e293b;
+            color: white;
+        }
+
+        /* Header User Section Styles */
+        /* Compact on mobile (style.css); full on desktop */
+        .header-user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        @media (min-width: 769px) {
+            .header-user-section {
+                padding: 12px 20px;
+                margin: 3rem 2rem;
+            }
+        }
+
+        .header-user-section:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #ffffff, #f1f5f9);
+            color: #4338ca;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .header-user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .header-user-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .header-user-role {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 8px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .notification-bell {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #ffffff;
+            font-size: 1.2rem;
+        }
+
+        .notification-bell:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification-bell:active {
+            transform: translateY(0);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .notification-badge:empty {
+            display: none;
+        }
+
+        .header-date {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .header-date i {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Legacy styles for backward compatibility */
         .glass-effect {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -46,22 +638,11 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
-        .quick-action-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .quick-action-card:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-
         .pulse-animation {
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-
             0%,
             100% {
                 opacity: 1;
@@ -184,306 +765,316 @@
             direction: ltr;
         }
 
-        /* Fix space-x-4 spacing in header controls for RTL */
-        [dir="rtl"] .dashboard-header .space-x-4>*+* {
-            margin-left: 1rem !important;
-            margin-right: 0 !important;
+        /* RTL support for filter controls */
+        [dir="rtl"] #filterControlsContainer {
+            direction: rtl !important;
+            text-align: right !important;
+            flex-direction: row-reverse !important;
+            justify-content: flex-end !important;
+        }
+
+        [dir="rtl"] #filterControlsContainer.flex {
+            flex-direction: row-reverse !important;
+        }
+
+        [dir="rtl"] #filterControlsContainer > * {
+            direction: rtl;
+            text-align: right;
+        }
+
+        [dir="rtl"] #filterControlsContainer select {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        [dir="rtl"] #filterControlsContainer label {
+            text-align: right !important;
+        }
+
+        [dir="rtl"] #filterControlsContainer i {
+            order: 999 !important;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: #3b82f6;
+            font-size: 1.75rem;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .page-title i {
+                font-size: 1.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 
 <body class="bg-gray-50">
-    <!-- Mobile menu toggle button -->
-    <button id="mobileMenuToggle"
-        class="mobile-menu-toggle md:hidden bg-white border border-gray-300 rounded-lg p-2 shadow-sm">
-        <i class="fas fa-bars text-gray-600"></i>
-    </button>
-
-    <!-- Dashboard Content -->
-    <main class="p-6">
-        <!-- Welcome Header Section -->
-        <div class="mb-8">
-            <div class="dashboard-header flex items-center justify-between">
-                <div>
-                    <h1 class="text-4xl font-bold text-gray-900" data-translate="dashboard.welcome">Welcome to HR
-                        Dashboard</h1>
-                    <p class="text-gray-600 mt-2 text-lg" id="welcomeMessage" data-translate="dashboard.loading">
-                        Loading...</p>
-                    <!-- NEW: Data Period Indicator -->
-                    <div id="dataPeriodIndicator"
-                        class="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
-                        <i class="fas fa-calendar-alt mr-2"></i>
-                        <span id="dataPeriodText" data-translate="dashboard.data_period">Current Month Data</span>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <!-- Language Selector -->
-                    <select id="languageSelector"
-                        class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
-                        <option value="en">English</option>
-                        <option value="fr">Français</option>
-                        <option value="ar">العربية</option>
-                    </select>
-
-                    <!-- Notifications -->
-                    <div class="relative">
-                        <button id="notificationButton"
-                            class="p-2 text-gray-600 hover:text-blue-600 relative bg-white rounded-lg border border-gray-200 shadow-sm">
-                            <i class="fas fa-bell text-xl"></i>
-                            <span id="notificationBadge"
-                                class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center notification-badge">0</span>
-                        </button>
-                    </div>
-
-                    <!-- User Profile -->
-                    <div class="flex items-center bg-white rounded-lg border border-gray-200 shadow-sm px-3 py-2">
-                        <div
-                            class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                            <i class="fas fa-user text-white text-sm"></i>
-                        </div>
-                        <span class="ml-2 text-sm font-medium text-gray-700" id="sidebarUserName">HR Manager</span>
-                    </div>
-                </div>
-            </div>
+    <!-- Dashboard Content (mobile menu is in the global header from main.js) -->
+    <main>
+        <!-- Page Title & Description -->
+        <div class="page-header m-6">
+            <h1 class="page-title" data-translate="dashboard.hr_title">
+                <i class="fas fa-users-cog"></i>
+                HR Dashboard
+            </h1>
+            <p class="page-subtitle" data-translate="dashboard.hr_subtitle">Human Resources Management & Analytics</p>
         </div>
 
+        <!-- Page Content with Padding -->
+        <div class="p-6">
         <!-- Enhanced Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="flex flex-wrap gap-4 justify-between mb-8">
             <!-- Total Employees Card -->
-            <div class="stat-card rounded-xl shadow-lg p-6 card-hover slide-in">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-white/80 text-sm font-medium" data-translate="dashboard.total_employees">Total
-                            Employees</p>
-                        <p class="text-3xl font-bold text-white mt-2" id="totalEmployees">-</p>
-                        <p class="text-white/70 text-xs mt-1" id="totalEmployeesChange">+0 this month</p>
-                    </div>
-                    <div class="p-4 bg-white/20 rounded-full">
-                        <i class="fas fa-users text-white text-2xl"></i>
-                    </div>
+            <div class="report-stat-card-inline">
+                <div class="report-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="report-stat-content">
+                    <p class="report-stat-label" data-translate="dashboard.total_employees">Total Employees</p>
+                    <h3 id="totalEmployees" class="report-stat-value">-</h3>
+                    <span class="report-stat-badge" style="background: rgba(59, 130, 246, 0.1); color: #2563eb;">
+                        <i class="fas fa-chart-line"></i>
+                        <span id="totalEmployeesChange">All time</span>
+                    </span>
                 </div>
             </div>
 
-            <!-- Institutes Card (replaces Last Month Added) -->
-            <div class="stat-card-2 rounded-xl shadow-lg p-6 card-hover slide-in" style="animation-delay: 0.1s;">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-white/80 text-sm font-medium" data-translate="dashboard.institutes">Institutes
-                        </p>
-                        <p class="text-3xl font-bold text-white mt-2" id="institutesCount">-</p>
-                        <p class="text-white/70 text-xs mt-1" id="institutesSubtitle"
-                            data-translate="dashboard.active_institutes">Active institutes</p>
-                    </div>
-                    <div class="p-4 bg-white/20 rounded-full">
-                        <i class="fas fa-university text-white text-2xl"></i>
-                    </div>
+            <!-- Institutes Card -->
+            <div class="report-stat-card-inline">
+                <div class="report-stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                    <i class="fas fa-university"></i>
+                </div>
+                <div class="report-stat-content">
+                    <p class="report-stat-label" data-translate="dashboard.institutes">Institutes</p>
+                    <h3 id="institutesCount" class="report-stat-value">-</h3>
+                    <span class="report-stat-badge" style="background: rgba(139, 92, 246, 0.1); color: #7c3aed;">
+                        <i class="fas fa-building"></i>
+                        <span id="institutesSubtitle" data-translate="dashboard.active_institutes">Active institutes</span>
+                    </span>
                 </div>
             </div>
 
             <!-- Total Salary Card -->
-            <div class="stat-card-3 rounded-xl shadow-lg p-6 card-hover slide-in" style="animation-delay: 0.2s;">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-white/80 text-sm font-medium" data-translate="dashboard.total_salary">Total
-                            Salary</p>
-                        <p class="text-3xl font-bold text-white mt-2" id="totalSalary">-</p>
-                        <p class="text-white/70 text-xs mt-1" id="totalSalaryChange"
-                            data-translate="dashboard.this_month">This month</p>
-                    </div>
-                    <div class="p-4 bg-white/20 rounded-full">
-                        <i class="fas fa-coins text-white text-2xl"></i>
-                    </div>
+            <div class="report-stat-card-inline">
+                <div class="report-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="report-stat-content">
+                    <p class="report-stat-label" data-translate="dashboard.total_salary">Total Salary</p>
+                    <h3 id="totalSalary" class="report-stat-value">-</h3>
+                    <span class="report-stat-badge" style="background: rgba(16, 185, 129, 0.1); color: #059669;">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span id="totalSalaryChange" data-translate="dashboard.this_month">This month</span>
+                    </span>
                 </div>
             </div>
 
             <!-- Attendance Rate Card -->
-            <div class="stat-card-4 rounded-xl shadow-lg p-6 card-hover slide-in" style="animation-delay: 0.3s;">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-white/80 text-sm font-medium" data-translate="dashboard.attendance_rate">
-                            Attendance Rate</p>
-                        <p class="text-3xl font-bold text-white mt-2" id="attendanceRate">-</p>
-                        <p class="text-white/70 text-xs mt-1" id="attendanceRateChange"
-                            data-translate="dashboard.this_month">This month</p>
-                    </div>
-                    <div class="p-4 bg-white/20 rounded-full">
-                        <i class="fas fa-chart-line text-white text-2xl"></i>
-                    </div>
+            <div class="report-stat-card-inline">
+                <div class="report-stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="report-stat-content">
+                    <p class="report-stat-label" data-translate="dashboard.attendance_rate">Attendance Rate</p>
+                    <h3 id="attendanceRate" class="report-stat-value">-</h3>
+                    <span class="report-stat-badge" style="background: rgba(245, 158, 11, 0.1); color: #d97706;">
+                        <i class="fas fa-percentage"></i>
+                        <span id="attendanceRateChange" data-translate="dashboard.this_month">This month</span>
+                    </span>
                 </div>
             </div>
         </div>
 
         <!-- Quick Actions Section -->
-        <div class="mb-8">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold text-gray-900" data-translate="dashboard.quick_actions">Quick Actions</h2>
-                <div class="flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
-                    <i class="fas fa-filter text-blue-600 text-sm"></i>
-                    <label for="qaTimeFilter" class="text-sm text-blue-800 font-medium"
-                        data-translate="dashboard.filter_quick_actions">Filter Quick Actions:</label>
-                    <select id="qaTimeFilter"
-                        class="border border-blue-300 bg-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="current" selected data-translate="dashboard.current_month">Current Month</option>
-                        <option value="last" data-translate="dashboard.last_month">Last Month</option>
-                        <option value="year" data-translate="dashboard.this_year">This Year</option>
-                    </select>
-                    <span class="text-xs text-blue-700 ml-2" data-translate="dashboard.all_data_filtered">(All Data
-                        Filtered)</span>
+        <div class="director-panel">
+            <div class="director-panel-header">
+                <div class="director-panel-title">
+                    <div class="director-panel-title-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-900" data-translate="dashboard.quick_actions">Quick Actions</h2>
+                        <p class="text-xs text-gray-500 mt-0.5" data-translate="dashboard.navigate_key_sections">Navigate to key sections</p>
+                    </div>
                 </div>
+                <span class="director-section-pill" data-translate="dashboard.actions">Actions</span>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <!-- Filter Controls -->
+            <div class="flex items-center gap-4 mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200" id="filterControlsContainer" style="flex-wrap: wrap;">
+                <i class="fas fa-filter text-blue-600"></i>
+                <label for="qaTimeFilter" class="text-sm font-medium text-gray-700"
+                    data-translate="dashboard.filter_quick_actions">Filter Quick Actions:</label>
+                <select id="qaTimeFilter"
+                    class="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="current" selected data-translate="dashboard.current_month">Current Month</option>
+                    <option value="last" data-translate="dashboard.last_month">Last Month</option>
+                    <option value="year" data-translate="dashboard.this_year">This Year</option>
+                </select>
+                <label for="qaBranchFilter" class="text-sm font-medium text-gray-700"
+                    data-translate="dashboard.filter_by_branch">Filter by Branch:</label>
+                <select id="qaBranchFilter"
+                    class="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="all" selected data-translate="dashboard.all_branches">All Branches</option>
+                </select>
+                <span class="text-xs text-blue-700" data-translate="dashboard.all_data_filtered">(All Data Filtered)</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Exceptions Quick Action -->
-                <div class="quick-action-card bg-white rounded-xl shadow-lg p-6 glass-effect"
-                    onclick="window.open('exceptions.html', '_blank')">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="p-3 bg-red-100 rounded-full">
-                            <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                <div class="quick-action-card" data-theme="exceptions" onclick="window.open('exceptions.html', '_blank')">
+                    <div class="quick-action-header">
+                        <div class="quick-action-main-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                            <i class="fas fa-exclamation-triangle"></i>
                         </div>
-                        <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full"
-                            id="pendingExceptionsCount">0</span>
+                        <div class="quick-action-badge" id="pendingExceptionsCount">0</div>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4"
-                        data-translate="dashboard.exception_management">Exception Management</h3>
-
-                    <!-- Statistics Grid -->
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div class="bg-red-50 p-3 rounded-lg text-center">
-                            <p class="text-xs text-red-600 font-medium" data-translate="dashboard.pending">Pending</p>
-                            <p class="text-lg font-bold text-red-800" id="pendingExceptions">0</p>
-                        </div>
-                        <div class="bg-orange-50 p-3 rounded-lg text-center">
-                            <p class="text-xs text-orange-600 font-medium" data-translate="dashboard.this_week">This
-                                Week</p>
-                            <p class="text-lg font-bold text-orange-800" id="weeklyExceptions">0</p>
-                        </div>
+                    <div class="quick-action-content">
+                        <h3 class="quick-action-title" data-translate="dashboard.exception_management">Exception Management</h3>
+                        <p class="quick-action-desc" data-translate="dashboard.handle_exceptions">Handle employee exceptions</p>
                     </div>
-
-                    <div class="flex items-center text-blue-600 text-sm font-medium">
-                        <span data-translate="dashboard.view_details">View Details</span>
-                        <i class="fas fa-arrow-right ml-2"></i>
+                    <div class="quick-action-stats">
+                        <div class="quick-action-stat-item">
+                            <div class="quick-action-stat-label">
+                                <div class="quick-action-stat-icon" style="background: #ef4444;"><i class="fas fa-clock"></i></div>
+                                <span data-translate="dashboard.pending">Pending</span>
+                            </div>
+                            <div class="quick-action-stat-value" id="pendingExceptions">0</div>
+                        </div>
+                        <div class="quick-action-stat-item">
+                            <div class="quick-action-stat-label">
+                                <div class="quick-action-stat-icon" style="background: #f59e0b;"><i class="fas fa-calendar-week"></i></div>
+                                <span data-translate="dashboard.this_week">This Week</span>
+                            </div>
+                            <div class="quick-action-stat-value" id="weeklyExceptions">0</div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Attendance Validation Quick Action -->
-                <div class="quick-action-card bg-white rounded-xl shadow-lg p-6 glass-effect"
-                    onclick="window.open('../attendance-service/attendance-master.html', '_blank')">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="p-3 bg-orange-100 rounded-full">
-                            <i class="fas fa-clock text-orange-600 text-xl"></i>
+                <div class="quick-action-card" data-theme="attendance" onclick="window.open('../attendance-service/attendance-master.html', '_blank')">
+                    <div class="quick-action-header">
+                        <div class="quick-action-main-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <i class="fas fa-clock"></i>
                         </div>
-                        <span class="bg-orange-500 text-white text-xs px-2 py-1 rounded-full"
-                            id="pendingValidationCount">0</span>
+                        <div class="quick-action-badge" id="pendingValidationCount">0</div>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4"
-                        data-translate="dashboard.attendance_validation">Attendance Validation</h3>
-
-                    <!-- Statistics Grid -->
-                    <div class="space-y-2 mb-4">
-                        <div class="bg-green-50 p-2 rounded-lg flex justify-between items-center">
-                            <span class="text-xs text-green-600 font-medium"
-                                data-translate="dashboard.validated_records">Validated Records</span>
-                            <span class="text-sm font-bold text-green-800" id="validatedRecords">0</span>
-                        </div>
-                        <div class="bg-orange-50 p-2 rounded-lg flex justify-between items-center">
-                            <span class="text-xs text-orange-600 font-medium"
-                                data-translate="dashboard.pending_validation">Pending Validation</span>
-                            <span class="text-sm font-bold text-orange-800" id="pendingValidation">0</span>
-                        </div>
-                        <div class="bg-yellow-50 p-2 rounded-lg flex justify-between items-center">
-                            <span class="text-xs text-yellow-600 font-medium"
-                                data-translate="dashboard.partial_pending">Partial Pending</span>
-                            <span class="text-sm font-bold text-yellow-800" id="partialPending">0</span>
-                        </div>
+                    <div class="quick-action-content">
+                        <h3 class="quick-action-title" data-translate="dashboard.attendance_validation">Attendance Validation</h3>
+                        <p class="quick-action-desc" data-translate="dashboard.validate_attendance">Validate employee attendance</p>
                     </div>
-
-                    <div class="flex items-center text-blue-600 text-sm font-medium">
-                        <span data-translate="dashboard.validate_now">Validate Now</span>
-                        <i class="fas fa-arrow-right ml-2"></i>
-                    </div>
-                </div>
-
-                <!-- Department Management Quick Action -->
-                <div class="quick-action-card bg-white rounded-xl shadow-lg p-6 glass-effect"
-                    onclick="window.open('departments.html', '_blank')">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="p-3 bg-blue-100 rounded-full">
-                            <i class="fas fa-building text-blue-600 text-xl"></i>
+                    <div class="quick-action-stats">
+                        <div class="quick-action-stat-item">
+                            <div class="quick-action-stat-label">
+                                <div class="quick-action-stat-icon" style="background: #10b981;"><i class="fas fa-check-circle"></i></div>
+                                <span data-translate="dashboard.validated_records">Validated</span>
+                            </div>
+                            <div class="quick-action-stat-value" id="validatedRecords">0</div>
                         </div>
-                        <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded-full"
-                            id="totalDepartmentsCount">0</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4"
-                        data-translate="dashboard.department_management">Department Management</h3>
-
-                    <!-- Statistics Grid -->
-                    <div class="space-y-2 mb-4">
-                        <div class="bg-blue-50 p-2 rounded-lg flex justify-between items-center">
-                            <span class="text-xs text-blue-600 font-medium"
-                                data-translate="dashboard.total_departments">Total Departments</span>
-                            <span class="text-sm font-bold text-blue-800" id="totalDepartments">0</span>
+                        <div class="quick-action-stat-item">
+                            <div class="quick-action-stat-label">
+                                <div class="quick-action-stat-icon" style="background: #f59e0b;"><i class="fas fa-hourglass-half"></i></div>
+                                <span data-translate="dashboard.pending_validation">Pending</span>
+                            </div>
+                            <div class="quick-action-stat-value" id="pendingValidation">0</div>
                         </div>
-                        <div class="bg-purple-50 p-2 rounded-lg flex justify-between items-center">
-                            <span class="text-xs text-purple-600 font-medium"
-                                data-translate="dashboard.active_departments">Active Departments</span>
-                            <span class="text-sm font-bold text-purple-800" id="activeDepartments">0</span>
+                        <div class="quick-action-stat-item">
+                            <div class="quick-action-stat-label">
+                                <div class="quick-action-stat-icon" style="background: #eab308;"><i class="fas fa-exclamation-circle"></i></div>
+                                <span data-translate="dashboard.partial_pending">Partial</span>
+                            </div>
+                            <div class="quick-action-stat-value" id="partialPending">0</div>
                         </div>
-                        <div class="bg-indigo-50 p-2 rounded-lg flex justify-between items-center">
-                            <span class="text-xs text-indigo-600 font-medium"
-                                data-translate="dashboard.avg_employees">Avg Employees</span>
-                            <span class="text-sm font-bold text-indigo-800" id="avgEmployeesPerDept">0</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center text-blue-600 text-sm font-medium">
-                        <span data-translate="dashboard.manage">Manage</span>
-                        <i class="fas fa-arrow-right ml-2"></i>
                     </div>
                 </div>
 
                 <!-- Salary Management Quick Action -->
-                <div class="quick-action-card bg-white rounded-xl shadow-lg p-6 glass-effect"
-                    onclick="window.open('salary-management.html', '_blank')">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="p-3 bg-green-100 rounded-full">
-                            <i class="fas fa-coins text-green-600 text-xl"></i>
+                <div class="quick-action-card" data-theme="salary" onclick="window.open('salary-management.html', '_blank')">
+                    <div class="quick-action-header">
+                        <div class="quick-action-main-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="fas fa-coins"></i>
                         </div>
-                        <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full"
-                            id="salaryStatusCount">0</span>
+                        <div class="quick-action-badge" id="salaryStatusCount">0</div>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4" data-translate="dashboard.salary_management">
-                        Salary Management</h3>
-
-                    <!-- Statistics Grid -->
-                    <div class="space-y-2 mb-4">
-                        <div class="bg-green-50 p-2 rounded-lg flex justify-between items-center">
-                            <span class="text-xs text-green-600 font-medium"
-                                data-translate="dashboard.total_payroll">Total Payroll</span>
-                            <span class="text-sm font-bold text-green-800" id="totalPayrollAmount">0 DA</span>
-                        </div>
-                        <div class="bg-blue-50 p-2 rounded-lg flex justify-between items-center">
-                            <span class="text-xs text-blue-600 font-medium" data-translate="dashboard.paid">Paid</span>
-                            <span class="text-sm font-bold text-blue-800" id="paidSalaries">0</span>
-                        </div>
-                        <div class="bg-orange-50 p-2 rounded-lg flex justify-between items-center">
-                            <span class="text-xs text-orange-600 font-medium"
-                                data-translate="dashboard.pending">Pending</span>
-                            <span class="text-sm font-bold text-orange-800" id="pendingSalaries">0</span>
-                        </div>
-                        <div class="bg-emerald-50 p-2 rounded-lg flex justify-between items-center">
-                            <span class="text-xs text-emerald-600 font-medium"
-                                data-translate="dashboard.total_raise">Total Raise</span>
-                            <span class="text-sm font-bold text-emerald-800" id="totalRaiseAmount">0 DA</span>
-                        </div>
-                        <div class="bg-red-50 p-2 rounded-lg flex justify-between items-center">
-                            <span class="text-xs text-red-600 font-medium"
-                                data-translate="dashboard.total_decrease">Total Decrease</span>
-                            <span class="text-sm font-bold text-red-800" id="totalDecreaseAmount">0 DA</span>
-                        </div>
+                    <div class="quick-action-content">
+                        <h3 class="quick-action-title" data-translate="dashboard.salary_management">Salary Management</h3>
+                        <p class="quick-action-desc" data-translate="dashboard.manage_salaries">Manage payroll</p>
                     </div>
-
-                    <div class="flex items-center text-blue-600 text-sm font-medium">
-                        <span data-translate="dashboard.manage">Manage</span>
-                        <i class="fas fa-arrow-right ml-2"></i>
+                    <div class="quick-action-stats">
+                        <div class="quick-action-stat-item">
+                            <div class="quick-action-stat-label">
+                                <div class="quick-action-stat-icon" style="background: #10b981;"><i class="fas fa-money-bill-wave"></i></div>
+                                <span data-translate="dashboard.total_payroll">Payroll</span>
+                            </div>
+                            <div class="quick-action-stat-value" id="totalPayrollAmount">0 DA</div>
+                        </div>
+                        <div class="quick-action-stat-item">
+                            <div class="quick-action-stat-label">
+                                <div class="quick-action-stat-icon" style="background: #3b82f6;"><i class="fas fa-check-circle"></i></div>
+                                <span data-translate="dashboard.paid">Paid</span>
+                            </div>
+                            <div class="quick-action-stat-value" id="paidSalaries">0</div>
+                        </div>
+                        <div class="quick-action-stat-item">
+                            <div class="quick-action-stat-label">
+                                <div class="quick-action-stat-icon" style="background: #f59e0b;"><i class="fas fa-clock"></i></div>
+                                <span data-translate="dashboard.pending">Pending</span>
+                            </div>
+                            <div class="quick-action-stat-value" id="pendingSalaries">0</div>
+                        </div>
+                        <div class="quick-action-stat-item">
+                            <div class="quick-action-stat-label">
+                                <div class="quick-action-stat-icon" style="background: #34d399;"><i class="fas fa-arrow-up"></i></div>
+                                <span data-translate="dashboard.total_raise">Raises</span>
+                            </div>
+                            <div class="quick-action-stat-value" id="totalRaiseAmount">0 DA</div>
+                        </div>
+                        <div class="quick-action-stat-item">
+                            <div class="quick-action-stat-label">
+                                <div class="quick-action-stat-icon" style="background: #ef4444;"><i class="fas fa-arrow-down"></i></div>
+                                <span data-translate="dashboard.total_decrease">Decreases</span>
+                            </div>
+                            <div class="quick-action-stat-value" id="totalDecreaseAmount">0 DA</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -492,110 +1083,134 @@
         <!-- Charts and Analytics Section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <!-- Institution Distribution Chart -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900" data-translate="dashboard.institution_distribution">
-                        Institution Distribution</h3>
-                    <div class="flex space-x-2">
-                        <button onclick="refreshDepartmentChart()" class="p-2 text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
+            <div class="director-panel">
+                <div class="director-panel-header">
+                    <div class="director-panel-title">
+                        <div class="director-panel-title-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900" data-translate="dashboard.institution_distribution">
+                                Institution Distribution</h3>
+                            <p class="text-xs text-gray-500 mt-0.5" data-translate="dashboard.total_salary_grouped">Total
+                                salary grouped by institution</p>
+                        </div>
                     </div>
+                    <span class="director-section-pill" data-translate="dashboard.chart">Chart</span>
                 </div>
-                <div class="chart-container">
+                <div class="chart-container" style="height: 300px;">
                     <canvas id="departmentChart"></canvas>
                 </div>
-                <p class="text-xs text-gray-500 mt-2 text-center" data-translate="dashboard.total_salary_grouped">Total
-                    salary grouped by institution</p>
             </div>
 
             <!-- Teacher Salary by Teaching Level Chart -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900" data-translate="dashboard.salaries_by_position">
-                        Salaries by Position</h3>
-                    <div class="flex space-x-2">
-                        <button onclick="refreshSalaryChart()" class="p-2 text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
+            <div class="director-panel">
+                <div class="director-panel-header">
+                    <div class="director-panel-title">
+                        <div class="director-panel-title-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900" data-translate="dashboard.salaries_by_position">
+                                Salaries by Position</h3>
+                            <p class="text-xs text-gray-500 mt-0.5" data-translate="dashboard.total_salary_by_position">
+                                Total salary by position (Teacher, HR Manager, etc.)</p>
+                        </div>
                     </div>
+                    <span class="director-section-pill" data-translate="dashboard.analytics">Analytics</span>
                 </div>
-                <div class="chart-container">
+                <div class="chart-container" style="height: 300px;">
                     <canvas id="salaryChart"></canvas>
                 </div>
-                <p class="text-xs text-gray-500 mt-2 text-center" data-translate="dashboard.total_salary_by_position">
-                    Total salary by position (Teacher, HR Manager, etc.)</p>
             </div>
         </div>
 
         <!-- Recent Activity and Statistics -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <!-- Recent Employees -->
-            <div class="bg-white rounded-xl shadow-lg">
-                <div class="p-6 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900" data-translate="dashboard.recent_employees_title">
-                        Recent Employees</h3>
-                </div>
-                <div class="p-6">
-                    <div id="recentEmployeesList" class="space-y-4">
-                        <div class="loading-skeleton h-16 rounded-lg"></div>
-                        <div class="loading-skeleton h-16 rounded-lg"></div>
-                        <div class="loading-skeleton h-16 rounded-lg"></div>
+            <div class="director-panel">
+                <div class="director-panel-header">
+                    <div class="director-panel-title">
+                        <div class="director-panel-title-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900" data-translate="dashboard.recent_employees_title">
+                                Recent Employees</h3>
+                            <p class="text-xs text-gray-500 mt-0.5" data-translate="dashboard.latest_hires">Latest team members</p>
+                        </div>
                     </div>
+                    <span class="director-section-pill" data-translate="dashboard.recent">Recent</span>
+                </div>
+                <div id="recentEmployeesList" class="space-y-4">
+                    <div class="loading-skeleton h-16 rounded-lg"></div>
+                    <div class="loading-skeleton h-16 rounded-lg"></div>
+                    <div class="loading-skeleton h-16 rounded-lg"></div>
                 </div>
             </div>
 
             <!-- Meeting Calendar -->
-            <div class="bg-white rounded-xl shadow-lg">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-gray-900" data-translate="dashboard.meeting_calendar">
-                            Meeting Calendar</h3>
-                        <div class="flex space-x-2">
-                            <button onclick="previousMonth()" class="text-blue-600 hover:text-blue-800 p-1">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button onclick="nextMonth()" class="text-blue-600 hover:text-blue-800 p-1">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                            <button onclick="loadUpcomingMeetings()" class="text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
+            <div class="director-panel">
+                <div class="director-panel-header">
+                    <div class="director-panel-title">
+                        <div class="director-panel-title-icon">
+                            <i class="fas fa-calendar"></i>
                         </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900" data-translate="dashboard.meeting_calendar">
+                                Meeting Calendar</h3>
+                            <p class="text-xs text-gray-500 mt-0.5" data-translate="dashboard.upcoming_meetings">Upcoming meetings</p>
+                        </div>
+                    </div>
+                    <span class="director-section-pill" data-translate="dashboard.calendar">Calendar</span>
+                </div>
+                
+                <!-- Calendar Navigation -->
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex gap-2">
+                        <button onclick="previousMonth()" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button onclick="nextMonth()" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button onclick="loadUpcomingMeetings()" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="p-6">
-                    <!-- Calendar Header -->
-                    <div class="text-center mb-4">
-                        <h4 class="text-lg font-semibold text-gray-900" id="calendarMonth">January 2024</h4>
-                    </div>
+                
+                <!-- Calendar Header -->
+                <div class="text-center mb-4">
+                    <h4 class="text-lg font-semibold text-gray-900" id="calendarMonth">January 2024</h4>
+                </div>
 
-                    <!-- Calendar Grid -->
-                    <div class="calendar-grid mb-4">
-                        <div class="grid grid-cols-7 gap-1 text-center text-xs font-medium text-gray-500 mb-2">
-                            <div data-translate="dashboard.sun">Sun</div>
-                            <div data-translate="dashboard.mon">Mon</div>
-                            <div data-translate="dashboard.tue">Tue</div>
-                            <div data-translate="dashboard.wed">Wed</div>
-                            <div data-translate="dashboard.thu">Thu</div>
-                            <div data-translate="dashboard.fri">Fri</div>
-                            <div data-translate="dashboard.sat">Sat</div>
-                        </div>
-                        <div id="calendarDays" class="grid grid-cols-7 gap-1">
-                            <!-- Calendar days will be generated here -->
-                        </div>
+                <!-- Calendar Grid -->
+                <div class="calendar-grid mb-4">
+                    <div class="grid grid-cols-7 gap-1 text-center text-xs font-medium text-gray-500 mb-2">
+                        <div data-translate="dashboard.sun">Sun</div>
+                        <div data-translate="dashboard.mon">Mon</div>
+                        <div data-translate="dashboard.tue">Tue</div>
+                        <div data-translate="dashboard.wed">Wed</div>
+                        <div data-translate="dashboard.thu">Thu</div>
+                        <div data-translate="dashboard.fri">Fri</div>
+                        <div data-translate="dashboard.sat">Sat</div>
                     </div>
+                    <div id="calendarDays" class="grid grid-cols-7 gap-1">
+                        <!-- Calendar days will be generated here -->
+                    </div>
+                </div>
 
-                    <!-- Meeting List -->
-                    <div class="border-t pt-4">
-                        <h4 class="text-sm font-medium text-gray-700 mb-3" data-translate="dashboard.todays_meetings">
-                            Today's Meetings</h4>
-                        <div id="todaysMeetings" class="space-y-2">
-                            <!-- Today's meetings will be loaded here -->
-                        </div>
+                <!-- Meeting List -->
+                <div class="border-t pt-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-3" data-translate="dashboard.todays_meetings">
+                        Today's Meetings</h4>
+                    <div id="todaysMeetings" class="space-y-2">
+                        <!-- Today's meetings will be loaded here -->
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </main>
 
@@ -684,15 +1299,16 @@
     <!-- Floating Action Button -->
     <div class="floating-action">
         <button onclick="refreshAllData()"
-            class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110">
-            <i class="fas fa-sync-alt text-xl"></i>
+            class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white p-4 rounded-full shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center group">
+            <i class="fas fa-sync-alt text-xl group-hover:rotate-180 transition-transform duration-500"></i>
         </button>
     </div>
 
     <!-- Scripts -->
     <script src="../assets/js/translations.js?v=4"></script>
     <script src="../assets/js/auth.js?v=4"></script>
-    <script src="../assets/js/main.js?v=4"></script>
+    <script src="../assets/js/translations.js"></script>
+    <script src="../assets/js/main.js"></script>
     <script src="../components/api.js?v=4"></script>
     <script src="../assets/js/simple-nav.js?v=4"></script>
     <script>
@@ -727,7 +1343,28 @@
                 return;
             }
 
+            // Initialize the collapsible sidebar
+            if (typeof initializeCollapsibleSidebar === 'function') {
+                initializeCollapsibleSidebar();
+            }
+
             initializeMobileMenu();
+
+            // Function to update filter controls RTL direction
+            function updateFilterControlsRTL(lang) {
+                const filterContainer = document.getElementById('filterControlsContainer');
+                if (!filterContainer) return;
+
+                if (lang === 'ar') {
+                    filterContainer.setAttribute('dir', 'rtl');
+                    filterContainer.style.direction = 'rtl';
+                    filterContainer.style.textAlign = 'right';
+                } else {
+                    filterContainer.setAttribute('dir', 'ltr');
+                    filterContainer.style.direction = 'ltr';
+                    filterContainer.style.textAlign = 'left';
+                }
+            }
 
             // Initialize language selector
             const langSelector = document.getElementById('languageSelector');
@@ -736,11 +1373,16 @@
                 const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
                 langSelector.value = currentLang;
 
+                // Apply RTL for filter controls if Arabic
+                updateFilterControlsRTL(currentLang);
+
                 // Listen for language changes
                 langSelector.addEventListener('change', function (e) {
                     const newLang = e.target.value;
                     if (typeof setLanguage === 'function') {
                         setLanguage(newLang);
+                        // Update filter controls RTL
+                        updateFilterControlsRTL(newLang);
                         // Reload dashboard data to update all dynamic content
                         loadDashboardData();
                         updateDataPeriodIndicator();
@@ -752,6 +1394,9 @@
                 });
             }
 
+            // Load branches for filter dropdown
+            await loadBranchesForFilter();
+
             // Initialize charts FIRST before loading data
             initializeCharts();
 
@@ -760,6 +1405,9 @@
 
             const qaSel = document.getElementById('qaTimeFilter');
             if (qaSel) qaSel.addEventListener('change', handleQAFilterChange);
+            
+            const branchSel = document.getElementById('qaBranchFilter');
+            if (branchSel) branchSel.addEventListener('change', handleQAFilterChange);
 
             // Initialize the data period indicator
             updateDataPeriodIndicator();
@@ -812,9 +1460,19 @@
         async function loadDashboardData() {
             try {
                 const user = authManager.getUser();
-                const welcomeText = typeof translate === 'function' ? translate('dashboard.welcome_back').replace('{username}', user.username) : `Welcome back, ${user.username}!`;
-                document.getElementById('welcomeMessage').textContent = welcomeText;
-                document.getElementById('sidebarUserName').textContent = user.username;
+                
+                // Update welcome message if element exists
+                const welcomeElement = document.getElementById('welcomeMessage');
+                if (welcomeElement) {
+                    const welcomeText = typeof translate === 'function' ? translate('dashboard.welcome_back').replace('{username}', user.username) : `Welcome back, ${user.username}!`;
+                    welcomeElement.textContent = welcomeText;
+                }
+                
+                // Update sidebar username if element exists
+                const sidebarUserElement = document.getElementById('sidebarUserName');
+                if (sidebarUserElement) {
+                    sidebarUserElement.textContent = user.username;
+                }
 
                 // Get current filter settings for Quick Actions only
                 const filters = getQAFilters();
@@ -873,8 +1531,37 @@
                     const activeInstitutesText = typeof translate === 'function' ? translate('dashboard.active_institutes') : 'Active institutes';
                     document.getElementById('institutesSubtitle').textContent = activeInstitutesText;
 
-                    document.getElementById('totalSalary').textContent = formatCurrency(data.total_salary || 0);
-                    document.getElementById('totalSalaryChange').textContent = allTimeText;
+                    // Load last month's salary data instead of all-time
+                    const lastMonth = new Date();
+                    lastMonth.setMonth(lastMonth.getMonth() - 1);
+                    const lastMonthNum = lastMonth.getMonth() + 1;
+                    const lastMonthYear = lastMonth.getFullYear();
+                    
+                    try {
+                        const salaryResponse = await fetch(`http://localhost:3010/salaries/summary?month=${lastMonthNum}&year=${lastMonthYear}`, {
+                            headers: {
+                                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (salaryResponse.ok) {
+                            const salaryData = await salaryResponse.json();
+                            const lastMonthSalary = salaryData.summary?.total_payroll || 0;
+                            document.getElementById('totalSalary').textContent = formatCurrency(lastMonthSalary);
+                            const lastMonthText = typeof translate === 'function' ? translate('dashboard.last_month') : 'Last month';
+                            document.getElementById('totalSalaryChange').textContent = lastMonthText;
+                            console.log('✅ Last month salary loaded:', lastMonthSalary);
+                        } else {
+                            // Fallback to all-time data if last month API fails
+                            document.getElementById('totalSalary').textContent = formatCurrency(data.total_salary || 0);
+                            document.getElementById('totalSalaryChange').textContent = allTimeText;
+                        }
+                    } catch (salaryError) {
+                        console.warn('⚠️ Error loading last month salary, using all-time data:', salaryError);
+                        document.getElementById('totalSalary').textContent = formatCurrency(data.total_salary || 0);
+                        document.getElementById('totalSalaryChange').textContent = allTimeText;
+                    }
 
                     document.getElementById('attendanceRate').textContent = `${data.attendance_rate || 0}%`;
                     document.getElementById('attendanceRateChange').textContent = allTimeText;
@@ -962,10 +1649,17 @@
                 }
 
                 // Update Attendance Validation Stats (Quick Actions)
-                document.getElementById('validatedRecords').textContent = attendanceValidationStats.validated_records;
-                document.getElementById('pendingValidation').textContent = attendanceValidationStats.pending_validation;
-                document.getElementById('partialPending').textContent = attendanceValidationStats.partial_pending;
-                document.getElementById('pendingValidationCount').textContent =
+                const validatedRecordsEl = document.getElementById('validatedRecords');
+                if (validatedRecordsEl) validatedRecordsEl.textContent = attendanceValidationStats.validated_records;
+                
+                const pendingValidationEl = document.getElementById('pendingValidation');
+                if (pendingValidationEl) pendingValidationEl.textContent = attendanceValidationStats.pending_validation;
+                
+                const partialPendingEl = document.getElementById('partialPending');
+                if (partialPendingEl) partialPendingEl.textContent = attendanceValidationStats.partial_pending;
+                
+                const pendingValidationCountEl = document.getElementById('pendingValidationCount');
+                if (pendingValidationCountEl) pendingValidationCountEl.textContent =
                     attendanceValidationStats.pending_validation + attendanceValidationStats.partial_pending;
 
             } catch (error) {
@@ -1172,33 +1866,77 @@
             }
         }
 
+        // Load branches/institutions for filter dropdown
+        async function loadBranchesForFilter() {
+            try {
+                const branchSelect = document.getElementById('qaBranchFilter');
+                if (!branchSelect) return;
+
+                // Get branches from employees data or API
+                const response = await API.getDashboardStats({});
+                if (response && response.success && response.data) {
+                    const employees = response.data.employees || [];
+                    const institutionsSet = new Set(employees.map(e => e.institution).filter(Boolean));
+                    const institutions = Array.from(institutionsSet).sort();
+
+                    // Clear existing options except "All Branches"
+                    branchSelect.innerHTML = '<option value="all" selected data-translate="dashboard.all_branches">All Branches</option>';
+
+                    // Add each institution as an option
+                    institutions.forEach(institution => {
+                        const option = document.createElement('option');
+                        option.value = institution;
+                        option.textContent = institution;
+                        branchSelect.appendChild(option);
+                    });
+
+                    // Update translations if available
+                    if (typeof updatePageTranslations === 'function') {
+                        updatePageTranslations();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading branches for filter:', error);
+            }
+        }
+
         // Quick Action time filter helpers
         function getQAFilters() {
-            const select = document.getElementById('qaTimeFilter');
-            const value = select ? select.value : 'current';  // Default to current month
+            const timeSelect = document.getElementById('qaTimeFilter');
+            const branchSelect = document.getElementById('qaBranchFilter');
+            const timeValue = timeSelect ? timeSelect.value : 'current';  // Default to current month
+            const branchValue = branchSelect ? branchSelect.value : 'all';  // Default to all branches
             const now = new Date();
-            console.log('🔍 Filter value:', value);
+            console.log('🔍 Filter values:', { time: timeValue, branch: branchValue });
 
-            if (value === 'current') {
+            const filters = {};
+
+            // Add time filters
+            if (timeValue === 'current') {
                 // Current month
-                const filters = { month: (now.getMonth() + 1), year: now.getFullYear() };
+                filters.month = now.getMonth() + 1;
+                filters.year = now.getFullYear();
                 console.log('📅 Applying current month filter:', filters);
-                return filters;
-            }
-            if (value === 'last') {
+            } else if (timeValue === 'last') {
                 // Last month
                 const lastMonth = now.getMonth() === 0 ? 12 : now.getMonth();
                 const lastMonthYear = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
-                const filters = { month: lastMonth, year: lastMonthYear };
+                filters.month = lastMonth;
+                filters.year = lastMonthYear;
                 console.log('📅 Applying last month filter:', filters);
-                return filters;
-            }
-            if (value === 'year') {
+            } else if (timeValue === 'year') {
                 // This year
-                const filters = { year: now.getFullYear() };
+                filters.year = now.getFullYear();
                 console.log('📅 Applying this year filter:', filters);
-                return filters;
             }
+
+            // Add branch filter
+            if (branchValue && branchValue !== 'all') {
+                filters.institution = branchValue;
+                console.log('🏢 Applying branch filter:', branchValue);
+            }
+
+            return filters;
             console.log('📅 No filter applied (all time)');
             return {}; // all
         }
@@ -1237,7 +1975,10 @@
             const indicator = document.getElementById('dataPeriodIndicator');
             if (indicator) {
                 indicator.className = `mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${indicatorClass}`;
-                document.getElementById('dataPeriodText').textContent = indicatorText;
+                const dataPeriodTextEl = document.getElementById('dataPeriodText');
+                if (dataPeriodTextEl) {
+                    dataPeriodTextEl.textContent = indicatorText;
+                }
             }
         }
 
@@ -1270,7 +2011,8 @@
 
                 // Show success notification
                 if (typeof Utils !== 'undefined' && Utils.showNotification) {
-                    const filterText = document.getElementById('dataPeriodText').textContent;
+                    const dataPeriodTextEl = document.getElementById('dataPeriodText');
+                    const filterText = dataPeriodTextEl ? dataPeriodTextEl.textContent : '';
                     const updateMsg = typeof translate === 'function' ? translate('dashboard.dashboard_updated').replace('{period}', filterText) : `Quick Actions updated: ${filterText}`;
                     Utils.showNotification(updateMsg, 'success');
                 }
@@ -1386,21 +2128,25 @@
                     new Date(ex.created_at) >= oneWeekAgo
                 ).length;
 
-                document.getElementById('pendingExceptionsCount').textContent = totalPending;
-                document.getElementById('pendingExceptions').textContent = exceptions.length;
-                document.getElementById('weeklyExceptions').textContent = weeklyExceptions;
-                document.getElementById('notificationBadge').textContent = totalPending;
-
-                console.log('✏️ Updated Exception UI:', {
-                    pendingCount: totalPending,
-                    exceptions: exceptions.length,
-                    weekly: weeklyExceptions
-                });
-
-                if (totalPending > 0) {
-                    document.getElementById('notificationBadge').classList.remove('hidden');
-                } else {
-                    document.getElementById('notificationBadge').classList.add('hidden');
+                // Update UI elements with null checks
+                const pendingCountElement = document.getElementById('pendingExceptionsCount');
+                if (pendingCountElement) pendingCountElement.textContent = totalPending;
+                
+                const pendingElement = document.getElementById('pendingExceptions');
+                if (pendingElement) pendingElement.textContent = exceptions.length;
+                
+                const weeklyElement = document.getElementById('weeklyExceptions');
+                if (weeklyElement) weeklyElement.textContent = weeklyExceptions;
+                
+                const notificationBadgeElement = document.getElementById('notificationBadge');
+                if (notificationBadgeElement) {
+                    notificationBadgeElement.textContent = totalPending;
+                    
+                    if (totalPending > 0) {
+                        notificationBadgeElement.classList.remove('hidden');
+                    } else {
+                        notificationBadgeElement.classList.add('hidden');
+                    }
                 }
 
                 dashboardData.exceptions = [...exceptions, ...overtime];
@@ -1601,12 +2347,23 @@
                 }
 
                 // Update UI with aggregated data
-                document.getElementById('totalPayrollAmount').textContent = formatCurrency(summary.total_payroll || 0);
-                document.getElementById('paidSalaries').textContent = summary.paid_count || 0;
-                document.getElementById('pendingSalaries').textContent = summary.pending_count || 0;
-                document.getElementById('totalRaiseAmount').textContent = formatCurrency(summary.total_raise || 0);
-                document.getElementById('totalDecreaseAmount').textContent = formatCurrency(summary.total_decrease || 0);
-                document.getElementById('salaryStatusCount').textContent = (summary.paid_count || 0) + (summary.pending_count || 0);
+                const totalPayrollEl = document.getElementById('totalPayrollAmount');
+                if (totalPayrollEl) totalPayrollEl.textContent = formatCurrency(summary.total_payroll || 0);
+                
+                const paidSalariesEl = document.getElementById('paidSalaries');
+                if (paidSalariesEl) paidSalariesEl.textContent = summary.paid_count || 0;
+                
+                const pendingSalariesEl = document.getElementById('pendingSalaries');
+                if (pendingSalariesEl) pendingSalariesEl.textContent = summary.pending_count || 0;
+                
+                const totalRaiseEl = document.getElementById('totalRaiseAmount');
+                if (totalRaiseEl) totalRaiseEl.textContent = formatCurrency(summary.total_raise || 0);
+                
+                const totalDecreaseEl = document.getElementById('totalDecreaseAmount');
+                if (totalDecreaseEl) totalDecreaseEl.textContent = formatCurrency(summary.total_decrease || 0);
+                
+                const salaryStatusCountEl = document.getElementById('salaryStatusCount');
+                if (salaryStatusCountEl) salaryStatusCountEl.textContent = (summary.paid_count || 0) + (summary.pending_count || 0);
 
                 console.log('✏️ Updated Salary UI:', {
                     payroll: formatCurrency(summary.total_payroll || 0),
@@ -1673,7 +2430,8 @@
                 const container = document.getElementById('upcomingMeetingsList');
                 if (!container) return; // Calendar view active; guard if list container not present
                 if (upcomingMeetings.length === 0) {
-                    container.innerHTML = '<p class="text-gray-500 text-center">No upcoming meetings</p>';
+                    const noMeetingsText = typeof translate === 'function' ? translate('dashboard.no_upcoming_meetings') : 'No upcoming meetings';
+                    container.innerHTML = `<p class="text-gray-500 text-center">${noMeetingsText}</p>`;
                     return;
                 }
 

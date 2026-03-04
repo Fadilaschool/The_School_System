@@ -8,7 +8,30 @@ if (typeof API === 'undefined') {
 
 // Authentication token management (should be handled by auth.js)
 const getAuthToken = () => {
-    return localStorage.getItem('token') || sessionStorage.getItem('token');
+    // Try authManager first (if available from auth.js)
+    if (typeof window !== 'undefined' && window.authManager && typeof window.authManager.getToken === 'function') {
+        try {
+            const token = window.authManager.getToken();
+            if (token) {
+                return token;
+            }
+        } catch (error) {
+            console.warn('Error getting token from authManager:', error);
+        }
+    }
+    
+    // Fallback to direct localStorage/sessionStorage access
+    // Try multiple possible storage keys
+    const token = localStorage.getItem('token') || 
+                  sessionStorage.getItem('token') || 
+                  localStorage.getItem('authToken') ||
+                  sessionStorage.getItem('authToken');
+    
+    if (!token) {
+        console.warn('No authentication token found. User may need to log in again.');
+    }
+    
+    return token;
 };
 
 // Determine API base URL with sensible defaults for dev
@@ -21,6 +44,7 @@ if (typeof window !== 'undefined' && !window.API_BASE_URL) {
 }
 
 let makeApiCall = async (url, options = {}) => {
+    // Always refresh token before making the call
     const token = getAuthToken();
     const baseUrl = typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : window.API_BASE_URL;
     const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
@@ -28,29 +52,83 @@ let makeApiCall = async (url, options = {}) => {
     console.log('makeApiCall - baseUrl:', baseUrl);
     console.log('makeApiCall - url:', url);
     console.log('makeApiCall - fullUrl:', fullUrl);
-    console.log('makeApiCall - token:', token ? 'present' : 'missing');
+    console.log('makeApiCall - token:', token ? `present (${token.substring(0, 20)}...)` : 'missing');
+
+    // Build headers - always include Authorization if token exists
+    const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers
+    };
+    
+    // Add Authorization header if token is available
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    } else {
+        console.error('No authentication token available for API call:', fullUrl);
+    }
 
     const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            ...(token && { 'Authorization': `Bearer ${token}` }),
-            ...options.headers
-        },
+        headers,
         ...options
     };
+
+    // Check if token is missing before making the request
+    if (!token) {
+        console.error('No authentication token available. Redirecting to login...');
+        const errorResponse = {
+            success: false,
+            error: 'Unauthorized. Please log in again.',
+            status: 401
+        };
+        
+        // Redirect to login immediately
+        if (typeof window.authManager !== 'undefined' && window.authManager.logout) {
+            setTimeout(() => {
+                window.authManager.logout();
+            }, 100);
+        } else {
+            setTimeout(() => {
+                window.location.href = '/frontend/index.html';
+            }, 100);
+        }
+        
+        return errorResponse;
+    }
 
     try {
         const response = await fetch(fullUrl, config);
 
         if (response.status === 401) {
             // Handle unauthorized - use authManager for proper logout and redirect
-            if (typeof window.authManager !== 'undefined') {
-                window.authManager.logout();
+            console.warn('Authentication failed (401). Token may be expired or invalid.');
+            
+            // Clear potentially invalid token
+            if (typeof window.authManager !== 'undefined' && window.authManager.logout) {
+                // Don't call logout immediately as it redirects - let the caller handle it
+                console.warn('Token invalid. User should log in again.');
+            }
+            
+            // Return error object instead of undefined
+            const errorResponse = {
+                success: false,
+                error: 'Unauthorized. Please log in again.',
+                status: 401
+            };
+            
+            // Try to handle logout/redirect, but return error first
+            if (typeof window.authManager !== 'undefined' && window.authManager.logout) {
+                // Delay logout slightly to allow error to be returned
+                setTimeout(() => {
+                    window.authManager.logout();
+                }, 100);
             } else {
                 // Fallback: redirect to frontend login
-                window.location.href = '/frontend/index.html';
+                setTimeout(() => {
+                    window.location.href = '/frontend/index.html';
+                }, 100);
             }
-            return;
+            
+            return errorResponse;
         }
 
         // Some 404s from Live Server return HTML; only parse JSON when appropriate
@@ -66,8 +144,38 @@ let makeApiCall = async (url, options = {}) => {
 
         return data;
     } catch (error) {
+        // Handle network errors (Failed to fetch, CORS, etc.) - these are expected when server is down
+        if (error.message && (error.message.includes('Failed to fetch') || error.message.includes('NetworkError') || error.name === 'TypeError')) {
+            // Only log network errors in debug mode to reduce console noise
+            if (window.API_DEBUG) {
+                console.warn('Network error (server may be offline):', error.message);
+            }
+            return {
+                success: false,
+                error: 'Network error. Please check your connection and ensure the server is running.',
+                status: 0,
+                networkError: true
+            };
+        }
+        
+        // Log other unexpected errors
         console.error('API call error:', error);
-        throw error;
+        
+        // Return error object format for consistency
+        if (error.message && error.message.includes('401')) {
+            return {
+                success: false,
+                error: 'Unauthorized. Please log in again.',
+                status: 401
+            };
+        }
+        
+        // For other errors, return error object instead of throwing
+        return {
+            success: false,
+            error: error.message || 'An unexpected error occurred',
+            status: error.status || 500
+        };
     }
 };
 
@@ -710,12 +818,34 @@ makeApiCall = async (...args) => {
             window.API_LAST_RESPONSE = response;
             console.log('[API Response]', response);
         }
+        // If response is an error object, return it instead of throwing
+        if (response && typeof response === 'object' && response.success === false) {
+            return response;
+        }
         return response;
     } catch (error) {
-        if (window.API_DEBUG) {
-            console.error('[API Error]', error);
+        // Handle network errors silently (expected when server is down)
+        const isNetworkError = error.name === 'TypeError' || error.message?.includes('Failed to fetch');
+        
+        if (isNetworkError) {
+            // Only log network errors in debug mode to reduce console noise
+            if (window.API_DEBUG) {
+                console.warn('[API Network Error]', error.message);
+            }
+        } else {
+            // Log other unexpected errors
+            if (window.API_DEBUG) {
+                console.error('[API Error]', error);
+            }
         }
-        throw error;
+        
+        // Convert caught errors to error objects instead of throwing
+        return {
+            success: false,
+            error: error.message || 'An unexpected error occurred',
+            status: error.status || 500,
+            networkError: isNetworkError
+        };
     }
 };
 

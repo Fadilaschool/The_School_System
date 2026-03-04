@@ -489,7 +489,7 @@ app.delete('/levels/:id', verifyToken, async (req, res) => {
 // ===== Branches CRUD (with levels assignment) =====
 app.get('/branches', verifyToken, async (req, res) => {
   try {
-    const branches = await pool.query('SELECT id, name, description, website, phone FROM branches ORDER BY name');
+    const branches = await pool.query('SELECT id, name, description, website, phone, address, wilaya, registration_number FROM branches ORDER BY name');
     const map = new Map(branches.rows.map(b => [b.id, { ...b, levels: [] }]));
     const rel = await pool.query(`
       SELECT bl.branch_id, l.id as level_id, l.name as level_name
@@ -511,10 +511,10 @@ app.post('/branches', verifyToken, async (req, res) => {
   const client = await pool.connect();
   try {
     if (req.user.role !== 'HR_Manager' && req.user.role !== 'Director') return res.status(403).json({ error: 'Access denied' });
-    const { name, description = null, website = null, phone = null, level_ids = [] } = req.body;
+    const { name, description = null, website = null, phone = null, address = null, wilaya = null, registration_number = null, level_ids = [] } = req.body;
     if (!name) return res.status(400).json({ error: 'Branch name is required' });
     await client.query('BEGIN');
-    const ins = await client.query('INSERT INTO branches (name, description, website, phone) VALUES ($1,$2,$3,$4) RETURNING id, name', [name, description, website, phone]);
+    const ins = await client.query('INSERT INTO branches (name, description, website, phone, address, wilaya, registration_number) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id, name', [name, description, website, phone, address, wilaya, registration_number]);
     const branchId = ins.rows[0].id;
     for (const lid of level_ids) {
       await client.query('INSERT INTO branch_levels (branch_id, level_id) VALUES ($1, $2) ON CONFLICT DO NOTHING', [branchId, lid]);
@@ -536,7 +536,7 @@ app.put('/branches/:id', verifyToken, async (req, res) => {
   try {
     if (req.user.role !== 'HR_Manager' && req.user.role !== 'Director') return res.status(403).json({ error: 'Access denied' });
     const { id } = req.params;
-    const { name, description = null, website = null, phone = null, level_ids = [] } = req.body;
+    const { name, description = null, website = null, phone = null, address = null, wilaya = null, registration_number = null, level_ids = [] } = req.body;
     await client.query('BEGIN');
     const fields = [];
     const values = [];
@@ -545,6 +545,9 @@ app.put('/branches/:id', verifyToken, async (req, res) => {
     if (description !== undefined) { fields.push(`description=$${idx++}`); values.push(description); }
     if (website !== undefined) { fields.push(`website=$${idx++}`); values.push(website); }
     if (phone !== undefined) { fields.push(`phone=$${idx++}`); values.push(phone); }
+    if (address !== undefined) { fields.push(`address=$${idx++}`); values.push(address); }
+    if (wilaya !== undefined) { fields.push(`wilaya=$${idx++}`); values.push(wilaya); }
+    if (registration_number !== undefined) { fields.push(`registration_number=$${idx++}`); values.push(registration_number); }
     if (fields.length) {
       values.push(id);
       const upd = await client.query(`UPDATE branches SET ${fields.join(', ')} WHERE id=$${idx} RETURNING id`, values);

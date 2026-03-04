@@ -4,30 +4,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>نظام الشكاوي - الموظف</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
+      --director-indigo: #4338ca;
+      --director-blue: #2563eb;
+      --director-purple: #7c3aed;
+      --director-slate: #0f172a;
+      --director-card-bg: #ffffff;
+      --director-surface: #f8fafc;
       --primary: #2563eb;
       --primary-dark: #1e40af;
-      --secondary: #8b5cf6;
+      --secondary: #7c3aed;
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
       --info: #06b6d4;
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-400: #9ca3af;
-      --gray-500: #6b7280;
-      --gray-600: #4b5563;
-      --gray-700: #374151;
-      --gray-800: #1f2937;
-      --gray-900: #111827;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --gray-900: #0f172a;
+      --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+      --shadow: 0 1px 3px 0 rgb(15 23 42 / 0.08), 0 1px 2px -1px rgb(15 23 42 / 0.08);
+      --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.06);
+      --shadow-lg: 0 10px 30px rgb(15 23 42 / 0.08), 0 1px 3px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 24px 48px rgb(15 23 42 / 0.08), 0 1px 3px rgb(0 0 0 / 0.1);
       --radius-sm: 0.375rem;
       --radius: 0.5rem;
       --radius-md: 0.75rem;
@@ -43,14 +51,16 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f8f9fa;
+      font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--director-slate);
+      background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
       min-height: 100vh;
       padding: 2rem 1rem;
       line-height: 1.6;
     }
 
     .notification-button {
+      display: none !important; /* hidden per request */
       position: fixed;
       top: 20px;
       right: 20px;
@@ -135,47 +145,51 @@
     }
 
     .app-container {
-      max-width: 1400px;
-      margin: 0 auto;
+      max-width: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
     }
 
-    /* Header */
+    /* Page Header - director style (match responsible-dashboard) */
     .page-header {
-      background: white;
-      border-radius: var(--radius-xl);
-      padding: 2rem;
+      text-align: center;
       margin-bottom: 2rem;
-      box-shadow: var(--shadow-xl);
+      padding: 2rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
       position: relative;
       overflow: hidden;
     }
 
-    .page-header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-    }
-
     .page-header h1 {
       font-size: 2rem;
-      color: var(--gray-900);
-      margin-bottom: 0.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 0.75rem 0;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 0.75rem;
     }
 
+    .page-header h1 i {
+      color: #3b82f6;
+      font-size: 1.75rem;
+    }
+
     .page-header p {
-      color: var(--gray-600);
       font-size: 1rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
     }
 
     /* Alert System */
     .alert-container {
+      display: none !important; /* hidden per request */
       position: fixed;
       top: 2rem;
       left: 50%;
@@ -188,8 +202,8 @@
     .alert {
       background: white;
       padding: 1rem 1.5rem;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-xl);
+      border-radius: 16px;
+      box-shadow: 0 24px 48px rgba(15, 23, 42, 0.12);
       display: none;
       align-items: center;
       gap: 1rem;
@@ -230,20 +244,24 @@
       }
     }
 
-    /* Stats Cards */
+    /* Stats Cards - report-stat-card-inline style (match responsible-dashboard) */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
       margin-bottom: 2rem;
     }
 
     .stat-card {
-      background: white;
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-lg);
-      transition: var(--transition);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      transition: all 0.3s ease;
+      display: flex;
+      gap: 16px;
+      align-items: center;
       position: relative;
       overflow: hidden;
     }
@@ -251,65 +269,115 @@
     .stat-card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--gradient);
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.06), transparent 55%);
+      pointer-events: none;
     }
 
     .stat-card:hover {
       transform: translateY(-4px);
-      box-shadow: var(--shadow-xl);
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
     }
 
-    .stat-card.total::before {
-      background: linear-gradient(90deg, #06b6d4, #0891b2);
+    .stat-card.total { background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(8, 145, 178, 0.05)); }
+    .stat-card.total .stat-icon-wrap { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+    .stat-card.pending { background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05)); }
+    .stat-card.pending .stat-icon-wrap { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .stat-card.completed { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05)); }
+    .stat-card.completed .stat-icon-wrap { background: linear-gradient(135deg, #10b981, #059669); }
+
+    .stat-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      position: relative;
+      z-index: 1;
     }
 
-    .stat-card.pending::before {
-      background: linear-gradient(90deg, #f59e0b, #d97706);
-    }
-
-    .stat-card.completed::before {
-      background: linear-gradient(90deg, #10b981, #059669);
-    }
+    .stat-card.total .stat-icon-wrap { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+    .stat-card.pending .stat-icon-wrap { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .stat-card.completed .stat-icon-wrap { background: linear-gradient(135deg, #10b981, #059669); }
 
     .stat-label {
-      font-size: 0.875rem;
-      color: var(--gray-600);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
     }
 
     .stat-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--gray-900);
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
     }
 
-    /* Card Component */
+    /* Card / Director Panel (match responsible-dashboard) */
     .card {
-      background: white;
-      border-radius: var(--radius-xl);
-      padding: 2rem;
-      box-shadow: var(--shadow-lg);
+      background: var(--director-card-bg);
+      border-radius: 22px;
+      padding: 28px;
+      box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(15, 23, 42, 0.06);
       margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(37, 99, 235, 0.06), rgba(124, 58, 237, 0.04));
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card:hover {
+      box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
     }
 
     .card-header {
       margin-bottom: 1.5rem;
       padding-bottom: 1rem;
-      border-bottom: 2px solid var(--gray-100);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      position: relative;
+      z-index: 1;
     }
 
     .card-title {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: var(--gray-900);
+      color: #0f172a;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .card-title .card-title-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), rgba(37, 99, 235, 0.05));
+      color: #1d4ed8;
     }
 
     /* Form Styles */
@@ -347,20 +415,20 @@
     .form-textarea {
       width: 100%;
       padding: 0.75rem 1rem;
-      border: 2px solid var(--gray-200);
-      border-radius: var(--radius);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 12px;
       font-size: 0.95rem;
       transition: var(--transition);
       background: white;
-      color: var(--gray-900);
+      color: #0f172a;
     }
 
     .form-input:focus,
     .form-select:focus,
     .form-textarea:focus {
       outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
     }
 
     .form-textarea {
@@ -406,19 +474,19 @@
       margin-top: 0.25rem;
     }
 
-    /* Button Styles */
+    /* Button Styles - match responsible-dashboard */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      padding: 0.875rem 1.75rem;
+      padding: 0.75rem 1.5rem;
       border: none;
-      border-radius: var(--radius-md);
-      font-size: 1rem;
+      border-radius: 12px;
+      font-size: 0.9375rem;
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       text-decoration: none;
     }
 
@@ -428,14 +496,27 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
       color: white;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     }
 
     .btn-primary:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(37, 99, 235, 0.4);
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+
+    .btn-secondary {
+      background: rgba(248, 250, 252, 0.9);
+      color: #475569;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: rgba(241, 245, 249, 1);
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
     }
 
     /* Complaints Grid */
@@ -454,29 +535,42 @@
       margin-bottom: 1rem;
     }
 
+    /* View toggle - reportdir tab style */
     .view-toggle {
-      display: inline-flex;
-      padding: 0.25rem;
-      background: var(--gray-200);
-      border-radius: 999px;
-      gap: 0.25rem;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .view-toggle button {
-      border: none;
-      background: transparent;
-      padding: 0.45rem 1.25rem;
-      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+      color: #475569;
       font-weight: 600;
-      color: var(--gray-700);
+      font-size: 0.8125rem;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    }
+
+    .view-toggle button:hover {
+      background: linear-gradient(135deg, #e5edff, #dbeafe);
+      border-color: #93c5fd;
+      color: #2563eb;
+      transform: translateY(-1px);
     }
 
     .view-toggle button.active {
-      background: white;
-      color: var(--primary);
-      box-shadow: var(--shadow);
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      border-color: #2563eb;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      transform: translateY(-1px);
     }
 
     #myComplaints[data-view-mode="table"] {
@@ -486,35 +580,40 @@
     .table-wrapper {
       width: 100%;
       overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
     }
 
     table.complaints-table {
       width: 100%;
       min-width: 900px;
       border-collapse: collapse;
+      font-size: 0.9rem;
     }
 
     table.complaints-table th,
     table.complaints-table td {
       text-align: right;
-      padding: 0.85rem;
-      border-bottom: 1px solid var(--gray-200);
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
       vertical-align: top;
-      font-size: 0.9rem;
     }
 
     table.complaints-table thead {
-      background: var(--gray-100);
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
     }
 
     table.complaints-table th {
       position: relative;
       cursor: pointer;
       user-select: none;
+      font-weight: 600;
+      color: #334155;
     }
 
     table.complaints-table th.sortable:hover {
-      background: var(--gray-200);
+      background: rgba(226, 232, 240, 0.5);
     }
 
     table.complaints-table th .sort-icon {
@@ -536,33 +635,29 @@
 
     table.complaints-table tbody tr {
       background: white;
+      transition: background 0.2s ease;
     }
 
     table.complaints-table tbody tr:nth-child(even) {
-      background: var(--gray-50);
+      background: rgba(248, 250, 252, 0.5);
     }
 
     table.complaints-table tbody tr:hover {
-      background: var(--gray-100);
+      background: rgba(241, 245, 249, 0.9);
     }
 
     .status-pending {
-      color: #f59e0b;
+      color: #d97706;
       font-weight: 600;
     }
 
     .status-completed {
-      color: #10b981;
-      font-weight: 600;
-    }
-
-    .status-pending {
-      color: #f59e0b;
+      color: #059669;
       font-weight: 600;
     }
 
     .status-rejected {
-      color: #ef4444;
+      color: #dc2626;
       font-weight: 600;
     }
 
@@ -584,35 +679,43 @@
     }
 
     .table-filters {
-      background: white;
-      padding: 1rem;
-      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.98));
+      padding: 1rem 1.25rem;
+      border-radius: 16px;
       margin-bottom: 1rem;
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
       align-items: center;
-      box-shadow: var(--shadow);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
     }
 
     .table-filters input,
     .table-filters select {
-      padding: 0.5rem;
-      border: 1px solid var(--gray-300);
-      border-radius: var(--radius);
+      padding: 0.5rem 0.75rem;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 10px;
       font-size: 0.875rem;
     }
 
+    .table-filters input:focus,
+    .table-filters select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
     .create-complaint-btn {
-      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: white;
       border: none;
       padding: 0.75rem 1.5rem;
-      border-radius: var(--radius-md);
+      border-radius: 12px;
       font-weight: 600;
       cursor: pointer;
-      font-size: 0.95rem;
-      transition: var(--transition);
+      font-size: 0.9375rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -621,38 +724,155 @@
 
     .create-complaint-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Quick actions - reportdir style */
+    .quick-actions-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .quick-action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    }
+
+    .quick-action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .quick-action-btn.green {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+
+    .quick-action-btn.green:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .quick-action-btn.blue {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+    }
+
+    .quick-action-btn.blue:hover {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+
+    [dir="rtl"] .quick-actions-container {
+      justify-content: flex-start;
+    }
+
+    [dir="rtl"] .report-type-tab i,
+    [dir="rtl"] .section-btn i {
+      margin-left: 0.5rem;
+      margin-right: 0;
+    }
+
+    [dir="rtl"] .section-toggle {
+      flex-direction: row-reverse;
+    }
+
+    /* Tab changer - reportdir style (report-type-tabs) */
+    .report-type-tabs {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .report-type-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+      color: #475569;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    }
+
+    .report-type-tab i {
+      font-size: 0.9rem;
+    }
+
+    .report-type-tab:hover {
+      background: linear-gradient(135deg, #e5edff, #dbeafe);
+      border-color: #93c5fd;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+      transform: translateY(-2px);
+      color: #2563eb;
+    }
+
+    .report-type-tab.active {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      border-color: #2563eb;
+      box-shadow: 0 12px 28px rgba(59, 130, 246, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .report-type-tab.active i {
+      color: rgba(255, 255, 255, 0.95);
     }
 
     .section-toggle {
-      background:white;
-      border-radius:var(--radius-xl);
-      padding:0.35rem;
-      margin-bottom:2rem;
-      box-shadow:var(--shadow-lg);
-      display:inline-flex;
-      gap:0.35rem;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
     }
 
     .section-btn {
-      border:none;
-      background:transparent;
-      padding:0.65rem 1.75rem;
-      border-radius:var(--radius-lg);
-      font-weight:600;
-      cursor:pointer;
-      color:var(--gray-700);
-      transition:var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+      color: #475569;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    }
+
+    .section-btn:hover {
+      background: linear-gradient(135deg, #e5edff, #dbeafe);
+      border-color: #93c5fd;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+      transform: translateY(-2px);
+      color: #2563eb;
     }
 
     .section-btn.active {
-      background:white;
-      color:var(--primary);
-      box-shadow:var(--shadow);
-    }
-
-    .section-btn:not(.active):hover {
-      background:var(--gray-100);
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      border-color: #2563eb;
+      box-shadow: 0 12px 28px rgba(59, 130, 246, 0.35);
+      transform: translateY(-2px);
     }
 
     .section-content {
@@ -713,12 +933,14 @@
     }
 
     .complaint-card {
-      background: white;
-      border: 2px solid var(--gray-200);
-      border-radius: var(--radius-lg);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.98));
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
       padding: 1.5rem;
-      transition: var(--transition);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
     }
 
     .complaint-card::before {
@@ -728,21 +950,89 @@
       bottom: 0;
       right: 0;
       width: 4px;
-      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+      border-radius: 0 20px 20px 0;
     }
 
     .complaint-card.pending::before {
-      background: var(--warning);
+      background: linear-gradient(180deg, #f59e0b, #d97706);
     }
 
     .complaint-card.completed::before {
-      background: var(--success);
+      background: linear-gradient(180deg, #10b981, #059669);
+    }
+
+    .complaint-card.rejected::before {
+      background: linear-gradient(180deg, #ef4444, #dc2626);
     }
 
     .complaint-card:hover {
-      border-color: var(--primary);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
+      border-color: rgba(59, 130, 246, 0.3);
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+      transform: translateY(-4px);
+    }
+
+    /* Reportdir-style list item & action buttons */
+    .report-card-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .report-action-btn {
+      padding: 8px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #64748b;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .report-action-btn:hover {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.3);
+      color: #2563eb;
+    }
+
+    .report-action-btn.primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .report-action-btn.primary:hover {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+
+    .report-action-btn.green {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border-color: #059669;
+    }
+
+    .report-action-btn.green:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    .complaint-list-item {
+      padding: 16px;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 14px;
+      transition: all 0.2s ease;
+      margin-bottom: 12px;
+    }
+
+    .complaint-list-item:hover {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(59, 130, 246, 0.01));
+      border-color: rgba(148, 163, 184, 0.2);
     }
 
     .complaint-header {
@@ -868,13 +1158,17 @@
     .empty-state {
       text-align: center;
       padding: 4rem 2rem;
-      color: var(--gray-400);
+      color: #64748b;
+      background: rgba(248, 250, 252, 0.6);
+      border-radius: 20px;
+      border: 1px dashed rgba(148, 163, 184, 0.4);
     }
 
     .empty-state-icon {
       font-size: 4rem;
       margin-bottom: 1rem;
       opacity: 0.5;
+      color: #94a3b8;
     }
 
     .empty-state-text {
@@ -888,14 +1182,14 @@
       align-items: center;
       justify-content: center;
       padding: 2rem;
-      color: var(--gray-500);
+      color: #64748b;
     }
 
     .spinner {
       width: 40px;
       height: 40px;
-      border: 4px solid var(--gray-200);
-      border-top-color: var(--primary);
+      border: 4px solid rgba(226, 232, 240, 0.8);
+      border-top-color: #3b82f6;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
@@ -940,54 +1234,63 @@
       </div>
     </div>
 
-    <!-- Page Header -->
+    <!-- Page Header (director style) -->
     <div class="page-header">
       <h1>
-        <span>📨</span>
+        <i class="fas fa-comments"></i>
         نظام إدارة الشكاوي والاقتراحات
       </h1>
       <p>قم بإرسال شكاويك واقتراحاتك ومتابعة حالتها بكل سهولة</p>
     </div>
 
-    <div class="section-toggle" id="sectionToggle">
-      <button class="section-btn active" data-section="complaints">📋 الشكاوي</button>
-      <button class="section-btn" data-section="suggestions">💡 الاقتراحات</button>
+    <div class="section-toggle report-type-tabs" id="sectionToggle">
+      <button type="button" class="section-btn report-type-tab active" data-section="complaints"><i class="fas fa-list-alt"></i> الشكاوي</button>
+      <button type="button" class="section-btn report-type-tab" data-section="suggestions"><i class="fas fa-lightbulb"></i> الاقتراحات</button>
     </div>
 
     <!-- Complaints Tab Content -->
     <div id="complaintsTab" class="section-content active">
-    <!-- Statistics Cards -->
+    <!-- Statistics Cards (report-stat style) -->
     <div class="stats-grid">
       <div class="stat-card total">
-        <div class="stat-label">إجمالي الشكاوي</div>
-        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-icon-wrap"><i class="fas fa-inbox"></i></div>
+        <div>
+          <div class="stat-label">إجمالي الشكاوي</div>
+          <div class="stat-value" id="statTotal">0</div>
+        </div>
       </div>
       <div class="stat-card pending">
-        <div class="stat-label">قيد المتابعة</div>
-        <div class="stat-value" id="statPending">0</div>
+        <div class="stat-icon-wrap"><i class="fas fa-clock"></i></div>
+        <div>
+          <div class="stat-label">قيد المتابعة</div>
+          <div class="stat-value" id="statPending">0</div>
+        </div>
       </div>
       <div class="stat-card completed">
-        <div class="stat-label">تمت المعالجة</div>
-        <div class="stat-value" id="statTreated">0</div>
+        <div class="stat-icon-wrap"><i class="fas fa-check-circle"></i></div>
+        <div>
+          <div class="stat-label">تمت المعالجة</div>
+          <div class="stat-value" id="statTreated">0</div>
+        </div>
       </div>
     </div>
 
-    <!-- My Complaints -->
+    <!-- My Complaints (director panel style) -->
     <div class="card">
       <div class="card-header">
         <h2 class="card-title">
-          <span>📋</span>
+          <span class="card-title-icon"><i class="fas fa-list"></i></span>
           شكاويي
         </h2>
       </div>
       <div class="view-controls">
         <div class="view-toggle">
-          <button type="button" class="toggle-btn" data-view-mode="card">🗂️ عرض البطاقات</button>
-          <button type="button" class="toggle-btn" data-view-mode="table">📋 عرض الجدول</button>
+          <button type="button" class="toggle-btn" data-view-mode="card"><i class="fas fa-th-large"></i> عرض البطاقات</button>
+          <button type="button" class="toggle-btn" data-view-mode="table"><i class="fas fa-table"></i> عرض الجدول</button>
         </div>
-        <div style="display: flex; gap: 0.75rem;">
-          <button type="button" class="create-complaint-btn" onclick="openEmployeeCreateComplaintModal()">➕ إنشاء شكوى جديدة</button>
-          <button type="button" class="btn btn-primary" id="exportPdfView">📝 تصدير العرض PDF</button>
+        <div class="quick-actions-container" style="margin: 0;">
+          <button type="button" class="create-complaint-btn quick-action-btn green" onclick="openEmployeeCreateComplaintModal()"><i class="fas fa-plus"></i> إنشاء شكوى جديدة</button>
+          <button type="button" class="btn btn-primary quick-action-btn blue" id="exportPdfView"><i class="fas fa-file-pdf"></i> تصدير PDF</button>
         </div>
       </div>
       <div id="myComplaints" class="complaints-grid">
@@ -1492,21 +1795,21 @@
     function getPhotoButton(complaint) {
       const photoPath = getPrimaryAttachmentPath(complaint);
       if (!photoPath) {
-        return `<button class="btn btn-secondary" style="padding:0.5rem 1rem;font-size:0.85rem;" disabled>📷 لا توجد صورة</button>`;
+        return `<button type="button" class="report-action-btn" disabled><i class="fas fa-image"></i> لا توجد صورة</button>`;
       }
-      return `<button class="btn btn-secondary" style="padding:0.5rem 1rem;font-size:0.85rem;" data-photo="${photoPath}" onclick="openPhotoModal(this.dataset.photo)">📷 عرض الصورة</button>`;
+      return `<button type="button" class="report-action-btn" data-photo="${photoPath}" onclick="openPhotoModal(this.dataset.photo)"><i class="fas fa-image"></i> عرض الصورة</button>`;
     }
 
     function getEmployeeActions(complaint) {
       return `
-        <button class="btn btn-secondary" style="padding:0.5rem 1rem;font-size:0.85rem;" onclick="openMessagesModal('${complaint.id}')">💬 عرض الردود</button>
+        <button type="button" class="report-action-btn primary" onclick="openMessagesModal('${complaint.id}')"><i class="fas fa-comments"></i> عرض الردود</button>
         ${complaint.status === 'completed' && !complaint.satisfaction_rating ? `
-          <button class="btn btn-primary" style="padding:0.5rem 1rem;font-size:0.85rem;background:#10b981;" onclick="feedbackSystem.requestFeedback('${complaint.id}')">
-            ⭐ تقييم الخدمة
+          <button type="button" class="report-action-btn green" onclick="feedbackSystem.requestFeedback('${complaint.id}')">
+            <i class="fas fa-star"></i> تقييم الخدمة
           </button>
         ` : ''}
         ${getPhotoButton(complaint)}
-        <button class="btn btn-secondary" style="padding:0.5rem 1rem;font-size:0.85rem;" onclick="exportEmployeeComplaintPDF('${complaint.id}')">📝 PDF الشكوى</button>
+        <button type="button" class="report-action-btn" onclick="exportEmployeeComplaintPDF('${complaint.id}')"><i class="fas fa-file-pdf"></i> PDF</button>
       `;
     }
 
@@ -1538,7 +1841,7 @@
             <div style="margin-top:0.5rem;font-size:0.9rem;color:#f59e0b;">التقييم: ${'⭐'.repeat(complaint.satisfaction_rating)}</div>
           ` : ''}
 
-          <div style="margin-top:0.75rem;display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
+          <div class="report-card-actions">
             ${getEmployeeActions(complaint)}
           </div>
         </div>
@@ -1598,8 +1901,8 @@
             <option value="pending">قيد المعالجة</option>
             <option value="completed">تمت المعالجة</option>
           </select>
-          <button class="btn btn-primary" onclick="applyEmployeeTableFilters()" style="padding: 0.5rem 1rem;">تطبيق</button>
-          <button class="btn btn-secondary" onclick="resetEmployeeTableFilters()" style="padding: 0.5rem 1rem;">إعادة تعيين</button>
+          <button type="button" class="report-action-btn primary" onclick="applyEmployeeTableFilters()">تطبيق</button>
+          <button type="button" class="report-action-btn" onclick="resetEmployeeTableFilters()"><i class="fas fa-undo"></i> إعادة تعيين</button>
         </div>
         <div class="table-wrapper">
           <table class="complaints-table">
@@ -2548,12 +2851,12 @@
               <span>💡</span>
               اقتراحاتي
             </div>
-            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
+            <div class="quick-actions-container" style="margin:0;">
               <div class="view-toggle suggestions-view-toggle">
-                <button type="button" class="toggle-btn ${suggestionViewMode === SUGGESTION_VIEW_MODES.CARD ? 'active' : ''}" data-view-mode="card">🗂️ عرض البطاقات</button>
-                <button type="button" class="toggle-btn ${suggestionViewMode === SUGGESTION_VIEW_MODES.TABLE ? 'active' : ''}" data-view-mode="table">📋 عرض الجدول</button>
+                <button type="button" class="toggle-btn ${suggestionViewMode === SUGGESTION_VIEW_MODES.CARD ? 'active' : ''}" data-view-mode="card"><i class="fas fa-th-large"></i> عرض البطاقات</button>
+                <button type="button" class="toggle-btn ${suggestionViewMode === SUGGESTION_VIEW_MODES.TABLE ? 'active' : ''}" data-view-mode="table"><i class="fas fa-table"></i> عرض الجدول</button>
               </div>
-              <button type="button" class="create-complaint-btn" onclick="openCreateSuggestionModal()">➕ إضافة اقتراح</button>
+              <button type="button" class="create-complaint-btn quick-action-btn green" onclick="openCreateSuggestionModal()"><i class="fas fa-plus"></i> إضافة اقتراح</button>
             </div>
           </div>
           ${listMarkup}
@@ -2605,10 +2908,10 @@
               <span>تم استلام اقتراحك من الإدارة</span>
             </div>
           ` : ''}
-          <div style="margin-top:0.75rem;display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
-            <button class="btn btn-secondary" style="padding:0.5rem 1rem;font-size:0.85rem;" onclick="viewSuggestionDetail('${suggestion.id}')">👁️ عرض التفاصيل</button>
+          <div class="report-card-actions">
+            <button type="button" class="report-action-btn" onclick="viewSuggestionDetail('${suggestion.id}')"><i class="fas fa-eye"></i> عرض التفاصيل</button>
             ${hasDirectorResponse ? `
-              <button class="btn btn-primary" style="padding:0.5rem 1rem;font-size:0.85rem;background:#3b82f6;" onclick="openSuggestionMessagesModal('${suggestion.id}')">💬 رد الإدارة</button>
+              <button type="button" class="report-action-btn primary" onclick="openSuggestionMessagesModal('${suggestion.id}')"><i class="fas fa-comments"></i> رد الإدارة</button>
             ` : ''}
           </div>
         </div>
@@ -2641,11 +2944,9 @@
                   <td>${formatComplaintDate(s.created_at)}</td>
                   <td class="actions-cell">
                     <div class="table-actions">
-                      <button class="btn btn-secondary" style="padding:0.4rem 0.9rem;font-size:0.85rem;" onclick="viewSuggestionDetail('${s.id}')">👁️ عرض التفاصيل</button>
+                      <button type="button" class="report-action-btn" onclick="viewSuggestionDetail('${s.id}')"><i class="fas fa-eye"></i> عرض التفاصيل</button>
                       ${s.director_comment ? `
-                        <button class="btn btn-primary" style="padding:0.4rem 0.9rem;font-size:0.85rem;background:#3b82f6;" onclick="openSuggestionMessagesModal('${s.id}')">
-                          💬 رد الإدارة
-                        </button>
+                        <button type="button" class="report-action-btn primary" onclick="openSuggestionMessagesModal('${s.id}')"><i class="fas fa-comments"></i> رد الإدارة</button>
                       ` : ''}
                     </div>
                     ${s.status !== 'under_review' ? `

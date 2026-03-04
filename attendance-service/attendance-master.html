@@ -10,16 +10,238 @@
     <title data-translate="attendance.master.title">Monthly Attendance Log - HR Operations Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../frontend/assets/css/style.css" rel="stylesheet">
     <link href="../frontend/assets/css/rtl.css" rel="stylesheet">
     <style>
-        .stat-card {
-            transition: all 0.2s ease;
+        /* Director-themed base styles */
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-purple: #7c3aed;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
         }
 
-        .stat-card:hover {
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        main {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 1.5rem;
+        }
+
+        /* KPI cards */
+        .kpi-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+            border-radius: 24px;
+            padding: 22px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            box-shadow: 0 18px 35px rgba(15, 23, 42, 0.07);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 55%);
+            pointer-events: none;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 45px rgba(15, 23, 42, 0.12);
+        }
+
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(99, 102, 241, 0.35));
+            color: #4338ca;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .kpi-card p {
+            position: relative;
+            z-index: 1;
+        }
+
+        .kpi-card h3 {
+            position: relative;
+            z-index: 1;
+        }
+
+        .director-panel {
+            margin-top: 16px;
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .director-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .director-panel>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left,
+                    rgba(37, 99, 235, 0.22),
+                    rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+
+        .director-section-pill {
+            padding: 0.15rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: rgba(15, 23, 42, 0.04);
+            color: #64748b;
+        }
+
+        .filter-button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-button:hover {
+            background: linear-gradient(135deg, #e5edff, #dbeafe);
+            border-color: #93c5fd;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-button.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .filter-field-group {
+            padding: 1rem;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .filter-field-group:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+        }
+
+        .filter-field-group label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #64748b;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-field-group label i {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .filter-select {
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            background: #ffffff;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            background-color: #f9fafb;
+        }
+
+        .filter-select:hover {
+            border-color: #94a3b8;
+            background-color: #f8fafc;
         }
 
         .status-badge {
@@ -58,6 +280,581 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* RTL Support */
+        [dir="rtl"] .director-panel {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .filter-field-group {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        [dir="rtl"] .filter-field-group label {
+            text-align: right !important;
+        }
+
+        [dir="rtl"] .filter-select {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        /* Hide view toggle buttons */
+        #viewAllBtn,
+        #viewValidatedBtn,
+        #viewCalculatedBtn {
+            display: none !important;
+        }
+
+        /* Page Header Styles */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: #3b82f6;
+            font-size: 1.75rem;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .page-title i {
+                font-size: 1.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Enhanced KPI Cards to match dashboard style */
+        .kpi-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 55%);
+            pointer-events: none;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .kpi-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .kpi-card h3 {
+            position: relative;
+            z-index: 1;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .kpi-card p {
+            position: relative;
+            z-index: 1;
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+            margin-bottom: 0;
+        }
+
+        /* Report Stat Cards */
+        .report-stat-card-inline {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .report-stat-card-inline:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+        }
+
+        .report-stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .report-stat-content {
+            flex: 1;
+        }
+
+        .report-stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .report-stat-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .report-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Enhanced Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .complaints-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 1000px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .complaints-table thead {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .complaints-table th {
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #475569;
+            padding: 1.25rem 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            vertical-align: middle;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .complaints-table th.sortable {
+            transition: all 0.2s ease;
+        }
+
+        .complaints-table th.sortable:hover {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #334155;
+        }
+
+        .complaints-table th .sort-icon {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 0.5rem;
+            font-size: 0.7rem;
+            opacity: 0.4;
+            transition: opacity 0.2s ease;
+        }
+
+        .complaints-table th.sortable:hover .sort-icon {
+            opacity: 0.7;
+        }
+
+        .complaints-table th.sort-asc .sort-icon,
+        .complaints-table th.sort-desc .sort-icon {
+            opacity: 1;
+            color: #3b82f6;
+        }
+
+        .complaints-table tbody tr {
+            background: white;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .complaints-table tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .complaints-table tbody tr:hover {
+            background: linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 100%);
+            transform: translateX(2px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .complaints-table td {
+            padding: 1.25rem 1rem;
+            font-size: 0.875rem;
+            color: #1e293b;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .complaints-table th.actions-header {
+            text-align: center;
+            min-width: 280px;
+        }
+
+        .complaints-table td.actions-cell {
+            text-align: center;
+        }
+
+        /* Enhanced Action Buttons */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .action-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .action-btn i {
+            font-size: 0.875rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-btn-view {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .action-btn-view:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .action-btn-validate {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .action-btn-validate:hover {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Enhanced Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .status-validated {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-calculated {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        /* Enhanced Employee Info */
+        .employee-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .employee-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+        }
+
+        .employee-name {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .employee-dept {
+            font-size: 0.8125rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .employee-dept i {
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+
+        /* Enhanced Number Display */
+        .number-display {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #1e293b;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Enhanced Pending Badge */
+        .pending-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #fed7aa, #fdba74);
+            color: #9a3412;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(249, 115, 22, 0.15);
+        }
+
+        .pending-badge:hover {
+            background: linear-gradient(135deg, #fdba74, #fb923c);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+        }
+
+        .pending-badge i {
+            font-size: 0.75rem;
+        }
+
+        /* Enhanced Checkbox */
+        .employee-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #3b82f6;
+            transition: all 0.2s ease;
+        }
+
+        .employee-checkbox:hover {
+            transform: scale(1.1);
+        }
+
+        /* Enhanced Pagination */
+        .pagination-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8fafc;
+        }
+
+        .pagination-info {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Enhanced Table Typography */
+        .complaints-table th {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .complaints-table td {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        /* Improved Loading State */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+            color: #64748b;
+        }
+
+        .loading-state .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State Styling */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #94a3b8;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Currency Display */
+        .currency-display {
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+        }
     </style>
 </head>
 
@@ -69,10 +866,19 @@
     </button>
 
     <!-- Main Content -->
-    <main class="p-6">
-        <div class="max-w-7xl mx-auto">
+    <main style="padding: 1.5rem; width: 100%; max-width: 100%;">
+        <div class="w-full" style="max-width: 100%;">
+            <!-- Page Title & Description -->
+            <div class="page-header" style="margin: 0 0 2rem 0;">
+                <h1 class="page-title" data-translate="attendance.master.title">
+                    <i class="fas fa-calendar-check"></i>
+                    سجل الحضور الشهري
+                </h1>
+                <p class="page-subtitle" data-translate="attendance.master.subtitle">نظام إدارة وتدقيق سجلات الحضور الشهرية</p>
+            </div>
+
             <!-- Top Bar with Language Selector -->
-            <div class="flex items-center justify-end mb-4">
+            <div class="flex items-center justify-end mb-6">
                 <!-- Language Selector -->
                 <select id="languageSelector"
                     class="bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hover:border-gray-400 transition-colors">
@@ -82,248 +888,320 @@
                 </select>
             </div>
 
-            <!-- Page Header -->
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl shadow-lg p-6 mb-6 text-white">
-                <div class="flex items-start">
-                    <div class="p-3 bg-white/20 rounded-lg mr-4 flex-shrink-0">
-                        <i class="fas fa-clock text-2xl"></i>
-                    </div>
-                    <div class="flex-1">
-                        <h1 class="text-3xl font-bold mb-2" data-translate="attendance.master.title">Monthly Attendance
-                            Log</h1>
-                        <p class="text-blue-100 text-base leading-relaxed"
-                            data-translate="attendance.master.description">Monitor and validate employee attendance
-                            records</p>
-                    </div>
-                    <div class="flex space-x-3">
-                        <button onclick="refreshData()"
-                            class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-colors text-sm">
-                            <i class="fas fa-sync-alt mr-2"></i>
-                            <span data-translate="attendance.master.refresh">Refresh</span>
-                        </button>
-                        <button onclick="openExportModal()"
-                            class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-colors text-sm">
-                            <i class="fas fa-download mr-2"></i>
-                            <span data-translate="attendance.master.export">Export</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
             <!-- View Toggle Buttons -->
-            <div class="mb-6 flex gap-3">
+            <div class="mb-8 flex gap-4 justify-center" style="display: none !important;">
                 <button id="viewAllBtn" onclick="setViewMode('all')"
-                    class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                    <i class="fas fa-list mr-2"></i>
+                    class="filter-button active">
+                    <i class="fas fa-list"></i>
                     <span data-translate="attendance.master.view_all">View All</span>
                 </button>
                 <button id="viewValidatedBtn" onclick="setViewMode('validated')"
-                    class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium">
-                    <i class="fas fa-check-circle mr-2"></i>
+                    class="filter-button">
+                    <i class="fas fa-check-circle"></i>
                     <span data-translate="attendance.master.view_validated">Validated View</span>
                 </button>
                 <button id="viewCalculatedBtn" onclick="setViewMode('calculated')"
-                    class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium">
-                    <i class="fas fa-calculator mr-2"></i>
+                    class="filter-button">
+                    <i class="fas fa-calculator"></i>
                     <span data-translate="attendance.master.view_calculated">Calculated View</span>
                 </button>
             </div>
 
-            <!-- Statistics Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="stat-card bg-white rounded-lg p-6 shadow-sm">
-                    <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-blue-100">
-                            <i class="fas fa-users text-blue-600 text-lg"></i>
-                        </div>
-                        <div class="ml-4">
-                            <h3 class="text-sm font-medium text-gray-500"
-                                data-translate="attendance.master.total_employees">Total Employees</h3>
-                            <p id="totalEmployees" class="text-2xl font-semibold text-gray-900">-</p>
-                        </div>
+            <!-- Enhanced Statistics Cards -->
+            <div class="flex flex-wrap gap-4 justify-between mb-8">
+                <!-- Total Employees Card -->
+                <div class="report-stat-card-inline">
+                    <div class="report-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                        <i class="fas fa-users"></i>
                     </div>
-                </div>
-                <div id="validatedCard" class="stat-card bg-white rounded-lg p-6 shadow-sm cursor-pointer">
-                    <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-green-100">
-                            <i class="fas fa-check-circle text-green-600 text-lg"></i>
-                        </div>
-                        <div class="ml-4">
-                            <h3 class="text-sm font-medium text-gray-500"
-                                data-translate="attendance.master.validated_records">Validated Records</h3>
-                            <p id="validatedRecords" class="text-2xl font-semibold text-gray-900">-</p>
-                        </div>
-                    </div>
-                </div>
-                <div id="pendingCard" class="stat-card bg-white rounded-lg p-6 shadow-sm cursor-pointer">
-                    <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-yellow-100">
-                            <i class="fas fa-hourglass-half text-yellow-600 text-lg"></i>
-                        </div>
-                        <div class="ml-4">
-                            <h3 class="text-sm font-medium text-gray-500"
-                                data-translate="attendance.master.pending_validation">Pending Validation</h3>
-                            <p id="pendingValidation" class="text-2xl font-semibold text-yellow-600">-</p>
-                        </div>
-                    </div>
-                </div>
-                <div id="partialCard" class="stat-card bg-white rounded-lg p-6 shadow-sm cursor-pointer">
-                    <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-orange-100">
-                            <i class="fas fa-clock text-orange-600 text-lg"></i>
-                        </div>
-                        <div class="ml-4">
-                            <h3 class="text-sm font-medium text-gray-500"
-                                data-translate="attendance.master.partial_pending">Partial Pending</h3>
-                            <p id="partialPending" class="text-2xl font-semibold text-orange-600">-</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Filters and Actions -->
-            <div class="bg-white rounded-lg shadow-sm mb-6">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="grid grid-cols-1 md:grid-cols-9 gap-4">
-                        <!-- Year Filter -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1"
-                                data-translate="attendance.master.year">Year</label>
-                            <select id="yearFilter"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="" data-translate="attendance.master.all_years">All Years</option>
-                            </select>
-                        </div>
-                        <!-- Month Filter -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1"
-                                data-translate="attendance.master.month">Month</label>
-                            <select id="monthFilter"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="" data-translate="attendance.master.all_months">All Months</option>
-                                <option value="1" data-translate="dashboard.january">January</option>
-                                <option value="2" data-translate="dashboard.february">February</option>
-                                <option value="3" data-translate="dashboard.march">March</option>
-                                <option value="4" data-translate="dashboard.april">April</option>
-                                <option value="5" data-translate="dashboard.may">May</option>
-                                <option value="6" data-translate="dashboard.june">June</option>
-                                <option value="7" data-translate="dashboard.july">July</option>
-                                <option value="8" data-translate="dashboard.august">August</option>
-                                <option value="9" data-translate="dashboard.september">September</option>
-                                <option value="10" data-translate="dashboard.october">October</option>
-                                <option value="11" data-translate="dashboard.november">November</option>
-                                <option value="12" data-translate="dashboard.december">December</option>
-                            </select>
-                        </div>
-
-                        <!-- Department Filter -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1"
-                                data-translate="attendance.master.department">Department</label>
-                            <select id="departmentFilter"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="" data-translate="attendance.master.all_departments">All Departments
-                                </option>
-                            </select>
-                        </div>
-                        <!-- Validation Status Filter -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1"
-                                data-translate="attendance.master.status">Status</label>
-                            <select id="statusFilter"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="" data-translate="attendance.master.all_status">All Status</option>
-                                <option value="Validated" data-translate="attendance.master.validated">Validated
-                                </option>
-                                <option value="Calculated" data-translate="attendance.master.calculated">Calculated
-                                </option>
-                            </select>
-                        </div>
-                        <!-- Search -->
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1"
-                                data-translate="attendance.master.search_employee">Search Employee</label>
-                            <input type="text" id="searchInput"
-                                data-translate-placeholder="attendance.master.search_placeholder"
-                                placeholder="Search by name..."
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <!-- Apply Filters Button -->
-                        <div class="flex items-end">
-                            <button onclick="applyFilters()"
-                                class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm">
-                                <i class="fas fa-filter mr-2"></i>
-                                <span data-translate="attendance.master.apply">Apply</span>
-                            </button>
-                        </div>
+                    <div class="report-stat-content">
+                        <p class="report-stat-label" data-translate="attendance.master.total_employees">إجمالي الموظفين</p>
+                        <h3 id="totalEmployees" class="report-stat-value">-</h3>
+                        <span class="report-stat-badge" style="background: rgba(59, 130, 246, 0.1); color: #2563eb;">
+                            <i class="fas fa-building"></i>
+                            <span data-translate="attendance.master.total_employees_desc">جميع الإدارات</span>
+                        </span>
                     </div>
                 </div>
 
-                <!-- Bulk Actions -->
-                <div class="p-4 bg-gray-50">
-                    <div class="flex flex-wrap gap-3">
-                        <button onclick="bulkValidate()"
-                            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm disabled:opacity-50">
-                            <i class="fas fa-check-double mr-2"></i>
-                            <span data-translate="attendance.master.bulk_validate">Bulk Validate</span>
-                        </button>
-                        <button onclick="bulkClearLate()"
-                            class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm">
-                            <i class="fas fa-eraser mr-2"></i>
-                            <span data-translate="attendance.master.clear_all_late">Clear All Late</span>
-                        </button>
-                        <button onclick="bulkClearEarly()"
-                            class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm">
-                            <i class="fas fa-eraser mr-2"></i>
-                            <span data-translate="attendance.master.clear_all_early">Clear All Early</span>
-                        </button>
-                        <button onclick="bulkClearMissing()"
-                            class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm">
-                            <i class="fas fa-eraser mr-2"></i>
-                            <span data-translate="attendance.master.clear_missing_punches">Clear Missing Punches</span>
-                        </button>
-                        <span class="text-sm text-gray-500 flex items-center ml-4">
-                            <span id="selectedCount">0</span> <span
-                                data-translate="attendance.master.selected">selected</span>
+                <!-- Validated Records Card -->
+                <div id="validatedCard" class="report-stat-card-inline cursor-pointer">
+                    <div class="report-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="report-stat-content">
+                        <p class="report-stat-label" data-translate="attendance.master.validated_records">السجلات المعتمدة</p>
+                        <h3 id="validatedRecords" class="report-stat-value">-</h3>
+                        <span class="report-stat-badge" style="background: rgba(16, 185, 129, 0.1); color: #059669;">
+                            <i class="fas fa-shield-alt"></i>
+                            <span data-translate="attendance.master.validated_desc">تم التدقيق</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Pending Validation Card -->
+                <div id="pendingCard" class="report-stat-card-inline cursor-pointer">
+                    <div class="report-stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div class="report-stat-content">
+                        <p class="report-stat-label" data-translate="attendance.master.pending_validation">قيد المراجعة</p>
+                        <h3 id="pendingValidation" class="report-stat-value">-</h3>
+                        <span class="report-stat-badge" style="background: rgba(245, 158, 11, 0.1); color: #d97706;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span data-translate="attendance.master.pending_desc">يتطلب اتخاذ إجراء</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Partial Pending Card -->
+                <div id="partialCard" class="report-stat-card-inline cursor-pointer">
+                    <div class="report-stat-icon" style="background: linear-gradient(135deg, #f97316, #ea580c);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="report-stat-content">
+                        <p class="report-stat-label" data-translate="attendance.master.partial_pending">حالات غير مكتملة</p>
+                        <h3 id="partialPending" class="report-stat-value">-</h3>
+                        <span class="report-stat-badge" style="background: rgba(249, 115, 22, 0.1); color: #ea580c;">
+                            <i class="fas fa-tools"></i>
+                            <span data-translate="attendance.master.partial_desc">يتطلب المعالجة</span>
                         </span>
                     </div>
                 </div>
             </div>
 
+            <!-- Filters and Actions -->
+            <div class="director-panel">
+                <div class="director-panel-header">
+                    <div class="director-panel-title">
+                        <div class="director-panel-title-icon">
+                            <i class="fas fa-filter"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-900" data-translate="attendance.master.filters">Filters & Actions</h2>
+                            <p class="text-xs text-gray-500 mt-0.5" data-translate="attendance.master.filter_description">Filter attendance records and perform bulk operations</p>
+                        </div>
+                    </div>
+                    <span class="director-section-pill" data-translate="attendance.master.filter_section">Filters</span>
+                </div>
+                
+                <!-- Main Filters Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <!-- Year Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            <span data-translate="attendance.master.year">السنة</span>
+                        </label>
+                        <select id="yearFilter" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="" data-translate="attendance.master.all_years">2025</option>
+                        </select>
+                    </div>
+
+                    <!-- Month Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-calendar mr-2"></i>
+                            <span data-translate="attendance.master.month">الشهر</span>
+                        </label>
+                        <select id="monthFilter" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="" data-translate="attendance.master.all_months">أغسطس</option>
+                            <option value="1" data-translate="dashboard.january">January</option>
+                            <option value="2" data-translate="dashboard.february">February</option>
+                            <option value="3" data-translate="dashboard.march">March</option>
+                            <option value="4" data-translate="dashboard.april">April</option>
+                            <option value="5" data-translate="dashboard.may">May</option>
+                            <option value="6" data-translate="dashboard.june">June</option>
+                            <option value="7" data-translate="dashboard.july">July</option>
+                            <option value="8" data-translate="dashboard.august">August</option>
+                            <option value="9" data-translate="dashboard.september">September</option>
+                            <option value="10" data-translate="dashboard.october">October</option>
+                            <option value="11" data-translate="dashboard.november">November</option>
+                            <option value="12" data-translate="dashboard.december">December</option>
+                        </select>
+                    </div>
+
+                    <!-- Branch Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-code-branch mr-2"></i>
+                            <span data-translate="attendance.master.branch">الفرع</span>
+                        </label>
+                        <select id="branchFilter" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="" data-translate="attendance.master.all_branches">جميع الفروع</option>
+                        </select>
+                    </div>
+
+                    <!-- Department Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-building mr-2"></i>
+                            <span data-translate="attendance.master.department">القسم</span>
+                        </label>
+                        <select id="departmentFilter" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="" data-translate="attendance.master.all_departments">جميع الأقسام</option>
+                        </select>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span data-translate="attendance.master.status">الحالة</span>
+                        </label>
+                        <select id="statusFilter" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="" data-translate="attendance.master.all_status">جميع الحالات</option>
+                            <option value="Validated" data-translate="attendance.master.validated">Validated</option>
+                            <option value="Calculated" data-translate="attendance.master.calculated">Calculated</option>
+                        </select>
+                    </div>
+
+                    <!-- Search -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-search mr-2"></i>
+                            <span data-translate="attendance.master.search_employee">البحث عن موظف</span>
+                        </label>
+                        <input type="text" id="searchInput"
+                            data-translate-placeholder="attendance.master.search_placeholder"
+                            placeholder="البحث بالاسم..."
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-3 justify-between items-center mb-6">
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="applyFilters()"
+                            class="filter-button active" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">
+                            <i class="fas fa-filter"></i>
+                            <span data-translate="attendance.master.apply">Apply</span>
+                        </button>
+                        <button onclick="refreshData()"
+                            class="filter-button">
+                            <i class="fas fa-sync-alt"></i>
+                            <span data-translate="attendance.master.refresh">Refresh</span>
+                        </button>
+                        <button onclick="openExportModal()"
+                            class="filter-button">
+                            <i class="fas fa-download"></i>
+                            <span data-translate="attendance.master.export">Export</span>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-500">
+                            <span id="selectedCount">0</span> <span data-translate="attendance.master.selected">selected</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions - Simplified -->
+                <div class="border-t border-gray-200 pt-4">
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="bulkValidate()"
+                            class="filter-button" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                            <i class="fas fa-check-double"></i>
+                            <span data-translate="attendance.master.bulk_validate">Bulk Validate</span>
+                        </button>
+                        <button onclick="bulkClearLate()"
+                            class="filter-button" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
+                            <i class="fas fa-eraser"></i>
+                            <span data-translate="attendance.master.clear_all_late">Clear Late</span>
+                        </button>
+                        <button onclick="bulkClearEarly()"
+                            class="filter-button" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;">
+                            <i class="fas fa-eraser"></i>
+                            <span data-translate="attendance.master.clear_all_early">Clear Early</span>
+                        </button>
+                        <button onclick="bulkClearMissing()"
+                            class="filter-button" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white;">
+                            <i class="fas fa-eraser"></i>
+                            <span data-translate="attendance.master.clear_missing_punches">Clear Missing</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Attendance Table -->
-            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+            <div class="director-panel">
+                <div class="table-wrapper">
+                    <table class="complaints-table">
+                        <thead>
                             <tr>
-                                <th class="px-6 py-3 text-left">
+                                <th style="width: 50px; text-align: center;">
                                     <input type="checkbox" id="selectAll"
-                                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                        class="employee-checkbox">
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    data-translate="attendance.master.employee">Employee</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    data-translate="attendance.scheduled_days">Scheduled Days</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    data-translate="attendance.worked_days">Worked Days</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    data-translate="attendance.absence_days">Absence Days</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <span class="text-orange-600" data-translate="attendance.pending">Pending</span>
-                                    <i class="fas fa-info-circle text-xs text-gray-400 ml-1"
-                                        title="Partial cases requiring treatment"></i>
+                                <th class="sortable">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-user" style="color: #3b82f6; font-size: 0.875rem;"></i>
+                                        <span data-translate="attendance.master.employee">Employee</span>
+                                        <span class="sort-icon"></span>
+                                    </div>
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    data-translate="attendance.wage_changes">Wage Changes</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    data-translate="attendance.status">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    data-translate="attendance.master.actions">Actions</th>
+                                <th class="sortable">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-calendar-check" style="color: #3b82f6; font-size: 0.875rem;"></i>
+                                        <span data-translate="attendance.scheduled_days">Scheduled Days</span>
+                                        <span class="sort-icon"></span>
+                                    </div>
+                                </th>
+                                <th class="sortable">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-check-circle" style="color: #10b981; font-size: 0.875rem;"></i>
+                                        <span data-translate="attendance.worked_days">Worked Days</span>
+                                        <span class="sort-icon"></span>
+                                    </div>
+                                </th>
+                                <th class="sortable">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-times-circle" style="color: #ef4444; font-size: 0.875rem;"></i>
+                                        <span data-translate="attendance.absence_days">Absence Days</span>
+                                        <span class="sort-icon"></span>
+                                    </div>
+                                </th>
+                                <th class="sortable">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-clock" style="color: #f59e0b; font-size: 0.875rem;"></i>
+                                        <span data-translate="attendance.pending">Pending</span>
+                                        <i class="fas fa-info-circle" style="font-size: 0.7rem; color: #94a3b8; opacity: 0.7;"
+                                            title="Partial cases requiring treatment"></i>
+                                        <span class="sort-icon"></span>
+                                    </div>
+                                </th>
+                                <th class="sortable">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-coins" style="color: #f59e0b; font-size: 0.875rem;"></i>
+                                        <span data-translate="attendance.wage_changes">Wage Changes</span>
+                                        <span class="sort-icon"></span>
+                                    </div>
+                                </th>
+                                <th class="sortable">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-shield-alt" style="color: #8b5cf6; font-size: 0.875rem;"></i>
+                                        <span data-translate="attendance.status">Status</span>
+                                        <span class="sort-icon"></span>
+                                    </div>
+                                </th>
+                                <th class="actions-header">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                        <i class="fas fa-cog" style="color: #64748b; font-size: 0.875rem;"></i>
+                                        <span data-translate="attendance.master.actions">Actions</span>
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
-                        <tbody id="attendanceTableBody" class="bg-white divide-y divide-gray-200">
+                        <tbody id="attendanceTableBody">
                             <!-- Table rows will be populated here -->
+                            <tr>
+                                <td colspan="9" class="text-center py-12">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
+                                        <p class="text-gray-500" data-translate="attendance.master.loading">Loading attendance data...</p>
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -344,7 +1222,7 @@
 
                 <!-- Pagination -->
                 <div id="pagination"
-                    class="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                    class="p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
                     <!-- Pagination will be populated here -->
                 </div>
             </div>
@@ -637,8 +1515,58 @@
     <script src="attendance-api.js?v=3&t=1736934000"></script>
     <script src="../frontend/assets/js/main.js?v=4"></script>
     <script>
+        // Remove page-hero section if it exists
+        function removePageHero() {
+            try {
+                const pageHero = document.querySelector('.page-hero');
+                if (pageHero) {
+                    pageHero.remove();
+                }
+            } catch (e) {
+                console.warn('Error removing page-hero:', e);
+            }
+        }
+        
         // Language selector and sidebar initialization
         document.addEventListener('DOMContentLoaded', function () {
+            // Remove page-hero section
+            removePageHero();
+            
+            // Also remove it after a short delay in case it's added dynamically
+            setTimeout(removePageHero, 100);
+            setTimeout(removePageHero, 500);
+            setTimeout(removePageHero, 1000);
+            
+            // Watch for page-hero being added dynamically
+            try {
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        mutation.addedNodes.forEach(function(node) {
+                            if (node.nodeType === 1) { // Element node
+                                if (node.classList && node.classList.contains('page-hero')) {
+                                    node.remove();
+                                } else if (node.querySelector) {
+                                    const pageHero = node.querySelector('.page-hero');
+                                    if (pageHero) {
+                                        pageHero.remove();
+                                    }
+                                }
+                            }
+                        });
+                    });
+                });
+                
+                // Start observing the document body for changes
+                if (document.body) {
+                    observer.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
+                }
+            } catch (e) {
+                console.warn('Error setting up MutationObserver:', e);
+            }
+            
             // Ensure user role is set for sidebar - CRITICAL for navigation
             const user = JSON.parse(localStorage.getItem('user') || '{}');
             let userRole = user.role || localStorage.getItem('userRole');
@@ -711,10 +1639,10 @@
                 });
             }
 
-            // Listen for language changes from parent page (when embedded in iframe)
+            // Listen for messages from parent page (when embedded in iframe)
             window.addEventListener('message', function (event) {
                 // Verify origin for security (allow localhost and 127.0.0.1 on any port)
-                // This allows cross-origin communication between frontend (port 5502) and attendance service (port 3000)
+                // This allows cross-origin communication between frontend (port 5502/5518) and attendance service (port 3000)
                 const allowedOrigins = ['localhost', '127.0.0.1'];
                 const isAllowedOrigin = allowedOrigins.some(origin => event.origin.includes(origin));
                 if (!isAllowedOrigin && event.origin !== window.location.origin) {
@@ -742,6 +1670,51 @@
                         // window.location.reload();
                     }
                 }
+                
+                // Handle authentication token from parent
+                if (event.data && event.data.type === 'authToken') {
+                    const token = event.data.token;
+                    const user = event.data.user;
+                    console.log('[attendance-master.html] Received auth token from parent');
+                    
+                    // Store token in iframe's localStorage for API calls
+                    if (token) {
+                        localStorage.setItem('token', token);
+                        sessionStorage.setItem('token', token);
+                        console.log('[attendance-master.html] Token stored in iframe localStorage');
+                    }
+                    
+                    // Store user info if provided
+                    if (user) {
+                        try {
+                            const userStr = typeof user === 'string' ? user : JSON.stringify(user);
+                            localStorage.setItem('user', userStr);
+                            const userObj = typeof user === 'string' ? JSON.parse(user) : user;
+                            if (userObj && userObj.role) {
+                                localStorage.setItem('userRole', userObj.role);
+                            }
+                        } catch (e) {
+                            console.warn('[attendance-master.html] Could not parse user data:', e);
+                        }
+                    }
+                    
+                    // If page hasn't initialized yet, trigger initialization
+                    if (typeof initializePage === 'function' && !window.pageInitialized) {
+                        window.pageInitialized = true;
+                        console.log('[attendance-master.html] Triggering page initialization after receiving token');
+                        setTimeout(() => {
+                            initializePage();
+                        }, 100);
+                    } else if (window.pageInitialized) {
+                        // Page already initialized, but token was updated - reload data
+                        console.log('[attendance-master.html] Token updated, reloading data');
+                        if (typeof loadAttendanceData === 'function') {
+                            setTimeout(() => {
+                                loadAttendanceData();
+                            }, 100);
+                        }
+                    }
+                }
             });
 
             // Also check for language in URL params or localStorage on load
@@ -754,6 +1727,28 @@
             // Initialize translations
             if (typeof updatePageTranslations === 'function') {
                 updatePageTranslations();
+            }
+            
+            // If embedded, request token from parent if not already available
+            const urlParamsForToken = new URLSearchParams(window.location.search);
+            const isEmbedForToken = urlParamsForToken.get('embed') === '1';
+            let isEmbeddedForToken = false;
+            try {
+                isEmbeddedForToken = window.self !== window.top;
+            } catch (e) {
+                isEmbeddedForToken = true;
+            }
+            
+            if ((isEmbedForToken || isEmbeddedForToken) && window.parent && window.parent !== window.self) {
+                // Request token from parent
+                try {
+                    window.parent.postMessage({
+                        type: 'requestAuthToken'
+                    }, '*'); // Use * for cross-origin, parent will validate
+                    console.log('[attendance-master.html] Requested auth token from parent');
+                } catch (e) {
+                    console.warn('[attendance-master.html] Could not request token from parent:', e);
+                }
             }
         });
 
@@ -773,8 +1768,75 @@
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function () {
-            if (!requireAuth()) return;
-            initializePage();
+            // Check if page is embedded in iframe
+            const urlParams = new URLSearchParams(window.location.search);
+            const isEmbed = urlParams.get('embed') === '1';
+            let isEmbedded = false;
+            try {
+                isEmbedded = window.self !== window.top;
+            } catch (e) {
+                // Cross-origin iframe, assume embedded
+                isEmbedded = true;
+            }
+            
+            // If embedded, skip authentication redirect (parent page handles it)
+            if (isEmbed || isEmbedded) {
+                console.log('Page is embedded, skipping authentication redirect. Parent page handles auth.');
+                
+                // Check for token - if not found, wait for it from parent
+                const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                if (!token) {
+                    console.log('No authentication token found in embedded page. Waiting for token from parent...');
+                    // Request token from parent
+                    if (window.parent && window.parent !== window.self) {
+                        try {
+                            window.parent.postMessage({
+                                type: 'requestAuthToken'
+                            }, '*');
+                        } catch (e) {
+                            console.warn('Could not request token from parent:', e);
+                        }
+                    }
+                    // Wait a bit for token to arrive, then initialize
+                    setTimeout(() => {
+                        const tokenAfterWait = localStorage.getItem('token') || sessionStorage.getItem('token');
+                        if (tokenAfterWait) {
+                            console.log('Token received, initializing page...');
+                            initializePage();
+                        } else {
+                            console.warn('Token not received after wait. Initializing anyway - API calls may fail.');
+                            initializePage();
+                        }
+                    }, 500);
+                } else {
+                    // Token already available, initialize immediately
+                    initializePage();
+                }
+            } else {
+                // Not embedded - do full authentication check
+                if (typeof requireAuth === 'function') {
+                    if (!requireAuth()) return;
+                } else {
+                    // Fallback: check token directly
+                    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                    if (!token) {
+                        console.error('No authentication token found. Redirecting to login...');
+                        // Try to redirect to frontend login page
+                        const frontendBase = localStorage.getItem('frontendBaseURL') || 'http://127.0.0.1:5502/frontend/';
+                        window.location.href = `${frontendBase}index.html`;
+                        return;
+                    }
+                    console.log('Auth token found, but requireAuth function not available');
+                }
+                initializePage();
+            }
+            
+            // Verify authManager is available (optional for embedded pages)
+            if (typeof window.authManager === 'undefined') {
+                if (!isEmbed && !isEmbedded) {
+                    console.warn('authManager not available. Some features may not work correctly.');
+                }
+            }
 
             // Event listeners
             const selectAllElement = document.getElementById('selectAll');
@@ -806,9 +1868,46 @@
             window.addEventListener('languageChanged', () => {
                 loadAttendanceData();
             });
+
+            // Filter change event listeners
+            const yearFilter = document.getElementById('yearFilter');
+            const monthFilter = document.getElementById('monthFilter');
+            const branchFilter = document.getElementById('branchFilter');
+            const departmentFilter = document.getElementById('departmentFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const searchInput = document.getElementById('searchInput');
+
+            if (yearFilter) {
+                yearFilter.addEventListener('change', applyFilters);
+            }
+            if (monthFilter) {
+                monthFilter.addEventListener('change', applyFilters);
+            }
+            if (branchFilter) {
+                branchFilter.addEventListener('change', applyFilters);
+            }
+            if (departmentFilter) {
+                departmentFilter.addEventListener('change', applyFilters);
+            }
+            if (statusFilter) {
+                statusFilter.addEventListener('change', applyFilters);
+            }
+            if (searchInput) {
+                // Debounce search input
+                let searchTimeout;
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        applyFilters();
+                    }, 500);
+                });
+            }
         });
 
         async function initializePage() {
+            // Mark as initialized to prevent duplicate calls
+            window.pageInitialized = true;
+            
             try {
                 // Set current month and year as default
                 const now = new Date();
@@ -823,10 +1922,20 @@
 
                 await Promise.all([
                     loadDepartments(),
-                    loadSettings(),
-                    loadAttendanceData()
+                    loadBranches(),
+                    loadSettings()
                 ]);
+                await loadAttendanceData();
                 updateStatistics();
+                
+                // Retry loading branches after a delay if not loaded
+                setTimeout(() => {
+                    const branchSelect = document.getElementById('branchFilter');
+                    if (branchSelect && branchSelect.options.length <= 1) {
+                        console.log('Branches still not loaded, retrying...');
+                        loadBranches();
+                    }
+                }, 2000);
             } catch (error) {
                 console.error('Initialize page error:', error);
                 showToast('error', 'Failed to initialize page');
@@ -872,7 +1981,7 @@
         async function loadDepartments() {
             try {
                 const result = await API.getDepartments();
-                if (result.success) {
+                if (result && result.success && result.departments) {
                     const select = document.getElementById('departmentFilter');
                     result.departments.forEach(dept => {
                         const option = document.createElement('option');
@@ -880,16 +1989,201 @@
                         option.textContent = dept.name;
                         select.appendChild(option);
                     });
+                } else if (result && !result.success) {
+                    console.error('Load departments failed:', result.error);
+                    if (result.status === 401) {
+                        showToast('error', 'Authentication required. Please log in again.');
+                    }
                 }
             } catch (error) {
                 console.error('Load departments error:', error);
+                if (error.message && error.message.includes('401')) {
+                    showToast('error', 'Authentication required. Please log in again.');
+                }
+            }
+        }
+
+        function updateBranchesFromData(data) {
+            try {
+                const branchSelect = document.getElementById('branchFilter');
+                if (!branchSelect) {
+                    console.warn('Branch filter select not found');
+                    return;
+                }
+                
+                if (!data || data.length === 0) {
+                    console.warn('No data provided to updateBranchesFromData');
+                    return;
+                }
+
+                console.log('Updating branches from data, records:', data.length);
+
+                // Get current selected value
+                const currentValue = branchSelect.value;
+
+                // Extract unique institutions from data - check multiple possible field names
+                const institutionsSet = new Set();
+                data.forEach(record => {
+                    // Check multiple possible field names for institution/branch
+                    const institution = record.institution || 
+                                       record.branch || 
+                                       record.institution_name || 
+                                       record.branch_name ||
+                                       record.employee?.institution ||
+                                       record.employee?.branch;
+                    
+                    if (institution && String(institution).trim()) {
+                        institutionsSet.add(String(institution).trim());
+                    }
+                });
+
+                const institutions = Array.from(institutionsSet).sort();
+                console.log('Found institutions in data:', institutions);
+                
+                if (institutions.length === 0) {
+                    console.warn('No institutions found in attendance data. Sample record:', data[0]);
+                    return;
+                }
+                
+                // Check if current selection still exists
+                const currentExists = !currentValue || institutions.includes(currentValue);
+
+                // Update dropdown
+                const allBranchesText = typeof translate === 'function' ? translate('attendance.master.all_branches') : 'جميع الفروع';
+                branchSelect.innerHTML = `<option value="" ${!currentValue ? 'selected' : ''}>${allBranchesText}</option>`;
+
+                institutions.forEach(institution => {
+                    const option = document.createElement('option');
+                    option.value = institution;
+                    option.textContent = institution;
+                    if (currentValue === institution) {
+                        option.selected = true;
+                    }
+                    branchSelect.appendChild(option);
+                });
+
+                // Restore selection if it still exists
+                if (currentValue && currentExists) {
+                    branchSelect.value = currentValue;
+                }
+                
+                console.log('Updated branch filter with', institutions.length, 'branches');
+            } catch (error) {
+                console.error('Error updating branches from data:', error);
+            }
+        }
+
+        async function loadBranches() {
+            try {
+                const branchSelect = document.getElementById('branchFilter');
+                if (!branchSelect) {
+                    console.error('Branch filter select element not found');
+                    return;
+                }
+
+                console.log('Loading branches...');
+
+                // Method 1: Try to get employees from API (if APIService is available)
+                if (typeof APIService !== 'undefined' && typeof APIService.getEmployees === 'function') {
+                    try {
+                        console.log('Trying to load branches from APIService.getEmployees...');
+                        const employeesResult = await APIService.getEmployees({});
+                        const employeesList = employeesResult?.employees || employeesResult || [];
+                        
+                        if (Array.isArray(employeesList) && employeesList.length > 0) {
+                            const institutionsSet = new Set();
+                            employeesList.forEach(e => {
+                                const inst = e.institution || e.branch;
+                                if (inst && String(inst).trim()) {
+                                    institutionsSet.add(String(inst).trim());
+                                }
+                            });
+                            
+                            const institutions = Array.from(institutionsSet).sort();
+                            if (institutions.length > 0) {
+                                const allBranchesText = typeof translate === 'function' ? translate('attendance.master.all_branches') : 'جميع الفروع';
+                                branchSelect.innerHTML = `<option value="" selected>${allBranchesText}</option>`;
+                                
+                                institutions.forEach(institution => {
+                                    const option = document.createElement('option');
+                                    option.value = institution;
+                                    option.textContent = institution;
+                                    branchSelect.appendChild(option);
+                                });
+                                
+                                console.log('✅ Successfully loaded', institutions.length, 'branches from employees API');
+                                return;
+                            }
+                        }
+                    } catch (apiError) {
+                        console.warn('APIService.getEmployees failed:', apiError);
+                    }
+                }
+
+                // Method 2: Extract from attendance data - get all records for current year
+                try {
+                    console.log('Trying to load branches from attendance data...');
+                    const now = new Date();
+                    
+                    // Get attendance data for current month with large limit
+                    const attendanceResult = await API.getMonthlyAttendance({
+                        year: now.getFullYear(),
+                        month: now.getMonth() + 1,
+                        limit: 10000
+                    });
+                    
+                    if (attendanceResult?.success && attendanceResult.data && Array.isArray(attendanceResult.data)) {
+                        const institutionsSet = new Set();
+                        attendanceResult.data.forEach(record => {
+                            // Check multiple possible field names
+                            const institution = record.institution || 
+                                               record.branch || 
+                                               record.institution_name || 
+                                               record.branch_name ||
+                                               record.employee?.institution ||
+                                               record.employee?.branch;
+                            
+                            if (institution && String(institution).trim()) {
+                                institutionsSet.add(String(institution).trim());
+                            }
+                        });
+                        
+                        const institutions = Array.from(institutionsSet).sort();
+                        
+                        if (institutions.length > 0) {
+                            const allBranchesText = typeof translate === 'function' ? translate('attendance.master.all_branches') : 'جميع الفروع';
+                            branchSelect.innerHTML = `<option value="" selected>${allBranchesText}</option>`;
+                            
+                            institutions.forEach(institution => {
+                                const option = document.createElement('option');
+                                option.value = institution;
+                                option.textContent = institution;
+                                branchSelect.appendChild(option);
+                            });
+                            
+                            console.log('✅ Successfully loaded', institutions.length, 'branches from attendance data');
+                            return;
+                        } else {
+                            console.warn('⚠️ No institutions found in attendance data. Sample record:', attendanceResult.data[0]);
+                        }
+                    } else {
+                        console.warn('⚠️ Invalid attendance result structure:', attendanceResult);
+                    }
+                } catch (attendanceError) {
+                    console.error('❌ Error loading branches from attendance data:', attendanceError);
+                }
+                
+                // If we get here, branches weren't loaded - they'll be loaded when attendance data loads
+                console.log('ℹ️ Branches will be loaded when attendance data is fetched');
+            } catch (error) {
+                console.error('❌ Load branches error:', error);
             }
         }
 
         async function loadYears() {
             try {
                 const result = await API.getAvailableYears();
-                if (result.success) {
+                if (result && result.success && result.years) {
                     const select = document.getElementById('yearFilter');
                     result.years.forEach(year => {
                         const option = document.createElement('option');
@@ -899,9 +2193,17 @@
                         select.appendChild(option);
                     });
                     console.log('Loaded years in master:', result.years);
+                } else if (result && !result.success) {
+                    console.error('Load years failed:', result.error);
+                    if (result.status === 401) {
+                        showToast('error', 'Authentication required. Please log in again.');
+                    }
                 }
             } catch (error) {
                 console.error('Load years error:', error);
+                if (error.message && error.message.includes('401')) {
+                    showToast('error', 'Authentication required. Please log in again.');
+                }
             }
         }
 
@@ -909,18 +2211,27 @@
             try {
                 const result = await API.getAttendanceSettings();
 
-                if (result.success && result.settings) {
+                if (result && result.success && result.settings) {
                     const settings = result.settings;
 
                     // Only load grace period settings
                     document.getElementById('latenessGrace').value = settings.grace_period_lateness_minutes || 0;
                     document.getElementById('earlyGrace').value = settings.grace_period_early_departure_minutes || 0;
+                } else if (result && !result.success) {
+                    console.warn('No settings found or API call failed:', result);
+                    if (result.status === 401) {
+                        showToast('error', 'Authentication required. Please log in again.');
+                    }
                 } else {
                     console.warn('No settings found or API call failed:', result);
                 }
             } catch (error) {
                 console.error('Load settings error:', error);
-                showToast('error', 'Failed to load attendance settings');
+                if (error.message && error.message.includes('401')) {
+                    showToast('error', 'Authentication required. Please log in again.');
+                } else {
+                    showToast('error', 'Failed to load attendance settings');
+                }
             }
         }
 
@@ -937,9 +2248,94 @@
 
                 const result = await API.getMonthlyAttendance(params);
 
-                if (result.success) {
+                if (result && result.success) {
                     attendanceData = result.data;
                     let rows = attendanceData || [];
+
+                    // Update branches from loaded data
+                    updateBranchesFromData(rows);
+                    
+                    // Also try to load branches if not already loaded
+                    const branchSelect = document.getElementById('branchFilter');
+                    if (branchSelect && branchSelect.options.length <= 1) {
+                        console.log('Branches not loaded yet, trying to load now...');
+                        setTimeout(() => loadBranches(), 500);
+                    }
+
+                    // Apply branch/institution filter (client-side)
+                    const branchFilter = document.getElementById('branchFilter')?.value || '';
+                    if (branchFilter) {
+                        const originalLength = rows.length;
+                        
+                        // Debug: Log first record structure to see what fields exist
+                        if (rows.length > 0) {
+                            console.log('🔍 Sample record structure (all fields):', Object.keys(rows[0]));
+                            console.log('🔍 Sample record full data:', rows[0]);
+                            console.log('🔍 Looking for branch/institution field matching:', branchFilter);
+                        }
+                        
+                        // Get all unique institution values from data to debug
+                        const allInstitutions = new Set();
+                        rows.forEach(r => {
+                            const inst = r.institution || 
+                                        r.branch || 
+                                        r.institution_name || 
+                                        r.branch_name ||
+                                        r.employee?.institution ||
+                                        r.employee?.branch ||
+                                        r.employee_institution ||
+                                        r.employee_branch ||
+                                        r.employee?.institution_name ||
+                                        r.employee?.branch_name;
+                            if (inst) allInstitutions.add(String(inst).trim());
+                        });
+                        console.log('🔍 All unique institutions found in data:', Array.from(allInstitutions));
+                        
+                        rows = rows.filter(r => {
+                            // Check multiple possible field names for institution/branch
+                            const recordInstitution = r.institution || 
+                                                      r.branch || 
+                                                      r.institution_name || 
+                                                      r.branch_name ||
+                                                      r.employee?.institution ||
+                                                      r.employee?.branch ||
+                                                      r.employee_institution ||
+                                                      r.employee_branch ||
+                                                      r.employee?.institution_name ||
+                                                      r.employee?.branch_name;
+                            
+                            if (!recordInstitution) {
+                                return false;
+                            }
+                            
+                            // Case-insensitive comparison with trimmed values
+                            const recordValue = String(recordInstitution).trim().toLowerCase();
+                            const filterValue = String(branchFilter).trim().toLowerCase();
+                            
+                            const matches = recordValue === filterValue;
+                            
+                            return matches;
+                        });
+                        console.log(`✅ Branch filter "${branchFilter}": ${originalLength} -> ${rows.length} records`);
+                        
+                        if (rows.length === 0 && originalLength > 0) {
+                            console.warn('⚠️ No records matched branch filter!');
+                            console.warn('⚠️ Selected branch filter value:', branchFilter);
+                            console.warn('⚠️ Available institutions in data:', Array.from(allInstitutions));
+                            console.warn('⚠️ Try checking if the branch name matches exactly (case-insensitive)');
+                        }
+                    }
+
+                    // Apply department filter (client-side)
+                    const departmentFilter = document.getElementById('departmentFilter')?.value || '';
+                    if (departmentFilter) {
+                        const originalLength = rows.length;
+                        rows = rows.filter(r => {
+                            const recordDept = r.department_id || r.department?.id || r.department;
+                            return String(recordDept) === String(departmentFilter);
+                        });
+                        console.log(`Department filter "${departmentFilter}": ${originalLength} -> ${rows.length} records`);
+                    }
 
                     // Apply view mode filtering
                     if (currentViewMode === 'validated') {
@@ -953,15 +2349,39 @@
                         rows = rows.filter(r => (r.pending_days || 0) > 0);
                     }
 
+                    // Apply search filter (client-side)
+                    const searchTerm = document.getElementById('searchInput')?.value?.trim() || '';
+                    if (searchTerm) {
+                        const originalLength = rows.length;
+                        const lowerSearch = searchTerm.toLowerCase();
+                        rows = rows.filter(r => {
+                            const employeeName = `${r.employee_first_name || ''} ${r.employee_last_name || ''}`.toLowerCase();
+                            const employeeId = String(r.employee_id || '').toLowerCase();
+                            return employeeName.includes(lowerSearch) || employeeId.includes(lowerSearch);
+                        });
+                        console.log(`Search filter "${searchTerm}": ${originalLength} -> ${rows.length} records`);
+                    }
+
                     displayAttendanceData(rows);
                     displayPagination(result.pagination);
                     updateStatistics(result.statistics);
+                } else if (result && !result.success) {
+                    if (result.status === 401) {
+                        showToast('error', 'Authentication required. Please log in again.');
+                    } else {
+                        throw new Error(result.error || 'Failed to load attendance data');
+                    }
+                    showEmptyState();
                 } else {
-                    throw new Error(result.error || 'Failed to load attendance data');
+                    throw new Error('Invalid response from server');
                 }
             } catch (error) {
                 console.error('Load attendance data error:', error);
-                showToast('error', error.message);
+                if (error.message && error.message.includes('401')) {
+                    showToast('error', 'Authentication required. Please log in again.');
+                } else {
+                    showToast('error', error.message || 'Failed to load attendance data');
+                }
                 showEmptyState();
             } finally {
                 hideLoading();
@@ -979,6 +2399,8 @@
                 year: year || now.getFullYear(),
                 month: month || (now.getMonth() + 1),
                 department: document.getElementById('departmentFilter')?.value || '',
+                branch: document.getElementById('branchFilter')?.value || '',
+                institution: document.getElementById('branchFilter')?.value || '', // Also support institution parameter
                 status: document.getElementById('statusFilter')?.value || '',
                 search: document.getElementById('searchInput')?.value?.trim() || ''
             };
@@ -1003,58 +2425,81 @@
 
             tbody.innerHTML = data.map(record => {
                 const statusText = record.validation_status || notApplicable;
+                const employeeName = record.employee_name || 'Unknown';
+                const initials = employeeName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                const employeeId = record.employee_id;
+                const safeEmployeeName = employeeName.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+                
                 return `
                 <tr class="table-row">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <input type="checkbox" class="employee-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                               value="${record.employee_id}" onchange="updateSelection(this)">
+                    <td>
+                        <input type="checkbox" class="employee-checkbox" 
+                               value="${employeeId}" onchange="updateSelection(this)">
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
+                    <td>
+                        <div class="employee-info">
+                            <div class="employee-avatar">${initials}</div>
                             <div>
-                                <div class="text-sm font-medium text-gray-900">${record.employee_name}</div>
-                                <div class="text-sm text-gray-500">${record.department_name || noDept}</div>
+                                <div class="employee-name">${employeeName}</div>
+                                <div class="employee-dept">
+                                    <i class="fas fa-building"></i>
+                                    ${record.department_name || noDept}
+                                </div>
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ${record.scheduled_days || 0}
+                    <td>
+                        <div class="number-display">
+                            <i class="fas fa-calendar-check text-blue-500 mr-1.5" style="font-size: 0.75rem;"></i>
+                            ${record.scheduled_days || 0}
+                        </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ${record.worked_days || 0}
+                    <td>
+                        <div class="number-display">
+                            <i class="fas fa-check-circle text-green-500 mr-1.5" style="font-size: 0.75rem;"></i>
+                            ${record.worked_days || 0}
+                        </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ${record.absence_days || 0}
+                    <td>
+                        <div class="number-display">
+                            <i class="fas fa-times-circle text-red-500 mr-1.5" style="font-size: 0.75rem;"></i>
+                            ${record.absence_days || 0}
+                        </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    <td>
                         ${record.pending_days > 0 ?
-                        `<button onclick="openPendingModal('${record.employee_id}', '${record.employee_name.replace(/'/g, "&#39;")}')" 
-                                    class="text-orange-600 hover:text-orange-800 font-medium cursor-pointer bg-orange-50 px-2 py-1 rounded-full border border-orange-200 hover:bg-orange-100 transition-colors">
-                                ${record.pending_days}
+                        `<button onclick="openPendingModal('${employeeId}', '${safeEmployeeName}')" 
+                                    class="pending-badge">
+                                <i class="fas fa-clock"></i>
+                                <span>${record.pending_days}</span>
                             </button>` :
-                        '<span class="text-gray-400">0</span>'
+                        '<span style="color: #94a3b8; font-size: 0.875rem;">0</span>'
                     }
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ${formatCurrency(record.wage_changes || 0)}
+                    <td>
+                        <div class="number-display" style="color: #059669;">
+                            <i class="fas fa-coins text-amber-500 mr-1.5" style="font-size: 0.75rem;"></i>
+                            ${formatCurrency(record.wage_changes || 0)}
+                        </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td>
                         <span class="status-badge ${getStatusClass(record.validation_status)}">
-                            ${statusText}
+                            <i class="fas ${record.validation_status === 'Validated' ? 'fa-check-circle' : 'fa-calculator'}" style="font-size: 0.75rem;"></i>
+                            <span>${statusText}</span>
                         </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div class="flex flex-wrap gap-2">
-                            <button onclick="viewEmployeeDetails('${record.employee_id}')"
-                                    class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors" title="${viewTitle}">
-                                <i class="fas fa-eye mr-1"></i>
-                                ${viewTitle}
+                    <td class="actions-cell">
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;">
+                            <button onclick="viewEmployeeDetails('${employeeId}')"
+                                    class="action-btn action-btn-view" title="${viewTitle}">
+                                <i class="fas fa-eye"></i>
+                                <span>${viewTitle}</span>
                             </button>
                             ${record.validation_status === 'Calculated' ? `
-                                <button onclick="validateEmployee('${record.employee_id}')"
-                                        class="inline-flex items-center px-3 py-1.5 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors" title="${validateTitle}">
-                                    <i class="fas fa-check-circle mr-1"></i>
-                                    ${validateTitle}
+                                <button onclick="validateEmployee('${employeeId}')"
+                                        class="action-btn action-btn-validate" title="${validateTitle}">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>${validateTitle}</span>
                                 </button>
                             ` : ''}
                         </div>
@@ -1085,25 +2530,28 @@
             const next = typeof translate === 'function' ? translate('attendance.master.next') : 'Next';
 
             container.innerHTML = `
-                <div class="flex items-center justify-between">
-                    <div class="text-sm text-gray-700">
-                        ${showing} ${((pagination.page - 1) * pagination.limit) + 1} ${to} ${Math.min(pagination.page * pagination.limit, pagination.total)} ${of} ${pagination.total} ${results}
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                    <div class="pagination-info">
+                        <i class="fas fa-info-circle mr-1.5" style="color: #94a3b8; font-size: 0.75rem;"></i>
+                        ${showing} <strong>${((pagination.page - 1) * pagination.limit) + 1}</strong> ${to} <strong>${Math.min(pagination.page * pagination.limit, pagination.total)}</strong> ${of} <strong>${pagination.total}</strong> ${results}
                     </div>
-                    <div class="flex space-x-2">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
                         <button onclick="changePage(${pagination.page - 1})" 
                                 ${prevDisabled ? 'disabled' : ''} 
-                                class="px-3 py-1 border border-gray-300 rounded text-sm ${prevDisabled ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}">
-                            ${previous}
+                                class="pagination-btn">
+                            <i class="fas fa-chevron-left"></i>
+                            <span>${previous}</span>
                         </button>
                         
-                        <span class="px-3 py-1 text-sm text-gray-700">
-                            ${page} ${pagination.page} ${of} ${pagination.pages}
-                        </span>
+                        <div class="pagination-info" style="padding: 0.625rem 1rem; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                            ${page} <strong>${pagination.page}</strong> ${of} <strong>${pagination.pages}</strong>
+                        </div>
                         
                         <button onclick="changePage(${pagination.page + 1})" 
                                 ${nextDisabled ? 'disabled' : ''} 
-                                class="px-3 py-1 border border-gray-300 rounded text-sm ${nextDisabled ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}">
-                            ${next}
+                                class="pagination-btn">
+                            <span>${next}</span>
+                            <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
                 </div>

@@ -8,33 +8,121 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="stylesheet" href="tailwind.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Translations Script - Using relative path to frontend -->
     <script src="../../../frontend/assets/js/translations.js"></script>
     <!-- Auth Script -->
     <script src="auth.js"></script>
     <style>
-        .filter-button {
-            padding: 0.5rem 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-            cursor: pointer;
-        }
-        .filter-button:hover {
-            background-color: #f9fafb;
-        }
-        .filter-button.active {
-            background-color: #2563eb;
-            color: white;
-            border-color: #2563eb;
-        }
-        .report-card {
-            transition: all 0.3s ease;
-        }
-        .report-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
+    :root { --director-blue: #2563eb; --director-slate: #0f172a; }
+    body { font-family: 'Outfit', 'Inter', system-ui, sans-serif; color: var(--director-slate); background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb; }
+    .page-header-rapport { text-align: center; margin-bottom: 2rem; padding: 2rem; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; border: 1px solid rgba(148, 163, 184, 0.1); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
+    .page-header-rapport .page-title { font-size: 2rem; font-weight: 700; color: #1e293b; margin: 0 0 0.5rem 0; display: flex; align-items: center; justify-content: center; gap: 0.75rem; }
+    .page-header-rapport .page-title i { color: #3b82f6; font-size: 1.75rem; }
+    .page-header-rapport .page-subtitle { font-size: 1rem; color: #64748b; margin: 0; font-weight: 500; }
+    .director-panel-rapport { background: #fff; border-radius: 22px; padding: 24px 28px; box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08); border: 1px solid rgba(15, 23, 42, 0.06); position: relative; overflow: hidden; }
+    .director-panel-rapport::before { content: ''; position: absolute; inset: 0; background: linear-gradient(120deg, rgba(37, 99, 235, 0.06), rgba(124, 58, 237, 0.04)); opacity: 0.5; pointer-events: none; z-index: 0; }
+    .director-panel-rapport > * { position: relative; z-index: 1; }
+    .stat-card-rapport { background: #fff; border-radius: 20px; padding: 26px 28px; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06); border: 1px solid rgba(148, 163, 184, 0.12); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+    .stat-card-rapport::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; opacity: 0.95; }
+    .stat-card-rapport:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12); border-color: rgba(148, 163, 184, 0.25); }
+    .stat-card-rapport.blue::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+    .stat-card-rapport.blue:hover { border-color: rgba(59, 130, 246, 0.3); }
+    .stat-card-rapport.green::before { background: linear-gradient(90deg, #10b981, #34d399); }
+    .stat-card-rapport.green:hover { border-color: rgba(16, 185, 129, 0.3); }
+    .stat-card-rapport.yellow::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .stat-card-rapport.yellow:hover { border-color: rgba(245, 158, 11, 0.3); }
+    .stat-card-rapport.purple::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+    .stat-card-rapport.purple:hover { border-color: rgba(139, 92, 246, 0.3); }
+    .stat-card-rapport > div.flex { gap: 22px; }
+    .stat-card-rapport .stat-icon-rapport { margin-inline-end: 10px; }
+    .stat-card-rapport .stat-icon-rapport + div { margin-inline-start: 0 !important; padding-inline-start: 10px; min-width: 0; }
+    .stat-icon-rapport { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 23px; color: #fff; flex-shrink: 0; }
+    .stat-card-rapport.blue .stat-icon-rapport { background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4); }
+    .stat-card-rapport.green .stat-icon-rapport { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4); }
+    .stat-card-rapport.yellow .stat-icon-rapport { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4); }
+    .stat-card-rapport.purple .stat-icon-rapport { background: linear-gradient(135deg, #8b5cf6, #7c3aed); box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4); }
+    .stat-card-rapport .text-sm { font-size: 0.8125rem; font-weight: 600; color: #64748b; letter-spacing: 0.02em; }
+    .stat-card-rapport .text-2xl { font-size: 1.875rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; }
+    .director-filters-bar-rapport { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .director-filters-bar-rapport .filter-label-box { display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border-left: 3px solid #3b82f6; }
+    .director-filters-bar-rapport .filter-label-box i { color: #3b82f6; font-size: 15px; }
+    .director-filters-bar-rapport .filter-label-box span { font-size: 14px; font-weight: 600; color: #1e40af; }
+    html[lang="ar"] .director-filters-bar-rapport .filter-label-box,
+    .director-filters-bar-rapport[dir="rtl"] .filter-label-box { border-left: none; border-right: 3px solid #3b82f6; }
+    /* Filters bar RTL (Arabic) – content right to left */
+    html[lang="ar"] .director-filters-bar-rapport,
+    .director-filters-bar-rapport[dir="rtl"] { direction: rtl; }
+    html[lang="ar"] .director-filters-bar-rapport .ml-auto,
+    .director-filters-bar-rapport[dir="rtl"] .ml-auto { margin-left: 0; margin-right: auto; }
+    .director-filters-bar-rapport .filter-select,
+    .director-filters-bar-rapport .filter-input { padding: 8px 14px; font-size: 13px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; color: #374151; transition: all 0.2s; }
+    .director-filters-bar-rapport .filter-select:focus,
+    .director-filters-bar-rapport .filter-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+    .filter-button {
+        padding: 0.5rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        transition: all 0.2s;
+        cursor: pointer;
+        background: #fff;
+        font-size: 13px;
+        font-weight: 500;
+        color: #475569;
+    }
+    .filter-button:hover { background: #f8fafc; border-color: #3b82f6; color: #2563eb; }
+    .filter-button.active {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        border-color: transparent;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .profile-input-rapport, .profile-select-rapport { border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.9); padding: 0.5rem 0.75rem; font-size: 13px; transition: all 0.2s; }
+    .profile-input-rapport:focus, .profile-select-rapport:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+    .btn-rapport-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 600; border: none; cursor: pointer; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transition: all 0.3s ease; }
+    .btn-rapport-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35); }
+    .btn-rapport-secondary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 600; background: rgba(248, 250, 252, 0.95); color: #475569; border: 1px solid rgba(226, 232, 240, 0.9); cursor: pointer; transition: all 0.2s ease; }
+    .btn-rapport-secondary:hover { background: rgba(241, 245, 249, 1); transform: translateY(-1px); }
+    .report-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid rgba(148, 163, 184, 0.15);
+        border-radius: 20px;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        overflow: hidden;
+    }
+    .report-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+        border-color: #3B82F6;
+    }
+    .report-card .dir-info-block-rapport { display: flex; align-items: center; gap: 18px; padding: 12px 14px; border-radius: 14px; }
+    .report-card .dir-info-block-rapport.blue { background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.04)); border: 1px solid rgba(59, 130, 246, 0.2); }
+    .report-card .dir-info-block-rapport.purple { background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(124, 58, 237, 0.04)); border: 1px solid rgba(124, 58, 237, 0.2); }
+    .report-card .dir-info-block-rapport.green { background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.04)); border: 1px solid rgba(16, 185, 129, 0.2); }
+    .report-card .dir-info-block-rapport .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; margin-inline-end: 8px; }
+.report-card .dir-info-block-rapport .icon-box + div { padding-inline-start: 4px; min-width: 0; }
+    .report-card .dir-info-block-rapport.blue .icon-box { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+    .report-card .dir-info-block-rapport.purple .icon-box { background: linear-gradient(135deg, #7C3AED, #6D28D9); }
+    .report-card .dir-info-block-rapport.green .icon-box { background: linear-gradient(135deg, #10B981, #059669); }
+    .report-card .dir-info-block-rapport .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 4px 0; font-weight: 600; color: #64748b; }
+    .report-card .dir-info-block-rapport .value { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rapport-view-mode-btn { padding: 8px 12px; border-radius: 8px; font-size: 13px; border: none; cursor: pointer; transition: all 0.2s; background: #f1f5f9; color: #64748b; }
+    .rapport-view-mode-btn:hover { color: #0f172a; background: #e2e8f0; }
+    .rapport-view-mode-btn.active { background: #3b82f6; color: white; }
+    #reportsList > div.reports-table-wrap { width: 100%; overflow-x: auto; }
+    #reportsList table { width: 100%; min-width: 100%; }
+    .dir-table-action { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 12px; font-size: 0.82rem; font-weight: 600; border: 1.5px solid rgba(148, 163, 184, 0.25); background: #fff; color: #475569; transition: all 0.25s; cursor: pointer; text-decoration: none; }
+    .dir-table-action:hover { border-color: #3B82F6; background: rgba(59, 130, 246, 0.05); color: #2563eb; transform: translateY(-2px); box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15); }
+    .dir-table-action.primary { background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%); color: #fff; border-color: transparent; box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
+    .dir-table-action.primary:hover { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: #fff; transform: translateY(-3px); }
+    .modal-panel-rapport { background: #fff; border-radius: 22px; padding: 1.5rem; box-shadow: 0 24px 48px rgba(15, 23, 42, 0.2); border: 1px solid rgba(15, 23, 42, 0.06); }
+    .modal-rapport-header { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-bottom: 1px solid rgba(226, 232, 240, 0.9); padding: 1.25rem 1.5rem; margin: -1.5rem -1.5rem 1.5rem -1.5rem; border-radius: 22px 22px 0 0; display: flex; align-items: center; justify-content: space-between; }
+    .modal-rapport-header .modal-title-wrap { display: flex; align-items: center; gap: 0.75rem; }
+    .modal-rapport-header .modal-title-wrap i { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .modal-rapport-header h3 { font-size: 1.25rem; font-weight: 700; color: #0f172a; margin: 0; }
+    .modal-rapport-close { width: 40px; height: 40px; border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.9); background: #fff; color: #64748b; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+    .modal-rapport-close:hover { background: #f1f5f9; color: #0f172a; }
         .modal {
             backdrop-filter: blur(4px);
         }
@@ -154,130 +242,118 @@
 #employeesCheckboxContainer::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
 }
+    #reportsList { width: 100%; }
+    /* Full width - no side margin */
+    #rapport-main { width: 100%; max-width: 100%; margin: 0 !important; padding: 1.5rem; box-sizing: border-box; }
+    [dir="rtl"] #rapport-main { margin-right: 0 !important; margin-left: 0 !important; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Main Content -->
-    <!-- Language Selector -->
-    <div class="max-w-7xl mx-auto px-6 pt-6">
-        <select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ml-auto block">
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-            <option value="ar">العربية</option>
-        </select>
-    </div>
-    <main class="max-w-7xl mx-auto p-6">
+    <main id="rapport-main" class="p-6">
         <!-- Vue Employé -->
         <div id="employeeInterface" class="space-y-6">
-            <!-- Statistiques personnelles -->
-       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <!-- Remplacer les cartes de statistiques -->
-<div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
-    <div class="flex items-center">
-        <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
-            <i class="fas fa-file-alt text-blue-600 text-xl"></i>
-        </div>
-        <div class="ml-4">
-            <p class="text-sm text-gray-600" data-translate="report.my_reports">Mes Rapports</p>
-            <p id="totalReports" class="text-2xl font-bold text-gray-900">0</p>
-        </div>
-    </div>
-</div>
-<div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
-    <div class="flex items-center">
-        <div class="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
-            <i class="fas fa-check-circle text-green-600 text-xl"></i>
-        </div>
-        <div class="ml-4">
-            <p class="text-sm text-gray-600" data-translate="report.acknowledged">Accusés</p>
-            <p id="acknowledgedReports" class="text-2xl font-bold text-gray-900">0</p>
-        </div>
-    </div>
-</div>
-<div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
-    <div class="flex items-center">
-        <div class="h-12 w-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-            <i class="fas fa-clock text-yellow-600 text-xl"></i>
-        </div>
-        <div class="ml-4">
-            <p class="text-sm text-gray-600" data-translate="report.pending">En Attente</p>
-            <p id="pendingReports" class="text-2xl font-bold text-gray-900">0</p>
-        </div>
-    </div>
-</div>
-<div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
-    <div class="flex items-center">
-        <div class="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
-            <i class="fas fa-calendar-day text-purple-600 text-xl"></i>
-        </div>
-        <div class="ml-4">
-            <p class="text-sm text-gray-600" data-translate="report.today">Aujourd'hui</p>
-            <p id="todayReports" class="text-2xl font-bold text-gray-900">0</p>
-        </div>
-    </div>
-</div>
+            <!-- Page Header -->
+            <div class="page-header-rapport">
+                <h1 class="page-title" data-translate="report.title"><i class="fas fa-file-alt"></i> Rapports</h1>
+                <p class="page-subtitle" data-translate="report.subtitle">Créer et consulter vos rapports</p>
             </div>
 
+            <!-- Statistiques -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card-rapport blue">
+                    <div class="flex items-center">
+                        <div class="stat-icon-rapport"><i class="fas fa-file-alt"></i></div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-500" data-translate="report.my_reports">Mes Rapports</p>
+                            <p id="totalReports" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card-rapport green">
+                    <div class="flex items-center">
+                        <div class="stat-icon-rapport"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-500" data-translate="report.acknowledged">Accusés</p>
+                            <p id="acknowledgedReports" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card-rapport yellow">
+                    <div class="flex items-center">
+                        <div class="stat-icon-rapport"><i class="fas fa-clock"></i></div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-500" data-translate="report.pending">En Attente</p>
+                            <p id="pendingReports" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card-rapport purple">
+                    <div class="flex items-center">
+                        <div class="stat-icon-rapport"><i class="fas fa-calendar-day"></i></div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-500" data-translate="report.today">Aujourd'hui</p>
+                            <p id="todayReports" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Actions -->
-            <div class="bg-white rounded-lg shadow-sm p-6">
-                <div class="flex items-center justify-between mb-4">
+            <div class="director-panel-rapport">
+                <div class="flex items-center justify-between flex-wrap gap-4">
                     <h2 class="text-lg font-semibold text-gray-900" data-translate="report.actions">Actions</h2>
-                </div>
-                <div class="flex gap-4">
-                    <button id="generateReportBtn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                    <button id="generateReportBtn" class="btn-rapport-primary">
                         <i class="fas fa-plus"></i>
                         <span data-translate="report.generate_new">Générer Nouveau Rapport</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Filtres -->
-            <div class="bg-white rounded-lg shadow-sm p-6">
-  <h3 class="text-lg font-semibold text-gray-900 mb-4" data-translate="report.filters">Filtres</h3>
-  
-  <!-- Flex responsive -->
-  <div class="flex flex-col md:flex-row md:justify-between gap-4">
-    
-    <!-- Groupe Status -->
-    <!-- Remplacer cette section -->
-<div class="flex flex-wrap gap-2">
-  <button class="filter-button active" data-status="all" data-translate="common.all">Tous</button>
-  <button class="filter-button" data-status="pending" data-translate="report.pending">En Attente</button>
-  <button class="filter-button" data-status="acknowledged" data-translate="report.acknowledged">Accusés</button>
-</div>
-    
-    <!-- Groupe Period -->
-    <div class="flex flex-wrap gap-2">
-      <button class="filter-button active" data-period="all" data-translate="report.all_periods">Toutes Périodes</button>
-      <button class="filter-button" data-period="today" data-translate="report.today">Aujourd'hui</button>
-      <button class="filter-button" data-period="week" data-translate="report.this_week">Cette Semaine</button>
-      <button class="filter-button" data-period="month" data-translate="report.this_month">Ce Mois</button>
-    </div>
-
-    <!-- Période personnalisée -->
-    <div class="flex flex-wrap items-center gap-2">
-      <input id="customStart" type="date" class="px-2 py-1 text-sm border border-gray-300 rounded" />
-      <span class="text-gray-500">→</span>
-      <input id="customEnd" type="date" class="px-2 py-1 text-sm border border-gray-300 rounded" />
-      <button id="applyCustomDate" type="button" class="filter-button" data-translate="common.apply">Appliquer</button>
-    </div>
-    
-  </div>
-
-  <!-- Barre de recherche (ligne séparée) -->
-  <div class="mt-6">
-    <input id="textSearch" type="text" data-translate-placeholder="report.search_placeholder" placeholder="Rechercher (titre, objet, destinataire, contenu)" class="w-full px-3 py-2 text-sm border border-gray-300 rounded" />
-  </div>
-</div>
-
+            <!-- Filtres (Director style) -->
+            <section class="director-filters-bar-rapport">
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="filter-label-box">
+                        <i class="fas fa-filter"></i>
+                        <span data-translate="report.filters">Filtres</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-button active" data-status="all" data-translate="common.all">Tous</button>
+                        <button class="filter-button" data-status="pending" data-translate="report.pending">En Attente</button>
+                        <button class="filter-button" data-status="acknowledged" data-translate="report.acknowledged">Accusés</button>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-button active" data-period="all" data-translate="report.all_periods">Toutes Périodes</button>
+                        <button class="filter-button" data-period="today" data-translate="report.today">Aujourd'hui</button>
+                        <button class="filter-button" data-period="week" data-translate="report.this_week">Cette Semaine</button>
+                        <button class="filter-button" data-period="month" data-translate="report.this_month">Ce Mois</button>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <input id="customStart" type="date" class="profile-input-rapport" style="max-width:140px" />
+                        <span class="text-gray-500">→</span>
+                        <input id="customEnd" type="date" class="profile-input-rapport" style="max-width:140px" />
+                        <button id="applyCustomDate" type="button" class="filter-button" data-translate="common.apply">Appliquer</button>
+                    </div>
+                    <div class="ml-auto flex-1 min-w-[200px] max-w-md">
+                        <input id="textSearch" type="text" class="profile-input-rapport w-full" data-translate-placeholder="report.search_placeholder" placeholder="Rechercher (titre, objet, destinataire, contenu)" />
+                    </div>
+                </div>
+            </section>
 
             <!-- Liste des rapports -->
-            <div class="bg-white rounded-lg shadow-sm">
-                <div class="p-6 border-b">
-                    <h3 class="text-lg font-semibold text-gray-900" data-translate="report.my_reports">Mes Rapports</h3>
+            <div class="director-panel-rapport p-0 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200/80 bg-gray-50/50">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                            <i class="fas fa-list text-blue-600"></i>
+                            <span data-translate="report.my_reports">Mes Rapports</span>
+                        </h3>
+                        <div class="flex items-center gap-1">
+                            <button type="button" id="rapportViewModeCards" class="rapport-view-mode-btn active" title="" data-translate-title="report.view_cards"><i class="fas fa-border-all mr-1"></i><span class="hidden sm:inline" data-translate="report.view_cards">Cards</span></button>
+                            <button type="button" id="rapportViewModeList" class="rapport-view-mode-btn" title="" data-translate-title="report.view_list"><i class="fas fa-list mr-1"></i><span class="hidden sm:inline" data-translate="report.view_list">Liste</span></button>
+                        </div>
+                    </div>
                 </div>
-                <div id="reportsList" class="p-6">
+                <div id="reportsList" class="p-6 w-full">
                     <div class="flex justify-center items-center py-12">
                         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                         <span class="ml-3 text-gray-600" data-translate="report.loading">Chargement des rapports...</span>
@@ -308,83 +384,67 @@
     </main>
 
     <!-- Modal de génération de rapport -->
-    <div id="reportModal" class="hidden fixed inset-0 bg-black bg-opacity-50 modal flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col modal-content">
-            <div class="p-4 border-b flex-shrink-0">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-900" data-translate="report.generate">Générer un Rapport</h3>
-                    <button id="closeModal" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">
-                        <i class="fas fa-times text-gray-600"></i>
-                    </button>
+    <div id="reportModal" class="hidden fixed inset-0 bg-black/50 modal flex items-center justify-center z-50 p-4">
+        <div class="modal-panel-rapport max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden modal-content">
+            <div class="modal-rapport-header">
+                <div class="modal-title-wrap">
+                    <i class="fas fa-file-pdf"></i>
+                    <h3 data-translate="report.generate">Générer un Rapport</h3>
                 </div>
+                <button type="button" id="closeModal" class="modal-rapport-close" aria-label="Fermer">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="modal-scroll p-4">
+            <div class="modal-scroll flex-1 overflow-y-auto p-6">
                 <form id="reportForm" class="space-y-4">
-                    <!-- En-tête du rapport -->
-                    <div class="bg-gray-50 rounded-lg p-3">
-                        <h4 class="font-semibold text-gray-900 mb-2 text-sm" data-translate="report.header">En-tête du Rapport</h4>
+                    <div class="bg-gray-50/80 rounded-xl p-4 border border-gray-200/80">
+                        <h4 class="font-semibold text-gray-900 mb-3 text-sm" data-translate="report.header">En-tête du Rapport</h4>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-medium text-gray-700 mb-1" data-translate="common.date">Date</label>
-                                <input type="date" id="reportDate" class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" required>
+                                <input type="date" id="reportDate" class="profile-input-rapport w-full" required>
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-gray-700 mb-1" data-translate="report.time">Heure</label>
-                                <input type="time" id="reportTime" class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" required>
+                                <input type="time" id="reportTime" class="profile-input-rapport w-full" required>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Destinataire -->
-                   <div>
-    <label class="block text-xs font-medium text-gray-700 mb-1" data-translate="report.recipients">Destinataires</label>
-    <p class="text-[11px] text-gray-500 mb-2" data-translate="report.recipients_info">Le Directeur reçoit automatiquement tous les rapports. Vous pouvez envoyer au Directeur seul, ou à votre responsable de département.</p>
-    <div class="space-y-2">
-       
-        
-        <!-- Sélection du mode d'envoi -->
-        <div class="space-y-2">
-            <label class="flex items-center gap-2">
-                <input type="radio" name="recipientMode" value="director" class="text-blue-600" checked onchange="onRecipientModeChange()">
-                <span class="text-sm" data-translate="report.director_only">Directeur uniquement</span>
-            </label>
-            <label class="flex items-center gap-2">
-                <input type="radio" name="recipientMode" value="responsible" class="text-blue-600" onchange="onRecipientModeChange()">
-                <span class="text-sm"><span data-translate="report.my_responsible">Mon responsable</span>: <span id="employeeResponsibleName" class="font-medium text-gray-800">—</span></span>
-            </label>
-            <div id="noResponsibleHint" class="hidden text-xs text-red-600" data-translate="report.no_responsible">Aucun responsable trouvé pour votre département</div>
-        </div>
-        
-        <!-- Champ caché pour validation -->
-        <input type="hidden" id="recipientIds" required>
-    </div>
-</div>
-
-                    <!-- Titre du rapport -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1" data-translate="report.recipients">Destinataires</label>
+                        <p class="text-[11px] text-gray-500 mb-2" data-translate="report.recipients_info">Le Directeur reçoit automatiquement tous les rapports.</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="recipientMode" value="director" class="text-blue-600" checked onchange="onRecipientModeChange()">
+                                <span class="text-sm" data-translate="report.director_only">Directeur uniquement</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="recipientMode" value="responsible" class="text-blue-600" onchange="onRecipientModeChange()">
+                                <span class="text-sm"><span data-translate="report.my_responsible">Mon responsable</span>: <span id="employeeResponsibleName" class="font-medium text-gray-800">—</span></span>
+                            </label>
+                            <div id="noResponsibleHint" class="hidden text-xs text-red-600" data-translate="report.no_responsible">Aucun responsable trouvé</div>
+                        </div>
+                        <input type="hidden" id="recipientIds" required>
+                    </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1" data-translate="report.title_label">Titre du rapport</label>
-                        <input type="text" id="reportTitle" class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" data-translate-placeholder="report.title" placeholder="Titre" required>
+                        <input type="text" id="reportTitle" class="profile-input-rapport w-full" data-translate-placeholder="report.title_label_modal" placeholder="Titre" required>
                     </div>
-
-                    <!-- Objet du rapport -->
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1" data-translate="report.subject">Objet du rapport</label>
-                        <input type="text" id="reportSubject" class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" data-translate-placeholder="report.title_label" placeholder="Titre du rapport" required>
+                        <input type="text" id="reportSubject" class="profile-input-rapport w-full" data-translate-placeholder="report.subject_label" placeholder="Objet" required>
                     </div>
-
-                    <!-- Contenu du rapport (unique) -->
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1" data-translate="report.content">Contenu du rapport</label>
-                        <textarea id="reportContent" class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" rows="8" data-translate-placeholder="report.content_placeholder" placeholder="Saisissez ici le contenu du rapport..." required></textarea>
+                        <textarea id="reportContent" class="profile-input-rapport w-full" rows="8" data-translate-placeholder="report.content_placeholder" placeholder="Contenu..." required></textarea>
                     </div>
                 </form>
             </div>
-            <!-- Boutons d'action -->
-            <div class="flex justify-end gap-3 p-4 border-t flex-shrink-0">
-                <button type="button" id="cancelReport" class="px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 transition-colors">
+            <div class="flex justify-end gap-3 p-6 border-t border-gray-200/80 flex-shrink-0">
+                <button type="button" id="cancelReport" class="btn-rapport-secondary">
                     <span data-translate="common.cancel">Annuler</span>
                 </button>
-                <button type="submit" form="reportForm" class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center gap-2">
+                <button type="submit" form="reportForm" class="btn-rapport-primary">
                     <i class="fas fa-file-pdf"></i>
                     <span data-translate="report.generate_pdf">Générer PDF</span>
                 </button>
@@ -490,6 +550,7 @@ let selectedEmployeeIds = [];
         
         // Initialisation
         document.addEventListener('DOMContentLoaded', async function() {
+            window.__reportsViewMode = window.__reportsViewMode || 'cards';
             initializeTranslations();
             await loadInitialData();
             setupEventListeners();
@@ -931,6 +992,26 @@ async function populateEmployeesList() {
                     closeReportModal();
                 }
             });
+
+            // View mode: Cards / List for reports
+            const rapportViewCards = document.getElementById('rapportViewModeCards');
+            const rapportViewList = document.getElementById('rapportViewModeList');
+            if (rapportViewCards) {
+                rapportViewCards.addEventListener('click', function() {
+                    window.__reportsViewMode = 'cards';
+                    rapportViewCards.classList.add('active');
+                    if (rapportViewList) rapportViewList.classList.remove('active');
+                    displayReports();
+                });
+            }
+            if (rapportViewList) {
+                rapportViewList.addEventListener('click', function() {
+                    window.__reportsViewMode = 'list';
+                    rapportViewList.classList.add('active');
+                    if (rapportViewCards) rapportViewCards.classList.remove('active');
+                    displayReports();
+                });
+            }
         }
 
         // Changer de vue
@@ -1053,10 +1134,11 @@ async function populateEmployeesList() {
                 displayReports();
             } catch (error) {
                 console.error('Erreur lors du chargement des rapports:', error);
+                const errMsg = (typeof window.translate === 'function' ? window.translate('report.error_loading_reports_message') : null) || 'Erreur lors du chargement des rapports';
                 document.getElementById('reportsList').innerHTML = `
                     <div class="text-center py-12 text-red-600">
                         <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
-                        <p>Erreur lors du chargement des rapports</p>
+                        <p>${errMsg}</p>
                     </div>
                 `;
             }
@@ -1124,50 +1206,97 @@ function displayReports() {
     return;
   }
 
+  const t = (key, fallback) => (typeof window.translate === 'function' ? window.translate(key) : null) || fallback || key;
+
   if (filteredReports.length === 0) {
     console.log('⚠️ No reports to display (filtered or empty)');
     reportsList.innerHTML = `
-      <div class="text-center py-12 text-gray-500">
-        <i class="fas fa-file-alt text-4xl mb-4"></i>
-        <p>Aucun rapport trouvé</p>
+      <div class="text-center py-16 text-gray-500">
+        <i class="fas fa-file-alt text-5xl text-blue-200 mb-4"></i>
+        <p class="font-medium text-gray-600">${t('report.no_reports_found', 'Aucun rapport trouvé')}</p>
       </div>
     `;
     return;
   }
-  
-  console.log('✅ Rendering', filteredReports.length, 'reports');
 
-  reportsList.innerHTML = filteredReports.map(report => {
-    const recipientDisplay = report.remarks 
-      ? report.remarks.split('|')[0].trim()
-      : 'Non spécifié';
+  const viewMode = window.__reportsViewMode || 'cards';
 
+  if (viewMode === 'list') {
+    reportsList.innerHTML = `
+      <div class="reports-table-wrap bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t('report.table_title', 'Titre')}</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t('report.table_status', 'Statut')}</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t('report.table_date', 'Date')}</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t('report.table_recipient', 'Destinataire')}</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t('report.table_subject', 'Objet')}</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">${t('report.table_actions', 'Actions')}</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            ${filteredReports.map(report => {
+              const recipientDisplay = report.remarks ? report.remarks.split('|')[0].trim() : t('report.dash', '—');
+              const title = (report.title || t('report.report_default_title', 'Rapport')).replace(/</g, '&lt;');
+              const subject = (report.subject || t('report.dash', '—')).replace(/</g, '&lt;');
+              const rec = (recipientDisplay || t('report.dash', '—')).replace(/</g, '&lt;');
+              const viewBtn = `<button type="button" class="dir-table-action" onclick="event.stopPropagation(); viewReportDetails('${report.id}');"><i class="fas fa-eye"></i></button>`;
+              const downloadBtn = report.pdf_url ? `<a href="${report.pdf_url}" target="_blank" class="dir-table-action primary" onclick="event.stopPropagation()"><i class="fas fa-download"></i></a>` : '';
+              return `
+                <tr class="hover:bg-gray-50 cursor-pointer" onclick="viewReportDetails('${report.id}')">
+                  <td class="px-6 py-4"><div class="text-sm font-medium text-gray-900">${title}</div></td>
+                  <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(report.status)}">${getStatusText(report.status)}</span></td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${formatDateTime(report.created_at)}</td>
+                  <td class="px-6 py-4 text-sm text-gray-600" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${rec.replace(/"/g, '&quot;')}">${rec}</td>
+                  <td class="px-6 py-4 text-sm text-gray-600" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${subject.replace(/"/g, '&quot;')}">${subject}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right" onclick="event.stopPropagation()"><span class="inline-flex items-center gap-1">${viewBtn} ${downloadBtn}</span></td>
+                </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+    return;
+  }
+
+  reportsList.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${filteredReports.map(report => {
+    const recipientDisplay = report.remarks ? report.remarks.split('|')[0].trim() : t('report.not_specified', 'Non spécifié');
+    const title = (report.title || t('report.report_default_title', 'Rapport')).replace(/</g, '&lt;');
+    const subject = (report.subject || '').replace(/</g, '&lt;');
+    const rec = (recipientDisplay || '').replace(/</g, '&lt;');
+    const downloadBtn = report.pdf_url ? `<a href="${report.pdf_url}" target="_blank" class="dir-table-action primary" onclick="event.stopPropagation()"><i class="fas fa-download"></i> ${t('common.download', 'Télécharger')}</a>` : '';
+    const lblDate = t('report.table_date', 'Date');
+    const lblRecipient = t('report.table_recipient', 'Destinataire');
+    const lblSubject = t('report.table_subject', 'Objet');
+    const badgeReport = t('report.report_badge', 'Rapport');
     return `
-    <div class="report-card bg-white border border-gray-200 rounded-lg p-4 mb-3 cursor-pointer hover:shadow-md transition"
-         onclick="viewReportDetails('${report.id}')">
-      <div class="flex items-start justify-between">
-        <div class="flex-1">
-          <h4 class="text-base font-semibold text-gray-900">${report.title || 'Rapport'}</h4>
-          <span class="px-2 py-1 text-xs rounded-full ${getStatusClass(report.status)}">
-            ${getStatusText(report.status)}
-          </span>
-          <div class="text-sm text-gray-600 space-y-1 mt-2">
-            <p><i class="fas fa-calendar mr-2"></i>Date: ${formatDateTime(report.created_at)}</p>
-            <p><i class="fas fa-user mr-2"></i>${recipientDisplay}</p>
-            ${report.subject ? `<p><i class="fas fa-tag mr-2"></i>Sujet: ${report.subject}</p>` : ''}
+    <div class="report-card cursor-pointer" style="padding: 24px;" onclick="viewReportDetails('${report.id}')">
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+          <div style="flex: 1; min-width: 0;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+              <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b;">${badgeReport}</span>
+            </div>
+            <h4 style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin: 0 0 8px 0; line-height: 1.3;">${title}</h4>
+            <span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(report.status)}">${getStatusText(report.status)}</span>
           </div>
         </div>
-        ${report.pdf_url ? `
-          <a href="${report.pdf_url}" target="_blank"
-             class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
-             onclick="event.stopPropagation()">
-            <i class="fas fa-download mr-1"></i>Télécharger
-          </a>
-        ` : ''}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;">
+          <div class="dir-info-block-rapport green">
+            <div class="icon-box"><i class="fas fa-calendar" style="font-size: 1rem;"></i></div>
+            <div style="flex:1;min-width:0;"><p class="label">${lblDate}</p><p class="value">${formatDateTime(report.created_at)}</p></div>
+          </div>
+          <div class="dir-info-block-rapport blue">
+            <div class="icon-box"><i class="fas fa-user" style="font-size: 1rem;"></i></div>
+            <div style="flex:1;min-width:0;"><p class="label">${lblRecipient}</p><p class="value" title="${rec.replace(/"/g, '&quot;')}">${rec}</p></div>
+          </div>
+          ${report.subject ? `<div class="dir-info-block-rapport purple"><div class="icon-box"><i class="fas fa-tag" style="font-size: 1rem;"></i></div><div style="flex:1;min-width:0;"><p class="label">${lblSubject}</p><p class="value" title="${subject.replace(/"/g, '&quot;')}">${subject}</p></div></div>` : ''}
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 12px; border-top: 1px solid rgba(148, 163, 184, 0.15);" onclick="event.stopPropagation();">${downloadBtn}</div>
       </div>
-    </div>
-    `;
-  }).join('');
+    </div>`;
+  }).join('')}</div>`;
 }
 
 // Formater la date et l'heure
@@ -1184,7 +1313,8 @@ function formatDateTime(dateString) {
 // Nouvelle fonction pour formater l'affichage du destinataire
 // Nouvelle fonction pour formater l'affichage du destinataire
 function formatRecipientDisplay(remarks) {
-    if (!remarks) return 'Non spécifié';
+    const t = (key, fallback) => (typeof window.translate === 'function' ? window.translate(key) : null) || fallback || key;
+    if (!remarks) return t('report.not_specified', 'Non spécifié');
     
     // Si les remarques contiennent le format "Destinataire: Nom (ID: ...)"
     if (remarks.includes('Destinataire:') && remarks.includes('(')) {
@@ -1202,31 +1332,31 @@ function formatRecipientDisplay(remarks) {
     
     return remarks;
 }
-// Voir les détails d'un rapport
-async function viewReportDetails(reportId) {
+// Voir les détails d'un rapport (fallback modal)
+async function viewReportDetailsLegacy(reportId) {
+  const t = (key, fallback) => (typeof window.translate === 'function' ? window.translate(key) : null) || fallback || key;
   try {
     const res = await fetch(`${API}/rapportemp/${reportId}/acknowledgements`);
     const data = await res.json();
-
-    // Construire le HTML
+    const receivedOn = t('report.received_on', 'Reçu le');
+    const notYet = t('report.not_yet', 'Pas encore');
     const list = data.map(emp => `
       <li class="flex justify-between py-1">
         <span>${emp.first_name} ${emp.last_name}</span>
         ${emp.acknowledged 
-          ? `<span class="text-green-600">✔ Reçu le ${emp.acknowledged_at ? new Date(emp.acknowledged_at).toLocaleString() : ''}</span>` 
-          : `<span class="text-red-600">✘ Pas encore</span>`}
+          ? `<span class="text-green-600">✔ ${receivedOn} ${emp.acknowledged_at ? new Date(emp.acknowledged_at).toLocaleString() : ''}</span>` 
+          : `<span class="text-red-600">✘ ${notYet}</span>`}
       </li>
     `).join('');
-
-    // Afficher dans une modal
-    document.getElementById('detailsModalContent').innerHTML = `
-      <h3 class="text-lg font-semibold mb-2">Accusés de réception</h3>
-      <ul>${list}</ul>
-    `;
-    document.getElementById('detailsModal').classList.remove('hidden');
+    const accTitle = t('report.acknowledgements', 'Accusés de réception');
+    const detailsEl = document.getElementById('detailsModalContent');
+    if (detailsEl) {
+      detailsEl.innerHTML = `<h3 class="text-lg font-semibold mb-2">${accTitle}</h3><ul>${list}</ul>`;
+      document.getElementById('detailsModal').classList.remove('hidden');
+    }
   } catch (err) {
     console.error(err);
-    showToast("Impossible de charger les détails", 'error');
+    showToast(t('report.error_load_details', 'Impossible de charger les détails'), 'error');
   }
 }
 
@@ -1253,39 +1383,53 @@ async function viewReportDetails(reportId) {
         const acknowledgements = acknowledgementsData.acknowledgements || [];
         const acknowledgedCount = acknowledgements.filter(a => a.acknowledged).length;
         const totalRecipients = acknowledgements.length;
+        const t = (key, fallback) => (typeof window.translate === 'function' ? window.translate(key) : null) || fallback || key;
+        const statAckStr = (t('report.statistic_ack', '{ack} sur {total} destinataires ont accusé réception') || '').replace('{ack}', acknowledgedCount).replace('{total}', totalRecipients);
+        const detailsReport = t('report.details_report', 'Détails du rapport');
+        const lblTitle = t('report.table_title', 'Titre');
+        const lblDate = t('report.table_date', 'Date');
+        const lblStatus = t('report.table_status', 'Statut');
+        const lblFrom = t('report.from', 'De');
+        const accTitle = t('report.acknowledgements', 'Accusés de réception');
+        const notSpec = t('report.not_specified', 'Non spécifié');
+        const deptNotSpec = t('report.dept_not_specified', 'Département non spécifié');
+        const receivedShort = t('report.received_short', 'Reçu');
+        const pendingShort = t('report.pending_short', 'En attente');
+        const ackOn = t('report.acknowledged_at_short', 'Accusé le');
+        const sentDirectorOnly = t('report.sent_director_only', 'Envoyé au Directeur uniquement');
+        const noRecipientsThis = t('report.no_recipients_for_this_report', 'Aucun destinataire spécifié pour ce rapport');
 
-        // Créer le contenu du modal
         const modalContent = document.getElementById('acknowledgementsContent');
         modalContent.innerHTML = `
             <div class="mb-4">
-                <h4 class="font-semibold mb-2">Détails du rapport</h4>
+                <h4 class="font-semibold mb-2">${detailsReport}</h4>
                 <div class="grid grid-cols-2 gap-3 text-sm">
-                    <div><strong>Titre:</strong> ${report.title || 'Non spécifié'}</div>
-                    <div><strong>Date:</strong> ${formatDate(report.created_at)}</div>
-                    <div><strong>Statut:</strong> <span class="${getStatusClass(report.status)} px-2 py-1 rounded">${getStatusText(report.status)}</span></div>
-                    <div><strong>De:</strong> ${report.first_name} ${report.last_name}</div>
+                    <div><strong>${lblTitle}:</strong> ${report.title || notSpec}</div>
+                    <div><strong>${lblDate}:</strong> ${formatDate(report.created_at)}</div>
+                    <div><strong>${lblStatus}:</strong> <span class="${getStatusClass(report.status)} px-2 py-1 rounded">${getStatusText(report.status)}</span></div>
+                    <div><strong>${lblFrom}:</strong> ${report.first_name} ${report.last_name}</div>
                 </div>
             </div>
             
             <div class="border-t pt-4">
-                <h4 class="font-semibold mb-3">Accusés de réception</h4>
+                <h4 class="font-semibold mb-3">${accTitle}</h4>
                 <div class="bg-gray-50 p-4 rounded">
                     ${acknowledgements.length > 0 ? `
-                        <p class="text-sm mb-3"><strong>Statistique:</strong> ${acknowledgedCount} sur ${totalRecipients} destinataires ont accusé réception</p>
+                        <p class="text-sm mb-3"><strong>${statAckStr}</strong></p>
                         <div class="space-y-2">
                             ${acknowledgements.map(ack => `
                                 <div class="flex items-center justify-between p-2 bg-white rounded border">
                                     <div>
                                         <div class="font-medium">${ack.first_name} ${ack.last_name}</div>
-                                        <div class="text-xs text-gray-500">${ack.department_name || 'Département non spécifié'}</div>
+                                        <div class="text-xs text-gray-500">${ack.department_name || deptNotSpec}</div>
                                     </div>
                                     <div class="text-right">
                                         <span class="${ack.acknowledged ? 'text-green-600' : 'text-yellow-600'} font-medium text-sm">
-                                            ${ack.acknowledged ? '✔ Reçu' : '⏳ En attente'}
+                                            ${ack.acknowledged ? '✔ ' + receivedShort : '⏳ ' + pendingShort}
                                         </span>
                                         ${ack.acknowledged_at ? `
                                             <div class="text-xs text-gray-500 mt-1">
-                                                ✔️ Accusé le ${formatDateTime(ack.acknowledged_at)}
+                                                ✔️ ${ackOn} ${formatDateTime(ack.acknowledged_at)}
                                             </div>
                                         ` : ''}
                                     </div>
@@ -1294,7 +1438,7 @@ async function viewReportDetails(reportId) {
                         </div>
                     ` : `
                         <div class="text-center py-4 text-sm text-gray-700">
-                            ${report.include_director ? 'Envoyé au Directeur uniquement' : 'Aucun destinataire spécifié pour ce rapport'}
+                            ${report.include_director ? sentDirectorOnly : noRecipientsThis}
                         </div>
                     `}
                 </div>
@@ -1307,7 +1451,8 @@ async function viewReportDetails(reportId) {
 
     } catch (error) {
         console.error('Erreur lors du chargement des détails:', error);
-        showToast('Impossible de charger les détails du rapport: ' + error.message, 'error');
+        const t = (key, fallback) => (typeof window.translate === 'function' ? window.translate(key) : null) || fallback || key;
+        showToast(t('report.error_load_details_message', 'Impossible de charger les détails du rapport') + ': ' + error.message, 'error');
     }
 }
 
@@ -1342,15 +1487,16 @@ function getStatusClass(status) {
     return classes[status] || 'bg-gray-100 text-gray-800';
 }
 
-// Obtenir le texte du statut
+// Obtenir le texte du statut (traduit)
 function getStatusText(status) {
-    const texts = {
-        'acknowledged': 'Accusé de réception',
-        'pending': 'En attente',
-        'approved': 'Approuvé',
-        'rejected': 'Rejeté'
+    const t = (key) => (typeof window.translate === 'function' ? window.translate(key) : null) || key;
+    const map = {
+        'acknowledged': 'report.status_ack',
+        'pending': 'report.status_pending',
+        'approved': 'report.status_approved',
+        'rejected': 'report.status_rejected'
     };
-    return texts[status] || 'Inconnu';
+    return t(map[status] || 'report.status_unknown');
 }
 
 // Fermer le modal des détails
@@ -1584,19 +1730,22 @@ window.removeRecipient = removeRecipient;
 // window.selectDepartmentResponsible = selectDepartmentResponsible;
     </script>
     <!-- Modal pour les détails des accusés de réception -->
-<div id="acknowledgementsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
-        <div class="p-4 border-b flex justify-between items-center">
-            <h3 class="text-lg font-semibold" data-translate="report.acknowledgements">Accusés de réception</h3>
-            <button onclick="closeAcknowledgementsModal()" class="text-gray-500 hover:text-gray-700">
+<div id="acknowledgementsModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" style="backdrop-filter: blur(4px);">
+    <div class="modal-panel-rapport max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden">
+        <div class="modal-rapport-header">
+            <div class="modal-title-wrap">
+                <i class="fas fa-clipboard-check"></i>
+                <h3 data-translate="report.acknowledgements">Accusés de réception</h3>
+            </div>
+            <button type="button" onclick="closeAcknowledgementsModal()" class="modal-rapport-close" aria-label="Fermer">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div id="acknowledgementsContent" class="p-6 overflow-y-auto max-h-[60vh]">
+        <div id="acknowledgementsContent" class="p-6 overflow-y-auto flex-1 modal-scroll">
             <!-- Contenu chargé dynamiquement -->
         </div>
-        <div class="p-4 border-t flex justify-end">
-            <button onclick="closeAcknowledgementsModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+        <div class="p-6 border-t border-gray-200/80 flex justify-end">
+            <button type="button" onclick="closeAcknowledgementsModal()" class="btn-rapport-secondary">
                 <span data-translate="common.close">Fermer</span>
             </button>
         </div>

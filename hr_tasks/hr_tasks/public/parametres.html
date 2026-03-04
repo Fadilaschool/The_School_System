@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإعدادات - المسؤول</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #ffffff; min-height: 100vh; padding: 20px; }
+    .container { max-width: 1600px; margin: 0 auto; }
+    .header { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 30px; margin-bottom: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+    .header h1 { color: #1e293b; font-size: 32px; margin-bottom: 8px; }
+    .header p { color: #64748b; font-size: 14px; }
+    .card { background: rgba(255,255,255,0.96); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 6px 24px rgba(0,0,0,0.08); }
+    .card-title { font-size: 20px; color: #1e293b; margin-bottom: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+    .card-title::before { content: ''; width: 4px; height: 24px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 2px; }
+    .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .form-group { margin-bottom: 0; }
+    .form-label { display: block; color: #475569; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+    input, select { width: 100%; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.2s; background: white; }
+    input:focus, select:focus { outline: none; border-color: #06b6d4; box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1); }
+    .btn { padding: 10px 20px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
+    .btn-secondary { background: #64748b; color: white; padding: 8px 16px; font-size: 13px; }
+    .btn-secondary:hover { background: #475569; }
+    .alert { padding: 16px 20px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; animation: slideIn 0.3s ease; }
+    .alert-success { background: #d1fae5; color: #065f46; border-right: 4px solid #10b981; }
+    .alert-error { background: #fee2e2; color: #991b1b; border-right: 4px solid #ef4444; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    .loading { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.55); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
+    .modal.open { display: flex; }
+    .modal-content { width: min(1200px, 96vw); max-height: 86vh; background: #ffffff; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); overflow: hidden; display: flex; flex-direction: column; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; }
+    .modal-title { font-size: 18px; font-weight: 700; }
+    .modal-close { background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .modal-body { padding: 16px; overflow: auto; }
+    .loc-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .loc-chip { background: #f1f5f9; color: #0f172a; border-radius: 999px; padding: 8px 12px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+    .loc-section { margin-bottom: 18px; }
+    .loc-section-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 8px; }
+    .loc-floor { margin: 10px 0 6px; color: #334155; font-weight: 700; font-size: 14px; }
+    .loc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+    .loc-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 12px; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .loc-card .code { font-weight: 800; color: #0f172a; font-size: 15px; margin-bottom: 4px; }
+    .loc-card .meta { color: #64748b; font-size: 12px; margin-bottom: 6px; }
+    .loc-card .desc { color: #334155; font-size: 13px; }
+    .badge { display: inline-block; padding: 4px 8px; font-size: 11px; border-radius: 999px; background: #ecfeff; color: #155e75; font-weight: 700; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
+  </style>
+  <script src="auth.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⚙️ الإعدادات</h1>
+      <p>إدارة المواقع وأنواع الإشارات</p>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-secondary" id="backBtn">← العودة</button>
+        <button class="btn btn-secondary" id="viewLocalisationsBtn">عرض المواقع</button>
+      </div>
+    </div>
+
+    <div id="alert"></div>
+
+    <div class="card">
+      <h2 class="card-title">إدارة المواقع (Localisations)</h2>
+      <div class="filters" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+        <div class="form-group">
+          <label class="form-label">المبنى (اختيار موجود)</label>
+          <select id="locBatimentSelect"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">أو مبنى جديد</label>
+          <input id="locBatimentNew" type="text" placeholder="مثال: A / B / C">
+        </div>
+        <div class="form-group">
+          <label class="form-label">الطابق (اختيار موجود)</label>
+          <select id="locEtageSelect"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">أو طابق جديد</label>
+          <input id="locEtageNew" type="text" placeholder="مثال: 0 / 1 / 2 / R+1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">رمز القاعة / المكان (code)</label>
+          <input id="locCode" type="text" placeholder="EX: B-2-205" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">الوصف (عربي)</label>
+          <input id="locDescAr" type="text" placeholder="وصف قصير للمكان" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">النوع</label>
+          <select id="locType">
+            <option value="">غير محدد</option>
+            <option value="salle">قاعة</option>
+            <option value="bureau">مكتب</option>
+            <option value="sanitaire">مرفق صحي</option>
+            <option value="laboratoire">مخبر</option>
+            <option value="salle_informatique">قاعة إعلام آلي</option>
+            <option value="atelier">ورشة</option>
+            <option value="restaurant">مطعم</option>
+            <option value="stockage">مخزن</option>
+            <option value="autre">أخرى (اكتب نوعًا جديدًا)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">نوع جديد (اختياري)</label>
+          <input id="locTypeCustom" type="text" placeholder="مثال: قاعة محاضرات، قاعة اجتماعات" />
+        </div>
+        <div class="form-group" style="display:flex;align-items:flex-end">
+          <button class="btn btn-primary" id="addLocalisationBtn" style="width:100%">
+            إضافة موقع
+          </button>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <button class="btn btn-secondary" id="reloadLocsBtn">تحديث القوائم</button>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2 class="card-title">إدارة أنواع الإشارات (قسم الصيانة)</h2>
+      <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-secondary" id="viewTypeResponsiblesBtn">عرض مسؤولي الأنواع</button>
+      </div>
+      <div class="filters" style="margin-bottom:16px">
+        <div class="form-group">
+          <label class="form-label">نوع الإشارة</label>
+          <select id="manageTypeId"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">الموظف (قسم الصيانة)</label>
+          <select id="manageEmployeeId"></select>
+        </div>
+        <div class="form-group" style="display:flex;align-items:flex-end">
+          <button class="btn btn-primary" id="assignBtn" style="width:100%">إضافة المسؤول</button>
+        </div>
+      </div>
+      <div>
+        <h3 class="card-title" style="margin-bottom:12px">المسؤولون عن النوع المحدد</h3>
+        <ul id="responsiblesList" style="list-style:none;padding:0;display:grid;gap:10px"></ul>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2 class="card-title">إضافة نوع إشارة جديد</h2>
+      <div class="filters" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+        <div class="form-group">
+          <label class="form-label">اسم النوع</label>
+          <input id="newTypeName" type="text" placeholder="مثال: كهرباء، صيانة عامة">
+        </div>
+        <div class="form-group">
+          <label class="form-label">الموظف المسؤول (اختياري)</label>
+          <select id="newTypeEmployeeId">
+            <option value="">اختر الموظف</option>
+          </select>
+        </div>
+        <div class="form-group" style="display:flex;align-items:flex-end">
+          <button class="btn btn-primary" id="addTypeBtn" style="width:100%">إضافة النوع</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Localisations Modal -->
+  <div id="locModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="locModalTitle">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title" id="locModalTitle">📍 قائمة المواقع</div>
+        <button class="modal-close" id="closeLocModalBtn">إغلاق</button>
+      </div>
+      <div class="modal-body">
+        <div id="locModalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Types → Responsibles Overview Modal -->
+  <div id="typeRespModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="typeRespTitle">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title" id="typeRespTitle">👥 مسؤولو الأنواع</div>
+        <button class="modal-close" id="closeTypeRespBtn">إغلاق</button>
+      </div>
+      <div class="modal-body">
+        <div id="typeRespBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const API = 'http://localhost:3020/api/signals';
+    const CORE_API = 'http://localhost:3020';
+    let responsibleId = '';
+    let cachedEmployees = [];
+    let locModalEl, locModalBodyEl;
+    let typeRespModalEl, typeRespBodyEl;
+
+    // --- Auth helpers (aligned with signals_responsible.html) ---
+    function getAuthHeaders() {
+      const params = new URLSearchParams(window.location.search);
+      const urlToken = params.get('token') || params.get('access_token');
+      const tokenFromAuth = (typeof authManager !== 'undefined' && authManager.getToken) ? authManager.getToken() : null;
+      const storedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
+      const token = urlToken || tokenFromAuth || storedToken;
+      return token ? { 'Authorization': `Bearer ${token}` } : {};
+    }
+
+    function isUuidLike(v) {
+      return typeof v === 'string' && /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/.test(v);
+    }
+
+    async function resolveResponsibleId() {
+      const params = new URLSearchParams(window.location.search);
+      const urlId = params.get('responsibleId') || params.get('responsible_id') || params.get('id');
+      const user = (typeof authManager !== 'undefined' && authManager.getUser) ? authManager.getUser() : null;
+      const storedId = localStorage.getItem('signals.responsibleId');
+
+      let candidate = user?.employee_id || storedId || urlId;
+      if (candidate && isUuidLike(candidate)) return candidate;
+
+      const userId = user?.id || user?.user_id;
+      if (!userId) return urlId && isUuidLike(urlId) ? urlId : null;
+
+      try {
+        const res = await fetch(`${CORE_API}/employees/by-user/${userId}`, { headers: getAuthHeaders() });
+        if (res.ok) {
+          const data = await res.json().catch(() => ({}));
+          const empId = data?.employee?.id || data?.id;
+          if (empId) {
+            localStorage.setItem('signals.responsibleId', empId);
+            return empId;
+          }
+        }
+      } catch (_) { /* ignore */ }
+
+      return urlId && isUuidLike(urlId) ? urlId : null;
+    }
+
+    function showAlert(msg, isError = false) {
+      const alert = $('alert');
+      if (!alert) {
+        console.warn('Alert element not found:', msg);
+        return;
+      }
+      alert.className = `alert ${isError ? 'alert-error' : 'alert-success'}`;
+      alert.textContent = msg;
+      alert.style.display = 'block';
+      setTimeout(() => {
+        if (alert) alert.style.display = 'none';
+      }, 4000);
+    }
+
+    async function fetchAPI(url, options = {}) {
+      const headers = {
+        ...(options.headers || {}),
+        ...getAuthHeaders(),
+        'Content-Type': (options.body && !(options.body instanceof FormData)) ? 'application/json' : undefined
+      };
+      const res = await fetch(url, { ...options, headers });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ error: 'خطأ في الخادم' }));
+        throw new Error(data.error || 'خطأ في الخادم');
+      }
+      return res.json();
+    }
+
+    async function loadManageTypes() {
+      try {
+        const types = await fetchAPI(`${API}/maintenance/${responsibleId}/types-with-responsibles`);
+        const select = $('manageTypeId');
+        if (!select) return;
+        select.innerHTML = types.map(t => `<option value="${t.id}">${t.name} (${t.responsibles_count} مسؤول)</option>`).join('');
+        await loadManageResponsibles();
+      } catch (e) { showAlert(e.message, true); }
+    }
+
+    async function loadManageEmployees() {
+      try {
+        const employees = await fetchAPI(`${API}/maintenance/${responsibleId}/employees`);
+        cachedEmployees = employees;
+        const select = $('manageEmployeeId');
+        if (select) {
+          select.innerHTML = employees.length ? employees.map(e => `<option value="${e.id}">${e.first_name} ${e.last_name}</option>`).join('') : '<option>لا يوجد موظفين</option>';
+        }
+        populateNewTypeEmployees();
+      } catch (e) { showAlert(e.message, true); }
+    }
+
+    async function loadManageResponsibles() {
+      const typeSelect = $('manageTypeId');
+      if (!typeSelect) return;
+      const typeId = typeSelect.value;
+      if (!typeId) return;
+      try {
+        const responsibles = await fetchAPI(`${API}/maintenance/${responsibleId}/types/${typeId}/responsibles`);
+        const list = $('responsiblesList');
+        if (!list) return;
+        if (!responsibles.length) {
+          list.innerHTML = '<li style="padding:12px;background:#f8fafc;border-radius:10px;color:#64748b">لا يوجد مسؤولون لهذا النوع</li>';
+          return;
+        }
+        list.innerHTML = responsibles.map(r => `
+          <li style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#f8fafc;border-radius:10px">
+            <span>${r.first_name} ${r.last_name}</span>
+            <button class="btn btn-secondary" onclick="removeResponsible('${r.id}')">إزالة</button>
+          </li>
+        `).join('');
+      } catch (e) { showAlert(e.message, true); }
+    }
+
+    async function loadLocalisationDistincts() {
+      try {
+        const d = await fetchAPI(`${API}/localisations/distincts`);
+        const batSel = $('locBatimentSelect');
+        const etgSel = $('locEtageSelect');
+        if (batSel) {
+          batSel.innerHTML = ['<option value="">— اختر مبنى —</option>']
+            .concat((d.batiments || []).map(b => `<option value="${b}">${b}</option>`)).join('');
+        }
+        if (etgSel) {
+          etgSel.innerHTML = ['<option value="">— اختر طابق —</option>']
+            .concat((d.etages || []).map(e => `<option value="${e}">${e}</option>`)).join('');
+        }
+      } catch (e) {
+        showAlert(e.message, true);
+      }
+    }
+
+    async function addLocalisation() {
+      const batimentNew = $('locBatimentNew');
+      const batimentSel = $('locBatimentSelect');
+      const etageNew = $('locEtageNew');
+      const etageSel = $('locEtageSelect');
+      const codeEl = $('locCode');
+      const descEl = $('locDescAr');
+      const typeEl = $('locType');
+      const typeCustomEl = $('locTypeCustom');
+      
+      if (!codeEl || !batimentNew || !batimentSel || !etageNew || !etageSel) {
+        showAlert('⚠️ بعض العناصر غير موجودة', true);
+        return;
+      }
+      
+      const batiment = batimentNew.value.trim() || batimentSel.value.trim();
+      const etage = etageNew.value.trim() || etageSel.value.trim();
+      const code_emplacement = codeEl.value.trim();
+      const description_ar = descEl ? descEl.value.trim() : '';
+      const type_local = typeEl ? typeEl.value || null : null;
+      const type_local_custom = typeCustomEl ? typeCustomEl.value.trim() : '';
+
+      if (!code_emplacement || !batiment || !etage) {
+        showAlert('⚠️ أدخل الرمز والمبنى والطابق', true);
+        return;
+      }
+
+      try {
+        const body = { code_emplacement, batiment, etage, description_ar, type_local };
+        if (type_local_custom) body.type_local_custom = type_local_custom;
+        await fetchAPI(`${API}/maintenance/${responsibleId}/localisations`, {
+          method: 'POST',
+          body: JSON.stringify(body)
+        });
+        showAlert('✅ تم إضافة الموقع');
+        codeEl.value = '';
+        if (descEl) descEl.value = '';
+        if (typeCustomEl) typeCustomEl.value = '';
+        batimentNew.value = '';
+        etageNew.value = '';
+        await loadLocalisationDistincts();
+      } catch (e) {
+        showAlert(e.message, true);
+      }
+    }
+
+    async function assignResponsible() {
+      const typeSelect = $('manageTypeId');
+      const employeeSelect = $('manageEmployeeId');
+      if (!typeSelect || !employeeSelect) return;
+      const typeId = typeSelect.value;
+      const employeeId = employeeSelect.value;
+      if (!typeId || !employeeId) return;
+      try {
+        await fetchAPI(`${API}/maintenance/${responsibleId}/types/${typeId}/responsibles`, {
+          method: 'POST',
+          body: JSON.stringify({ employeeId })
+        });
+        showAlert('✅ تم إضافة المسؤول');
+        await loadManageTypes();
+        await loadManageResponsibles();
+      } catch (e) { showAlert(e.message, true); }
+    }
+
+    async function removeResponsible(employeeId) {
+      const typeSelect = $('manageTypeId');
+      if (!typeSelect) return;
+      const typeId = typeSelect.value;
+      if (!confirm('هل تريد إزالة هذا المسؤول؟')) return;
+      try {
+        await fetchAPI(`${API}/maintenance/${responsibleId}/types/${typeId}/responsibles/${employeeId}`, { method: 'DELETE' });
+        showAlert('✅ تم الإزالة');
+        await loadManageTypes();
+        await loadManageResponsibles();
+      } catch (e) { showAlert(e.message, true); }
+    }
+
+    function openLocModal() {
+      if (locModalEl) locModalEl.classList.add('open');
+    }
+
+    function closeLocModal() {
+      if (locModalEl) locModalEl.classList.remove('open');
+    }
+
+    function groupBy(arr, keyFn) {
+      const map = new Map();
+      for (const item of arr) {
+        const key = keyFn(item) || '';
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(item);
+      }
+      return map;
+    }
+
+    function renderLocalisations(localisations) {
+      if (!locModalBodyEl) return;
+      const total = localisations.length;
+      const byBat = groupBy(localisations, l => l.batiment);
+      const chips = [
+        `<span class="loc-chip">الإجمالي: <strong>${total}</strong></span>`,
+        `<span class="loc-chip">المباني: <strong>${byBat.size}</strong></span>`
+      ];
+      let html = `<div class="loc-summary">${chips.join('')}</div>`;
+      for (const [bat, list] of byBat) {
+        const byEtage = groupBy(list, l => l.etage);
+        html += `<div class="loc-section">
+          <div class="loc-section-title">🏢 المبنى: ${bat || 'غير محدد'}</div>`;
+        for (const [etg, items] of byEtage) {
+          html += `<div class="loc-floor">الطابق: ${etg || 'غير محدد'}</div>
+            <div class="loc-grid">`;
+          html += items.map(l => `
+              <div class="loc-card">
+                <div class="code">${l.code_emplacement || '-'}</div>
+                <div class="meta">
+                  <span class="badge">${l.type_local_custom || l.type_local || 'غير محدد'}</span>
+                  ${l.batiment ? ` • ${l.batiment}` : ''}${l.etage ? ` • ${l.etage}` : ''}
+                </div>
+                ${l.description_ar ? `<div class="desc">${l.description_ar}</div>` : ''}
+              </div>
+          `).join('');
+          html += `</div>`;
+        }
+        html += `</div>`;
+      }
+      if (!html) html = '<div class="empty-state"><p>لا توجد مواقع</p></div>';
+      locModalBodyEl.innerHTML = html;
+    }
+
+    function openTypeRespModal() { if (typeRespModalEl) typeRespModalEl.classList.add('open'); }
+    function closeTypeRespModal() { if (typeRespModalEl) typeRespModalEl.classList.remove('open'); }
+
+    async function loadTypeResponsiblesOverview() {
+      try {
+        const types = await fetchAPI(`${API}/maintenance/${responsibleId}/types-with-responsibles`);
+        const enriched = await Promise.all((types || []).map(async (t) => {
+          try {
+            const resps = await fetchAPI(`${API}/maintenance/${responsibleId}/types/${t.id}/responsibles`);
+            return { ...t, responsibles: resps || [] };
+          } catch (_) {
+            return { ...t, responsibles: [] };
+          }
+        }));
+        renderTypeResponsiblesOverview(enriched);
+        openTypeRespModal();
+      } catch (e) {
+        showAlert(e.message, true);
+      }
+    }
+
+    function renderTypeResponsiblesOverview(items) {
+      if (!typeRespBodyEl) return;
+      const body = typeRespBodyEl;
+      if (!items || items.length === 0) {
+        body.innerHTML = '<div class="empty-state"><p>لا توجد أنواع</p></div>';
+        return;
+      }
+      const grid = items.map(t => {
+        const list = (t.responsibles && t.responsibles.length)
+          ? t.responsibles.map(r => `${r.first_name} ${r.last_name}`).join('، ')
+          : '— لا يوجد مسؤولون —';
+        return `
+          <div class="loc-card">
+            <div class="code">${t.name}</div>
+            <div class="desc">${list}</div>
+          </div>
+        `;
+      }).join('');
+      body.innerHTML = `<div class="loc-grid">${grid}</div>`;
+    }
+
+    async function loadAllLocalisations() {
+      try {
+        const data = await fetchAPI(`${API}/localisations`);
+        renderLocalisations(data || []);
+        openLocModal();
+      } catch (e) {
+        showAlert(e.message, true);
+      }
+    }
+
+    function populateNewTypeEmployees() {
+      const sel = $('newTypeEmployeeId');
+      if (!sel) return;
+      if (!cachedEmployees.length) {
+        sel.innerHTML = '<option value="">لا يوجد موظفين</option>';
+        return;
+      }
+      sel.innerHTML = ['<option value="">اختر الموظف</option>']
+        .concat(cachedEmployees.map(e => `<option value="${e.id}">${e.first_name} ${e.last_name}</option>`))
+        .join('');
+    }
+
+    async function addSignalType() {
+      const nameInput = $('newTypeName');
+      const employeeSelect = $('newTypeEmployeeId');
+      if (!nameInput) return;
+      const name = nameInput.value.trim();
+      const employeeId = employeeSelect ? employeeSelect.value : '';
+      if (!name) {
+        showAlert('⚠️ أدخل اسم النوع', true);
+        return;
+      }
+      try {
+        await fetchAPI(`${API}/maintenance/${responsibleId}/types`, {
+          method: 'POST',
+          body: JSON.stringify({ name, employeeId: employeeId || undefined })
+        });
+        showAlert('✅ تم إضافة النوع');
+        nameInput.value = '';
+        if (employeeSelect) employeeSelect.value = '';
+        await loadManageTypes();
+        await loadManageResponsibles();
+      } catch (e) {
+        showAlert(e.message, true);
+      }
+    }
+
+    document.addEventListener('change', (e) => {
+      if (e.target && e.target.id === 'manageTypeId') {
+        loadManageResponsibles();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (e.target && e.target.id === 'assignBtn') assignResponsible();
+      if (e.target && e.target.id === 'addLocalisationBtn') addLocalisation();
+      if (e.target && e.target.id === 'reloadLocsBtn') loadLocalisationDistincts();
+      if (e.target && e.target.id === 'viewLocalisationsBtn') loadAllLocalisations();
+      if (e.target && e.target.id === 'backBtn') window.location.href = `signals_responsible.html?responsibleId=${responsibleId}`;
+      if (e.target && e.target.id === 'closeLocModalBtn') closeLocModal();
+      if (e.target && e.target.id === 'locModal') closeLocModal();
+      if (e.target && e.target.id === 'viewTypeResponsiblesBtn') loadTypeResponsiblesOverview();
+      if (e.target && e.target.id === 'closeTypeRespBtn') closeTypeRespModal();
+      if (e.target && e.target.id === 'typeRespModal') closeTypeRespModal();
+      if (e.target && e.target.id === 'addTypeBtn') addSignalType();
+    });
+
+    window.removeResponsible = removeResponsible;
+
+    (async function init() {
+      responsibleId = await resolveResponsibleId();
+      if (!responsibleId) {
+        showAlert('⚠️ معرف المسؤول مفقود في الرابط', true);
+        return;
+      }
+      localStorage.setItem('signals.responsibleId', responsibleId);
+      await loadManageTypes();
+      await loadManageEmployees();
+      await loadLocalisationDistincts();
+      locModalEl = $('locModal');
+      locModalBodyEl = $('locModalBody');
+      typeRespModalEl = $('typeRespModal');
+      typeRespBodyEl = $('typeRespBody');
+    })();
+  </script>
+</body>
+</html>
+

@@ -16,7 +16,12 @@
 
 	<main class="min-h-screen">
 		<div class="embed-container">
-			<iframe id="attendanceFrame" class="embed-frame" title="Attendance"></iframe>
+			<iframe
+				id="attendanceFrame"
+				class="embed-frame"
+				title="Attendance"
+				data-translate-title="nav.attendance"
+			></iframe>
 		</div>
 	</main>
 
@@ -25,7 +30,33 @@
 	<script src="../assets/js/main.js"></script>
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
-			if (!requireAuth()) return;
+			// Check authentication
+			if (typeof requireAuth === 'function') {
+				if (!requireAuth()) {
+					console.error('Authentication failed in attendance.html wrapper');
+					return;
+				}
+			} else {
+				// Fallback authentication check
+				const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+				if (!token) {
+					console.error('No authentication token found');
+					window.location.href = '../index.html';
+					return;
+				}
+			}
+			
+			// Verify user role - Directors and HR_Managers should have access
+			const user = authManager ? authManager.getUser() : JSON.parse(localStorage.getItem('user') || '{}');
+			const userRole = user?.role || authManager?.getUserRole() || localStorage.getItem('userRole');
+			console.log('Attendance page - User role:', userRole);
+			
+			// Directors and HR_Managers have access to attendance
+			if (userRole && userRole !== 'Director' && userRole !== 'HR_Manager' && userRole !== 'HR Manager' && userRole !== 'admin' && userRole !== 'Admin') {
+				console.warn('User role may not have access:', userRole);
+				// Still allow access, but log warning
+			}
+			
 			initializeCollapsibleSidebar();
 			// Load the Attendance service inside an iframe in embed mode (hides its own sidebar)
 			var frame = document.getElementById('attendanceFrame');
@@ -54,10 +85,32 @@
 				}
 			}
 			
-			// Send initial language when iframe loads
+			// Function to send authentication token to iframe
+			function sendTokenToIframe() {
+				try {
+					const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+					const user = localStorage.getItem('user');
+					if (frame && frame.contentWindow && token) {
+						frame.contentWindow.postMessage({
+							type: 'authToken',
+							token: token,
+							user: user
+						}, 'http://localhost:3000');
+						console.log('[attendance.html] Sent auth token to iframe');
+					}
+				} catch (e) {
+					console.warn('[attendance.html] Could not send token to iframe:', e);
+				}
+			}
+			
+			// Send initial language and token when iframe loads
 			frame.addEventListener('load', function() {
 				const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
 				sendLanguageToIframe(currentLang);
+				// Wait a bit for iframe to be ready, then send token
+				setTimeout(() => {
+					sendTokenToIframe();
+				}, 100);
 			});
 			
 			// Listen for language changes from the parent page
@@ -84,10 +137,17 @@
 				}
 			}, 500);
 			
-			// Listen for navigation messages from iframe
+			// Listen for messages from iframe
 			window.addEventListener('message', function(event) {
 				// Verify origin for security (allow localhost:3000)
 				if (event.origin !== 'http://localhost:3000' && !event.origin.includes('localhost:3000') && !event.origin.includes('127.0.0.1:3000')) {
+					return;
+				}
+				
+				// Handle token request from iframe
+				if (event.data && event.data.type === 'requestAuthToken') {
+					console.log('[attendance.html] Received token request from iframe');
+					sendTokenToIframe();
 					return;
 				}
 				

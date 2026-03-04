@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,17 +9,26 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 	<link href="../assets/css/style.css" rel="stylesheet">
 	<style>
-		.embed-container { height: 100vh; }
-		.embed-frame { width: 100%; height: 100%; border: 0; background: #fff; }
+		.embed-container {
+			height: calc(100vh - 80px);
+			margin-top: 80px;
+		}
+
+		.embed-frame {
+			width: 100%;
+			height: 100%;
+			border: 0;
+			background: #fff;
+		}
 	</style>
 </head>
+
 <body class="bg-gray-50">
 
 	<main class="min-h-screen">
 		<div class="embed-container">
-			<!-- Sandbox iframe to prevent embedded app from navigating parent back to management -->
-			<iframe id="signalsFrame" class="embed-frame" title="Responsible Signals"
-				sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+			<iframe id="signalsFrame" src="../../hr_tasks/hr_tasks/public/signals_responsible.html?v=1" class="embed-frame"
+				title="Responsible Signals"></iframe>
 		</div>
 	</main>
 
@@ -26,83 +36,43 @@
 	<script src="../assets/js/translations.js"></script>
 	<script src="../assets/js/main.js"></script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			console.log('🎬 signals-responsible.html wrapper - DOMContentLoaded');
+		document.addEventListener('DOMContentLoaded', function () {
+			if (!requireAuth()) return;
+			
+			const userRole = authManager.getUserRole();
+			const normalizedRole = userRole ? userRole.toLowerCase() : '';
+			
+			// Allow department responsible users (and directors for oversight)
+			const isResponsible = userRole === 'Department_Responsible' ||
+				normalizedRole === 'department_responsible' ||
+				normalizedRole === 'department responsible';
+			const isDirector = normalizedRole === 'director';
 
-			if (!requireAuth()) {
-				console.log('❌ requireAuth failed');
+			if (!isResponsible && !isDirector) {
+				console.log('Access denied. User role:', userRole, 'Expected: Department_Responsible or Director');
+				authManager.redirectToDashboard();
 				return;
 			}
+			
+			console.log('Access granted for role:', userRole);
+			initializeCollapsibleSidebar();
+			
+			// Load the Responsible Signals UI from hr_tasks in embed mode
+			const frame = document.getElementById('signalsFrame');
+			const token = localStorage.getItem('token') || sessionStorage.getItem('token') || '';
+			const user = (window.authManager && window.authManager.getUser && window.authManager.getUser()) || {};
+			const responsibleId = user.employee_id || user.id || '';
+			const tokenParam = token ? `&token=${encodeURIComponent(token)}` : '';
+			const respParam = responsibleId ? `&responsibleId=${encodeURIComponent(responsibleId)}` : '';
+			frame.src = `../../hr_tasks/hr_tasks/public/signals_responsible.html?embed=1${tokenParam}${respParam}&v=1`;
 
-			function waitForTranslations(callback, maxAttempts = 20) {
-				let attempts = 0;
-				const interval = setInterval(() => {
-					attempts++;
-					if (typeof window.translations !== 'undefined' &&
-						typeof window.updatePageTranslations === 'function' &&
-						typeof window.setLanguage === 'function') {
-						clearInterval(interval);
-						callback();
-					} else if (attempts >= maxAttempts) {
-						clearInterval(interval);
-						callback();
-					}
-				}, 50);
+			// Initialize translations
+			if (typeof updatePageTranslations === 'function') {
+				updatePageTranslations();
 			}
-
-			waitForTranslations(function() {
-				const languageSelector = document.getElementById('languageSelector');
-				const savedLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'fr';
-
-				if (typeof window.setLanguage === 'function') {
-					window.setLanguage(savedLanguage);
-				}
-
-				if (languageSelector) {
-					languageSelector.value = savedLanguage;
-					languageSelector.addEventListener('change', function(event) {
-						if (typeof window.setLanguage === 'function') {
-							window.setLanguage(event.target.value);
-						}
-					});
-				}
-
-				const role = authManager.getUserRole();
-				const normalizedRole = role ? role.toLowerCase() : '';
-
-				// Allow department responsible users (and directors for oversight)
-				const isResponsible = role === 'Department_Responsible' ||
-					normalizedRole === 'department_responsible' ||
-					normalizedRole === 'department responsible';
-				const isDirector = normalizedRole === 'director';
-
-				if (!isResponsible && !isDirector) {
-					console.warn('❌ Access denied for role:', role);
-					authManager.redirectToDashboard();
-					return;
-				}
-
-				initializeCollapsibleSidebar();
-
-				// Load the Responsible Signals UI from hr_tasks in embed mode
-				const frame = document.getElementById('signalsFrame');
-				const roleParam = encodeURIComponent('Department_Responsible');
-				// Keep hash to hint the embedded SPA route, but avoid forcing reload loops
-				const token = localStorage.getItem('token') || sessionStorage.getItem('token') || '';
-				const user = (window.authManager && window.authManager.getUser && window.authManager.getUser()) || {};
-				const responsibleId = user.employee_id || user.id || '';
-				const tokenParam = token ? `&token=${encodeURIComponent(token)}` : '';
-				const respParam = responsibleId ? `&responsibleId=${encodeURIComponent(responsibleId)}` : '';
-				frame.src = `../../hr_tasks/hr_tasks/public/signals_responsible.html?embed=1&role=${roleParam}${tokenParam}${respParam}#signals`;
-
-				setTimeout(function() {
-					if (typeof updatePageTranslations === 'function') {
-						updatePageTranslations();
-					}
-				}, 100);
-			});
 		});
 	</script>
 </body>
+
 </html>
 

@@ -6,66 +6,758 @@
     <title data-translate="nav.employees">Employee Management - HR Operations Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
     <style>
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: all 0.3s ease;
+        /* Director-themed base styles */
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-purple: #7c3aed;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
         }
-        .stat-card:hover {
+
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+        }
+
+        /* Report Stat Cards */
+        .report-stat-card-inline {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .report-stat-card-inline:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
         }
-        .stat-card-2 {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+
+        .report-stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
-        .stat-card-3 {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+
+        .report-stat-content {
+            flex: 1;
         }
-        .stat-card-4 {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+
+        .report-stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 8px;
         }
-        .employee-card {
+
+        .report-stat-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .report-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Director Panel */
+        .director-panel {
+            margin-top: 16px;
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .director-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .director-panel>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Card - Enhanced with director.html timetable theme */
+        .card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border: 2px solid rgba(148, 163, 184, 0.15);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(59, 130, 246, 0.05), rgba(124, 58, 237, 0.03), rgba(56, 189, 248, 0.03));
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 45px rgba(15, 23, 42, 0.12);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .card-header {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .card-count {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left,
+                    rgba(37, 99, 235, 0.22),
+                    rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+
+        .director-section-pill {
+            padding: 0.15rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: rgba(15, 23, 42, 0.04);
+            color: #64748b;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: #3b82f6;
+            font-size: 1.75rem;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Employee Card - Matching complaints_director.html style */
+        .employee-card,
+        .complaint-item {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
             transition: all 0.3s ease;
-            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        .employee-card:hover {
+
+        .employee-card::before,
+        .complaint-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(59, 130, 246, 0.03), rgba(124, 58, 237, 0.02), rgba(56, 189, 248, 0.02));
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .employee-card:hover,
+        .complaint-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            border-color: #3b82f6;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: rgba(59, 130, 246, 0.2);
         }
-        .table-row {
-            transition: all 0.2s ease;
+
+        .employee-card > *,
+        .complaint-item > * {
+            position: relative;
+            z-index: 1;
         }
-        .table-row:hover {
-            background-color: #f9fafb;
-            transform: scale(1.01);
+
+        /* Table Styles - Matching complaints_director.html */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
         }
+
+        .complaints-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        .complaints-table thead {
+            background: #f3f4f6;
+        }
+
+        .complaints-table th,
+        .complaints-table td {
+            text-align: left;
+            padding: 0.85rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+            vertical-align: top;
+        }
+
+        .complaints-table th {
+            font-weight: 700;
+            color: #111827;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .complaints-table th.sortable:hover {
+            background: #f3f4f6;
+        }
+
+        .complaints-table th .sort-icon {
+            display: inline-block;
+            margin-left: 0.25rem;
+            font-size: 0.75rem;
+            opacity: 0.5;
+        }
+
+        .complaints-table th.sort-asc .sort-icon::after {
+            content: '▲';
+            opacity: 1;
+        }
+
+        .complaints-table th.sort-desc .sort-icon::after {
+            content: '▼';
+            opacity: 1;
+        }
+
+        .complaints-table tbody tr {
+            background: white;
+        }
+
+        .complaints-table tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .complaints-table tbody tr:hover {
+            background: #f3f4f6;
+        }
+
+        .complaints-table th.actions-header {
+            text-align: center;
+            min-width: 400px;
+        }
+
+        .complaints-table td.actions-cell {
+            text-align: center;
+        }
+
+        .table-actions {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 0.35rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .table-actions .btn-sm {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.75rem;
+            white-space: nowrap;
+        }
+
+        /* Complaints Grid - For card view */
+        .complaints-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        #employeeGridBody[data-view-mode="table"] {
+            display: block;
+        }
+
+        /* Action Buttons */
         .action-btn {
             transition: all 0.2s ease;
+            border-radius: 8px;
         }
+
         .action-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
+
+        /* View Toggle */
         .view-toggle-btn {
             transition: all 0.2s ease;
+            border-radius: 8px;
         }
+
         .view-toggle-btn.active {
-            background-color: #3b82f6;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
+
+        /* Search Input */
         .search-input-wrapper {
             position: relative;
         }
+
         .search-input-wrapper i {
             position: absolute;
             left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: #9ca3af;
+            color: #64748b;
+            z-index: 1;
         }
+
         .search-input-wrapper input {
             padding-left: 40px;
+            border-radius: 12px;
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .search-input-wrapper input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Buttons */
+        button, a[class*="bg-"] {
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        button:hover, a[class*="bg-"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Select Inputs */
+        select {
+            border-radius: 12px;
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Pagination */
+        #pagination {
+            background: rgba(248, 250, 252, 0.8);
+            border-top: 1px solid rgba(15, 23, 42, 0.06);
+        }
+
+        /* Filters - Matching hr-dashboard.html style */
+        .filters {
+            margin-top: 16px;
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .filters::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(37, 99, 235, 0.05), rgba(124, 58, 237, 0.03), rgba(56, 189, 248, 0.03));
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .filters > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .filters-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filters-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filters-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left,
+                    rgba(37, 99, 235, 0.22),
+                    rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+
+        .filters-title-text h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+
+        .filters-title-text p {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin: 0.125rem 0 0 0;
+        }
+
+        .filters-grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            position: relative;
+        }
+
+        .filter-group label {
+            display: none;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            border-radius: 12px;
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            padding: 10px 14px;
+            background: #f8fafc;
+            font-size: 0.9rem;
+            color: #1f2937;
+            transition: all 0.3s ease;
+            min-width: 180px;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: white;
+        }
+
+        .filter-group input:hover,
+        .filter-group select:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .filter-group input::placeholder {
+            color: #9ca3af;
+        }
+
+        .filters-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filters-actions .btn {
+            border-radius: 12px;
+            padding: 10px 16px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        .filters-actions .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+
+        .filters-actions .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            filter: brightness(1.05);
+        }
+
+        .filters-actions .btn-secondary {
+            background: #f8fafc;
+            color: #374151;
+            border: 1px solid rgba(15, 23, 42, 0.1);
+        }
+
+        .filters-actions .btn-secondary:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(148, 163, 184, 0.2);
+        }
+
+        /* View Controls - Matching complaints_director.html style */
+        .view-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .view-control-btn {
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(248, 250, 252, 0.8);
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            font-size: 0.875rem;
+        }
+
+        .view-control-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .view-control-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .view-control-btn.active:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-1px);
+        }
+
+        .view-count {
+            padding: 0.375rem 0.75rem;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .create-employee-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .create-employee-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        /* RTL support for filter controls */
+        [dir="rtl"] #filterControlsContainer {
+            direction: rtl !important;
+            text-align: right !important;
+            flex-direction: row-reverse !important;
+            justify-content: flex-end !important;
+        }
+
+        [dir="rtl"] #filterControlsContainer.flex {
+            flex-direction: row-reverse !important;
+        }
+
+        [dir="rtl"] #filterControlsContainer > * {
+            direction: rtl;
+            text-align: right;
+        }
+
+        [dir="rtl"] #filterControlsContainer select {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        [dir="rtl"] #filterControlsContainer label {
+            text-align: right !important;
+        }
+
+        [dir="rtl"] #filterControlsContainer i {
+            order: 999 !important;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .page-title i {
+                font-size: 1.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .report-stat-card-inline {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            #filterControlsContainer {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+
+            #filterControlsContainer > * {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -75,141 +767,189 @@
     <!-- Main Content -->
     <div class="main-content flex-1 overflow-hidden">
         <!-- Content -->
-        <main class="flex-1 overflow-y-auto p-6">
-            <!-- Page Header -->
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl shadow-lg p-6 mb-6 text-white">
-                <div class="flex items-start">
-                    <div class="p-3 bg-white/20 rounded-lg mr-4 flex-shrink-0">
-                        <i class="fas fa-users text-2xl"></i>
+        <main class="flex-1 overflow-y-auto">
+            <!-- Page Title & Description -->
+            <div class="page-header m-6">
+                <h1 class="page-title" data-translate="employee.employee_management">
+                    <i class="fas fa-users"></i>
+                    Employee Management
+                </h1>
+                <p class="page-subtitle" data-translate="employee.employee_list_description">Manage and view all employees in your organization. Search, filter, and perform actions on employee records.</p>
                     </div>
-                    <div class="flex-1">
-                        <h1 class="text-3xl font-bold mb-2" data-translate="employee.employee_management">Employee Management</h1>
-                        <p class="text-blue-100 text-base leading-relaxed" data-translate="employee.employee_list_description">Manage and view all employees in your organization. Search, filter, and perform actions on employee records.</p>
+
+            <!-- Page Content with Padding -->
+            <div class="p-6">
+
+            <!-- Enhanced Statistics Cards -->
+            <div class="flex flex-wrap gap-4 justify-between mb-8">
+                <!-- Total Employees Card -->
+                <div class="report-stat-card-inline">
+                    <div class="report-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="report-stat-content">
+                        <p class="report-stat-label" data-translate="dashboard.total_employees">Total Employees</p>
+                        <h3 id="totalEmployeesStat" class="report-stat-value">0</h3>
+                        <span class="report-stat-badge" style="background: rgba(59, 130, 246, 0.1); color: #2563eb;">
+                            <i class="fas fa-chart-line"></i>
+                            <span data-translate="dashboard.all_time">All time</span>
+                        </span>
+                </div>
+            </div>
+
+                <!-- Active Employees Card -->
+                <div class="report-stat-card-inline">
+                    <div class="report-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-user-check"></i>
+                        </div>
+                    <div class="report-stat-content">
+                        <p class="report-stat-label" data-translate="employee.active">Active</p>
+                        <h3 id="activeEmployeesStat" class="report-stat-value">0</h3>
+                        <span class="report-stat-badge" style="background: rgba(16, 185, 129, 0.1); color: #059669;">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-translate="employee.active_employees">Active employees</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Inactive Employees Card -->
+                <div class="report-stat-card-inline">
+                    <div class="report-stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <i class="fas fa-user-times"></i>
+                        </div>
+                    <div class="report-stat-content">
+                        <p class="report-stat-label" data-translate="employee.inactive">Inactive</p>
+                        <h3 id="inactiveEmployeesStat" class="report-stat-value">0</h3>
+                        <span class="report-stat-badge" style="background: rgba(245, 158, 11, 0.1); color: #d97706;">
+                            <i class="fas fa-pause-circle"></i>
+                            <span data-translate="employee.inactive_employees">Inactive employees</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Positions Card -->
+                <div class="report-stat-card-inline">
+                    <div class="report-stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="report-stat-content">
+                        <p class="report-stat-label" data-translate="employee.position">Positions</p>
+                        <h3 id="totalPositionsStat" class="report-stat-value">0</h3>
+                        <span class="report-stat-badge" style="background: rgba(139, 92, 246, 0.1); color: #7c3aed;">
+                            <i class="fas fa-building"></i>
+                            <span data-translate="employee.total_positions">Total positions</span>
+                        </span>
                     </div>
                 </div>
             </div>
 
-            <!-- Statistics Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                <div class="stat-card rounded-xl shadow-lg p-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white/80 text-sm font-medium" data-translate="dashboard.total_employees">Total Employees</p>
-                            <p class="text-3xl font-bold text-white mt-2" id="totalEmployeesStat">0</p>
+            <!-- Filters Section -->
+            <div class="filters">
+                <!-- Filters Header -->
+                <div class="filters-header">
+                    <div class="filters-title">
+                        <div class="filters-title-icon">
+                            <i class="fas fa-filter"></i>
                         </div>
-                        <div class="p-4 bg-white/20 rounded-full">
-                            <i class="fas fa-users text-white text-2xl"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="stat-card-2 rounded-xl shadow-lg p-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white/80 text-sm font-medium" data-translate="employee.active">Active</p>
-                            <p class="text-3xl font-bold text-white mt-2" id="activeEmployeesStat">0</p>
-                        </div>
-                        <div class="p-4 bg-white/20 rounded-full">
-                            <i class="fas fa-user-check text-white text-2xl"></i>
+                        <div class="filters-title-text">
+                            <h3 data-translate="director.filters_label">Filters</h3>
+                            <p data-translate="director.search_filter_label">Search & Filter</p>
                         </div>
                     </div>
-                </div>
-                <div class="stat-card-3 rounded-xl shadow-lg p-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white/80 text-sm font-medium" data-translate="employee.inactive">Inactive</p>
-                            <p class="text-3xl font-bold text-white mt-2" id="inactiveEmployeesStat">0</p>
-                        </div>
-                        <div class="p-4 bg-white/20 rounded-full">
-                            <i class="fas fa-user-times text-white text-2xl"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="stat-card-4 rounded-xl shadow-lg p-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-white/80 text-sm font-medium" data-translate="employee.position">Positions</p>
-                            <p class="text-3xl font-bold text-white mt-2" id="totalPositionsStat">0</p>
-                        </div>
-                        <div class="p-4 bg-white/20 rounded-full">
-                            <i class="fas fa-briefcase text-white text-2xl"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Content Card -->
-            <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                <!-- Header Section -->
-                <div class="p-6 border-b border-gray-200 bg-white">
-                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
-                        <div>
-                            <h2 class="text-2xl font-bold text-gray-900 mb-1" data-translate="employee.employee_list">Employee List</h2>
-                            <p class="text-sm text-gray-600" id="employeeCountText" data-translate="employee.showing">Showing</p>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-3">
-                            <!-- Language Selector -->
-                            <select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hover:border-gray-400 transition-colors">
+                    <div class="flex items-center gap-3 hidden">
+                        <label for="languageSelector" class="text-sm font-medium text-gray-700" data-translate="common.language">Language:</label>
+                        <select id="languageSelector" class="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="en">English</option>
                                 <option value="fr">Français</option>
                                 <option value="ar">العربية</option>
                             </select>
-                            <!-- View Toggle -->
-                            <div class="flex bg-gray-100 rounded-lg p-1">
-                                <button id="tableViewBtn" class="view-toggle-btn active px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors" title="Table View">
-                                    <i class="fas fa-table"></i>
+                    </div>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="flex items-center gap-4 mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200" id="filterControlsContainer" style="flex-wrap: wrap;">
+                    <i class="fas fa-filter text-blue-600"></i>
+                    <input type="text" id="employeeSearch" placeholder="" 
+                           class="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[200px]">
+                    <label for="employeeSearch" class="text-sm font-medium text-gray-700 whitespace-nowrap" data-translate="common.search_employees">Search Employees:</label>
+                    <select id="employeeSort" class="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="first_name" data-translate="employee.sort_by_first_name">First Name</option>
+                        <option value="last_name" data-translate="employee.sort_by_last_name">Last Name</option>
+                        <option value="email" data-translate="employee.sort_by_email">Email</option>
+                        <option value="join_date" data-translate="employee.sort_by_join_date">Join Date</option>
+                    </select>
+                    <label for="employeeSort" class="text-sm font-medium text-gray-700 whitespace-nowrap" data-translate="common.sort">Sort by:</label>
+                    <select id="employeeBranchFilter" class="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all" selected data-translate="dashboard.all_branches">All Branches</option>
+                    </select>
+                    <label for="employeeBranchFilter" class="text-sm font-medium text-gray-700 whitespace-nowrap" data-translate="dashboard.filter_by_branch">Filter by Branch:</label>
+                    <span class="text-xs text-blue-700 whitespace-nowrap" data-translate="dashboard.all_data_filtered">(All Data Filtered)</span>
+                </div>
+            </div>
+
+            <!-- View Controls -->
+            <div class="view-controls">
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                    <button id="employeeSortToggle" class="view-control-btn" title="Toggle Sort">
+                        <i class="fas fa-sort-alpha-down" id="employeeSortIcon"></i>
+                    </button>
+                    <button id="tableViewBtn" class="view-control-btn active" data-view-mode="table" title="Table View">
+                        <i class="fas fa-list"></i>
                                 </button>
-                                <button id="gridViewBtn" class="view-toggle-btn px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors" title="Grid View">
-                                    <i class="fas fa-th-large"></i>
+                    <button id="gridViewBtn" class="view-control-btn" data-view-mode="card" title="Cards View">
+                        <i class="fas fa-border-all"></i>
                                 </button>
                             </div>
-                            <!-- Export Button -->
-                            <button id="exportEmployees" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all shadow-sm hover:shadow-md flex items-center gap-2" data-translate="common.export">
-                                <i class="fas fa-download"></i>
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                    <button type="button" class="create-employee-btn" onclick="window.location.href='add-employee.html'">
+                        <i class="fas fa-plus"></i>
+                        <span data-translate="employee.add_employee">Add Employee</span>
+                    </button>
+                    <button type="button" class="create-employee-btn" id="exportEmployees" style="background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);">
+                        <i class="fas fa-file-export"></i>
                                 <span data-translate="common.export">Export</span>
                             </button>
-                            <!-- Add Employee Button -->
-                            <a href="add-employee.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all shadow-sm hover:shadow-md flex items-center gap-2" data-translate="employee.add_employee_button">
-                                <i class="fas fa-plus"></i>
-                                    <span data-translate="employee.add_employee">Add Employee</span>
-                                </a>
+                    <button type="button" class="create-employee-btn" id="generateATSZip" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                        <i class="fas fa-file-archive"></i>
+                        <span data-translate="employee.generate_ats_zip">Generate ATS ZIP</span>
+                    </button>
+                    <button type="button" class="create-employee-btn" id="downloadImportTemplate" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                        <i class="fas fa-download"></i>
+                        <span data-translate="employee.download_template">Download Template</span>
+                    </button>
+                    <button type="button" class="create-employee-btn" id="importEmployees" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
+                        <i class="fas fa-file-upload"></i>
+                        <span data-translate="employee.import_employees">Import Employees</span>
+                    </button>
+                    <input type="file" id="excelFileInput" accept=".xlsx,.xls" style="display: none;">
+                    <button type="button" class="create-employee-btn" id="exportWithCredentials" style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);">
+                        <i class="fas fa-file-excel"></i>
+                        <span data-translate="employee.export_with_credentials">Export with Credentials</span>
+                    </button>
                             </div>
                         </div>
                         
-                    <!-- Search and Filter Section -->
-                        <div class="flex flex-col sm:flex-row gap-4">
-                        <div class="flex-1 search-input-wrapper">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="employeeSearch" data-translate-placeholder="common.search_employees" placeholder="Search employees..." 
-                                   class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
-                            </div>
-                        <div class="sm:w-56">
-                            <div class="relative">
-                                <i class="fas fa-sort absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                                <select id="employeeSort" class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white appearance-none">
-                                    <option value="first_name" data-translate="employee.sort_by_first_name">Sort by First Name</option>
-                                    <option value="last_name" data-translate="employee.sort_by_last_name">Sort by Last Name</option>
-                                    <option value="email" data-translate="employee.sort_by_email">Sort by Email</option>
-                                    <option value="join_date" data-translate="employee.sort_by_join_date">Sort by Join Date</option>
-                                </select>
-                            </div>
-                            </div>
-                        </div>
+            <!-- Main Content Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title" data-translate="employee.employee_list">Employee List</h2>
+                    <span class="view-count" id="employeeCountText">Loading...</span>
                     </div>
                     
                 <!-- Table View -->
-                <div id="tableView" class="overflow-x-auto">
-                        <table class="w-full">
+                <div id="tableView" class="table-wrapper">
+                    <table class="complaints-table">
                             <thead>
-                            <tr class="bg-gray-50 border-b border-gray-200">
-                                <th class="text-left py-4 px-6 text-xs font-semibold text-gray-700 uppercase tracking-wider" data-translate="employee.employee">Employee</th>
-                                <th class="text-left py-4 px-6 text-xs font-semibold text-gray-700 uppercase tracking-wider" data-translate="employee.email">Email</th>
-                                <th class="text-left py-4 px-6 text-xs font-semibold text-gray-700 uppercase tracking-wider" data-translate="employee.position">Position</th>
-                                <th class="text-left py-4 px-6 text-xs font-semibold text-gray-700 uppercase tracking-wider" data-translate="employee.role">Role</th>
-                                <th class="text-left py-4 px-6 text-xs font-semibold text-gray-700 uppercase tracking-wider" data-translate="common.status">Status</th>
-                                <th class="text-left py-4 px-6 text-xs font-semibold text-gray-700 uppercase tracking-wider" data-translate="common.actions">Actions</th>
+                            <tr>
+                                <th class="sortable" data-translate="employee.employee">Employee</th>
+                                <th class="sortable" data-translate="employee.email">Email</th>
+                                <th class="sortable" data-translate="employee.position">Position</th>
+                                <th class="sortable" data-translate="employee.role">Role</th>
+                                <th class="sortable" data-translate="common.status">Status</th>
+                                <th class="actions-header" data-translate="common.actions">Actions</th>
                                 </tr>
                             </thead>
-                        <tbody id="employeeTableBody" class="divide-y divide-gray-200">
+                        <tbody id="employeeTableBody">
                             <tr>
                                 <td colspan="6" class="text-center py-12">
                                     <div class="flex flex-col items-center justify-center">
@@ -223,15 +963,31 @@
                     </div>
 
                 <!-- Grid View -->
-                <div id="gridView" class="hidden p-6">
-                    <div id="employeeGridBody" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div id="gridView" class="hidden">
+                    <div id="employeeGridBody" class="complaints-grid">
                         <!-- Grid cards will be loaded here -->
                     </div>
                 </div>
 
-                <!-- Pagination -->
-                <div class="p-6 border-t border-gray-200 bg-gray-50" id="pagination">
-                    <!-- Pagination will be inserted here -->
+                <!-- Pagination and rows-per-page -->
+                <div class="p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg" id="paginationWrapper">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <label for="rowsPerPageSelect" class="text-sm font-medium text-gray-700" data-translate="employee.rows_per_page">Rows per page</label>
+                            <select id="rowsPerPageSelect" class="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                                <option value="50">50</option>
+                                <option value="all" data-translate="employee.all">All</option>
+                            </select>
+                            <span id="paginationSummary" class="text-sm text-gray-700 font-medium"></span>
+                        </div>
+                        <div id="pagination" class="flex items-center space-x-1 flex-wrap">
+                            <!-- Pagination buttons inserted here -->
+                        </div>
+                    </div>
+                </div>
                     </div>
                 </div>
             </main>
@@ -257,13 +1013,54 @@
                 el.textContent = `${user.firstName} ${user.lastName}`;
             }
             
+            // Function to update filter controls RTL direction
+            function updateFilterControlsRTL(lang) {
+                const filterContainer = document.getElementById('filterControlsContainer');
+                if (!filterContainer) return;
+
+                if (lang === 'ar') {
+                    filterContainer.setAttribute('dir', 'rtl');
+                    filterContainer.style.direction = 'rtl';
+                    filterContainer.style.textAlign = 'right';
+                } else {
+                    filterContainer.setAttribute('dir', 'ltr');
+                    filterContainer.style.direction = 'ltr';
+                    filterContainer.style.textAlign = 'left';
+                }
+            }
+
+            // Update sort select options translations
+            function updateSortOptionsTranslations() {
+                const sortSelect = document.getElementById('employeeSort');
+                if (!sortSelect || typeof translate !== 'function') return;
+                
+                Array.from(sortSelect.options).forEach(option => {
+                    const translateKey = option.getAttribute('data-translate');
+                    if (translateKey) {
+                        const translated = translate(translateKey);
+                        if (translated && translated !== translateKey) {
+                            option.textContent = translated;
+                        }
+                    }
+                });
+            }
+            
             // Language selector
             const languageSelector = document.getElementById('languageSelector');
             if (languageSelector) {
-                languageSelector.value = currentLanguage || 'en';
+                // Set current language
+                const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+                languageSelector.value = currentLang;
+
+                // Apply RTL for filter controls if Arabic
+                updateFilterControlsRTL(currentLang);
+
                 languageSelector.addEventListener('change', (e) => {
+                    const newLang = e.target.value;
                     if (typeof setLanguage === 'function') {
-                        setLanguage(e.target.value);
+                        setLanguage(newLang);
+                        // Update filter controls RTL
+                        updateFilterControlsRTL(newLang);
                         // Reload employee views to update dynamic content
                         if (typeof employeeManager !== 'undefined') {
                             const currentView = document.getElementById('tableView').classList.contains('hidden') ? 'grid' : 'table';
@@ -282,6 +1079,18 @@
             
             // Listen for language change events
             document.addEventListener('languageChanged', function() {
+                // Update filter controls RTL
+                const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+                updateFilterControlsRTL(currentLang);
+                
+                // Update language selector value
+                if (languageSelector) {
+                    languageSelector.value = currentLang;
+                }
+                
+                // Update sort options translations
+                setTimeout(updateSortOptionsTranslations, 100);
+                
                 // Reload employee views to update dynamic content
                 if (typeof employeeManager !== 'undefined') {
                     const currentView = document.getElementById('tableView').classList.contains('hidden') ? 'grid' : 'table';
@@ -301,12 +1110,23 @@
                 updatePageTranslations();
             }
 
+            // Update sort options after translations are initialized
+            setTimeout(updateSortOptionsTranslations, 200);
+
+            // Keep search input placeholder empty to avoid duplication with label
+            // The label already shows "Search Employees:" so we don't need a placeholder
+            const searchInputEl = document.getElementById('employeeSearch');
+            if (searchInputEl) {
+                searchInputEl.placeholder = '';
+            }
+
             // View toggle functionality
             const tableViewBtn = document.getElementById('tableViewBtn');
             const gridViewBtn = document.getElementById('gridViewBtn');
             
             if (tableViewBtn) {
                 tableViewBtn.addEventListener('click', () => {
+                    setViewMode('table');
                     if (typeof employeeManager !== 'undefined') {
                         employeeManager.toggleView('table');
                     }
@@ -315,12 +1135,164 @@
             
             if (gridViewBtn) {
                 gridViewBtn.addEventListener('click', () => {
+                    setViewMode('card');
                     if (typeof employeeManager !== 'undefined') {
                         employeeManager.toggleView('grid');
                     }
                 });
             }
+
+            // Load branches for filter dropdown
+            async function loadBranchesForEmployeeFilter() {
+                try {
+                    const branchSelect = document.getElementById('employeeBranchFilter');
+                    if (!branchSelect) return;
+
+                    // Wait for employees to be loaded
+                    if (typeof employeeManager !== 'undefined') {
+                        // Wait a bit for employees to load
+                        setTimeout(() => {
+                            const employees = employeeManager.allEmployees.length > 0 
+                                ? employeeManager.allEmployees 
+                                : employeeManager.employees;
+                            
+                            if (employees && employees.length > 0) {
+                                const institutionsSet = new Set(employees.map(e => e.institution).filter(Boolean));
+                                const institutions = Array.from(institutionsSet).sort();
+
+                                // Clear existing options except "All Branches"
+                                const allBranchesText = typeof translate === 'function' ? translate('dashboard.all_branches') : 'All Branches';
+                                branchSelect.innerHTML = `<option value="all" selected>${allBranchesText}</option>`;
+
+                                // Add each institution as an option
+                                institutions.forEach(institution => {
+                                    const option = document.createElement('option');
+                                    option.value = institution;
+                                    option.textContent = institution;
+                                    branchSelect.appendChild(option);
+                                });
+                            } else {
+                                // If no employees yet, try loading from API
+                                loadBranchesFromAPI();
+                            }
+                        }, 500);
+                    } else {
+                        // If employeeManager not ready, try API
+                        loadBranchesFromAPI();
+                    }
+                } catch (error) {
+                    console.error('Error loading branches for filter:', error);
+                }
+            }
+
+            // Load branches from API
+            async function loadBranchesFromAPI() {
+                try {
+                    const branchSelect = document.getElementById('employeeBranchFilter');
+                    if (!branchSelect) return;
+
+                    // Try to get employees from API to extract branches
+                    const employees = await APIService.getEmployees({});
+                    const employeesList = employees.employees || employees || [];
+                    
+                    if (employeesList.length > 0) {
+                        const institutionsSet = new Set(employeesList.map(e => e.institution).filter(Boolean));
+                        const institutions = Array.from(institutionsSet).sort();
+
+                        const allBranchesText = typeof translate === 'function' ? translate('dashboard.all_branches') : 'All Branches';
+                        branchSelect.innerHTML = `<option value="all" selected>${allBranchesText}</option>`;
+
+                        institutions.forEach(institution => {
+                            const option = document.createElement('option');
+                            option.value = institution;
+                            option.textContent = institution;
+                            branchSelect.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading branches from API:', error);
+                }
+            }
+
+            // Load branches after employees are loaded
+            if (typeof employeeManager !== 'undefined') {
+                // Listen for when employees are loaded
+                const originalLoadEmployees = employeeManager.loadEmployees;
+                employeeManager.loadEmployees = async function() {
+                    await originalLoadEmployees.call(this);
+                    // Load branches after employees are loaded
+                    setTimeout(loadBranchesForEmployeeFilter, 300);
+                };
+            }
+            
+            // Also try loading immediately
+            loadBranchesForEmployeeFilter();
+
+            // Filter change handler
+            function handleEmployeeFilterChange() {
+                if (typeof employeeManager !== 'undefined' && typeof employeeManager.filterEmployees === 'function') {
+                    const searchTerm = document.getElementById('employeeSearch')?.value || '';
+                    const sortBy = document.getElementById('employeeSort')?.value || 'first_name';
+                    const branchFilter = document.getElementById('employeeBranchFilter')?.value || 'all';
+                    
+                    // Apply filters
+                    employeeManager.filterEmployees(searchTerm, sortBy, branchFilter);
+                }
+            }
+
+            // Add event listeners for filter changes
+            if (searchInputEl) {
+                searchInputEl.addEventListener('input', handleEmployeeFilterChange);
+                searchInputEl.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') handleEmployeeFilterChange();
+                });
+            }
+            
+            const sortSelect = document.getElementById('employeeSort');
+            const branchSelect = document.getElementById('employeeBranchFilter');
+            
+            if (sortSelect) {
+                sortSelect.addEventListener('change', handleEmployeeFilterChange);
+            }
+            
+            if (branchSelect) {
+                branchSelect.addEventListener('change', handleEmployeeFilterChange);
+            }
+
+            // Sort toggle
+            const sortToggleBtn = document.getElementById('employeeSortToggle');
+            if (sortToggleBtn) {
+                sortToggleBtn.addEventListener('click', () => {
+                    const sortSelect = document.getElementById('employeeSort');
+                    if (sortSelect) {
+                        const options = Array.from(sortSelect.options);
+                        const currentIndex = options.findIndex(opt => opt.value === sortSelect.value);
+                        const nextIndex = (currentIndex + 1) % options.length;
+                        sortSelect.value = options[nextIndex].value;
+                        handleEmployeeFilterChange();
+                    }
+                });
+            }
         });
+
+        function setViewMode(mode) {
+            const tableView = document.getElementById('tableView');
+            const gridView = document.getElementById('gridView');
+            const tableViewBtn = document.getElementById('tableViewBtn');
+            const gridViewBtn = document.getElementById('gridViewBtn');
+            
+            if (mode === 'table') {
+                if (tableView) tableView.classList.remove('hidden');
+                if (gridView) gridView.classList.add('hidden');
+                if (tableViewBtn) tableViewBtn.classList.add('active');
+                if (gridViewBtn) gridViewBtn.classList.remove('active');
+            } else {
+                if (tableView) tableView.classList.add('hidden');
+                if (gridView) gridView.classList.remove('hidden');
+                if (tableViewBtn) tableViewBtn.classList.remove('active');
+                if (gridViewBtn) gridViewBtn.classList.add('active');
+            }
+        }
     </script>
 </body>
 </html>

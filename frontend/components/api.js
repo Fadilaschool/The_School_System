@@ -2,7 +2,7 @@
 
 // Base API configuration
 // Resolve service base by endpoint prefix to hit correct microservice instead of frontend origin
-const LIVE_SERVER_PORTS = ['5502', '5503', '5504', '5505', '5506', '5507'];
+const LIVE_SERVER_PORTS = ['5502', '5503', '5504', '5505', '5506', '5507', '5508', '5518'];
 const isLiveServerPort = LIVE_SERVER_PORTS.includes(window.location.port);
 const DEFAULT_API_BASE_URL = isLiveServerPort ? 'http://localhost:3000' : window.location.origin;
 window.API_BASE_URL = DEFAULT_API_BASE_URL; // Back-compat global
@@ -106,11 +106,17 @@ async function apiRequest(endpoint, options = {}) {
 
     const isFormData = options && options.body && (typeof FormData !== 'undefined') && options.body instanceof FormData;
 
+    // Default timeout: 30 seconds (can be overridden via options.timeout)
+    const timeout = options.timeout || 30000;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
     const defaultOptions = {
         headers: {
             ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
             'Authorization': `Bearer ${getToken()}`
-        }
+        },
+        signal: controller.signal
     };
     
     const mergedOptions = {
@@ -130,6 +136,7 @@ async function apiRequest(endpoint, options = {}) {
     
     try {
         const response = await fetch(url, mergedOptions);
+        clearTimeout(timeoutId);
         
         // Handle authentication errors
         if (response.status === 401) {
@@ -148,6 +155,26 @@ async function apiRequest(endpoint, options = {}) {
         
         return await response.json();
     } catch (error) {
+        clearTimeout(timeoutId);
+        
+        // Handle timeout/abort errors
+        if (error.name === 'AbortError' || error.message?.includes('timeout') || error.message?.includes('aborted')) {
+            const timeoutError = new Error('Connection terminated due to connection timeout');
+            timeoutError.name = 'TimeoutError';
+            timeoutError.isTimeout = true;
+            console.error('API request timeout:', url);
+            throw timeoutError;
+        }
+        
+        // Handle network errors (server down, CORS, etc.)
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError') {
+            const networkError = new Error('Network error: Unable to connect to the server. Please check your connection and ensure the server is running.');
+            networkError.name = 'NetworkError';
+            networkError.isNetworkError = true;
+            console.error('API network error:', url, error.message);
+            throw networkError;
+        }
+        
         console.error('API request failed:', error);
         throw error;
     }

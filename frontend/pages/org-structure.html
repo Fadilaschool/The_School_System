@@ -5,151 +5,605 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-translate="org.title">Organizational Structure</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/rtl.css">
     <style>
-        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
+        /* Director-themed base styles matching reference files */
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-purple: #7c3aed;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+        }
+
+        /* Page Header - matching hr-dashboard.html */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: #3b82f6;
+            font-size: 1.75rem;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+            text-align: center;
+        }
+
+        /* Director panel styling */
+        .director-panel {
+            margin-top: 16px;
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .director-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .director-panel>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left,
+                    rgba(37, 99, 235, 0.22),
+                    rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+
+        .director-section-pill {
+            padding: 0.15rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: rgba(15, 23, 42, 0.04);
+            color: #64748b;
+        }
+
+        /* Director Toolbar and Tabs - matching director.html */
+        .director-toolbar {
+            margin-top: 32px;
+            margin-bottom: 48px;
+            background: var(--director-card-bg);
+            border-radius: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 80px;
+        }
+
+        .director-tabs {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 6px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            border-radius: 999px;
+        }
+
+        .director-tab {
+            border-radius: 999px;
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: #475569;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .director-tab:hover {
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .director-tab.active {
+            background: linear-gradient(120deg, #2563eb, #7c3aed);
+            color: white;
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .director-tab i {
+            font-size: 0.9rem;
+        }
+
+        /* Enhanced button styling */
+        .director-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            min-width: 180px;
+            height: 44px;
+            flex: 0 0 auto;
+        }
+
+        .director-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .director-btn.primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .director-btn.primary:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        /* Enhanced table styling */
+        .director-table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .director-table thead {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+
+        .director-table th {
+            padding: 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .director-table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        /* Panel header aligned with table columns */
+        .panel-header-wrapper {
+            padding: 0 16px;
+            margin-bottom: 16px;
+        }
+
+        .panel-header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .director-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .director-table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.04), rgba(99, 102, 241, 0.02));
+            transform: translateX(2px);
+        }
+
+        /* Action buttons styling */
+        .action-btn {
+            padding: 8px 12px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #64748b;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .action-btn.edit {
+            color: #2563eb;
+            border-color: rgba(37, 99, 235, 0.3);
+        }
+
+        .action-btn.edit:hover {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: #2563eb;
+            color: #1d4ed8;
+        }
+
+        .action-btn.delete {
+            color: #dc2626;
+            border-color: rgba(220, 38, 38, 0.3);
+        }
+
+        .action-btn.delete:hover {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: #dc2626;
+            color: #b91c1c;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] .director-tab {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .director-tab i {
+            margin-left: 0.5rem;
+            margin-right: 0;
+        }
+
+        [dir="rtl"] .action-btn {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .director-table tbody tr:hover {
+            transform: translateX(-2px);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            /* Responsive header layout in style.css; cosmetic only on desktop */
+            @media (min-width: 769px) {
+                .page-hero {
+                    padding: 20px;
+                    border-radius: 16px;
+                }
+            }
+
+            .director-panel {
+                padding: 16px;
+                border-radius: 16px;
+            }
+
+            .director-tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .director-table th,
+            .director-table td {
+                padding: 12px 8px;
+                font-size: 0.8rem;
+            }
+
+            .panel-header-wrapper {
+                padding: 0 8px;
+            }
+
+            .panel-header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .panel-header-content .director-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Remove old tab-active class */
+        .tab-active { display: none; }
+
+        /* Inline badge styling for lists */
+        .inline-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            margin: 2px 4px 2px 0;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.08));
+            color: #2563eb;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .inline-badge:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.12));
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.15);
+        }
+
+        .inline-badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+        }
+
+        [dir="rtl"] .inline-badge {
+            margin: 2px 0 2px 4px;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
-    <div id="app" class="min-h-screen flex">
-        <!-- Sidebar injected by main.js -->
-        <div id="sidebarMount"></div>
-
-        <main class="flex-1 overflow-y-auto p-6 ml-16">
-            <div class="max-w-7xl mx-auto">
-                <!-- Top Bar with Language Selector -->
-                <div class="flex items-center justify-end mb-4">
-                    <!-- Language Selector -->
-                    <select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hover:border-gray-400 transition-colors">
-                        <option value="en">English</option>
-                        <option value="fr">Français</option>
-                        <option value="ar">العربية</option>
-                    </select>
-                </div>
-
+    <!-- The reusable navbar will be automatically inserted here -->
+    
+    <!-- Content -->
+    <main class="min-h-screen rtl:mr-16 ltr:ml-16">
+        <div class="w-full p-6">
                 <!-- Page Header -->
-                <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl shadow-lg p-6 mb-6 text-white">
-                    <div class="flex items-start">
-                        <div class="p-3 bg-white/20 rounded-lg mr-4 flex-shrink-0">
-                            <i class="fas fa-sitemap text-2xl"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h1 class="text-3xl font-bold mb-2" data-translate="org.title">Organizational Structure</h1>
-                            <p class="text-blue-100 text-base leading-relaxed" data-translate="org.description">Manage branches, levels, subjects, positions and departments</p>
-                        </div>
-                    </div>
+                <div class="page-header m-6">
+                    <h1 class="page-title" data-translate="org.title">
+                        <i class="fas fa-sitemap"></i>
+                        Organizational Structure
+                    </h1>
+                    <p class="page-subtitle" data-translate="org.description">Manage branches, levels, subjects, positions and departments</p>
                 </div>
 
-                <!-- Tabs Container -->
-                <div class="bg-white rounded-lg shadow">
-                    <div class="border-b border-gray-200">
-                        <nav class="flex space-x-8 px-6" aria-label="Tabs" id="orgTabs">
-                            <button data-tab="branches" id="tab-branches" class="tab-active py-4 px-1 border-b-2 font-medium text-sm">
-                                <i class="fas fa-code-branch mr-2"></i><span data-translate="org.tabs.branches">Branches</span>
-                            </button>
-                            <button data-tab="levels" id="tab-levels" class="py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm">
-                                <i class="fas fa-layer-group mr-2"></i><span data-translate="org.tabs.levels">Levels</span>
-                            </button>
-                            <button data-tab="subjects" id="tab-subjects" class="py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm">
-                                <i class="fas fa-book-open mr-2"></i><span data-translate="org.tabs.subjects">Subjects</span>
-                            </button>
-                            <button data-tab="positions" id="tab-positions" class="py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm">
-                                <i class="fas fa-briefcase mr-2"></i><span data-translate="org.tabs.positions">Positions</span>
-                            </button>
-                            <button data-tab="departments" id="tab-departments" class="py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm">
-                                <i class="fas fa-building mr-2"></i><span data-translate="org.tabs.departments">Departments</span>
-                            </button>
-                        </nav>
-                    </div>
+                <!-- Enhanced Tabs Container -->
+                <div class="director-toolbar">
+                    <nav class="director-tabs" aria-label="Organization Modules" id="orgTabs">
+                        <button data-tab="branches" id="tab-branches" class="director-tab active">
+                            <i class="fas fa-code-branch"></i>
+                            <span data-translate="org.tabs.branches">Branches</span>
+                        </button>
+                        <button data-tab="levels" id="tab-levels" class="director-tab">
+                            <i class="fas fa-layer-group"></i>
+                            <span data-translate="org.tabs.levels">Levels</span>
+                        </button>
+                        <button data-tab="subjects" id="tab-subjects" class="director-tab">
+                            <i class="fas fa-book-open"></i>
+                            <span data-translate="org.tabs.subjects">Subjects</span>
+                        </button>
+                        <button data-tab="positions" id="tab-positions" class="director-tab">
+                            <i class="fas fa-briefcase"></i>
+                            <span data-translate="org.tabs.positions">Positions</span>
+                        </button>
+                        <button data-tab="departments" id="tab-departments" class="director-tab">
+                            <i class="fas fa-building"></i>
+                            <span data-translate="org.tabs.departments">Departments</span>
+                        </button>
+                    </nav>
+                </div>
 
-                    <!-- Panels -->
-                    <div id="panel-branches" class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-lg font-semibold text-gray-900" data-translate="org.branches.title">Branches</h2>
-                            <button id="addBranchBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"><i class="fas fa-plus mr-2"></i><span data-translate="org.branches.add">Add Branch</span></button>
+                    <!-- Enhanced Panels -->
+                    <div id="panel-branches" class="">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-content">
+                                <div class="director-panel-title">
+                                    <div class="director-panel-title-icon">
+                                        <i class="fas fa-code-branch"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-lg font-semibold text-gray-900" data-translate="org.branches.title">Branches</h2>
+                                        <p class="text-sm text-gray-500" data-translate="org.branches.description_text">Manage organizational branches and locations</p>
+                                    </div>
+                                </div>
+                                <button id="addBranchBtn" class="director-btn primary">
+                                    <i class="fas fa-plus"></i>
+                                    <span data-translate="org.branches.add">Add Branch</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+                            <table class="director-table w-full">
+                                <thead>
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="org.branches.name">Name</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="org.branches.website">Website</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="org.branches.phone">Phone</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="org.branches.levels">Levels</th>
-                                        <th class="px-6 py-3"></th>
+                                        <th data-translate="org.branches.name">Name</th>
+                                        <th data-translate="org.branches.website">Website</th>
+                                        <th data-translate="org.branches.phone">Phone</th>
+                                        <th data-translate="org.branches.levels">Levels</th>
+                                        <th data-translate="org.actions">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="branchesTable" class="bg-white divide-y divide-gray-200"></tbody>
+                                <tbody id="branchesTable" class="divide-y divide-gray-100"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div id="panel-levels" class="p-6 hidden">
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-lg font-semibold text-gray-900" data-translate="org.levels.title">Levels</h2>
-                            <button id="addLevelBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"><i class="fas fa-plus mr-2"></i><span data-translate="org.levels.add">Add Level</span></button>
+                    <div id="panel-levels" class="hidden">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-content">
+                                <div class="director-panel-title">
+                                    <div class="director-panel-title-icon">
+                                        <i class="fas fa-layer-group"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-lg font-semibold text-gray-900" data-translate="org.levels.title">Levels</h2>
+                                        <p class="text-sm text-gray-500" data-translate="org.levels.description_text">Manage educational levels and grades</p>
+                                    </div>
+                                </div>
+                                <button id="addLevelBtn" class="director-btn primary">
+                                    <i class="fas fa-plus"></i>
+                                    <span data-translate="org.levels.add">Add Level</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+                            <table class="director-table w-full">
+                                <thead>
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="org.levels.name">Name</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="org.levels.subjects">Subjects</th>
-                                        <th class="px-6 py-3"></th>
+                                        <th data-translate="org.levels.name">Name</th>
+                                        <th data-translate="org.levels.subjects">Subjects</th>
+                                        <th data-translate="org.actions">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="levelsTable" class="bg-white divide-y divide-gray-200"></tbody>
+                                <tbody id="levelsTable" class="divide-y divide-gray-100"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div id="panel-subjects" class="p-6 hidden">
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-lg font-semibold text-gray-900" data-translate="org.subjects.title">Subjects</h2>
-                            <button id="addSubjectBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"><i class="fas fa-plus mr-2"></i><span data-translate="org.subjects.add">Add Subject</span></button>
+                    <div id="panel-subjects" class="hidden">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-content">
+                                <div class="director-panel-title">
+                                    <div class="director-panel-title-icon">
+                                        <i class="fas fa-book-open"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-lg font-semibold text-gray-900" data-translate="org.subjects.title">Subjects</h2>
+                                        <p class="text-sm text-gray-500" data-translate="org.subjects.description_text">Manage academic subjects and courses</p>
+                                    </div>
+                                </div>
+                                <button id="addSubjectBtn" class="director-btn primary">
+                                    <i class="fas fa-plus"></i>
+                                    <span data-translate="org.subjects.add">Add Subject</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+                            <table class="director-table w-full">
+                                <thead>
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="org.subjects.name">Name</th>
-                                        <th class="px-6 py-3"></th>
+                                        <th data-translate="org.subjects.name">Name</th>
+                                        <th data-translate="org.actions">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="subjectsTable" class="bg-white divide-y divide-gray-200"></tbody>
+                                <tbody id="subjectsTable" class="divide-y divide-gray-100"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div id="panel-positions" class="p-0 hidden">
-                        <iframe src="payments.html?embed=1" class="w-full h-[70vh] bg-white rounded-b-lg"></iframe>
+                    <div id="panel-positions" class="hidden">
+                        <div class="panel-header-wrapper">
+                            <div class="director-panel-title">
+                                <div class="director-panel-title-icon">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-lg font-semibold text-gray-900" data-translate="org.positions.title">Positions</h2>
+                                    <p class="text-sm text-gray-500" data-translate="org.positions.description_text">Manage job positions and roles</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="director-panel" style="padding: 0; overflow: hidden;">
+                            <iframe src="payments.html?embed=1&noheader=1&noscroll=1" 
+                                    id="positionsIframe"
+                                    class="w-full bg-white border-0 rounded-xl"
+                                    style="border: none; overflow: hidden; width: 100%; display: block; min-height: 600px;"
+                                    frameborder="0"></iframe>
+                        </div>
                     </div>
 
-                    <div id="panel-departments" class="p-6 hidden">
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-lg font-semibold text-gray-900" data-translate="org.departments.title">Departments</h2>
-                            <button id="addDepartmentBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"><i class="fas fa-plus mr-2"></i><span data-translate="org.departments.add">Add Department</span></button>
+                    <div id="panel-departments" class="hidden">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-content">
+                                <div class="director-panel-title">
+                                    <div class="director-panel-title-icon">
+                                        <i class="fas fa-building"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-lg font-semibold text-gray-900" data-translate="org.departments.title">Departments</h2>
+                                        <p class="text-sm text-gray-500" data-translate="org.departments.description_text">Manage organizational departments</p>
+                                    </div>
+                                </div>
+                                <button id="addDepartmentBtn" class="director-btn primary">
+                                    <i class="fas fa-plus"></i>
+                                    <span data-translate="org.departments.add">Add Department</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+                            <table class="director-table w-full">
+                                <thead>
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="org.departments.department">Department</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="org.departments.responsible">Responsible</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="org.departments.employees">Employees</th>
-                                        <th class="px-6 py-3"></th>
+                                        <th data-translate="org.departments.department">Department</th>
+                                        <th data-translate="org.departments.responsible">Responsible</th>
+                                        <th data-translate="org.departments.employees">Employees</th>
+                                        <th data-translate="org.actions">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="departmentsTable" class="bg-white divide-y divide-gray-200"></tbody>
+                                <tbody id="departmentsTable" class="divide-y divide-gray-100"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
-    </div>
 
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/translations.js"></script>
@@ -198,6 +652,23 @@
                 if (state.branches) renderBranches();
                 if (state.departments) renderDepartments();
             });
+            
+            // Listen for iframe height updates
+            window.addEventListener('message', function(event) {
+                if (event.data.type === 'resize' && event.data.iframeId === 'positionsIframe') {
+                    const iframe = document.getElementById('positionsIframe');
+                    if (iframe) {
+                        console.log('Received height update:', event.data.height); // Debug log
+                        
+                        // Only update if height actually changed
+                        const currentHeight = parseInt(iframe.style.height) || 0;
+                        if (Math.abs(currentHeight - event.data.height) > 10) {
+                            iframe.style.height = event.data.height + 'px';
+                            console.log('Applied iframe height:', event.data.height + 'px'); // Debug log
+                        }
+                    }
+                }
+            });
         });
 
         function bindTabs() {
@@ -205,10 +676,17 @@
             buttons.forEach(btn => btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const tab = btn.getAttribute('data-tab');
-                buttons.forEach(b => b.className = 'py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm');
-                btn.className = 'tab-active py-4 px-1 border-b-2 font-medium text-sm';
+                
+                // Update tab states
+                buttons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update panel visibility
                 TABS.forEach(t => {
-                    document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tab);
+                    const panel = document.getElementById(`panel-${t}`);
+                    if (panel) {
+                        panel.classList.toggle('hidden', t !== tab);
+                    }
                 });
             }));
         }
@@ -231,15 +709,25 @@
             const tbody = document.getElementById('subjectsTable');
             if (!state.subjects.length) {
                 const noDataMsg = typeof translate === 'function' ? translate('org.subjects.no_data') : 'No subjects yet';
-                tbody.innerHTML = `<tr><td colspan="2" class="text-center py-6 text-gray-500">${noDataMsg}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="2" class="text-center py-8 text-gray-500">${noDataMsg}</td></tr>`;
                 return;
             }
+            const editText = typeof translate === 'function' ? translate('org.edit') : 'Edit';
+            const deleteText = typeof translate === 'function' ? translate('org.delete') : 'Delete';
             tbody.innerHTML = state.subjects.map(s => `
                 <tr>
-                    <td class="px-4 py-3">${s.name}</td>
-                    <td class="px-4 py-3 text-right space-x-2">
-                        <button class="text-blue-600" onclick="editSubject('${s.id}','${encodeURIComponent(s.name)}')"><i class="fas fa-edit"></i></button>
-                        <button class="text-red-600" onclick="deleteSubject('${s.id}')"><i class="fas fa-trash"></i></button>
+                    <td class="font-medium text-gray-900">${s.name}</td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <button class="action-btn edit" onclick="editSubject('${s.id}','${encodeURIComponent(s.name)}')" title="${editText}">
+                                <i class="fas fa-edit"></i>
+                                <span>${editText}</span>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteSubject('${s.id}')" title="${deleteText}">
+                                <i class="fas fa-trash"></i>
+                                <span>${deleteText}</span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -314,18 +802,33 @@
             const tbody = document.getElementById('levelsTable');
             if (!state.levels.length) {
                 const noDataMsg = typeof translate === 'function' ? translate('org.levels.no_data') : 'No levels yet';
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-gray-500">${noDataMsg}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center py-8 text-gray-500">${noDataMsg}</td></tr>`;
                 return;
             }
+            const editText = typeof translate === 'function' ? translate('org.edit') : 'Edit';
+            const deleteText = typeof translate === 'function' ? translate('org.delete') : 'Delete';
+            const noSubjectsText = typeof translate === 'function' ? translate('org.subjects.no_data') : 'No subjects';
             tbody.innerHTML = state.levels.map(l => {
-                const subjects = (l.subjects || []).map(s => s.name).join(', ');
+                const subjectsList = (l.subjects || []).length > 0 
+                    ? (l.subjects || []).map(s => `<span class="inline-badge">${s.name}</span>`).join('')
+                    : `<span class="text-gray-400 italic">${noSubjectsText}</span>`;
                 return `
                 <tr>
-                    <td class="px-4 py-3">${l.name}</td>
-                    <td class="px-4 py-3">${subjects}</td>
-                    <td class="px-4 py-3 text-right space-x-2">
-                        <button class="text-blue-600" onclick="editLevel('${l.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="text-red-600" onclick="deleteLevel('${l.id}')"><i class="fas fa-trash"></i></button>
+                    <td class="font-medium text-gray-900">${l.name}</td>
+                    <td class="text-gray-600">
+                        <div class="inline-badge-list">${subjectsList}</div>
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <button class="action-btn edit" onclick="editLevel('${l.id}')" title="${editText}">
+                                <i class="fas fa-edit"></i>
+                                <span>${editText}</span>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteLevel('${l.id}')" title="${deleteText}">
+                                <i class="fas fa-trash"></i>
+                                <span>${deleteText}</span>
+                            </button>
+                        </div>
                     </td>
                 </tr>`;
             }).join('');
@@ -414,20 +917,37 @@
             const tbody = document.getElementById('branchesTable');
             if (!state.branches.length) {
                 const noDataMsg = typeof translate === 'function' ? translate('org.branches.no_data') : 'No branches yet';
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-500">${noDataMsg}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-gray-500">${noDataMsg}</td></tr>`;
                 return;
             }
+            const editText = typeof translate === 'function' ? translate('org.edit') : 'Edit';
+            const deleteText = typeof translate === 'function' ? translate('org.delete') : 'Delete';
+            const noLevelsText = typeof translate === 'function' ? translate('org.levels.no_data') : 'No levels';
             tbody.innerHTML = state.branches.map(b => {
-                const levels = (b.levels || []).map(l => l.name).join(', ');
+                const levelsList = (b.levels || []).length > 0
+                    ? (b.levels || []).map(l => `<span class="inline-badge">${l.name}</span>`).join('')
+                    : `<span class="text-gray-400 italic">${noLevelsText}</span>`;
                 return `
                 <tr>
-                    <td class="px-4 py-3">${b.name}</td>
-                    <td class="px-4 py-3">${b.website || ''}</td>
-                    <td class="px-4 py-3">${b.phone || ''}</td>
-                    <td class="px-4 py-3">${levels}</td>
-                    <td class="px-4 py-3 text-right space-x-2">
-                        <button class="text-blue-600" onclick="editBranch('${b.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="text-red-600" onclick="deleteBranch('${b.id}')"><i class="fas fa-trash"></i></button>
+                    <td class="font-medium text-gray-900">${b.name}</td>
+                    <td class="text-gray-600">
+                        ${b.website ? `<a href="${b.website}" target="_blank" class="text-blue-600 hover:text-blue-800">${b.website}</a>` : '-'}
+                    </td>
+                    <td class="text-gray-600">${b.phone || '-'}</td>
+                    <td class="text-gray-600">
+                        <div class="inline-badge-list">${levelsList}</div>
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <button class="action-btn edit" onclick="editBranch('${b.id}')" title="${editText}">
+                                <i class="fas fa-edit"></i>
+                                <span>${editText}</span>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteBranch('${b.id}')" title="${deleteText}">
+                                <i class="fas fa-trash"></i>
+                                <span>${deleteText}</span>
+                            </button>
+                        </div>
                     </td>
                 </tr>`;
             }).join('');
@@ -440,6 +960,9 @@
             const websiteLabel = typeof translate === 'function' ? translate('org.modal.website') : 'Website';
             const phoneLabel = typeof translate === 'function' ? translate('org.modal.phone') : 'Phone';
             const descLabel = typeof translate === 'function' ? translate('org.modal.description') : 'Description';
+            const addressLabel = typeof translate === 'function' ? translate('org.modal.address') : 'Address';
+            const wilayaLabel = typeof translate === 'function' ? translate('org.modal.wilaya') : 'Wilaya';
+            const regNumberLabel = typeof translate === 'function' ? translate('org.modal.registration_number') : 'Registration Number (N° Adhérent)';
             const levelsLabel = typeof translate === 'function' ? translate('org.modal.levels') : 'Levels';
             const saveText = typeof translate === 'function' ? translate('org.modal.save') : 'Save';
             Utils.showModal(title, `
@@ -457,10 +980,22 @@
                             <label class="block text-sm font-medium mb-1">${phoneLabel}</label>
                             <input name="phone" type="text" class="w-full border rounded px-3 py-2" />
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">${wilayaLabel}</label>
+                            <input name="wilaya" type="text" class="w-full border rounded px-3 py-2" placeholder="e.g., BOUMERDES" />
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">${descLabel}</label>
                         <textarea name="description" class="w-full border rounded px-3 py-2" rows="3"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">${addressLabel}</label>
+                        <input name="address" type="text" class="w-full border rounded px-3 py-2" placeholder="e.g., Cité BENADJEL (20 août) BOUDOUAOU" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">${regNumberLabel}</label>
+                        <input name="registration_number" type="text" class="w-full border rounded px-3 py-2" placeholder="e.g., 35370248 57" />
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">${levelsLabel}</label>
@@ -478,8 +1013,11 @@
             const website = form.website.value.trim() || null;
             const phone = form.phone.value.trim() || null;
             const description = form.description.value.trim() || null;
+            const address = form.address.value.trim() || null;
+            const wilaya = form.wilaya.value.trim() || null;
+            const registration_number = form.registration_number.value.trim() || null;
             const levelIds = Array.from(document.querySelectorAll('.level-checkbox:checked')).map(i => i.value);
-            await APIService.request('departments', '/branches', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, website, phone, description, level_ids: levelIds }) });
+            await APIService.request('departments', '/branches', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, website, phone, description, address, wilaya, registration_number, level_ids: levelIds }) });
             document.querySelector('.modal-overlay')?.remove();
             await loadBranches();
         }
@@ -493,6 +1031,9 @@
             const websiteLabel = typeof translate === 'function' ? translate('org.modal.website') : 'Website';
             const phoneLabel = typeof translate === 'function' ? translate('org.modal.phone') : 'Phone';
             const descLabel = typeof translate === 'function' ? translate('org.modal.description') : 'Description';
+            const addressLabel = typeof translate === 'function' ? translate('org.modal.address') : 'Address';
+            const wilayaLabel = typeof translate === 'function' ? translate('org.modal.wilaya') : 'Wilaya';
+            const regNumberLabel = typeof translate === 'function' ? translate('org.modal.registration_number') : 'Registration Number (N° Adhérent)';
             const levelsLabel = typeof translate === 'function' ? translate('org.modal.levels') : 'Levels';
             const saveText = typeof translate === 'function' ? translate('org.modal.save') : 'Save';
             Utils.showModal(title, `
@@ -511,10 +1052,22 @@
                             <label class="block text-sm font-medium mb-1">${phoneLabel}</label>
                             <input name="phone" type="text" class="w-full border rounded px-3 py-2" value="${b.phone || ''}" />
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">${wilayaLabel}</label>
+                            <input name="wilaya" type="text" class="w-full border rounded px-3 py-2" value="${b.wilaya || ''}" placeholder="e.g., BOUMERDES" />
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">${descLabel}</label>
                         <textarea name="description" class="w-full border rounded px-3 py-2" rows="3">${b.description || ''}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">${addressLabel}</label>
+                        <input name="address" type="text" class="w-full border rounded px-3 py-2" value="${b.address || ''}" placeholder="e.g., Cité BENADJEL (20 août) BOUDOUAOU" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">${regNumberLabel}</label>
+                        <input name="registration_number" type="text" class="w-full border rounded px-3 py-2" value="${b.registration_number || ''}" placeholder="e.g., 35370248 57" />
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">${levelsLabel}</label>
@@ -533,8 +1086,11 @@
             const website = form.website.value.trim() || null;
             const phone = form.phone.value.trim() || null;
             const description = form.description.value.trim() || null;
+            const address = form.address.value.trim() || null;
+            const wilaya = form.wilaya.value.trim() || null;
+            const registration_number = form.registration_number.value.trim() || null;
             const levelIds = Array.from(document.querySelectorAll('.level-checkbox:checked')).map(i => i.value);
-            await APIService.request('departments', `/branches/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, website, phone, description, level_ids: levelIds }) });
+            await APIService.request('departments', `/branches/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, website, phone, description, address, wilaya, registration_number, level_ids: levelIds }) });
             document.querySelector('.modal-overlay')?.remove();
             await loadBranches();
         }
@@ -558,12 +1114,18 @@
         function renderDepartments() {
             const tbody = document.getElementById('departmentsTable');
             const depts = state.departments || [];
+            
+            // Debug: Log the actual data structure
+            console.log('Departments data:', depts);
+            
             if (!depts.length) {
                 const noDataMsg = typeof translate === 'function' ? translate('org.departments.no_data') : 'No departments yet';
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-gray-500">${noDataMsg}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-gray-500">${noDataMsg}</td></tr>`;
                 return;
             }
-            const expandTitle = typeof translate === 'function' ? translate('org.departments.expand') : 'Expand';
+            
+            // Get translations once outside the map
+            const expandTitle = typeof translate === 'function' ? translate('org.departments.expand') : 'Click to expand';
             const employeesLabel = typeof translate === 'function' ? translate('org.departments.employees_list') : 'Employees';
             const deptLabel = typeof translate === 'function' ? translate('org.departments.department_label') : 'Department';
             const fullNameLabel = typeof translate === 'function' ? translate('org.departments.full_name') : 'Full Name';
@@ -571,45 +1133,65 @@
             const phoneLabel = typeof translate === 'function' ? translate('org.departments.phone') : 'Phone';
             const loadingMsg = typeof translate === 'function' ? translate('org.departments.loading') : 'Loading...';
             const noResp = typeof translate === 'function' ? translate('org.departments.no_responsible') : '—';
-            tbody.innerHTML = depts.map(d => {
-                const respName = d.responsible_first_name && d.responsible_last_name ? `${d.responsible_first_name} ${d.responsible_last_name}` : noResp;
-                const count = d.employee_count || 0;
-                const rowId = `dept-row-${d.id}`;
-                const subId = `dept-sub-${d.id}`;
+            const editText = typeof translate === 'function' ? translate('org.edit') : 'Edit';
+            const deleteText = typeof translate === 'function' ? translate('org.delete') : 'Delete';
+            
+            tbody.innerHTML = depts.map(dept => {
+                // Debug: Log each department
+                console.log('Department:', dept);
+                
+                // Handle different possible field names for employee count
+                const employeeCount = dept.employee_count || dept.employees?.length || dept.employeeCount || 0;
+                
+                // Handle different possible field names for responsible person
+                const responsible = dept.responsible || dept.responsible_name || dept.responsible_first_name && dept.responsible_last_name 
+                    ? `${dept.responsible_first_name} ${dept.responsible_last_name}` 
+                    : dept.manager || dept.head || '-';
+                
+                const rowId = `dept-row-${dept.id}`;
+                const subId = `dept-sub-${dept.id}`;
+                
                 return `
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-3">
-                        <button class="text-gray-600 hover:text-blue-600 mr-2" title="${expandTitle}" onclick="toggleDept('${subId}', this)"><i class="fas fa-chevron-right"></i></button>
-                        <span class="font-medium text-gray-900">${d.name}</span>
+                        <button class="text-gray-600 hover:text-blue-600 mr-2" title="${expandTitle}" onclick="toggleDept('${subId}', this)">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <span class="font-medium text-gray-900">${dept.name || dept.department || 'N/A'}</span>
                     </td>
-                    <td class="px-6 py-3">${respName !== noResp ? `<span class=\"inline-flex items-center\"><i class=\"fas fa-user-shield text-blue-600 mr-2\"></i>${respName}</span>` : noResp}</td>
-                    <td class="px-6 py-3">${count}</td>
-                    <td class="px-6 py-3 text-right space-x-2">
-                        <button class="text-blue-600" onclick="openEditDepartmentModal('${d.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="text-red-600" onclick="deleteDepartment('${d.id}', '${d.name.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i></button>
+                    <td class="px-6 py-3">
+                        ${responsible !== noResp ? `<span class="inline-flex items-center"><i class="fas fa-user-shield text-blue-600 mr-2"></i>${responsible}</span>` : noResp}
+                    </td>
+                    <td class="px-6 py-3">${employeeCount}</td>
+                    <td class="px-6 py-3">
+                        <div class="flex items-center gap-2">
+                            <button class="action-btn edit" onclick="openEditDepartmentModal('${dept.id}')" title="${editText}">
+                                <i class="fas fa-edit"></i>
+                                <span>${editText}</span>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteDepartment('${dept.id}')" title="${deleteText}">
+                                <i class="fas fa-trash"></i>
+                                <span>${deleteText}</span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 <tr id="${subId}" class="hidden">
-                    <td colspan="4" class="px-6 pb-6">
-                        <div class="bg-gray-50 rounded-lg p-4">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="font-medium text-gray-900">${employeesLabel}</h3>
-                                <div class="text-sm text-gray-500">${deptLabel}: ${d.name}</div>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-100">
-                                        <tr>
-                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${fullNameLabel}</th>
-                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${positionLabel}</th>
-                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${phoneLabel}</th>
-                                            <th class="px-4 py-2"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="${subId}-tbody" class="bg-white divide-y divide-gray-200">
-                                        <tr><td colspan="4" class="px-4 py-4 text-gray-500">${loadingMsg}</td></tr>
-                                    </tbody>
-                                </table>
+                    <td colspan="4" class="px-2 pb-4">
+                        <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border border-gray-200">
+                            <div class="p-4">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full">
+                                        <tbody id="${subId}-tbody" class="divide-y divide-gray-100">
+                                            <tr><td colspan="4" class="px-4 py-6 text-center text-gray-500">
+                                                <div class="flex items-center justify-center gap-2">
+                                                    <i class="fas fa-spinner fa-spin"></i>
+                                                    <span>${loadingMsg}</span>
+                                                </div>
+                                            </td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </td>
@@ -636,29 +1218,77 @@
                     const noEmployeesMsg = typeof translate === 'function' ? translate('org.departments.no_employees') : 'No employees assigned';
                     const respLabel = typeof translate === 'function' ? translate('org.departments.responsible_label') : 'Responsible';
                     const failedMsg = typeof translate === 'function' ? translate('org.departments.failed_load') : 'Failed to load employees';
+                    
                     if (!employees.length) {
-                        tbody.innerHTML = `<tr><td colspan=\"4\" class=\"px-4 py-4 text-gray-500\">${noEmployeesMsg}</td></tr>`;
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="4" class="px-4 py-8 text-center">
+                                    <div class="text-gray-400">
+                                        <i class="fas fa-users text-4xl mb-2"></i>
+                                        <p>${noEmployeesMsg}</p>
+                                    </div>
+                                </td>
+                            </tr>`;
                     } else {
                         tbody.innerHTML = employees.map(e => {
                             const isResp = responsibleId && e.id === responsibleId;
                             const full = `${e.first_name || e.firstName || ''} ${e.last_name || e.lastName || ''}`.trim();
                             const pos = e.position_name || e.position || '—';
                             const phone = e.phone || '—';
-                            const trClass = isResp ? 'bg-blue-50' : '';
-                            const respIcon = isResp ? '<i class=\"fas fa-user-shield text-blue-600 mr-2\"></i>' : '';
+                            const email = e.email || '—';
+                            
                             return `
-                            <tr class="${trClass}">
-                                <td class="px-4 py-2">${respIcon}${full || '—'}</td>
-                                <td class="px-4 py-2">${pos}</td>
-                                <td class="px-4 py-2">${phone}</td>
-                                <td class="px-4 py-2 text-right">
-                                    ${isResp ? `<span class=\"text-gray-400 text-sm\">${respLabel}</span>` : `<button class=\"text-red-600\" onclick=\"unassignEmployeeFromDept('${details.id}','${e.id}')\"><i class=\"fas fa-user-minus\"></i></button>`}
+                            <tr class="${isResp ? 'bg-blue-50 border-l-4 border-blue-400' : 'hover:bg-gray-50'}">
+                                <td class="px-4 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 ${isResp ? 'bg-blue-100' : 'bg-gray-100'} rounded-full flex items-center justify-center">
+                                            <i class="fas ${isResp ? 'fa-user-shield text-blue-600' : 'fa-user text-gray-600'}"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-gray-900 ${isResp ? 'text-blue-900' : ''}">
+                                                ${full || '—'}
+                                                ${isResp ? `<span class="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">${respLabel}</span>` : ''}
+                                            </div>
+                                            <div class="text-sm text-gray-500">${pos}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <div class="text-sm text-gray-600">
+                                        ${phone !== '—' ? `
+                                            <div class="flex items-center gap-1">
+                                                <i class="fas fa-phone text-gray-400"></i>
+                                                <span>${phone}</span>
+                                            </div>
+                                        ` : ''}
+                                        ${email !== '—' ? `
+                                            <div class="flex items-center gap-1 mt-1">
+                                                <i class="fas fa-envelope text-gray-400"></i>
+                                                <span class="text-xs">${email}</span>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4 text-right">
+                                    ${!isResp ? `
+                                        <button class="text-red-500 hover:text-red-700 text-sm" onclick="unassignEmployeeFromDept('${details.id}','${e.id}')" title="${typeof translate === 'function' ? translate('org.departments.remove_from_department') : 'Remove from department'}">
+                                            <i class="fas fa-user-minus"></i>
+                                        </button>
+                                    ` : ''}
                                 </td>
                             </tr>`;
                         }).join('');
                     }
                 } catch (e) {
-                    tbody.innerHTML = `<tr><td colspan=\"4\" class=\"px-4 py-4 text-red-600\">${failedMsg}</td></tr>`;
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="px-4 py-8 text-center">
+                                <div class="text-red-500">
+                                    <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                                    <p>${failedMsg}</p>
+                                </div>
+                            </td>
+                        </tr>`;
                 }
             }
         }
@@ -822,6 +1452,32 @@
             respList.addEventListener('change', updateDatasets);
             empList.addEventListener('change', updateDatasets);
         }
+
+        // Handle iframe scrolling for positions panel
+        document.addEventListener('DOMContentLoaded', function() {
+            const positionsIframe = document.getElementById('positionsIframe');
+            if (positionsIframe) {
+                // Ensure iframe doesn't show scrollbars
+                positionsIframe.setAttribute('scrolling', 'no');
+                positionsIframe.style.overflow = 'hidden';
+                
+                // Listen for tab changes to ensure iframe is properly sized
+                const positionsTab = document.getElementById('tab-positions');
+                if (positionsTab) {
+                    positionsTab.addEventListener('click', function() {
+                        setTimeout(function() {
+                            if (positionsIframe.contentWindow) {
+                                try {
+                                    positionsIframe.contentWindow.document.body.style.overflow = 'hidden';
+                                } catch (e) {
+                                    // Cross-origin or other error, ignore
+                                }
+                            }
+                        }, 100);
+                    });
+                }
+            }
+        });
 
         window.submitDepartmentForm = async function() {
             const form = document.getElementById('departmentForm');

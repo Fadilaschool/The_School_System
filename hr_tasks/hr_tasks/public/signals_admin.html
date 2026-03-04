@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إدارة أنواع الإشارات - مسؤول الصيانة</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -13,34 +15,137 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #ffffff;
+      font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
       min-height: 100vh;
-      padding: 20px;
+      padding: 24px;
+      color: #0f172a;
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 1600px;
       margin: 0 auto;
+    }
+
+    /* Page hero + nav panel (aligned with signals_responsible.html) */
+    .page-hero {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      padding: 1.75rem 0;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .page-hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-hero-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 0.75rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .page-hero-title i,
+    .page-hero-title::before {
+      color: #3b82f6;
+      font-size: 1.75rem;
+    }
+
+    .page-hero-subtitle {
+      font-size: 1rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .page-hero-title {
+        font-size: 1.5rem;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .page-hero-title i,
+      .page-hero-title::before {
+        font-size: 1.5rem;
+      }
+
+      .page-hero-subtitle {
+        font-size: 0.875rem;
+      }
+    }
+
+    .action-buttons-section {
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+      padding: 12px 18px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      min-height: 60px;
+    }
+
+    .secondary-actions {
+      display: inline-flex;
+      gap: 6px;
+      padding: 6px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      border-radius: 999px;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #475569;
+      border-radius: 999px;
+      padding-inline: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+    }
+
+    .btn-secondary i {
+      font-size: 0.9rem;
+    }
+
+    .btn-secondary.nav-btn.active {
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
     }
 
     .header {
       background: rgba(255, 255, 255, 0.95);
       border-radius: 20px;
-      padding: 30px;
+      padding: 24px;
       margin-bottom: 25px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
     }
 
     .header h1 {
       color: #1e293b;
-      font-size: 32px;
-      margin-bottom: 8px;
+      font-size: 22px;
+      margin-bottom: 6px;
     }
 
     .header p {
       color: #64748b;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .grid {
@@ -261,10 +366,36 @@
     }
   </style>
   <script src="auth.js"></script>
+  <script src="signals-nav.js"></script>
 </head>
 
 <body>
   <div class="container">
+    <!-- Director-style hero + tabs (same look as signals_responsible.html) -->
+    <div class="page-hero">
+      <div class="page-hero-content">
+        <h1 class="page-hero-title">📬 الإشارات المستلمة</h1>
+        <p class="page-hero-subtitle">إدارة ومتابعة الإشارات</p>
+      </div>
+    </div>
+
+    <div class="action-buttons-section">
+      <div class="secondary-actions">
+        <button class="btn btn-secondary nav-btn" data-nav="signals">
+          <i class="fas fa-list"></i>
+          الإشارات
+        </button>
+        <button class="btn btn-secondary nav-btn active" data-nav="settings">
+          <i class="fas fa-cog"></i>
+          الإعدادات
+        </button>
+        <button class="btn btn-secondary nav-btn" data-nav="statistics">
+          <i class="fas fa-chart-bar"></i>
+          الإحصائيات
+        </button>
+      </div>
+    </div>
+
     <div class="header">
       <h1>🔧 إدارة أنواع الإشارات</h1>
       <p>إدارة مسؤولي أنواع الإشارات - قسم الصيانة</p>

@@ -106,6 +106,70 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
+        /* Value icons - Desktop and Mobile */
+        .value-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            padding: 1rem 0;
+            width: 100%;
+            flex-wrap: nowrap;
+        }
+        
+        .value-icons .text-center {
+            flex: 1;
+            min-width: 80px;
+            max-width: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .value-icons i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .value-icons p {
+            font-size: 0.75rem;
+            margin: 0;
+            line-height: 1.2;
+            text-align: center;
+        }
+        
+        /* Social links - Desktop and Mobile */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .social-links i {
+            font-size: 1rem;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 1024px) {
             .main-container {
@@ -115,6 +179,120 @@
             }
             .branding-section {
                 margin-bottom: 3rem;
+            }
+            
+            .value-icons {
+                gap: 1.5rem;
+            }
+            
+            .value-icons i {
+                font-size: 1.75rem;
+            }
+        }
+        
+        /* Mobile responsive fixes */
+        @media (max-width: 768px) {
+            /* Make page scrollable on mobile */
+            body {
+                overflow-x: hidden;
+                overflow-y: auto;
+                min-height: 100vh;
+            }
+            
+            .main-container {
+                min-height: auto;
+                padding: 2rem 1rem 4rem 1rem;
+                flex-direction: column;
+            }
+            
+            .branding-section {
+                margin-bottom: 2rem;
+                width: 100%;
+            }
+            
+            /* Adjust value icons for mobile */
+            .value-icons {
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            .value-icons .text-center {
+                min-width: 60px;
+                max-width: 80px;
+            }
+            
+            .value-icons i {
+                font-size: 1.25rem !important;
+            }
+            
+            .value-icons p {
+                font-size: 0.7rem !important;
+                line-height: 1.1;
+            }
+            
+            /* Adjust social links for mobile */
+            .social-links {
+                gap: 1rem;
+                padding: 0.5rem 0;
+            }
+            
+            .social-links a {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .social-links i {
+                font-size: 0.875rem;
+            }
+            
+            /* Adjust logo size for mobile */
+            .logo-glow {
+                width: 6rem !important;
+                height: 6rem !important;
+            }
+            
+            /* Adjust title for mobile */
+            .branding-section h1 {
+                font-size: 2rem !important;
+                line-height: 1.2;
+            }
+            
+            .branding-section p {
+                font-size: 1rem !important;
+            }
+        }
+        
+        /* Small mobile fixes */
+        @media (max-width: 480px) {
+            .value-icons {
+                gap: 0.75rem;
+                padding: 0.75rem 0;
+            }
+            
+            .value-icons .text-center {
+                min-width: 50px;
+                max-width: 70px;
+            }
+            
+            .value-icons i {
+                font-size: 1.125rem !important;
+            }
+            
+            .value-icons p {
+                font-size: 0.65rem !important;
+            }
+            
+            .social-links {
+                gap: 0.75rem;
+            }
+            
+            .social-links a {
+                width: 28px;
+                height: 28px;
+            }
+            
+            .social-links i {
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -153,7 +331,7 @@
                     <div class="h-px bg-white/20 w-32"></div>
                 </div>
 
-                <div class="flex justify-center space-x-8 text-white/80 pt-4">
+                <div class="value-icons text-white/80 pt-4">
                     <div class="text-center">
                         <i class="fas fa-graduation-cap text-3xl mb-2"></i>
                         <p class="text-xs" data-translate="login.excellence">Excellence</p>
@@ -243,7 +421,7 @@
 
                 <div class="text-center text-white/70 text-xs space-y-2">
                     <p data-translate="login.copyright">© 2024 EL FADILA SCHOOL. All rights reserved.</p>
-                    <div class="flex items-center justify-center space-x-4">
+                    <div class="social-links">
                         <a href="#" class="hover:text-white transition-colors"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
                         <a href="#" class="hover:text-white transition-colors"><i class="fab fa-youtube"></i></a>

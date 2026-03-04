@@ -6,67 +6,491 @@
     <title data-translate="attendance.punch_management">Punch File Management - HR Operations Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
     <script src="../assets/js/translations.js"></script>
     
     <style>
+        /* Director-themed base styles */
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-purple: #7c3aed;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        main {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Page Header Styles */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: #3b82f6;
+            font-size: 1.75rem;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Director Panel */
+        .director-panel {
+            margin-top: 16px;
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .director-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .director-panel>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left,
+                    rgba(37, 99, 235, 0.22),
+                    rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+
+        .director-section-pill {
+            padding: 0.15rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: rgba(15, 23, 42, 0.04);
+            color: #64748b;
+        }
+
+        /* Enhanced Buttons */
+        .filter-button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-button:hover {
+            background: linear-gradient(135deg, #e5edff, #dbeafe);
+            border-color: #93c5fd;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .filter-button.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.35);
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .complaints-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 1000px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .complaints-table thead {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .complaints-table th {
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #475569;
+            padding: 1.25rem 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            vertical-align: middle;
+            position: relative;
+            white-space: nowrap;
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .complaints-table tbody tr {
+            background: white;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .complaints-table tbody tr:hover {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+        }
+
+        .complaints-table td {
+            padding: 1rem;
+            vertical-align: middle;
+            font-size: 0.875rem;
+            color: #1e293b;
+            font-weight: 500;
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        /* Dropzone Enhancement */
         .dropzone {
             border: 2px dashed #cbd5e0;
             transition: all 0.3s ease;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+            position: relative;
+            overflow: hidden;
         }
+
+        .dropzone::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.05), transparent 70%);
+            pointer-events: none;
+        }
+
         .dropzone.dragover {
             border-color: #3b82f6;
-            background-color: #eff6ff;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
         }
+
         .file-item:hover .file-actions {
             opacity: 1;
         }
+
         .file-actions {
             opacity: 0;
             transition: opacity 0.2s ease;
         }
+
         .progress-bar {
             transition: width 0.3s ease;
         }
+
+        /* Enhanced Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .status-uploaded {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-parsed {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .status-saved {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        /* Enhanced Action Buttons */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+            pointer-events: none;
+        }
+
+        .action-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-btn-view {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .action-btn-view:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .action-btn-delete {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .action-btn-delete:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Enhanced Form Elements */
+        .filter-field-group {
+            padding: 1rem;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .filter-field-group:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+        }
+
+        .filter-field-group label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #64748b;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-field-group label i {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .filter-select {
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            background: #ffffff;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            background-color: #f9fafb;
+        }
+
+        .filter-select:hover {
+            border-color: #94a3b8;
+            background-color: #f8fafc;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] .director-panel {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .filter-field-group {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        [dir="rtl"] .filter-field-group label {
+            text-align: right !important;
+        }
+
+        [dir="rtl"] .filter-select {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .page-title i {
+                font-size: 1.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-
+<body>
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <!-- Header -->
+    <main>
+        <div class="w-full" style="padding: 1.5rem;">
+            <!-- Page Title & Description -->
+            <div class="page-header">
+                <h1 class="page-title" data-translate="attendance.punch_management">
+                    <i class="fas fa-file-upload"></i>
+                    إدارة ملفات البصمة
+                </h1>
+                <p class="page-subtitle" data-translate="attendance.punch_management_subtitle">رفع وإدارة ملفات البصمة مع المعالجة المتقدمة</p>
+            </div>
 
-        <!-- Two Column Layout -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left Column - Upload and Files List -->
             <div class="lg:col-span-1 space-y-6">
                 <!-- File Upload Section -->
-                <div class="bg-white rounded-lg shadow p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-medium text-gray-900" data-translate="attendance.upload_punch_file">Upload Punch File</h3>
-                        <!-- Language Selector -->
-                        <select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="en">English</option>
-                            <option value="fr">Français</option>
-                            <option value="ar">العربية</option>
-                        </select>
+                <div class="director-panel">
+                    <div class="director-panel-header">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900" data-translate="attendance.upload_punch_file">رفع ملف البصمة</h3>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="director-section-pill" data-translate="attendance.upload_section">رفع الملفات</span>
+                        </div>
                     </div>
                     
                     <!-- Dropzone -->
                     <div id="dropzone" class="dropzone rounded-lg p-8 text-center cursor-pointer">
                         <div class="space-y-2">
                             <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
-                            <p class="text-gray-600" data-translate="common.drag_drop_file">Drag & Drop .xls/.xlsx file here</p>
-                            <p class="text-sm text-gray-500" data-translate="common.or_click_to_select">or click to select</p>
+                            <p class="text-gray-600" data-translate="common.drag_drop_file">اسحب وأفلت ملف .xls/.xlsx هنا</p>
+                            <p class="text-sm text-gray-500" data-translate="common.or_click_to_select">أو انقر للاختيار</p>
                         </div>
                     </div>
                     
                     <input type="file" id="fileInput" class="hidden" accept=".xls,.xlsx">
                     
                     <!-- Upload Button -->
-                    <button id="uploadBtn" class="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled data-translate="btn.upload_file">
-                        <i class="fas fa-upload mr-2"></i>
-                        <span data-translate="btn.upload_file">Upload File</span>
+                    <button id="uploadBtn" class="w-full filter-button active disabled:opacity-50 disabled:cursor-not-allowed" disabled data-translate="btn.upload_file">
+                        <i class="fas fa-upload"></i>
+                        <span data-translate="btn.upload_file">رفع الملف</span>
                     </button>
                     
                     <!-- Progress Bar -->
@@ -82,9 +506,17 @@
                 </div>
 
                 <!-- Uploaded Files List -->
-                <div class="bg-white rounded-lg shadow">
-                    <div class="p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-medium text-gray-900" data-translate="common.uploaded_files">Uploaded Files</h3>
+                <div class="director-panel">
+                    <div class="director-panel-header">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900" data-translate="common.uploaded_files">الملفات المرفوعة</h3>
+                            </div>
+                        </div>
+                        <span class="director-section-pill" data-translate="attendance.files_section">قائمة الملفات</span>
                     </div>
                     <div id="filesList" class="divide-y divide-gray-200 max-h-96 overflow-y-auto">
                         <!-- Files will be loaded here -->
@@ -94,53 +526,74 @@
 
             <!-- Right Column - Raw Punches Table -->
             <div class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4" data-translate="attendance.raw_punches">Raw Punches</h3>
-                    <div class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="employee.employee">Employee</label>
-                            <input type="text" id="punchFilterEmployee" data-translate-placeholder="common.search_name" placeholder="Search name" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <div class="director-panel">
+                    <div class="director-panel-header">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900" data-translate="attendance.raw_punches">سجلات البصمة الخام</h3>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="time.year">Year</label>
-                            <select id="punchFilterYear" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+                        <span class="director-section-pill" data-translate="attendance.punches_section">السجلات</span>
+                    </div>
+                    
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="filter-field-group">
+                            <label for="punchFilterEmployee" data-translate="employee.employee">
+                                <i class="fas fa-user"></i>
+                                الموظف
+                            </label>
+                            <input type="text" id="punchFilterEmployee" data-translate-placeholder="common.search_name" placeholder="ابحث بالاسم" class="filter-select">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="time.month">Month</label>
-                            <select id="punchFilterMonth" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">All</option>
-                                <option value="1">January</option>
-                                <option value="2">February</option>
-                                <option value="3">March</option>
-                                <option value="4">April</option>
-                                <option value="5">May</option>
-                                <option value="6">June</option>
-                                <option value="7">July</option>
-                                <option value="8">August</option>
-                                <option value="9">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
+                        <div class="filter-field-group">
+                            <label for="punchFilterYear" data-translate="time.year">
+                                <i class="fas fa-calendar"></i>
+                                السنة
+                            </label>
+                            <select id="punchFilterYear" class="filter-select"></select>
+                        </div>
+                        <div class="filter-field-group">
+                            <label for="punchFilterMonth" data-translate="time.month">
+                                <i class="fas fa-calendar-alt"></i>
+                                الشهر
+                            </label>
+                            <select id="punchFilterMonth" class="filter-select">
+                                <option value="">الكل</option>
+                                <option value="1">يناير</option>
+                                <option value="2">فبراير</option>
+                                <option value="3">مارس</option>
+                                <option value="4">أبريل</option>
+                                <option value="5">مايو</option>
+                                <option value="6">يونيو</option>
+                                <option value="7">يوليو</option>
+                                <option value="8">أغسطس</option>
+                                <option value="9">سبتمبر</option>
+                                <option value="10">أكتوبر</option>
+                                <option value="11">نوفمبر</option>
+                                <option value="12">ديسمبر</option>
                             </select>
                         </div>
                         <div class="flex items-end">
-                            <button id="punchFilterSearch" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm" data-translate="btn.apply">
-                                <i class="fas fa-search mr-2"></i>
-                                <span data-translate="btn.apply">Apply</span>
+                            <button id="punchFilterSearch" class="filter-button active w-full" data-translate="btn.apply">
+                                <i class="fas fa-search"></i>
+                                <span data-translate="btn.apply">تطبيق</span>
                             </button>
                         </div>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200" id="rawPunchesTable">
-                            <thead class="bg-gray-50">
+                    
+                    <div class="table-wrapper">
+                        <table class="complaints-table" id="rawPunchesTable">
+                            <thead>
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="employee.employee">Employee</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="attendance.punch_time">Punch Time</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="attendance.source">Source</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="common.actions">Actions</th>
+                                    <th data-translate="employee.employee">الموظف</th>
+                                    <th data-translate="attendance.punch_time">وقت البصمة</th>
+                                    <th data-translate="attendance.source">المصدر</th>
+                                    <th data-translate="common.actions">الإجراءات</th>
                                 </tr>
                             </thead>
-                            <tbody id="rawPunchesBody" class="bg-white divide-y divide-gray-200">
+                            <tbody id="rawPunchesBody">
                                 <!-- Raw punches rows will be populated here -->
                             </tbody>
                         </table>
@@ -150,9 +603,16 @@
 
             <!-- File Preview Modal -->
             <div id="filePreviewModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-                <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full mx-4 p-6 overflow-auto max-h-[80vh]">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-medium text-gray-900" id="modalFileTitle">File Preview</h3>
+                <div class="director-panel max-w-4xl w-full mx-4 p-6 overflow-auto max-h-[80vh]">
+                    <div class="director-panel-header">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900" id="modalFileTitle">File Preview</h3>
+                            </div>
+                        </div>
                         <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
                             <i class="fas fa-times text-xl"></i>
                         </button>
@@ -160,26 +620,27 @@
                     <div id="modalFileDetails" class="mb-4 text-sm text-gray-700">
                         <!-- File details will be shown here -->
                     </div>
-                    <div id="modalPreviewTable" class="overflow-x-auto max-h-96 overflow-y-auto border border-gray-200 rounded">
+                    <div id="modalPreviewTable" class="table-wrapper max-h-96 overflow-y-auto">
                         <!-- Preview table will be populated here -->
                     </div>
                     <div class="mt-6 flex justify-end space-x-3">
-                        <button id="modalCancelBtn" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                            Cancel
+                        <button id="modalCancelBtn" class="filter-button" data-translate="btn.cancel">
+                            <i class="fas fa-times"></i>
+                            <span data-translate="btn.cancel">Cancel</span>
                         </button>
-                        <button id="modalSaveBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                            <i class="fas fa-save mr-2"></i>
-                            Save to Database
+                        <button id="modalSaveBtn" class="filter-button active" style="background: linear-gradient(135deg, #10b981, #059669); border-color: #059669;">
+                            <i class="fas fa-save"></i>
+                            <span data-translate="btn.save_to_database">Save to Database</span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- Loading Modal -->
     <div id="loadingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+        <div class="director-panel p-6 max-w-sm w-full mx-4">
             <div class="text-center">
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                 <p class="text-gray-600" id="loadingText">Processing...</p>
@@ -209,6 +670,172 @@
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/main.js"></script>
     <script>
+        // Merge page-specific translations into global translations object
+        // (translations.js already declares the global translations object)
+        if (typeof translations === 'undefined') {
+            var translations = { en: {}, ar: {} };
+        }
+        
+        // Ensure language objects exist
+        if (!translations.en) translations.en = {};
+        if (!translations.ar) translations.ar = {};
+        
+        // Merge page-specific translations
+        Object.assign(translations.en, {
+            'attendance.punch_management': 'Punch File Management',
+            'attendance.punch_management_subtitle': 'Upload and manage punch attendance files with advanced processing',
+            'attendance.upload_punch_file': 'Upload Punch File',
+            'attendance.upload_section': 'Upload',
+            'attendance.files_section': 'Files',
+            'attendance.punches_section': 'Punches',
+            'attendance.raw_punches': 'Raw Punches',
+            'common.drag_drop_file': 'Drag & Drop .xls/.xlsx file here',
+            'common.or_click_to_select': 'or click to select',
+            'btn.upload_file': 'Upload File',
+            'common.uploaded_files': 'Uploaded Files',
+            'employee.employee': 'Employee',
+            'time.year': 'Year',
+            'time.month': 'Month',
+            'btn.apply': 'Apply',
+            'attendance.punch_time': 'Punch Time',
+            'attendance.source': 'Source',
+            'common.actions': 'Actions',
+            'btn.edit': 'Edit',
+            'btn.delete': 'Delete',
+            'table.no_data': 'No data available',
+            'common.search_name': 'Search name',
+            'files.no_files_uploaded': 'No files uploaded yet',
+            'files.uploaded_by': 'Uploaded',
+            'files.by': 'by',
+            'files.records': 'records',
+            'modal.file_preview': 'File Preview',
+            'modal.total_rows': 'Total Rows',
+            'modal.valid_rows': 'Valid Rows',
+            'modal.error_rows': 'Error Rows',
+            'modal.total_punches': 'Total Punches',
+            'modal.errors': 'Errors',
+            'modal.employee': 'Employee',
+            'modal.punch_time': 'Punch Time',
+            'modal.source': 'Source',
+            'btn.cancel': 'Cancel',
+            'btn.save_to_database': 'Save to Database'
+        });
+        
+        Object.assign(translations.ar, {
+            'attendance.punch_management': 'إدارة ملفات البصمة',
+            'attendance.punch_management_subtitle': 'رفع وإدارة ملفات البصمة مع المعالجة المتقدمة',
+            'attendance.upload_punch_file': 'رفع ملف البصمة',
+            'attendance.upload_section': 'رفع الملفات',
+            'attendance.files_section': 'قائمة الملفات',
+            'attendance.punches_section': 'السجلات',
+            'attendance.raw_punches': 'سجلات البصمة الخام',
+            'common.drag_drop_file': 'اسحب وأفلت ملف .xls/.xlsx هنا',
+            'common.or_click_to_select': 'أو انقر للاختيار',
+            'btn.upload_file': 'رفع الملف',
+            'common.uploaded_files': 'الملفات المرفوعة',
+            'employee.employee': 'الموظف',
+            'time.year': 'السنة',
+            'time.month': 'الشهر',
+            'btn.apply': 'تطبيق',
+            'attendance.punch_time': 'وقت البصمة',
+            'attendance.source': 'المصدر',
+            'common.actions': 'الإجراءات',
+            'btn.edit': 'تعديل',
+            'btn.delete': 'حذف',
+            'table.no_data': 'لا توجد بيانات متاحة',
+            'common.search_name': 'ابحث بالاسم',
+            'files.no_files_uploaded': 'لم يتم رفع أي ملفات بعد',
+            'files.uploaded_by': 'رفع في',
+            'files.by': 'بواسطة',
+            'files.records': 'سجلات',
+            'modal.file_preview': 'معاينة الملف',
+            'modal.total_rows': 'إجمالي الصفوف',
+            'modal.valid_rows': 'الصفوف الصالحة',
+            'modal.error_rows': 'صفوف الأخطاء',
+            'modal.total_punches': 'إجمالي البصمات',
+            'modal.errors': 'الأخطاء',
+            'modal.employee': 'الموظف',
+            'modal.punch_time': 'وقت البصمة',
+            'modal.source': 'المصدر',
+            'btn.cancel': 'إلغاء',
+            'btn.save_to_database': 'حفظ في قاعدة البيانات'
+        });
+
+        // Use global currentLanguage (already declared in translations.js)
+        // Set default to Arabic if not already set
+        if (typeof currentLanguage === 'undefined' || !currentLanguage) {
+            currentLanguage = 'ar';
+        }
+
+        // Translation function
+        function translate(key) {
+            if (!translations || !translations[currentLanguage]) {
+                return key;
+            }
+            return translations[currentLanguage][key] || key;
+        }
+
+        // Update page translations
+        function updatePageTranslations() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                element.textContent = translate(key);
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-translate-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-translate-placeholder');
+                element.placeholder = translate(key);
+            });
+
+            // Update month options based on language
+            const monthSelect = document.getElementById('punchFilterMonth');
+            if (monthSelect) {
+                if (currentLanguage === 'ar') {
+                    monthSelect.innerHTML = `
+                        <option value="">الكل</option>
+                        <option value="1">يناير</option>
+                        <option value="2">فبراير</option>
+                        <option value="3">مارس</option>
+                        <option value="4">أبريل</option>
+                        <option value="5">مايو</option>
+                        <option value="6">يونيو</option>
+                        <option value="7">يوليو</option>
+                        <option value="8">أغسطس</option>
+                        <option value="9">سبتمبر</option>
+                        <option value="10">أكتوبر</option>
+                        <option value="11">نوفمبر</option>
+                        <option value="12">ديسمبر</option>
+                    `;
+                } else {
+                    monthSelect.innerHTML = `
+                        <option value="">All</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    `;
+                }
+            }
+
+            // Set RTL for Arabic
+            if (currentLanguage === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+                document.documentElement.setAttribute('lang', 'ar');
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+                document.documentElement.setAttribute('lang', 'en');
+            }
+        }
+
         // Use centralized AuthManager token
         const getToken = () => authManager.getToken();
         const ATTENDANCE_BASE = (typeof API_SERVICES !== 'undefined' && API_SERVICES.attendance) 
@@ -220,29 +847,8 @@
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            // Language selector
-            const languageSelector = document.getElementById('languageSelector');
-            if (languageSelector) {
-                languageSelector.value = (typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'en'));
-                languageSelector.addEventListener('change', (e) => {
-                    if (typeof setLanguage === 'function') {
-                        setLanguage(e.target.value);
-                    }
-                    if (typeof updatePageTranslations === 'function') {
-                        updatePageTranslations();
-                    }
-                });
-            }
-            
             // Initialize translations
-            if (typeof updatePageTranslations === 'function') {
-                updatePageTranslations();
-            }
-            
-            // Listen for language changes to update dynamic content
-            document.addEventListener('languageChanged', () => {
-                loadRawPunches();
-            });
+            updatePageTranslations();
             
             if (!requireAuth()) return;
             loadUploadedFiles();
@@ -335,7 +941,7 @@
                 const noDataText = typeof translate === 'function' ? translate('table.no_data') : 'No data available';
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                        <td colspan="4" class="text-center text-gray-500 py-8">
                             ${noDataText}
                         </td>
                     </tr>
@@ -347,15 +953,17 @@
             const deleteText = typeof translate === 'function' ? translate('btn.delete') : 'Delete';
             tbody.innerHTML = punches.map(punch => `
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${punch.employee_name}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDateTime(punch.punch_time)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${punch.source}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button onclick="editRawPunch('${punch.id}')" class="text-indigo-600 hover:text-indigo-900 mr-2">
-                            <i class="fas fa-edit"></i> ${editText}
+                    <td>${punch.employee_name}</td>
+                    <td>${formatDateTime(punch.punch_time)}</td>
+                    <td>${punch.source}</td>
+                    <td>
+                        <button onclick="editRawPunch('${punch.id}')" class="action-btn action-btn-view">
+                            <i class="fas fa-edit"></i>
+                            <span>${editText}</span>
                         </button>
-                        <button onclick="deleteRawPunch('${punch.id}')" class="text-red-600 hover:text-red-900">
-                            <i class="fas fa-trash"></i> ${deleteText}
+                        <button onclick="deleteRawPunch('${punch.id}')" class="action-btn action-btn-delete">
+                            <i class="fas fa-trash"></i>
+                            <span>${deleteText}</span>
                         </button>
                     </td>
                 </tr>
@@ -404,33 +1012,39 @@
             currentPunchRecords = preview.punchRecords || [];
 
             // Set modal title
-            const filePreviewText = typeof translate === 'function' ? translate('common.file_preview') || 'File Preview' : 'File Preview';
+            const filePreviewText = translate('modal.file_preview');
             document.getElementById('modalFileTitle').textContent = filePreviewText;
 
             // Show file details
             const fileDetails = document.getElementById('modalFileDetails');
+            const totalRowsText = translate('modal.total_rows');
+            const validRowsText = translate('modal.valid_rows');
+            const errorRowsText = translate('modal.error_rows');
+            const totalPunchesText = translate('modal.total_punches');
+            const errorsText = translate('modal.errors');
+            
             fileDetails.innerHTML = `
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
-                        <span class="text-gray-500">Total Rows:</span>
+                        <span class="text-gray-500">${totalRowsText}:</span>
                         <span class="font-medium ml-2">${preview.totalRows}</span>
                     </div>
                     <div>
-                        <span class="text-gray-500">Valid Rows:</span>
+                        <span class="text-gray-500">${validRowsText}:</span>
                         <span class="font-medium ml-2 text-green-600">${preview.validRows}</span>
                     </div>
                     <div>
-                        <span class="text-gray-500">Error Rows:</span>
+                        <span class="text-gray-500">${errorRowsText}:</span>
                         <span class="font-medium ml-2 text-red-600">${preview.errorRows}</span>
                     </div>
                     <div>
-                        <span class="text-gray-500">Total Punches:</span>
+                        <span class="text-gray-500">${totalPunchesText}:</span>
                         <span class="font-medium ml-2">${preview.totalPunches}</span>
                     </div>
                 </div>
                 ${preview.errors.length > 0 ? `
                     <div class="mt-4">
-                        <h4 class="text-sm font-medium text-red-600 mb-2">Errors:</h4>
+                        <h4 class="text-sm font-medium text-red-600 mb-2">${errorsText}:</h4>
                         <div class="max-h-32 overflow-y-auto">
                             ${preview.errors.map(error => `
                                 <div class="text-xs text-red-600 mb-1">Row ${error.row}: ${error.error}</div>
@@ -443,13 +1057,17 @@
             // Show preview table
             const previewTable = document.getElementById('modalPreviewTable');
             if (currentPunchRecords.length > 0) {
+                const employeeText = translate('modal.employee');
+                const punchTimeText = translate('modal.punch_time');
+                const sourceText = translate('modal.source');
+                
                 previewTable.innerHTML = `
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="employee.employee">Employee</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="attendance.punch_time">Punch Time</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="attendance.source">Source</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${employeeText}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${punchTimeText}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${sourceText}</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -464,7 +1082,7 @@
                     </table>
                 `;
             } else {
-                const noRecordsText = typeof translate === 'function' ? translate('table.no_data') : 'No data available';
+                const noRecordsText = translate('table.no_data');
                 previewTable.innerHTML = `<p class="text-gray-500 text-center py-8">${noRecordsText}</p>`;
             }
 
@@ -726,14 +1344,19 @@
             const filesList = document.getElementById('filesList');
             
             if (files.length === 0) {
+                const noFilesText = translate('files.no_files_uploaded');
                 filesList.innerHTML = `
                     <div class="p-6 text-center text-gray-500">
                         <i class="fas fa-folder-open text-3xl mb-2"></i>
-                        <p>No files uploaded yet</p>
+                        <p>${noFilesText}</p>
                     </div>
                 `;
                 return;
             }
+
+            const uploadedByText = translate('files.uploaded_by');
+            const byText = translate('files.by');
+            const recordsText = translate('files.records');
 
             filesList.innerHTML = files.map(file => `
                 <div class="file-item p-4 hover:bg-gray-50 cursor-pointer" onclick="viewFileDetails('${file.id}')">
@@ -741,12 +1364,12 @@
                         <div class="main-content flex-1">
                             <h4 class="text-sm font-medium text-gray-900">${file.original_filename}</h4>
                             <p class="text-xs text-gray-500 mt-1">
-                                Uploaded ${formatDateTime(file.upload_date)} by ${file.uploaded_by_username || 'Unknown'}
+                                ${uploadedByText} ${formatDateTime(file.upload_date)} ${byText} ${file.uploaded_by_username || 'Unknown'}
                             </p>
                             <div class="flex items-center mt-2 space-x-4 text-xs">
                                 <span class="text-gray-500">${formatFileSize(file.file_size)}</span>
                                 <span class="px-2 py-1 rounded-full text-xs ${getStatusColor(file.status)}">${file.status}</span>
-                                <span class="text-gray-500">${file.processed_records || 0} records</span>
+                                <span class="text-gray-500">${file.processed_records || 0} ${recordsText}</span>
                             </div>
                         </div>
                         <div class="file-actions flex space-x-2">

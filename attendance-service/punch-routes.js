@@ -239,12 +239,18 @@ router.post('/save/:uploadId', async (req, res) => {
       }
     }
 
-    // Update upload record status
+    // Update upload record status and record counts
+    const errorCount = errors.length;
     await pool.query(`
       UPDATE punch_file_uploads
-      SET status = 'completed', processed_at = CURRENT_TIMESTAMP
+      SET status = 'completed', 
+          processed_at = CURRENT_TIMESTAMP,
+          total_records = $2,
+          processed_records = $3,
+          error_records = $4,
+          processing_errors = $5
       WHERE id = $1
-    `, [uploadId]);
+    `, [uploadId, punchRecords.length, savedCount, errorCount, JSON.stringify(errors)]);
 
     res.json({
       success: true,
@@ -293,11 +299,11 @@ router.get('/files', verifyToken, async (req, res) => {
         up.upload_date,
         up.status,
         u.username as uploaded_by_username,
-        COUNT(ap.id) as punch_count
+        COALESCE(up.processed_records, 0) as processed_records,
+        COALESCE(up.total_records, 0) as total_records,
+        COALESCE(up.error_records, 0) as error_records
       FROM punch_file_uploads up
       LEFT JOIN users u ON up.uploaded_by_user_id = u.id
-      LEFT JOIN attendance_punches ap ON up.id = ap.upload_id
-      GROUP BY up.id, up.filename, up.original_filename, up.file_path, up.file_size, up.upload_date, up.status, u.username
       ORDER BY up.upload_date DESC
       LIMIT $1 OFFSET $2
     `, [parsedLimit, offset]);

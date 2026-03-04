@@ -26,9 +26,44 @@ const initializeRoutes = (dbPool) => {
       const limit = parseInt(req.query.limit) || 50;
       const { year, month, department, status, search } = req.query;
 
+      // Validate required parameters
+      if (!year || !month) {
+        return res.status(400).json({
+          error: 'Year and month are required parameters',
+          details: `Received year: ${year}, month: ${month}`
+        });
+      }
+
+      const yearInt = parseInt(year);
+      const monthInt = parseInt(month);
+
+      // Validate that year and month are valid numbers
+      if (isNaN(yearInt) || isNaN(monthInt)) {
+        return res.status(400).json({
+          error: 'Year and month must be valid numbers',
+          details: `Received year: ${year}, month: ${month}`
+        });
+      }
+
+      // Validate month range (1-12)
+      if (monthInt < 1 || monthInt > 12) {
+        return res.status(400).json({
+          error: 'Month must be between 1 and 12',
+          details: `Received month: ${month}`
+        });
+      }
+
+      // Validate year range (reasonable bounds)
+      if (yearInt < 2000 || yearInt > 2100) {
+        return res.status(400).json({
+          error: 'Year must be between 2000 and 2100',
+          details: `Received year: ${year}`
+        });
+      }
+
       const offset = (page - 1) * limit;
       let whereConditions = [];
-      let queryParams = [limit, offset, parseInt(year), parseInt(month)];
+      let queryParams = [limit, offset, yearInt, monthInt];
       let paramIndex = 5;
 
       // Get grace period settings
@@ -657,7 +692,7 @@ const initializeRoutes = (dbPool) => {
       const totalCount = result.rows.length > 0 ? parseInt(result.rows[0].total_count) : 0;
 
       // Get statistics (rebuild WHERE with correct parameter indices for this query)
-      const statsParams = [parseInt(year), parseInt(month)];
+      const statsParams = [yearInt, monthInt];
       const statsConditions = [];
       let statsParamIndex = 3; // $1,$2 used by year,month above
 
@@ -726,10 +761,17 @@ const initializeRoutes = (dbPool) => {
       });
 
     } catch (error) {
-      console.error('Get monthly attendance error:', error);
+      console.error('Get monthly attendance error:', {
+        message: error.message,
+        stack: error.stack,
+        query: { year, month, page, limit, department, status, search },
+        yearInt: typeof yearInt !== 'undefined' ? yearInt : 'not defined',
+        monthInt: typeof monthInt !== 'undefined' ? monthInt : 'not defined'
+      });
       res.status(500).json({
         error: 'Failed to retrieve monthly attendance data',
-        details: error.message
+        details: error.message,
+        ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
       });
     }
   });

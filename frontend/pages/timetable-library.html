@@ -6,36 +6,1077 @@
     <title>Timetable Library - HR Operations Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
     
     <style>
+        /* Director-themed base styles */
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-purple: #7c3aed;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        main {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Page Header Styles */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: #3b82f6;
+            font-size: 1.75rem;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Director Panel */
+        .director-panel {
+            margin-top: 16px;
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .director-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .director-panel>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left,
+                    rgba(37, 99, 235, 0.22),
+                    rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+
+        .director-section-pill {
+            padding: 0.15rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: rgba(15, 23, 42, 0.04);
+            color: #64748b;
+        }
+
+        /* Enhanced Buttons */
+        .filter-button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-button:hover {
+            background: linear-gradient(135deg, #e5edff, #dbeafe);
+            border-color: #93c5fd;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .filter-button.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.35);
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced Action Buttons */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .action-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .action-btn i {
+            font-size: 0.875rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Enhanced Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .complaints-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 1000px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .complaints-table thead {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .complaints-table th {
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #475569;
+            padding: 1.25rem 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            vertical-align: middle;
+            position: relative;
+            white-space: nowrap;
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .complaints-table tbody tr {
+            background: white;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .complaints-table tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .complaints-table tbody tr:hover {
+            background: linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 100%);
+            transform: translateX(2px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .complaints-table td {
+            padding: 1.25rem 1rem;
+            font-size: 0.875rem;
+            color: #1e293b;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        /* Enhanced Form Elements */
+        .filter-select {
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            background: #ffffff;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            background-color: #f9fafb;
+        }
+
+        .filter-select:hover {
+            border-color: #94a3b8;
+            background-color: #f8fafc;
+        }
+
+        /* Enhanced Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Report Stat Cards */
+        .report-stat-card-inline {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .report-stat-card-inline:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+        }
+
+        .report-stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .report-stat-content {
+            flex: 1;
+        }
+
+        .report-stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .report-stat-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .report-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Enhanced Timetable Cards */
         .timetable-card {
             transition: all 0.3s ease;
             border: 2px solid transparent;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            position: relative;
+            overflow: hidden;
+            padding: 1.5rem;
         }
+
+        .timetable-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 55%);
+            pointer-events: none;
+        }
+
         .timetable-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
             border-color: #3B82F6;
         }
-        .interval-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
         }
-        .assignment-badge {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+
+        .card-title-section {
+            flex: 1;
         }
-        .modal-backdrop {
-            backdrop-filter: blur(4px);
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.2;
         }
-        .time-input {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+
+        .card-type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        .weekday-selector {
+
+        .template-badge {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .concrete-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .card-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
             transition: all 0.2s ease;
+            font-size: 0.875rem;
+            position: relative;
+            overflow: hidden;
         }
+
+        .card-action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+
+        .card-action-btn:hover::before {
+            width: 100px;
+            height: 100px;
+        }
+
+        .card-action-btn i {
+            position: relative;
+            z-index: 1;
+        }
+
+        .view-btn {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .duplicate-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .duplicate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .interval-icon {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .assignment-icon {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+        }
+
+        .stat-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .meta-icon {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .meta-text {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .card-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.active {
+            background: #10b981;
+        }
+
+        .status-dot.inactive {
+            background: #94a3b8;
+        }
+
+        .status-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-dot.active + .status-text {
+            color: #10b981;
+        }
+
+        .status-dot.inactive + .status-text {
+            color: #94a3b8;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .modal-content {
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 0;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.15);
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            position: relative;
+            overflow: hidden;
+            width: 90%;
+            max-width: 75rem;
+            margin: 2rem auto;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .modal-content > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-header {
+            padding: 24px 28px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.98));
+        }
+
+        .modal-body {
+            padding: 28px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.5);
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.7);
+        }
+
+        .modal-section {
+            margin-bottom: 2rem;
+        }
+
+        .modal-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-section-title i {
+            color: #3b82f6;
+            font-size: 1.125rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.025em;
+        }
+
+        .form-label.required::after {
+            content: ' *';
+            color: #ef4444;
+        }
+
+        .time-input {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #0f172a;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            background: #ffffff;
+        }
+
+        .time-input:hover {
+            border-color: #94a3b8;
+            background: #ffffff;
+        }
+
+        .time-input::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+        }
+
+        .time-input::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
+
+        .time-input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        input[type="time"]::-webkit-datetime-edit-text {
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        input[type="time"]::-webkit-datetime-edit-hour-field,
+        input[type="time"]::-webkit-datetime-edit-minute-field {
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        input[type="time"]::-webkit-datetime-edit-ampm-field {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .weekday-selector {
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border: 2px solid rgba(148, 163, 184, 0.3);
+            border-radius: 12px;
+            padding: 0.875rem 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: #475569;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weekday-selector::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .weekday-selector:hover {
+            border-color: #93c5fd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+
+        .weekday-selector:hover::before {
+            opacity: 1;
+        }
+
         .weekday-selector.active {
-            background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
-            transform: scale(1.05);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-color: #2563eb;
+            color: white;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+        }
+
+        .weekday-selector.active::before {
+            opacity: 0;
+        }
+
+        .interval-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interval-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 60%);
+            pointer-events: none;
+        }
+
+        .interval-item:hover {
+            border-color: #93c5fd;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .interval-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+        }
+
+        .interval-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .interval-title i {
+            color: #3b82f6;
+            font-size: 0.875rem;
+        }
+
+        .interval-delete-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interval-delete-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+
+        .interval-delete-btn:hover::before {
+            width: 100px;
+            height: 100px;
+        }
+
+        .interval-delete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+        }
+
+        .interval-delete-btn i {
+            position: relative;
+            z-index: 1;
+            font-size: 0.875rem;
+        }
+
+        .info-panel {
+            background: linear-gradient(135deg, rgba(219, 234, 254, 0.4), rgba(191, 219, 254, 0.3));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 1.25rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .info-panel-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .info-panel-content {
+            flex: 1;
+        }
+
+        .info-panel-content strong {
+            color: #1e40af;
+            font-weight: 700;
+        }
+
+        .info-panel-content p {
+            color: #1e40af;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .modal-footer {
+            padding: 24px 28px;
+            border-top: 1px solid rgba(148, 163, 184, 0.15);
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.98));
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] .director-panel {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .filter-select {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .page-title i {
+                font-size: 1.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .report-stat-card-inline {
+                min-width: 160px;
+                padding: 16px;
+            }
+
+            .report-stat-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.25rem;
+            }
+
+            .report-stat-value {
+                font-size: 1.875rem;
+            }
+
+            .modal-content {
+                max-width: 100%;
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 1.25rem;
+            }
+
+            .modal-section-title {
+                font-size: 0.9rem;
+            }
+
+            .interval-item {
+                padding: 1rem;
+            }
+
+            .weekday-selector {
+                padding: 0.625rem 0.375rem;
+                font-size: 0.7rem;
+            }
+
+            .grid-cols-7 {
+                grid-template-columns: repeat(7, minmax(0, 1fr));
+                gap: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -46,110 +1087,167 @@
     <div class="main-content flex-1 overflow-y-auto">
 
             <!-- Content -->
-            <main class="flex-1 overflow-y-auto p-6">
-                <div class="max-w-7xl mx-auto">
+            <main class="flex-1 overflow-y-auto">
+                <div class="w-full p-6">
                     <!-- Page Header -->
-                    <div class="mb-6">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h1 class="text-2xl font-bold text-gray-900" data-translate="nav.timetables">Timetable Library</h1>
-                                <p class="text-gray-600" data-translate="timetables.description">Manage weekly employee schedules</p>
+                    <div class="page-header">
+                        <h1 class="page-title" data-translate="timetable_library.title">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span data-translate="timetable_library.title">Timetable Library</span>
+                        </h1>
+                        <p class="page-subtitle" data-translate="timetables.description">Manage weekly employee schedules with advanced scheduling tools</p>
+                    </div>
+
+                    <!-- Enhanced Statistics Cards -->
+                    <div class="flex flex-wrap gap-4 justify-between mb-8">
+                        <!-- Total Timetables Card -->
+                        <div class="report-stat-card-inline">
+                            <div class="report-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                                <i class="fas fa-calendar-week"></i>
                             </div>
-                            <div class="flex items-center space-x-2">
-                                <!-- Language Selector -->
-                                <select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="en">English</option>
-                                    <option value="fr">Français</option>
-                                    <option value="ar">العربية</option>
-                                </select>
-                                <a href="employee-assignments.html" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg">
-                                    <i class="fas fa-user-clock mr-2"></i>Assign Timetables
-                                </a>
-                                <button onclick="showCreateModal()" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg">
-                                    <i class="fas fa-plus mr-2"></i>Create Timetable
+                            <div class="report-stat-content">
+                                <p class="report-stat-label" data-translate="timetable_library.total_timetables">Total Timetables</p>
+                                <h3 id="totalTimetables" class="report-stat-value">-</h3>
+                                <span class="report-stat-badge" style="background: rgba(59, 130, 246, 0.1); color: #2563eb;">
+                                    <i class="fas fa-layer-group"></i>
+                                    <span data-translate="timetable_library.all_schedules">All Schedules</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Active Templates Card -->
+                        <div class="report-stat-card-inline">
+                            <div class="report-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="report-stat-content">
+                                <p class="report-stat-label" data-translate="timetable_library.active_templates">Active Templates</p>
+                                <h3 id="activeTemplates" class="report-stat-value">-</h3>
+                                <span class="report-stat-badge" style="background: rgba(16, 185, 129, 0.1); color: #059669;">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span data-translate="timetable_library.reusable">Reusable</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Assigned Schedules Card -->
+                        <div class="report-stat-card-inline">
+                            <div class="report-stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                <i class="fas fa-users-cog"></i>
+                            </div>
+                            <div class="report-stat-content">
+                                <p class="report-stat-label" data-translate="timetable_library.assigned_schedules">Assigned Schedules</p>
+                                <h3 id="assignedSchedules" class="report-stat-value">-</h3>
+                                <span class="report-stat-badge" style="background: rgba(245, 158, 11, 0.1); color: #d97706;">
+                                    <i class="fas fa-user-check"></i>
+                                    <span data-translate="timetable_library.active">Active</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-end space-x-3 mb-8">
+                        <a href="employee-assignments.html" class="action-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                            <i class="fas fa-user-clock"></i>
+                            <span data-translate="timetable_library.assign_timetables">Assign Timetables</span>
+                        </a>
+                        <button onclick="showCreateModal()" class="action-btn" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">
+                            <i class="fas fa-plus"></i>
+                            <span data-translate="timetable_library.create_timetable">Create Timetable</span>
+                        </button>
+                    </div>
+
+                    <!-- Filters Director Panel -->
+                    <div class="director-panel">
+                        <div class="director-panel-header">
+                            <div class="director-panel-title">
+                                <div class="director-panel-title-icon">
+                                    <i class="fas fa-search-filter"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-bold text-gray-900" data-translate="timetable_library.search_filter">Search & Filter</h2>
+                                </div>
+                            </div>
+                            <span class="director-section-pill" data-translate="timetable_library.filters">Filters</span>
+                        </div>
+                        
+                        <div class="flex flex-wrap items-center gap-4">
+                            <div class="flex-1 min-w-64">
+                                <div class="relative">
+                                    <input type="text" id="searchInput" data-translate-placeholder="timetable_library.search_placeholder" placeholder="Search timetables by name..." 
+                                           class="filter-select w-full pl-12 pr-4 py-2">
+                                    <i class="fas fa-search absolute left-4 top-3 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <select id="typeFilter" class="filter-select">
+                                <option value="All" data-translate="timetable_library.all_types">
+                                    <i class="fas fa-layer-group"></i> <span data-translate="timetable_library.all_types">All Types</span>
+                                </option>
+                                <option value="Template" data-translate="timetable_library.templates_only">
+                                    <i class="fas fa-file-alt"></i> <span data-translate="timetable_library.templates_only">Templates Only</span>
+                                </option>
+                                <option value="Concrete" data-translate="timetable_library.assigned_only">
+                                    <i class="fas fa-users-cog"></i> <span data-translate="timetable_library.assigned_only">Assigned Only</span>
+                                </option>
+                            </select>
+                            <button onclick="loadTimetables()" class="filter-button active">
+                                <i class="fas fa-filter-circle-dot"></i>
+                                <span data-translate="timetable_library.apply_filters">Apply Filters</span>
+                            </button>
+                            <div class="flex items-center space-x-2 ml-auto">
+                                <button id="gridViewBtn" class="filter-button" data-translate-title="timetable_library.grid_view" title="Grid View">
+                                    <i class="fas fa-th-large"></i>
+                                    <span data-translate="timetable_library.grid">Grid</span>
+                                </button>
+                                <button id="listViewBtn" class="filter-button" data-translate-title="timetable_library.list_view" title="List View">
+                                    <i class="fas fa-list"></i>
+                                    <span data-translate="timetable_library.list">List</span>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Filters -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-            <div class="flex flex-wrap items-center gap-4">
-                <div class="flex-1 min-w-64">
-                    <div class="relative">
-                        <input type="text" id="searchInput" placeholder="Search timetables..." 
-                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
-                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                    </div>
-                </div>
-                <select id="typeFilter" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="All">All Types</option>
-                    <option value="Template">Templates Only</option>
-                    <option value="Concrete">Assigned Only</option>
-                </select>
-                <button onclick="loadTimetables()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-                    <i class="fas fa-filter mr-2"></i>Apply Filters
-                </button>
-                <div class="flex items-center space-x-2 ml-auto">
-                    <button id="gridViewBtn" class="p-2 rounded-lg transition-colors" title="Grid View">
-                        <i class="fas fa-th-large"></i>
-                    </button>
-                    <button id="listViewBtn" class="p-2 rounded-lg transition-colors" title="List View">
-                        <i class="fas fa-list"></i>
-                    </button>
-                    <button id="calendarViewBtn" class="p-2 rounded-lg transition-colors" title="Calendar View">
-                        <i class="fas fa-calendar-week"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
         <!-- Timetables Grid -->
-        <div id="timetablesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="timetablesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
             <!-- Timetable cards will be loaded here -->
         </div>
 
         <!-- Timetables List (Table View) -->
         <div id="timetablesList" class="hidden">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+            <div class="table-wrapper">
+                <table class="complaints-table">
+                    <thead>
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Intervals</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assignments</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th data-translate="timetable_library.name">Name</th>
+                            <th data-translate="timetable_library.type">Type</th>
+                            <th data-translate="timetable_library.intervals">Intervals</th>
+                            <th data-translate="timetable_library.assignments">Assignments</th>
+                            <th data-translate="timetable_library.created_at">Created At</th>
+                            <th class="actions-header" data-translate="timetable_library.actions">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="timetablesTableBody" class="bg-white divide-y divide-gray-200">
+                    <tbody id="timetablesTableBody">
                         <!-- Table rows will be loaded here -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Timetables Calendar View -->
-        <div id="timetablesCalendar" class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <!-- Calendar will be loaded here -->
-        </div>
-
         <!-- Loading State -->
-        <div id="loadingState" class="text-center py-12 hidden">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p class="mt-2 text-gray-600">Loading timetables...</p>
+        <div id="loadingState" class="loading-state hidden">
+            <div class="spinner"></div>
+            <p class="mt-2 text-gray-600" data-translate="timetable_library.loading">Loading timetables...</p>
         </div>
 
         <!-- Empty State -->
-        <div id="emptyState" class="text-center py-12 hidden">
-            <div class="mx-auto h-24 w-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <i class="fas fa-calendar-times text-gray-400 text-3xl"></i>
-            </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">No timetables found</h3>
-            <p class="text-gray-500 mb-4">Get started by creating your first timetable template.</p>
-            <button onclick="showCreateModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-                <i class="fas fa-plus mr-2"></i>Create Timetable
+        <div id="emptyState" class="empty-state hidden">
+            <i class="fas fa-calendar-times"></i>
+            <h3 class="text-lg font-medium text-gray-900 mb-2" data-translate="timetable_library.no_timetables">No timetables found</h3>
+            <p class="text-gray-500 mb-4" data-translate="timetable_library.no_timetables_desc">Get started by creating your first timetable template.</p>
+            <button onclick="showCreateModal()" class="filter-button active">
+                <i class="fas fa-plus"></i>
+                <span data-translate="timetable_library.create_timetable">Create Timetable</span>
             </button>
         </div>
     </div>
@@ -157,53 +1255,76 @@
     <!-- Create/Edit Timetable Modal -->
     <div id="timetableModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop hidden z-50">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-screen overflow-y-auto">
-                <div class="p-6 border-b border-gray-200">
-                    <h3 id="modalTitle" class="text-lg font-semibold text-gray-900"></h3>
-                </div>
-                
-                <form id="timetableForm" class="p-6">
-                    <!-- Basic Information -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Timetable Name *</label>
-                            <input type="text" id="timetableName" required 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <div class="modal-content w-full max-h-screen overflow-y-auto">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                <div class="director-panel-header">
+                    <div class="director-panel-title">
+                        <div class="director-panel-title-icon">
+                            <i class="fas fa-calendar-plus"></i>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Type *</label>
-                            <select id="timetableType" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="Template">Template</option>
-                                <option value="Concrete">Concrete</option>
+                            <h3 id="modalTitle" class="text-xl font-bold text-gray-900"></h3>
+                        </div>
+                        </div>
+                        <button type="button" onclick="closeModal()" class="action-btn" style="background: linear-gradient(135deg, #64748b, #475569); color: white; padding: 0.5rem 1rem;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Modal Body -->
+                <form id="timetableForm" class="modal-body">
+                    <!-- Basic Information Section -->
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span data-translate="timetable_library.basic_information">Basic Information</span>
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="form-group">
+                                <label class="form-label required" data-translate="timetable_library.timetable_name">Timetable Name</label>
+                            <input type="text" id="timetableName" required 
+                                   class="filter-select w-full">
+                        </div>
+                            <div class="form-group">
+                                <label class="form-label required" data-translate="timetable_library.type_label">Type</label>
+                            <select id="timetableType" required class="filter-select w-full">
+                                <option value="Template" data-translate="timetable_library.template">Template</option>
+                                <option value="Concrete" data-translate="timetable_library.concrete">Concrete</option>
                             </select>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Grade Level Configuration -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-3">Grade Level Configuration</label>
+                    <!-- Grade Level Configuration Section -->
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-layer-group"></i>
+                            <span data-translate="timetable_library.grade_level_config">Grade Level Configuration</span>
+                        </h4>
                         <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level Mode *</label>
-                                <select id="gradeLevelMode" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="none">No Grade Level (Administrative)</option>
-                                    <option value="single">Single Grade Level (All Intervals)</option>
-                                    <option value="multiple">Multiple Grade Levels (Per Interval)</option>
+                            <div class="form-group">
+                                <label class="form-label required" data-translate="timetable_library.grade_level_mode">Grade Level Mode</label>
+                                <select id="gradeLevelMode" required class="filter-select w-full">
+                                    <option value="none" data-translate="timetable_library.no_grade_level">No Grade Level (Administrative)</option>
+                                    <option value="single" data-translate="timetable_library.single_grade_level">Single Grade Level (All Intervals)</option>
+                                    <option value="multiple" data-translate="timetable_library.multiple_grade_levels">Multiple Grade Levels (Per Interval)</option>
                                 </select>
                             </div>
                             
                             <!-- Single Grade Level Configuration -->
                             <div id="singleGradeConfig" class="hidden">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level *</label>
-                                        <select id="singleGradeLevel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                            <option value="">Select Grade Level</option>
-                                            <option value="1">1st Grade</option>
-                                            <option value="2">2nd Grade</option>
-                                            <option value="3">3rd Grade</option>
-                                            <option value="4">4th Grade</option>
-                                            <option value="5">5th Grade</option>
+                                    <div class="form-group">
+                                        <label class="form-label required" data-translate="timetable_library.grade_level">Grade Level</label>
+                                        <select id="singleGradeLevel" class="filter-select w-full">
+                                            <option value="" data-translate="timetable_library.select_grade_level">Select Grade Level</option>
+                                            <option value="1" data-translate="grade.first">1st Grade</option>
+                                            <option value="2" data-translate="grade.second">2nd Grade</option>
+                                            <option value="3" data-translate="grade.third">3rd Grade</option>
+                                            <option value="4" data-translate="grade.fourth">4th Grade</option>
+                                            <option value="5" data-translate="grade.fifth">5th Grade</option>
                                         </select>
                                     </div>
                                 </div>
@@ -211,74 +1332,81 @@
                             
                             <!-- Multiple Grade Level Info -->
                             <div id="multipleGradeInfo" class="hidden">
-                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                    <div class="flex">
-                                        <div class="flex-shrink-0">
-                                            <i class="fas fa-info-circle text-blue-400"></i>
+                                <div class="info-panel">
+                                    <div class="info-panel-icon">
+                                        <i class="fas fa-info-circle"></i>
                                         </div>
-                                        <div class="ml-3">
-                                            <p class="text-sm text-blue-700">
-                                                <strong>Multiple Grade Levels:</strong> You can set different grade levels for each time interval. 
+                                    <div class="info-panel-content">
+                                        <p data-translate="timetable_library.multiple_grade_info">
+                                            <strong data-translate="timetable_library.multiple_grade_levels">Multiple Grade Levels:</strong> You can set different grade levels for each time interval. 
                                                 Grade level selection will appear when you add intervals below.
                                             </p>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Weekend Days Selection -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-3">Weekend Days</label>
-                        <div class="grid grid-cols-7 gap-2">
-                            <div class="weekday-selector text-center p-2 border border-gray-300 rounded-lg cursor-pointer" data-day="0">
-                                <div class="text-xs font-medium">SUN</div>
+                    <!-- Weekend Days Selection Section -->
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-calendar-week"></i>
+                            <span data-translate="timetable_library.weekend_days">Weekend Days</span>
+                        </h4>
+                        <div class="grid grid-cols-7 gap-3">
+                            <div class="weekday-selector text-center cursor-pointer" data-day="0">
+                                <div class="text-xs font-medium" data-translate="day.sun">SUN</div>
                             </div>
-                            <div class="weekday-selector text-center p-2 border border-gray-300 rounded-lg cursor-pointer" data-day="1">
-                                <div class="text-xs font-medium">MON</div>
+                            <div class="weekday-selector text-center cursor-pointer" data-day="1">
+                                <div class="text-xs font-medium" data-translate="day.mon">MON</div>
                             </div>
-                            <div class="weekday-selector text-center p-2 border border-gray-300 rounded-lg cursor-pointer" data-day="2">
-                                <div class="text-xs font-medium">TUE</div>
+                            <div class="weekday-selector text-center cursor-pointer" data-day="2">
+                                <div class="text-xs font-medium" data-translate="day.tue">TUE</div>
                             </div>
-                            <div class="weekday-selector text-center p-2 border border-gray-300 rounded-lg cursor-pointer" data-day="3">
-                                <div class="text-xs font-medium">WED</div>
+                            <div class="weekday-selector text-center cursor-pointer" data-day="3">
+                                <div class="text-xs font-medium" data-translate="day.wed">WED</div>
                             </div>
-                            <div class="weekday-selector text-center p-2 border border-gray-300 rounded-lg cursor-pointer" data-day="4">
-                                <div class="text-xs font-medium">THU</div>
+                            <div class="weekday-selector text-center cursor-pointer" data-day="4">
+                                <div class="text-xs font-medium" data-translate="day.thu">THU</div>
                             </div>
-                            <div class="weekday-selector text-center p-2 border border-gray-300 rounded-lg cursor-pointer active" data-day="5">
-                                <div class="text-xs font-medium">FRI</div>
+                            <div class="weekday-selector text-center cursor-pointer active" data-day="5">
+                                <div class="text-xs font-medium" data-translate="day.fri">FRI</div>
                             </div>
-                            <div class="weekday-selector text-center p-2 border border-gray-300 rounded-lg cursor-pointer active" data-day="6">
-                                <div class="text-xs font-medium">SAT</div>
+                            <div class="weekday-selector text-center cursor-pointer active" data-day="6">
+                                <div class="text-xs font-medium" data-translate="day.sat">SAT</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Working Days Intervals -->
-                    <div class="mb-6">
-                        <div class="flex justify-between items-center mb-3">
-                            <label class="block text-sm font-medium text-gray-700">Working Day Intervals</label>
-                            <button type="button" onclick="addInterval()" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                                <i class="fas fa-plus mr-1"></i>Add Interval
+                    <!-- Working Days Intervals Section -->
+                    <div class="modal-section">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="modal-section-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+                                <i class="fas fa-clock"></i>
+                                <span data-translate="timetable_library.working_day_intervals">Working Day Intervals</span>
+                            </h4>
+                            <button type="button" onclick="addInterval()" class="filter-button">
+                                <i class="fas fa-plus"></i>
+                                <span data-translate="timetable_library.add_interval">Add Interval</span>
                             </button>
                         </div>
                         <div id="intervalsContainer" class="space-y-4">
                             <!-- Intervals will be added here -->
                         </div>
                     </div>
+                </form>
 
-                    <!-- Form Actions -->
-                    <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-                        <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                            Cancel
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                        <button type="button" onclick="closeModal()" class="filter-button">
+                            <i class="fas fa-times"></i>
+                            <span data-translate="timetable_library.cancel">Cancel</span>
                         </button>
-                        <button type="submit" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105">
-                            <i class="fas fa-save mr-2"></i>Save Timetable
+                    <button type="submit" form="timetableForm" class="action-btn" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">
+                            <i class="fas fa-save"></i>
+                            <span data-translate="timetable_library.save_timetable">Save Timetable</span>
                         </button>
                     </div>
-                </form>
             </div>
         </div>
     </div>
@@ -286,12 +1414,26 @@
     <!-- View Timetable Modal -->
     <div id="viewModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop hidden z-50">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-screen overflow-y-auto">
-                <div class="p-6 border-b border-gray-200">
-                    <h3 id="viewModalTitle" class="text-lg font-semibold text-gray-900"></h3>
+            <div class="modal-content w-full max-h-screen overflow-y-auto">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                <div class="director-panel-header">
+                    <div class="director-panel-title">
+                        <div class="director-panel-title-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div>
+                            <h3 id="viewModalTitle" class="text-xl font-bold text-gray-900"></h3>
+                        </div>
+                    </div>
+                        <button onclick="closeViewModal()" class="action-btn" style="background: linear-gradient(135deg, #64748b, #475569); color: white; padding: 0.5rem 1rem;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    </div>
                 </div>
                 
-                <div id="viewModalContent" class="p-6">
+                <!-- Modal Body -->
+                <div id="viewModalContent" class="modal-body">
                     <!-- Timetable details will be loaded here -->
                 </div>
             </div>
@@ -329,13 +1471,20 @@
             }
             
             requireAuth();
+            updateStatistics(); // Load statistics on page load
             loadTimetables();
             initializeWeekendSelectors();
             initializeGradeLevelHandlers();
 
-            document.getElementById('gridViewBtn').addEventListener('click', () => switchView('grid'));
-            document.getElementById('listViewBtn').addEventListener('click', () => switchView('list'));
-            document.getElementById('calendarViewBtn').addEventListener('click', () => switchView('calendar'));
+            const gridViewBtn = document.getElementById('gridViewBtn');
+            const listViewBtn = document.getElementById('listViewBtn');
+            
+            if (gridViewBtn) {
+                gridViewBtn.addEventListener('click', () => switchView('grid'));
+            }
+            if (listViewBtn) {
+                listViewBtn.addEventListener('click', () => switchView('list'));
+            }
 
             const savedView = localStorage.getItem('timetable_view') || 'grid';
             switchView(savedView);
@@ -398,18 +1547,65 @@
             });
         }
 
+        async function updateStatistics() {
+            try {
+                const token = localStorage.getItem('token');
+                // Load all timetables for accurate statistics (not filtered)
+                const response = await fetch(`${TIMETABLE_API_URL}/timetables?limit=1000`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load statistics');
+
+                const data = await response.json();
+                const allTimetables = data.timetables || [];
+
+                // Calculate statistics from all timetables
+                const totalTimetables = allTimetables.length;
+                const activeTemplates = allTimetables.filter(t => t.type === 'Template').length;
+                const assignedSchedules = allTimetables.filter(t => (t.assignment_count || 0) > 0).length;
+
+                // Update the stat cards
+                document.getElementById('totalTimetables').textContent = totalTimetables;
+                document.getElementById('activeTemplates').textContent = activeTemplates;
+                document.getElementById('assignedSchedules').textContent = assignedSchedules;
+            } catch (error) {
+                console.error('Error updating statistics:', error);
+                // Fallback to current filtered data if API fails
+                const totalTimetables = currentTimetables.length;
+                const activeTemplates = currentTimetables.filter(t => t.type === 'Template').length;
+                const assignedSchedules = currentTimetables.filter(t => (t.assignment_count || 0) > 0).length;
+
+                document.getElementById('totalTimetables').textContent = totalTimetables;
+                document.getElementById('activeTemplates').textContent = activeTemplates;
+                document.getElementById('assignedSchedules').textContent = assignedSchedules;
+            }
+        }
+
+        function updateStatisticsFromCurrent() {
+            // Update statistics based on currently displayed (filtered) timetables
+            const totalTimetables = currentTimetables.length;
+            const activeTemplates = currentTimetables.filter(t => t.type === 'Template').length;
+            const assignedSchedules = currentTimetables.filter(t => (t.assignment_count || 0) > 0).length;
+
+            document.getElementById('totalTimetables').textContent = totalTimetables;
+            document.getElementById('activeTemplates').textContent = activeTemplates;
+            document.getElementById('assignedSchedules').textContent = assignedSchedules;
+        }
+
         async function loadTimetables() {
             const loadingState = document.getElementById('loadingState');
             const emptyState = document.getElementById('emptyState');
             const gridView = document.getElementById('timetablesGrid');
             const listView = document.getElementById('timetablesList');
-            const calendarView = document.getElementById('timetablesCalendar');
             
             loadingState.classList.remove('hidden');
             emptyState.classList.add('hidden');
             gridView.innerHTML = '';
             document.getElementById('timetablesTableBody').innerHTML = '';
-            calendarView.innerHTML = '';
 
             try {
                 const token = localStorage.getItem('token');
@@ -420,7 +1616,10 @@
                 
                 let url = `${TIMETABLE_API_URL}/timetables?limit=50`;
                 if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
-                if (typeFilter !== 'All') url += `&type=${typeFilter}`;
+                // Filter by type if it's Template, but for "Concrete" (Assigned Only) we'll filter client-side
+                if (typeFilter === 'Template') {
+                    url += `&type=${typeFilter}`;
+                }
 
                 const response = await fetch(url, {
                     headers: {
@@ -432,72 +1631,107 @@
                 if (!response.ok) throw new Error('Failed to load timetables');
 
                 const data = await response.json();
-                currentTimetables = data.timetables;
+                let filteredTimetables = data.timetables || [];
+
+                // Apply client-side filtering for "Assigned Only" (value="Concrete" but filter by assignment_count > 0)
+                if (typeFilter === 'Concrete') {
+                    // Filter to show only timetables with assignments > 0 (regardless of type)
+                    filteredTimetables = filteredTimetables.filter(t => (t.assignment_count || 0) > 0);
+                } else if (typeFilter === 'Template') {
+                    // Already filtered by API, but ensure we only show Templates
+                    filteredTimetables = filteredTimetables.filter(t => t.type === 'Template');
+                }
+
+                currentTimetables = filteredTimetables;
 
                 loadingState.classList.add('hidden');
+
+                // Update statistics based on filtered view
+                updateStatisticsFromCurrent();
 
                 if (currentTimetables.length === 0) {
                     emptyState.classList.remove('hidden');
                     gridView.classList.add('hidden');
                     listView.classList.add('hidden');
-                    calendarView.classList.add('hidden');
                 } else {
                     renderViews();
+                    // Update translations for dynamically rendered content
+                    if (typeof updatePageTranslations === 'function') {
+                        setTimeout(() => updatePageTranslations(), 100);
+                    }
                 }
             } catch (error) {
                 console.error('Error loading timetables:', error);
                 loadingState.classList.add('hidden');
                 showNotification('Failed to load timetables', 'error');
+                // Reset statistics on error
+                updateStatisticsFromCurrent();
             }
         }
 
         function renderViews() {
             renderTimetablesGrid();
             renderTimetablesList();
-            renderTimetablesCalendar();
         }
 
         function renderTimetablesGrid() {
             const grid = document.getElementById('timetablesGrid');
             
             grid.innerHTML = currentTimetables.map(timetable => `
-                <div class="timetable-card bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-1">${timetable.name}</h3>
-                            <span class="inline-block px-2 py-1 text-xs font-medium rounded-full ${
-                                timetable.type === 'Template' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                <div class="timetable-card">
+                    <div class="card-header">
+                        <div class="card-title-section">
+                            <h3 class="card-title">${timetable.name}</h3>
+                            <span class="card-type-badge ${
+                                timetable.type === 'Template' ? 'template-badge' : 'concrete-badge'
                             }">${timetable.type}</span>
                         </div>
-                        <div class="flex space-x-2">
-                            <button onclick="viewTimetable('${timetable.id}')" class="text-blue-600 hover:text-blue-700 transition-colors" title="View">
+                        <div class="card-actions">
+                            <button onclick="viewTimetable('${timetable.id}')" class="card-action-btn view-btn" title="View">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button onclick="editTimetable('${timetable.id}')" class="text-green-600 hover:text-green-700 transition-colors" title="Edit">
+                            <button onclick="editTimetable('${timetable.id}')" class="card-action-btn edit-btn" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button onclick="duplicateTimetable('${timetable.id}')" class="text-purple-600 hover:text-purple-700 transition-colors" title="Duplicate">
+                            <button onclick="duplicateTimetable('${timetable.id}')" class="card-action-btn duplicate-btn" title="Duplicate">
                                 <i class="fas fa-copy"></i>
                             </button>
-                            <button onclick="deleteTimetable('${timetable.id}')" class="text-red-600 hover:text-red-700 transition-colors" title="Delete">
+                            <button onclick="deleteTimetable('${timetable.id}')" class="card-action-btn delete-btn" title="Delete">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </div>
                     
-                    <div class="flex justify-between items-center text-sm text-gray-600 mb-3">
-                        <div class="flex items-center">
-                            <span class="interval-badge text-white px-2 py-1 rounded-full text-xs mr-2">
-                                ${timetable.interval_count || 0} intervals
-                            </span>
-                            <span class="assignment-badge text-white px-2 py-1 rounded-full text-xs">
-                                ${timetable.assignment_count || 0} assignments
-                            </span>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon interval-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-value">${timetable.interval_count || 0}</span>
+                                <span class="stat-label" data-translate="timetable_library.intervals">Intervals</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon assignment-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-value">${timetable.assignment_count || 0}</span>
+                                <span class="stat-label" data-translate="timetable_library.assignments">Assigned</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="text-xs text-gray-500">
-                        Created: ${new Date(timetable.created_at).toLocaleDateString()}
+                    <div class="card-footer">
+                        <div class="card-meta">
+                            <i class="fas fa-calendar-alt meta-icon"></i>
+                            <span class="meta-text"><span data-translate="timetable_library.created">Created</span> ${new Date(timetable.created_at).toLocaleDateString()}</span>
+                        </div>
+                        <div class="card-status">
+                            <span class="status-dot ${timetable.assignment_count > 0 ? 'active' : 'inactive'}"></span>
+                            <span class="status-text">${timetable.assignment_count > 0 ? (typeof translate === 'function' ? translate('timetable_library.active') : 'Active') : (typeof translate === 'function' ? translate('timetable_library.inactive') : 'Inactive')}</span>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -518,54 +1752,23 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${timetable.interval_count || 0}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${timetable.assignment_count || 0}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(timetable.created_at).toLocaleDateString()}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td class="actions-cell">
                         <div class="flex space-x-2">
-                            <button onclick="viewTimetable('${timetable.id}')" class="text-blue-600 hover:text-blue-700" title="View"><i class="fas fa-eye"></i></button>
-                            <button onclick="editTimetable('${timetable.id}')" class="text-green-600 hover:text-green-700" title="Edit"><i class="fas fa-edit"></i></button>
-                            <button onclick="duplicateTimetable('${timetable.id}')" class="text-purple-600 hover:text-purple-700" title="Duplicate"><i class="fas fa-copy"></i></button>
-                            <button onclick="deleteTimetable('${timetable.id}')" class="text-red-600 hover:text-red-700" title="Delete"><i class="fas fa-trash"></i></button>
+                            <button onclick="viewTimetable('${timetable.id}')" class="action-btn action-btn-view" title="View"><i class="fas fa-eye"></i></button>
+                            <button onclick="editTimetable('${timetable.id}')" class="action-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white;" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button onclick="duplicateTimetable('${timetable.id}')" class="action-btn" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;" title="Duplicate"><i class="fas fa-copy"></i></button>
+                            <button onclick="deleteTimetable('${timetable.id}')" class="action-btn" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white;" title="Delete"><i class="fas fa-trash"></i></button>
                         </div>
                     </td>
                 </tr>
             `).join('');
         }
 
-        function renderTimetablesCalendar() {
-            const calendar = document.getElementById('timetablesCalendar');
-            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            
-            let calendarHtml = '<div class="grid grid-cols-1 md:grid-cols-7 gap-4">';
-
-            for (let i = 0; i < 7; i++) {
-                calendarHtml += `
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-center mb-2">${days[i]}</h4>
-                        <div class="space-y-2">`;
-
-                currentTimetables.forEach(timetable => {
-                    const dayIntervals = (timetable.intervals || []).filter(interval => interval.weekday === i);
-                    if (dayIntervals.length > 0) {
-                        calendarHtml += `
-                            <div class="bg-white p-2 rounded-lg border border-gray-200">
-                                <p class="font-bold text-sm">${timetable.name}</p>
-                                ${dayIntervals.map(interval => `
-                                    <div class="text-xs text-gray-600">${interval.start_time} - ${interval.end_time}</div>
-                                `).join('')}
-                            </div>
-                        `;
-                    }
-                });
-
-                calendarHtml += '</div></div>';
-            }
-
-            calendarHtml += '</div>';
-            calendar.innerHTML = calendarHtml;
-        }
-
         function showCreateModal() {
             editingTimetableId = null;
-            document.getElementById('modalTitle').textContent = 'Create New Timetable';
+            const modalTitle = document.getElementById('modalTitle');
+            modalTitle.textContent = typeof translate === 'function' ? translate('timetable_library.create_new') : 'Create New Timetable';
+            modalTitle.setAttribute('data-translate', 'timetable_library.create_new');
             document.getElementById('timetableForm').reset();
             document.getElementById('intervalsContainer').innerHTML = '';
             weekendDays = [5, 6];
@@ -596,48 +1799,51 @@
             const intervalId = Date.now();
             
             const intervalHtml = `
-                <div class="interval-item border border-gray-200 rounded-lg p-4" data-interval-id="${intervalId}">
-                    <div class="flex justify-between items-center mb-3">
-                        <h4 class="font-medium text-gray-900">Interval ${container.children.length + 1}</h4>
-                        <button type="button" onclick="removeInterval(${intervalId})" class="text-red-600 hover:text-red-700 transition-colors">
+                <div class="interval-item" data-interval-id="${intervalId}">
+                    <div class="interval-header">
+                        <div class="interval-title">
+                            <i class="fas fa-clock"></i>
+                            <span><span data-translate="timetable_library.interval">Interval</span> ${container.children.length + 1}</span>
+                        </div>
+                        <button type="button" onclick="removeInterval(${intervalId})" class="interval-delete-btn" title="${typeof translate === 'function' ? translate('timetable_library.delete') : 'Delete'}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Weekday</label>
-                            <select class="weekday-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="0">Sunday</option>
-                                <option value="1">Monday</option>
-                                <option value="2">Tuesday</option>
-                                <option value="3">Wednesday</option>
-                                <option value="4">Thursday</option>
-                                <option value="5">Friday</option>
-                                <option value="6">Saturday</option>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="timetable_library.weekday">Weekday</label>
+                            <select class="weekday-input filter-select w-full">
+                                <option value="0" data-translate="day.sunday">Sunday</option>
+                                <option value="1" data-translate="day.monday">Monday</option>
+                                <option value="2" data-translate="day.tuesday">Tuesday</option>
+                                <option value="3" data-translate="day.wednesday">Wednesday</option>
+                                <option value="4" data-translate="day.thursday">Thursday</option>
+                                <option value="5" data-translate="day.friday">Friday</option>
+                                <option value="6" data-translate="day.saturday">Saturday</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
-                            <input type="time" class="start-time time-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="timetable_library.start_time">Start Time</label>
+                            <input type="time" class="start-time time-input w-full" required step="60">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">End Time</label>
-                            <input type="time" class="end-time time-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="timetable_library.end_time">End Time</label>
+                            <input type="time" class="end-time time-input w-full" required step="60">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Break (min)</label>
-                            <input type="number" class="break-minutes w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" min="0" value="0">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="timetable_library.break_min">Break (min)</label>
+                            <input type="number" class="break-minutes time-input w-full" min="0" value="0" step="1" placeholder="0">
                         </div>
-                        <div class="grade-level-container" style="display: none;">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Grade Level</label>
-                            <select class="grade-level-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="">No Grade</option>
-                                <option value="1">1st Grade</option>
-                                <option value="2">2nd Grade</option>
-                                <option value="3">3rd Grade</option>
-                                <option value="4">4th Grade</option>
-                                <option value="5">5th Grade</option>
+                        <div class="form-group grade-level-container" style="display: none;">
+                            <label class="form-label" data-translate="timetable_library.grade_level">Grade Level</label>
+                            <select class="grade-level-input filter-select w-full">
+                                <option value="" data-translate="timetable_library.no_grade">No Grade</option>
+                                <option value="1" data-translate="grade.first">1st Grade</option>
+                                <option value="2" data-translate="grade.second">2nd Grade</option>
+                                <option value="3" data-translate="grade.third">3rd Grade</option>
+                                <option value="4" data-translate="grade.fourth">4th Grade</option>
+                                <option value="5" data-translate="grade.fifth">5th Grade</option>
                             </select>
                         </div>
                     </div>
@@ -646,6 +1852,13 @@
             
             container.insertAdjacentHTML('beforeend', intervalHtml);
             updateIntervalGradeLevelVisibility();
+            
+            // Update translations for the newly added interval
+            if (typeof updatePageTranslations === 'function') {
+                setTimeout(() => {
+                    updatePageTranslations();
+                }, 100);
+            }
         }
 
         function removeInterval(intervalId) {
@@ -723,7 +1936,10 @@
                     return; 
                 }
                 
-                showNotification(editingTimetableId ? 'Timetable updated successfully' : 'Timetable created successfully', 'success');
+                const successMsg = editingTimetableId 
+                    ? (typeof translate === 'function' ? translate('timetable_library.updated_success') : 'Timetable updated successfully')
+                    : (typeof translate === 'function' ? translate('timetable_library.created_success') : 'Timetable created successfully');
+                showNotification(successMsg, 'success');
                 closeModal();
                 loadTimetables();
             } catch (error) {
@@ -750,21 +1966,26 @@
                 
                 const content = document.getElementById('viewModalContent');
 
-                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const days = typeof translate === 'function' ? [
+                    translate('day.sunday'), translate('day.monday'), translate('day.tuesday'),
+                    translate('day.wednesday'), translate('day.thursday'), translate('day.friday'),
+                    translate('day.saturday')
+                ] : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                 let scheduleHtml = '<div class="grid grid-cols-1 md:grid-cols-7 gap-4">';
 
                 for (let i = 0; i < 7; i++) {
                     const dayIntervals = timetable.intervals.filter(interval => interval.weekday === i);
                     scheduleHtml += `
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h4 class="font-bold text-center mb-2">${days[i]}</h4>
+                        <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-lg border border-gray-200 shadow-sm">
+                            <h4 class="font-bold text-center mb-3 text-gray-800">${days[i]}</h4>
                             <div class="space-y-2">
                                 ${dayIntervals.length > 0 ? dayIntervals.map(interval => `
-                                    <div class="bg-blue-100 border-l-4 border-blue-500 p-2 rounded-r-lg">
-                                        <p class="font-semibold">${interval.start_time} - ${interval.end_time}</p>
-                                        <p class="text-xs text-gray-600">${interval.break_minutes > 0 ? `${interval.break_minutes} min break` : 'No break'}</p>
+                                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-3 rounded-r-lg shadow-sm hover:shadow-md transition-shadow">
+                                        <p class="font-semibold text-gray-900 mb-1">${interval.start_time} - ${interval.end_time}</p>
+                                        <p class="text-xs text-gray-600">${interval.break_minutes > 0 ? `${interval.break_minutes} ${typeof translate === 'function' ? translate('timetable_library.min_break') : 'min break'}` : (typeof translate === 'function' ? translate('timetable_library.no_break') : 'No break')}</p>
+                                        ${interval.grade_level ? `<p class="text-xs text-indigo-600 mt-1"><i class="fas fa-graduation-cap"></i> ${typeof translate === 'function' ? translate('grade.' + ['first', 'second', 'third', 'fourth', 'fifth'][interval.grade_level - 1]) : 'Grade ' + interval.grade_level}</p>` : ''}
                                     </div>
-                                `).join('') : '<p class="text-xs text-gray-500 text-center">No intervals</p>'}
+                                `).join('') : `<p class="text-xs text-gray-500 text-center py-2">${typeof translate === 'function' ? translate('timetable_library.no_intervals') : 'No intervals'}</p>`}
                             </div>
                         </div>
                     `;
@@ -772,25 +1993,144 @@
 
                 scheduleHtml += '</div>';
 
+                const typeTranslation = typeof translate === 'function' ? translate('timetable_library.' + timetable.type.toLowerCase()) : timetable.type;
+
                 content.innerHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- Enhanced Basic Information Section -->
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span data-translate="timetable_library.basic_information">Basic Information</span>
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Type Card -->
+                            <div class="director-panel" style="padding: 1.25rem; margin-top: 0;">
+                                <div class="flex items-center gap-3">
+                                    <div class="director-panel-title-icon" style="background: ${timetable.type === 'Template' ? 'linear-gradient(135deg, #3b82f6, #2563eb)' : 'linear-gradient(135deg, #10b981, #059669)'};">
+                                        <i class="fas ${timetable.type === 'Template' ? 'fa-file-alt' : 'fa-users-cog'}"></i>
+                                    </div>
                         <div>
-                            <h3 class="font-medium text-gray-900 mb-2">Basic Information</h3>
-                            <div class="space-y-2 text-sm">
-                                <div><span class="font-medium">Type:</span> ${timetable.type}</div>
-                                <div><span class="font-medium">Timezone:</span> ${timetable.timezone}</div>
-                                <div><span class="font-medium">Created:</span> ${new Date(timetable.created_at).toLocaleDateString()}</div>
+                                        <p class="text-xs text-gray-500 font-medium uppercase tracking-wide" data-translate="timetable_library.type_label">Type</p>
+                                        <p class="text-lg font-bold text-gray-900">${typeTranslation}</p>
                             </div>
                         </div>
                     </div>
                     
+                            <!-- Timezone Card -->
+                            <div class="director-panel" style="padding: 1.25rem; margin-top: 0;">
+                                <div class="flex items-center gap-3">
+                                    <div class="director-panel-title-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
                     <div>
-                        <h3 class="font-medium text-gray-900 mb-4">Weekly Schedule</h3>
-                        ${scheduleHtml}
+                                        <p class="text-xs text-gray-500 font-medium uppercase tracking-wide" data-translate="timetable_library.timezone">Timezone</p>
+                                        <p class="text-lg font-bold text-gray-900">${timetable.timezone}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Created Date Card -->
+                            <div class="director-panel" style="padding: 1.25rem; margin-top: 0;">
+                                <div class="flex items-center gap-3">
+                                    <div class="director-panel-title-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 font-medium uppercase tracking-wide" data-translate="timetable_library.created">Created</p>
+                                        <p class="text-lg font-bold text-gray-900">${new Date(timetable.created_at).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Enhanced Weekly Schedule Section -->
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-calendar-week"></i>
+                            <span data-translate="timetable_library.weekly_schedule">Weekly Schedule</span>
+                        </h4>
+                        
+                        <!-- Compact Schedule Summary -->
+                        <div class="director-panel" style="padding: 1rem; margin-bottom: 1.5rem;">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="text-center">
+                                    <div class="text-xl font-bold text-blue-600">${timetable.intervals.length}</div>
+                                    <div class="text-xs text-gray-500 uppercase tracking-wide">${typeof translate === 'function' ? translate('timetable_library.intervals') : 'Intervals'}</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-xl font-bold text-green-600">${timetable.intervals.filter(i => i.break_minutes > 0).length}</div>
+                                    <div class="text-xs text-gray-500 uppercase tracking-wide">${typeof translate === 'function' ? translate('timetable_library.breaks') : 'Breaks'}</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-xl font-bold text-purple-600">${[...new Set(timetable.intervals.map(i => i.weekday))].length}</div>
+                                    <div class="text-xs text-gray-500 uppercase tracking-wide">${typeof translate === 'function' ? translate('timetable_library.active_days') : 'Active Days'}</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-xl font-bold text-orange-600">${timetable.intervals.filter(i => i.grade_level).length}</div>
+                                    <div class="text-xs text-gray-500 uppercase tracking-wide">${typeof translate === 'function' ? translate('timetable_library.grade_assigned') : 'Grade Assigned'}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Compact Weekly Grid -->
+                        <div class="director-panel" style="padding: 1.5rem;">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                                ${days.map((day, index) => {
+                                    const dayIntervals = timetable.intervals.filter(interval => interval.weekday === index);
+                                    const hasIntervals = dayIntervals.length > 0;
+                                    const isWeekend = [5, 6].includes(index);
+                                    
+                                    return `
+                                        <div class="border border-gray-200 rounded-lg p-3 ${isWeekend && !hasIntervals ? 'opacity-50 bg-gray-50' : 'bg-white'} hover:shadow-md transition-shadow">
+                                            <!-- Day Header -->
+                                            <div class="flex items-center justify-between mb-2">
+                                                <h5 class="font-bold text-sm text-gray-800">${day}</h5>
+                                                ${isWeekend ? `<span class="text-xs text-orange-500">${typeof translate === 'function' ? translate('timetable_library.weekend') : 'Weekend'}</span>` : ''}
+                                            </div>
+                                            
+                                            <!-- Day Content -->
+                                            <div class="space-y-2">
+                                                ${hasIntervals ? dayIntervals.map((interval, idx) => `
+                                                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-3 border-blue-500 p-2 rounded text-xs">
+                                                        <div class="flex items-center justify-between mb-1">
+                                                            <span class="font-semibold text-gray-900">${interval.start_time} - ${interval.end_time}</span>
+                                                            <span class="text-xs text-blue-600 font-bold">#${idx + 1}</span>
+                                                        </div>
+                                                        <div class="flex items-center gap-3 text-xs">
+                                                            ${interval.break_minutes > 0 ? 
+                                                                `<span class="text-amber-600"><i class="fas fa-coffee"></i> ${interval.break_minutes}m</span>` : 
+                                                                `<span class="text-gray-400"><i class="fas fa-ban"></i> ${typeof translate === 'function' ? translate('timetable_library.no_break') : 'No break'}</span>`
+                                                            }
+                                                            ${interval.grade_level ? 
+                                                                `<span class="text-indigo-600"><i class="fas fa-graduation-cap"></i> ${typeof translate === 'function' ? translate('grade.' + ['first', 'second', 'third', 'fourth', 'fifth'][interval.grade_level - 1]) : 'G' + interval.grade_level}</span>` : 
+                                                                ''
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                `).join('') : `
+                                                    <div class="text-center py-3 text-gray-400 text-xs">
+                                                        <i class="fas fa-calendar-times mb-1"></i>
+                                                        <div>${typeof translate === 'function' ? translate('timetable_library.no_intervals') : 'No intervals'}</div>
+                                                    </div>
+                                                `}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
                     </div>
                 `;
                 
                 document.getElementById('viewModal').classList.remove('hidden');
+                
+                // Update translations for dynamically added content
+                if (typeof updatePageTranslations === 'function') {
+                    setTimeout(() => {
+                        updatePageTranslations();
+                    }, 100);
+                }
             } catch (error) {
                 console.error('Error viewing timetable:', error);
                 showNotification('Failed to load timetable details', 'error');
@@ -812,7 +2152,9 @@
                 const timetable = await response.json();
                 
                 editingTimetableId = id;
-                document.getElementById('modalTitle').textContent = 'Edit Timetable';
+                const modalTitle = document.getElementById('modalTitle');
+                modalTitle.textContent = typeof translate === 'function' ? translate('timetable_library.edit_timetable') : 'Edit Timetable';
+                modalTitle.setAttribute('data-translate', 'timetable_library.edit_timetable');
                 document.getElementById('timetableName').value = timetable.name;
                 document.getElementById('timetableType').value = timetable.type;
                 
@@ -836,7 +2178,8 @@
         }
 
         async function duplicateTimetable(id) {
-            const name = prompt('Enter name for the duplicated timetable:');
+            const promptText = typeof translate === 'function' ? translate('timetable_library.duplicate_prompt') : 'Enter name for the duplicated timetable:';
+            const name = prompt(promptText);
             if (!name) return;
             
             try {
@@ -852,7 +2195,8 @@
                 
                 if (!response.ok) throw new Error('Failed to duplicate timetable');
                 
-                showNotification('Timetable duplicated successfully', 'success');
+                const msg = typeof translate === 'function' ? translate('timetable_library.duplicated_success') : 'Timetable duplicated successfully';
+                showNotification(msg, 'success');
                 loadTimetables();
             } catch (error) {
                 console.error('Error duplicating timetable:', error);
@@ -861,7 +2205,8 @@
         }
 
         async function deleteTimetable(id) {
-            if (!confirm('Are you sure you want to delete this timetable? This action cannot be undone.')) {
+            const confirmText = typeof translate === 'function' ? translate('timetable_library.delete_confirm') : 'Are you sure you want to delete this timetable? This action cannot be undone.';
+            if (!confirm(confirmText)) {
                 return;
             }
             
@@ -880,7 +2225,8 @@
                     throw new Error(error.error || 'Failed to delete timetable');
                 }
                 
-                showNotification('Timetable deleted successfully', 'success');
+                const msg = typeof translate === 'function' ? translate('timetable_library.deleted_success') : 'Timetable deleted successfully';
+                showNotification(msg, 'success');
                 loadTimetables();
             } catch (error) {
                 console.error('Error deleting timetable:', error);
@@ -895,6 +2241,10 @@
 
         function closeModal() {
             document.getElementById('timetableModal').classList.add('hidden');
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').classList.add('hidden');
         }
 
         function closeViewModal() {
@@ -918,34 +2268,21 @@
 
             const gridView = document.getElementById('timetablesGrid');
             const listView = document.getElementById('timetablesList');
-            const calendarView = document.getElementById('timetablesCalendar');
             const gridBtn = document.getElementById('gridViewBtn');
             const listBtn = document.getElementById('listViewBtn');
-            const calendarBtn = document.getElementById('calendarViewBtn');
 
             gridView.classList.add('hidden');
             listView.classList.add('hidden');
-            calendarView.classList.add('hidden');
             
-            gridBtn.classList.remove('bg-blue-600', 'text-white');
-            listBtn.classList.remove('bg-blue-600', 'text-white');
-            calendarBtn.classList.remove('bg-blue-600', 'text-white');
-            gridBtn.classList.add('bg-gray-200', 'text-gray-700');
-            listBtn.classList.add('bg-gray-200', 'text-gray-700');
-            calendarBtn.classList.add('bg-gray-200', 'text-gray-700');
+            gridBtn.classList.remove('active');
+            listBtn.classList.remove('active');
 
             if (view === 'grid') {
                 gridView.classList.remove('hidden');
-                gridBtn.classList.add('bg-blue-600', 'text-white');
-                gridBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                gridBtn.classList.add('active');
             } else if (view === 'list') {
                 listView.classList.remove('hidden');
-                listBtn.classList.add('bg-blue-600', 'text-white');
-                listBtn.classList.remove('bg-gray-200', 'text-gray-700');
-            } else { // calendar
-                calendarView.classList.remove('hidden');
-                calendarBtn.classList.add('bg-blue-600', 'text-white');
-                calendarBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                listBtn.classList.add('active');
             }
         }
 

@@ -1,0 +1,69 @@
+---
+description: How hourly_rate and overtime_rate are used in salary calculations
+---
+
+# Salary Rate Usage
+
+## How Hourly Rate and Overtime Rate Are Used
+
+Based on the actual implementation in [fixed_salary_calculation.js](mdc:salary-service/fixed_salary_calculation.js):
+
+**Both are hourly rates (price per hour), just for different contexts:**
+
+### Regular Hourly Rate (`hourly_rate`)
+- **What it is**: Regular hourly rate (price per hour for normal work)
+- **Calculation if not provided**: `hourly_rate = base_salary ÷ (22 days × 8 hours) = base_salary ÷ 176 hours`
+- **Usage**: Only used to calculate `overtime_rate` if not provided. **NOT directly used in salary calculations.**
+
+### Overtime Hourly Rate (`overtime_rate`)
+- **What it is**: Overtime hourly rate (price per hour for overtime, late, and early deductions)
+- **Calculation if not provided**: `overtime_rate = hourly_rate × overtime_multiplier (default 1.5)`
+- **Used for ALL time-based calculations:**
+  - **Overtime Pay**: `overtime_hours × overtime_rate`
+  - **Late Deduction**: `late_hours × overtime_rate` 
+  - **Early Departure Deduction**: `early_hours × overtime_rate`
+
+**Note**: The naming is misleading - `hourly_rate` suggests it's used for hourly calculations, but only `overtime_rate` is actually used in calculations. Both are just "price per hour" but `overtime_rate` is the one that matters.
+
+### Base Salary (`base_salary`)
+**Primary salary component:**
+- Daily rate = `base_salary ÷ 22 working days`
+- Used in salary formula: `Base Salary + Overtime - Deductions`
+
+### Salary Calculation Formula
+
+**Algerian Formula:**
+```
+Total Salary = Base Salary 
+             + (Overtime Hours × Overtime Rate)
+             + Wage Changes
+             - (Absent Days × Daily Rate)
+             - (Half Days × 0.5 × Daily Rate)
+             - (Late Hours × Overtime Rate)
+             - (Early Hours × Overtime Rate)
+```
+
+**Worked Days Formula:**
+```
+Total Salary = (Worked Days × Daily Rate)
+             + (Overtime Hours × Overtime Rate)
+             + Wage Changes
+             - (Late Hours × Overtime Rate)
+             - (Early Hours × Overtime Rate)
+```
+
+### Key Implementation Details
+
+1. **Both are hourly rates (price per hour)** - just different contexts:
+   - `hourly_rate` = regular hourly rate (not directly used)
+   - `overtime_rate` = overtime hourly rate (used for all time calculations)
+
+2. **All time-based calculations use `overtime_rate`**, not `hourly_rate`
+
+3. **Calculation chain:**
+   - If `hourly_rate` not provided → `hourly_rate = base_salary ÷ 176 hours`
+   - If `overtime_rate` not provided → `overtime_rate = hourly_rate × 1.5`
+
+4. **Naming clarification**: Both are "price per hour" but:
+   - `hourly_rate` = regular hourly rate (reference value, not used directly)
+   - `overtime_rate` = overtime hourly rate (actually used in all calculations)

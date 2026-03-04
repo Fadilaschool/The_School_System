@@ -87,89 +87,432 @@
     <title data-translate="attendance.daily.title">Daily Attendance - HR Operations Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* Director-themed base styles */
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-purple: #7c3aed;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        main {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 1.5rem;
+        }
+
+        /* Enhanced Stat Chips */
         .stat-chip {
-            transition: all 0.2s ease;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .stat-chip::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 55%);
+            pointer-events: none;
         }
 
         .stat-chip:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
         }
 
+        /* Subtle pulse animation for validate button */
+        @keyframes pulse-subtle {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.95;
+                transform: scale(1.02);
+            }
+        }
+
+        .animate-pulse-subtle {
+            animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .stat-chip .text-2xl {
+            font-size: 2.25rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-chip .text-xs {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Director Panel */
+        .director-panel {
+            margin-top: 16px;
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .director-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .director-panel>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .director-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .director-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .director-panel-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top left,
+                    rgba(37, 99, 235, 0.22),
+                    rgba(37, 99, 235, 0.05));
+            color: #1d4ed8;
+        }
+
+        .director-section-pill {
+            padding: 0.15rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: rgba(15, 23, 42, 0.04);
+            color: #64748b;
+        }
+
+        /* Enhanced Buttons */
+        .filter-button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-button:hover {
+            background: linear-gradient(135deg, #e5edff, #dbeafe);
+            border-color: #93c5fd;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .filter-button.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.35);
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced Status Badges */
         .status-badge {
             display: inline-flex;
             align-items: center;
-            padding: 0.25rem 0.5rem;
-            border-radius: 9999px;
+            gap: 0.375rem;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
             font-size: 0.75rem;
-            font-weight: 500;
-            width: fit-content;
-            min-width: auto;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
         }
 
         .status-present {
-            background-color: #d1fae5;
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
             color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
 
         .status-absent {
-            background-color: #fecaca;
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
             color: #991b1b;
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
         .status-justified {
-            background-color: #dbeafe;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
             color: #1e40af;
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         .status-overridden {
-            background-color: #dcfce7;
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
             color: #166534;
+            border: 1px solid rgba(34, 197, 94, 0.2);
             font-weight: 600;
         }
 
         .status-pending {
-            background-color: #fdba74;
+            background: linear-gradient(135deg, #fed7aa, #fdba74);
             color: #c2410c;
+            border: 1px solid rgba(249, 115, 22, 0.3);
             font-weight: 600;
             box-shadow: 0 0 0 2px #fb923c33;
         }
 
         .status-late {
-            background-color: #fed7aa;
+            background: linear-gradient(135deg, #fed7aa, #fdba74);
             color: #9a3412;
+            border: 1px solid rgba(249, 115, 22, 0.2);
         }
 
         .status-early {
-            background-color: #fed7aa;
+            background: linear-gradient(135deg, #fed7aa, #fdba74);
             color: #9a3412;
+            border: 1px solid rgba(249, 115, 22, 0.2);
         }
 
         .status-missing-one {
-            background-color: #fef3c7;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
             color: #92400e;
+            border: 1px solid rgba(245, 158, 11, 0.2);
         }
 
         .status-missing-both {
-            background-color: #fecaca;
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
             color: #991b1b;
+            border: 1px solid rgba(239, 68, 68, 0.2);
             font-weight: 600;
         }
 
+        /* Enhanced Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .complaints-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 1000px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .complaints-table thead {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .complaints-table th {
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #475569;
+            padding: 1.25rem 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            vertical-align: middle;
+            position: relative;
+            white-space: nowrap;
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .complaints-table tbody tr {
+            background: white;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .complaints-table tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .complaints-table tbody tr:hover {
+            background: linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 100%);
+            transform: translateX(2px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .complaints-table td {
+            padding: 1.25rem 1rem;
+            font-size: 0.875rem;
+            color: #1e293b;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
         .table-row:hover {
-            background-color: #f9fafb;
+            background: linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 100%);
+            transform: translateX(2px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
         }
 
         .validated-row {
             background-color: #f0fdf4;
         }
 
+        /* Enhanced Form Elements */
+        .filter-select {
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            background: #ffffff;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            background-color: #f9fafb;
+        }
+
+        .filter-select:hover {
+            border-color: #94a3b8;
+            background-color: #f8fafc;
+        }
+
+        /* Enhanced Action Buttons */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .action-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .action-btn i {
+            font-size: 0.875rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Side Panel Styles */
         .side-panel {
             max-height: 600px;
             overflow-y: auto;
         }
 
+        .side-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .side-panel::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+        }
+
+        .side-panel::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .side-panel::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Loading Spinner */
         .loading-spinner {
             animation: spin 1s linear infinite;
         }
@@ -184,8 +527,186 @@
             }
         }
 
+        /* Time Input */
         .time-input {
             font-family: monospace;
+        }
+
+        /* Page Header Styles */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: #3b82f6;
+            font-size: 1.75rem;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            background: white;
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.12);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.08),
+                    rgba(124, 58, 237, 0.06),
+                    rgba(56, 189, 248, 0.06));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .modal-content>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] .director-panel {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .filter-select {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        /* Report Stat Cards - HR Dashboard Style */
+        .report-stat-card-inline {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .report-stat-card-inline:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+        }
+
+        .report-stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .report-stat-content {
+            flex: 1;
+        }
+
+        .report-stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .report-stat-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .report-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .page-title i {
+                font-size: 1.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .stat-chip {
+                padding: 16px;
+            }
+
+            .stat-chip .text-2xl {
+                font-size: 1.75rem;
+            }
+
+            .report-stat-card-inline {
+                min-width: 160px;
+                padding: 16px;
+            }
+
+            .report-stat-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.25rem;
+            }
+
+            .report-stat-value {
+                font-size: 1.875rem;
+            }
         }
     </style>
 </head>
@@ -202,154 +723,328 @@
     </div>
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8" style="padding-top: 1.5rem;">
-        <!-- Employee Header -->
-        <div class="bg-white rounded-lg shadow-sm mb-6 p-6">
-            <div class="flex justify-between items-start">
-                <div class="flex-1">
-                    <div class="flex items-center mb-2 space-x-3">
-                        <h2 id="employeeName" class="text-2xl font-bold text-gray-900">-</h2>
-                        <span id="employeePosition"
-                            class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">-</span>
-                        <span id="validationStatusBadge" class="status-badge bg-gray-100 text-gray-700"
-                            data-translate="attendance.daily.not_loaded">Not Loaded</span>
+    <main>
+        <div class="w-full">
+            <!-- Page Title & Description -->
+            <div class="page-header">
+                <h1 class="page-title" data-translate="attendance.daily.title">
+                    <i class="fas fa-calendar-day"></i>
+                    Daily Attendance Management
+                </h1>
+                <p class="page-subtitle" data-translate="attendance.daily.subtitle">Review and manage daily attendance records with detailed analytics</p>
+            </div>
+
+            <!-- Enhanced Employee Analytics Card -->
+            <div class="director-panel">
+                <!-- Card Header -->
+                <div class="director-panel-header">
+                    <div class="director-panel-title">
+                        <div class="director-panel-title-icon mr-4">
+                            <i class="fas fa-user-chart"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900" data-translate="attendance.daily.employee_analytics">Employee Analytics & Management</h2>
+                        </div>
                     </div>
-                    <p id="employeeDepartment" class="text-gray-600">-</p>
+                    <span class="director-section-pill" data-translate="attendance.daily.overview_section">Overview</span>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1"
-                            data-translate="common.year">Year</label>
-                        <select id="yearSelector"
-                            class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </select>
+                
+                <!-- Employee Profile Section -->
+                <div class="mb-6">
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="director-panel-title-icon mr-4 mr-8" style="background: linear-gradient(135deg, #3b82f6, #2563eb); width: 40px; height: 40px;">
+                                    <i class="fas fa-id-badge text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center space-x-3">
+                                        <h2 id="employeeName" class="text-2xl font-bold text-gray-900">Achouak Benmeziane</h2>
+                                        <span id="employeePosition" class="px-3 py-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full text-xs font-semibold">Teacher</span>
+                                        <span id="validationStatusBadge" class="status-badge status-present text-xs">
+                                            <i class="fas fa-check-circle mr-1"></i> تم التحقق منه
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center text-gray-600 text-sm mt-1">
+                                        <i class="fas fa-building mr-2 text-gray-400"></i>
+                                        <span id="employeeDepartment">depa</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <select id="yearSelector" class="filter-select text-sm px-3 py-2">
+                                    <option value="2026" selected>2026</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                </select>
+                                <select id="monthSelector" class="filter-select text-sm px-3 py-2">
+                                    <option value="1" data-translate="months.january">January</option>
+                                    <option value="2" data-translate="months.february" selected>February</option>
+                                    <option value="3" data-translate="months.march">March</option>
+                                    <option value="4" data-translate="months.april">April</option>
+                                    <option value="5" data-translate="months.may">May</option>
+                                    <option value="6" data-translate="months.june">June</option>
+                                    <option value="7" data-translate="months.july">July</option>
+                                    <option value="8" data-translate="months.august">August</option>
+                                    <option value="9" data-translate="months.september">September</option>
+                                    <option value="10" data-translate="months.october">October</option>
+                                    <option value="11" data-translate="months.november">November</option>
+                                    <option value="12" data-translate="months.december">December</option>
+                                </select>
+                                <button onclick="loadEmployeeData()" class="filter-button active px-4 py-2 text-sm" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">
+                                    <i class="fas fa-search"></i>
+                                    <span data-translate="common.load">تحميل</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1"
-                            data-translate="common.month">Month</label>
-                        <select id="monthSelector"
-                            class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="1" data-translate="common.month.january">January</option>
-                            <option value="2" data-translate="common.month.february">February</option>
-                            <option value="3" data-translate="common.month.march">March</option>
-                            <option value="4" data-translate="common.month.april">April</option>
-                            <option value="5" data-translate="common.month.may">May</option>
-                            <option value="6" data-translate="common.month.june">June</option>
-                            <option value="7" data-translate="common.month.july">July</option>
-                            <option value="8" data-translate="common.month.august">August</option>
-                            <option value="9" data-translate="common.month.september">September</option>
-                            <option value="10" data-translate="common.month.october">October</option>
-                            <option value="11" data-translate="common.month.november">November</option>
-                            <option value="12" data-translate="common.month.december">December</option>
-                        </select>
+                </div>
+                
+                <!-- Attendance Stats Section -->
+                <div class="border-t border-gray-200 pt-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="director-panel-title-icon mr-4" style="background: linear-gradient(135deg, #10b981, #059669); width: 32px; height: 32px;">
+                                <i class="fas fa-chart-line text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900" data-translate="attendance.daily.attendance_stats">Attendance Analytics</h3>
+                            </div>
+                        </div>
+                        <span class="director-section-pill bg-green-100 text-green-700 text-xs" data-translate="attendance.daily.stats_section">Analytics</span>
                     </div>
-                    <div class="flex items-end">
-                        <button onclick="loadEmployeeData()"
-                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
-                            <i class="fas fa-search mr-2"></i>
-                            <span data-translate="common.load">Load</span>
+                    
+                    <!-- HR Dashboard Style Statistics Cards -->
+                    <!-- Top Row: 4 Cards -->
+                    <div class="flex flex-wrap gap-4 justify-between mb-4">
+                        <!-- Scheduled Days Card -->
+                        <div class="report-stat-card-inline">
+                            <div class="report-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="report-stat-content">
+                                <p class="report-stat-label" data-translate="attendance.daily.scheduled_days">الأيام المقررة</p>
+                                <h3 id="scheduledDays" class="report-stat-value">4</h3>
+                                <span class="report-stat-badge" style="background: rgba(59, 130, 246, 0.1); color: #2563eb;">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span data-translate="attendance.badges.scheduled">مقررة</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Worked Days Card -->
+                        <div class="report-stat-card-inline">
+                            <div class="report-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="report-stat-content">
+                                <p class="report-stat-label" data-translate="attendance.daily.worked_days">أيام العمل الفعلية</p>
+                                <h3 id="workedDays" class="report-stat-value">0</h3>
+                                <span class="report-stat-badge" style="background: rgba(16, 185, 129, 0.1); color: #059669;">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span data-translate="attendance.badges.completed">منجزة</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Absence Days Card -->
+                        <div class="report-stat-card-inline">
+                            <div class="report-stat-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                                <i class="fas fa-user-times"></i>
+                            </div>
+                            <div class="report-stat-content">
+                                <p class="report-stat-label" data-translate="attendance.daily.absence_days">أيام الغياب</p>
+                                <h3 id="absenceDays" class="report-stat-value">4</h3>
+                                <span class="record-stat-badge" style="background: rgba(239, 68, 68, 0.1); color: #dc2626;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span data-translate="attendance.badges.critical">حرجة</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Pending Days Card -->
+                        <div class="report-stat-card-inline">
+                            <div class="report-stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="report-stat-content">
+                                <p class="report-stat-label" data-translate="attendance.daily.pending_days">الأيام المعلقة</p>
+                                <h3 id="pendingDays" class="report-stat-value">0</h3>
+                                <span class="report-stat-badge" style="background: rgba(245, 158, 11, 0.1); color: #d97706;">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    <span data-translate="attendance.badges.attention">تتطلب اهتمام</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Row: 4 Cards -->
+                    <div class="flex flex-wrap gap-4 justify-between">
+                        <!-- Late Count Card -->
+                        <div class="report-stat-card-inline">
+                            <div class="report-stat-icon" style="background: linear-gradient(135deg, #fb923c, #f97316);">
+                                <i class="fas fa-hourglass-start"></i>
+                            </div>
+                            <div class="report-stat-content">
+                                <p class="report-stat-label" data-translate="attendance.daily.late">تأخير</p>
+                                <h3 id="lateCount" class="report-stat-value">0</h3>
+                                <span class="report-stat-badge" style="background: rgba(251, 146, 60, 0.1); color: #f97316;">
+                                    <i class="fas fa-clock"></i>
+                                    <span id="lateTotalText" data-translate="attendance.badges.total">الإجمالي: 0 دقيقة</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Early Count Card -->
+                        <div class="report-stat-card-inline">
+                            <div class="report-stat-icon" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">
+                                <i class="fas fa-hourglass-end"></i>
+                            </div>
+                            <div class="report-stat-content">
+                                <p class="report-stat-label" data-translate="attendance.daily.early">مغادرة مبكرة</p>
+                                <h3 id="earlyCount" class="report-stat-value">0</h3>
+                                <span class="report-stat-badge" style="background: rgba(251, 191, 36, 0.1); color: #f59e0b;">
+                                    <i class="fas fa-clock"></i>
+                                    <span id="earlyTotalText" data-translate="attendance.badges.total">الإجمالي: 0 دقيقة</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Overtime Hours Card -->
+                        <div class="report-stat-card-inline">
+                            <div class="report-stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                                <i class="fas fa-business-time"></i>
+                            </div>
+                            <div class="report-stat-content">
+                                <p class="report-stat-label" data-translate="attendance.daily.overtime_hours">الساعات الإضافية</p>
+                                <h3 id="totalOvertimeHours" class="report-stat-value">2.00</h3>
+                                <span class="report-stat-badge" style="background: rgba(139, 92, 246, 0.1); color: #7c3aed;">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span data-translate="attendance.badges.extra_hours">ساعات إضافية</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Wage Changes Card -->
+                        <div class="report-stat-card-inline">
+                            <div class="report-stat-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="report-stat-content">
+                                <p class="report-stat-label" data-translate="attendance.daily.wage_changes">تعديلات الراتب</p>
+                                <h3 id="wageChanges" class="report-stat-value">0.00 DA</h3>
+                                <span class="report-stat-badge" style="background: rgba(6, 182, 212, 0.1); color: #0891b2;">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <span data-translate="attendance.badges.currency">دينار جزائري</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions Section -->
+                <div class="border-t border-gray-200 pt-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="director-panel-title-icon mr-4" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); width: 32px; height: 32px;">
+                                <i class="fas fa-cogs text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900" data-translate="attendance.daily.records_title">Quick Actions</h3>
+                            </div>
+                        </div>
+                        <span class="director-section-pill bg-purple-100 text-purple-700 text-xs" data-translate="attendance.daily.actions_section">Actions</span>
+                    </div>
+                    
+                    <!-- Compact Action Buttons -->
+                    <div class="flex flex-wrap gap-3 items-center">
+                        <!-- View Salary Button - Navigation Style -->
+                        <a href="#" onclick="openSalaryPopup(); return false;" class="group inline-flex items-center space-x-3 px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-lg shadow hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200">
+                            <i class="fas fa-external-link-alt text-white text-base"></i>
+                            <span class="text-sm font-medium whitespace-nowrap" data-translate="attendance.daily.view_salary">عرض الراتب</span>
+                            <i class="fas fa-arrow-right text-xs opacity-70 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        
+                        <!-- Recalculate Button -->
+                        <button onclick="recalculateMonth()" class="group inline-flex items-center space-x-3 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg shadow hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200">
+                            <i class="fas fa-calculator text-white text-base"></i>
+                            <span class="text-sm font-medium whitespace-nowrap" data-translate="attendance.daily.recalculate">إعادة الحساب</span>
+                        </button>
+                        
+                        <!-- Validate Month Button - Special Prominent Style -->
+                        <button onclick="validateMonth()" class="group relative inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 font-semibold ring-2 ring-green-400 ring-opacity-50 hover:ring-opacity-100 animate-pulse-subtle">
+                            <i class="fas fa-check-circle text-white text-lg"></i>
+                            <span class="text-sm font-semibold whitespace-nowrap" data-translate="attendance.daily.validate_month">التحقق من الشهر</span>
+                            <span class="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping opacity-75"></span>
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Summary Statistics -->
-        <div class="grid grid-cols-2 md:grid-cols-8 gap-4 mb-6">
-            <div class="stat-chip bg-white rounded-lg p-4 text-center shadow-sm">
-                <div class="text-2xl font-semibold text-blue-600" id="scheduledDays">-</div>
-                <div class="text-xs text-gray-500" data-translate="attendance.daily.scheduled_days">Scheduled Days</div>
-            </div>
-            <div class="stat-chip bg-white rounded-lg p-4 text-center shadow-sm">
-                <div class="text-2xl font-semibold text-green-600" id="workedDays">-</div>
-                <div class="text-xs text-gray-500" data-translate="attendance.daily.worked_days">Worked Days</div>
-            </div>
-            <div class="stat-chip bg-white rounded-lg p-4 text-center shadow-sm">
-                <div class="text-2xl font-semibold text-red-600" id="absenceDays">-</div>
-                <div class="text-xs text-gray-500" data-translate="attendance.daily.absence_days">Absence Days</div>
-            </div>
-            <div class="stat-chip bg-white rounded-lg p-4 text-center shadow-sm">
-                <div class="text-2xl font-semibold text-yellow-600" id="pendingDays">-</div>
-                <div class="text-xs text-gray-500" data-translate="attendance.daily.pending_days">Pending Days</div>
-            </div>
-            <div class="stat-chip bg-white rounded-lg p-4 text-center shadow-sm">
-                <div class="text-2xl font-semibold text-yellow-600" id="lateCount">-</div>
-                <div class="text-xs text-gray-500" data-translate="attendance.daily.late">Late</div>
-                <div class="text-xs text-gray-500" id="lateTotalText" data-translate="attendance.daily.total">Total: -
-                </div>
-            </div>
-            <div class="stat-chip bg-white rounded-lg p-4 text-center shadow-sm">
-                <div class="text-2xl font-semibold text-orange-600" id="earlyCount">-</div>
-                <div class="text-xs text-gray-500" data-translate="attendance.daily.early">Early</div>
-                <div class="text-xs text-gray-500" id="earlyTotalText" data-translate="attendance.daily.total">Total: -
-                </div>
-            </div>
-            <div class="stat-chip bg-white rounded-lg p-4 text-center shadow-sm">
-                <div class="text-2xl font-semibold text-purple-600" id="totalOvertimeHours">-</div>
-                <div class="text-xs text-gray-500" data-translate="attendance.daily.overtime_hours">Overtime Hours</div>
-            </div>
-            <div class="stat-chip bg-white rounded-lg p-4 text-center shadow-sm">
-                <div class="text-2xl font-semibold text-indigo-600" id="wageChanges">-</div>
-                <div class="text-xs text-gray-500" data-translate="attendance.daily.wage_changes">Wage Changes</div>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div
-            class="validation-section flex justify-between items-center mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <div>
-                <h3 class="text-lg font-semibold text-gray-900" data-translate="attendance.daily.records_title">Daily
-                    Attendance Records</h3>
-                <p class="text-sm text-gray-600 mt-1" data-translate="attendance.daily.records_description">Review and
-                    validate attendance data for payroll processing</p>
-            </div>
-            <div class="flex space-x-3">
-                <button onclick="testAPI()"
-                    class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm">
-                    <i class="fas fa-bug mr-2"></i>
-                    <span data-translate="attendance.daily.test_api">Test API</span>
-                </button>
-                <button onclick="openSalaryPopup()"
-                    class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
-                    <i class="fas fa-money-bill-wave mr-2"></i>
-                    <span data-translate="attendance.daily.view_salary">View Salary</span>
-                </button>
-                <button onclick="recalculateMonth()"
-                    class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm">
-                    <i class="fas fa-calculator mr-2"></i>
-                    <span data-translate="attendance.daily.recalculate">Recalculate</span>
-                </button>
-                <button onclick="validateMonth()"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
-                    <i class="fas fa-check-double mr-2"></i>
-                    <span data-translate="attendance.daily.validate_month">Validate Month</span>
-                </button>
-            </div>
-        </div>
 
         <!-- Main Layout -->
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <!-- Left Panel: Daily Attendance Table (3/4 width) -->
             <div class="lg:col-span-3">
-                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                <div class="director-panel">
+                    <div class="director-panel-header">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon">
+                                <i class="fas fa-table"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900" data-translate="attendance.daily.attendance_table">Attendance Details</h3>
+                                <p class="text-xs text-gray-500 mt-0.5" data-translate="attendance.daily.table_description">Daily attendance records with punch times and status</p>
+                            </div>
+                        </div>
+                        <span class="director-section-pill" data-translate="attendance.daily.table_section">Records</span>
+                    </div>
+                    
+                    <div class="table-wrapper">
+                        <table class="complaints-table">
+                            <thead>
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        data-translate="attendance.daily.date">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        data-translate="attendance.daily.scheduled_shift">Scheduled Shift</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        data-translate="attendance.daily.entry_time">Entry Time</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        data-translate="attendance.daily.exit_time">Exit Time</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        data-translate="attendance.daily.overtime_hours">Overtime Hours</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        data-translate="common.status">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                        data-translate="common.actions">Actions</th>
+                                    <th>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <i class="fas fa-calendar" style="color: #3b82f6; font-size: 0.875rem;"></i>
+                                            <span data-translate="attendance.daily.date">Date</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <i class="fas fa-clock" style="color: #3b82f6; font-size: 0.875rem;"></i>
+                                            <span data-translate="attendance.daily.scheduled_shift">Scheduled Shift</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <i class="fas fa-sign-in-alt" style="color: #10b981; font-size: 0.875rem;"></i>
+                                            <span data-translate="attendance.daily.entry_time">Entry Time</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <i class="fas fa-sign-out-alt" style="color: #ef4444; font-size: 0.875rem;"></i>
+                                            <span data-translate="attendance.daily.exit_time">Exit Time</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <i class="fas fa-hourglass-half" style="color: #f59e0b; font-size: 0.875rem;"></i>
+                                            <span data-translate="attendance.daily.overtime_hours">Overtime Hours</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <i class="fas fa-info-circle" style="color: #8b5cf6; font-size: 0.875rem;"></i>
+                                            <span data-translate="common.status">Status</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <i class="fas fa-cog" style="color: #64748b; font-size: 0.875rem;"></i>
+                                            <span data-translate="common.actions">Actions</span>
+                                        </div>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody id="attendanceTableBody" class="bg-white divide-y divide-gray-200">
@@ -379,231 +1074,297 @@
             <!-- Right Panel: Side Panels (1/4 width) -->
             <div class="lg:col-span-1 space-y-6">
                 <!-- Exceptions Panel -->
-                <div class="bg-white rounded-lg shadow-sm">
-                    <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                        <h4 class="font-medium text-gray-900" data-translate="attendance.daily.exceptions">Exceptions
-                        </h4>
+                <div class="director-panel">
+                    <div class="director-panel-header">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                <i class="fas fa-exclamation-triangle text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900" data-translate="attendance.daily.exceptions">الاستثناءات</h4>
+                                <p class="text-xs text-gray-500 mt-0.5" data-translate="attendance.daily.exceptions_description">استثناءات الحضور والحالات الخاصة</p>
+                            </div>
+                        </div>
+                        <span class="director-section-pill bg-amber-100 text-amber-700" data-translate="attendance.daily.exceptions_section">الاستثناءات</span>
                     </div>
-                    <div id="exceptionsPanel" class="side-panel p-4">
-                        <div id="pendingExceptionsList">
-                            <!-- Pending exceptions will be loaded here -->
+                    <div id="exceptionsPanel" class="space-y-4">
+                        <!-- Pending Exceptions Section -->
+                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-clock text-white text-xs"></i>
+                                    </div>
+                                    <span class="text-sm font-semibold text-amber-800" data-translate="attendance.daily.pending_requests">معلق</span>
+                                </div>
+                                <span class="text-xs text-amber-600 bg-amber-100 px-2 py-1 rounded-full" id="pendingExceptionsCount">0</span>
+                            </div>
+                            <div id="pendingExceptionsList" class="space-y-2">
+                                <!-- Pending exceptions will be loaded here -->
+                            </div>
+                            <div id="pendingExceptionsEmpty" class="text-center py-4 text-amber-600 text-sm">
+                                <i class="fas fa-inbox text-2xl mb-2 opacity-50"></i>
+                                <p data-translate="attendance.daily.no_pending_exceptions">لا توجد طلبات استثناء معلقة</p>
+                            </div>
                         </div>
-                        <div id="exceptionsHistoryList" class="mt-4 border-t border-gray-200 pt-4">
-                            <!-- Exceptions history will be loaded here -->
-                        </div>
-                        <div id="exceptionsEmpty" class="text-center py-8 text-gray-500 text-sm hidden">
-                            <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
-                            <p data-translate="attendance.daily.no_exceptions">No exceptions</p>
+                        
+                        <!-- Exceptions History Section -->
+                        <div class="bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl p-4 border border-gray-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 bg-gray-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-history text-white text-xs"></i>
+                                    </div>
+                                    <span class="text-sm font-semibold text-gray-700" data-translate="attendance.daily.history">السجل</span>
+                                </div>
+                            </div>
+                            <div id="exceptionsHistoryList" class="space-y-2">
+                                <!-- Exceptions history will be loaded here -->
+                            </div>
+                            <div id="exceptionsHistoryEmpty" class="text-center py-4 text-gray-400 text-sm">
+                                <i class="fas fa-archive text-2xl mb-2 opacity-50"></i>
+                                <p data-translate="attendance.daily.no_history">لا يوجد سجل</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
                 <!-- Wage Changes Panel -->
-                <div class="bg-white rounded-lg shadow-sm">
-                    <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                        <h4 class="font-medium text-gray-900" data-translate="attendance.daily.wage_changes">Wage
-                            Changes</h4>
-                        <button onclick="openWageChangeModal()" class="text-blue-600 hover:text-blue-800 text-sm">
-                            <i class="fas fa-plus mr-1"></i>
-                            <span data-translate="common.add">Add</span>
+                <div class="director-panel">
+                    <div class="director-panel-header">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                                <i class="fas fa-coins text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900" data-translate="attendance.daily.wage_changes">تعديلات الراتب</h4>
+                                <p class="text-xs text-gray-500 mt-0.5" data-translate="attendance.daily.wage_changes_description">تعديلات وخصومات الراتب</p>
+                            </div>
+                        </div>
+                        <button onclick="openWageChangeModal()" class="group inline-flex items-center space-x-2 px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white rounded-lg shadow hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200">
+                            <i class="fas fa-plus text-xs"></i>
+                            <span class="text-xs font-medium" data-translate="common.add">إضافة</span>
                         </button>
                     </div>
-                    <div id="wageChangesPanel" class="side-panel p-4">
-                        <div id="wageChangesList">
+                    <div id="wageChangesPanel" class="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl p-4 border border-cyan-200">
+                        <div id="wageChangesList" class="space-y-2">
                             <!-- Wage changes will be loaded here -->
                         </div>
-                        <div id="wageChangesEmpty" class="text-center py-8 text-gray-500 text-sm hidden">
-                            <i class="fas fa-dollar-sign text-2xl mb-2"></i>
-                            <p data-translate="attendance.daily.no_wage_changes">No wage changes</p>
+                        <div id="wageChangesEmpty" class="text-center py-6 text-cyan-600 text-sm">
+                            <i class="fas fa-receipt text-3xl mb-3 opacity-50"></i>
+                            <p data-translate="attendance.daily.no_wage_changes">لا توجد تعديلات على الراتب</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Overtime/Exception Requests Panel -->
-                <div class="bg-white rounded-lg shadow-sm">
-                    <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                        <h4 class="font-medium text-gray-900" data-translate="attendance.daily.overtime_requests">
-                            Overtime Requests</h4>
-                        <button onclick="openOvertimeModal()" class="text-blue-600 hover:text-blue-800 text-sm">
-                            <i class="fas fa-plus mr-1"></i>
-                            <span data-translate="common.add">Add</span>
+                <div class="director-panel">
+                    <div class="director-panel-header">
+                        <div class="director-panel-title">
+                            <div class="director-panel-title-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                                <i class="fas fa-business-time text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900" data-translate="attendance.daily.overtime_requests">طلبات الساعات الإضافية</h4>
+                                <p class="text-xs text-gray-500 mt-0.5" data-translate="attendance.daily.overtime_description">طلبات وموافقات الساعات الإضافية</p>
+                            </div>
+                        </div>
+                        <button onclick="openOvertimeModal()" class="group inline-flex items-center space-x-2 px-3 py-1.5 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-lg shadow hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200">
+                            <i class="fas fa-plus text-xs"></i>
+                            <span class="text-xs font-medium" data-translate="common.add">إضافة</span>
                         </button>
                     </div>
-                    <div id="overtimePanel" class="side-panel p-4 space-y-6">
-                        <div>
-                            <div class="mb-2 text-xs font-semibold text-gray-600"
-                                data-translate="attendance.daily.pending_requests">Pending Requests</div>
-                            <div id="overtimePendingList"></div>
-                            <div id="overtimePendingEmpty" class="text-center py-4 text-gray-400 text-xs hidden"
-                                data-translate="attendance.daily.no_pending_overtime">No pending overtime requests</div>
+                    <div id="overtimePanel" class="space-y-4">
+                        <!-- Pending Requests Section -->
+                        <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 border border-purple-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-hourglass-half text-white text-xs"></i>
+                                    </div>
+                                    <span class="text-sm font-semibold text-purple-800" data-translate="attendance.daily.pending_requests">الطلبات المعلقة</span>
+                                </div>
+                                <span class="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full" id="pendingOvertimeCount">0</span>
+                            </div>
+                            <div id="overtimePendingList" class="space-y-2">
+                                <!-- Pending overtime requests will be loaded here -->
+                            </div>
+                            <div id="overtimePendingEmpty" class="text-center py-4 text-purple-600 text-sm">
+                                <i class="fas fa-inbox text-2xl mb-2 opacity-50"></i>
+                                <p data-translate="attendance.daily.no_overtime_requests">لا توجد طلبات ساعات إضافية معلقة</p>
+                            </div>
                         </div>
-                        <div>
-                            <div class="mb-2 text-xs font-semibold text-gray-600"
-                                data-translate="attendance.daily.approved_rejected">Approved / Rejected</div>
-                            <div id="overtimeHistoryList"></div>
-                            <div id="overtimeHistoryEmpty" class="text-center py-4 text-gray-400 text-xs hidden"
-                                data-translate="attendance.daily.no_history">No history</div>
+                        
+                        <!-- Approved/Rejected Section -->
+                        <div class="bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl p-4 border border-gray-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 bg-gray-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-check-double text-white text-xs"></i>
+                                    </div>
+                                    <span class="text-sm font-semibold text-gray-700" data-translate="attendance.daily.approved_rejected">موافق عليه / مرفوض</span>
+                                </div>
+                            </div>
+                            <div id="overtimeHistoryList" class="space-y-2">
+                                <!-- Approved/rejected overtime requests will be loaded here -->
+                            </div>
+                            <div id="overtimeHistoryEmpty" class="text-center py-4 text-gray-400 text-sm">
+                                <i class="fas fa-archive text-2xl mb-2 opacity-50"></i>
+                                <p data-translate="attendance.daily.no_records">لا يوجد سجل</p>
+                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
+    </main>
     </div>
 
     <!-- Edit Day Modal -->
     <div id="editDayModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg max-w-lg w-full mx-4 max-h-screen overflow-y-auto">
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-medium text-gray-900" id="editDayTitle"
-                        data-translate="attendance.daily.edit_day_record">Edit Day Record</h3>
-                    <button onclick="closeEditDayModal()" class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
+        <div class="modal-content max-w-lg w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="director-panel-header mb-6">
+                <div class="director-panel-title">
+                    <div class="director-panel-title-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900" id="editDayTitle"
+                            data-translate="attendance.daily.edit_day_record">Edit Day Record</h3>
+                        <p class="text-xs text-gray-500 mt-0.5" data-translate="attendance.daily.edit_description">Modify attendance details and status</p>
+                    </div>
                 </div>
+                <button onclick="closeEditDayModal()" class="filter-button" style="background: rgba(239, 68, 68, 0.1); color: #dc2626; padding: 0.4rem 0.8rem;">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
 
-            <div class="p-6">
+            <div class="space-y-6">
                 <form id="editDayForm">
                     <input type="hidden" id="editDayDate" value="">
 
                     <!-- Current Status Card -->
-                    <div class="mb-6 bg-gray-50 rounded-lg p-4">
-                        <h4 class="font-medium text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-info-circle text-blue-600 mr-2"></i>
-                            <span data-translate="attendance.daily.current_status">Current Status</span>
-                        </h4>
+                    <div class="director-panel">
+                        <div class="director-panel-header">
+                            <div class="director-panel-title">
+                                <div class="director-panel-title-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900" data-translate="attendance.daily.current_status">Current Status</h4>
+                                    <p class="text-xs text-gray-500 mt-0.5" data-translate="attendance.daily.current_status_description">Current attendance record information</p>
+                                </div>
+                            </div>
+                        </div>
                         <div id="currentStatusDisplay" class="space-y-2">
                             <!-- Current status info will be displayed here -->
                         </div>
                     </div>
 
                     <!-- Scheduled Shift Card -->
-                    <div class="mb-6 bg-blue-50 rounded-lg p-4">
-                        <h4 class="font-medium text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-clock text-blue-600 mr-2"></i>
-                            <span data-translate="attendance.daily.scheduled_shift">Scheduled Shift</span>
-                        </h4>
+                    <div class="director-panel">
+                        <div class="director-panel-header">
+                            <div class="director-panel-title">
+                                <div class="director-panel-title-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900" data-translate="attendance.daily.scheduled_shift">Scheduled Shift</h4>
+                                    <p class="text-xs text-gray-500 mt-0.5" data-translate="attendance.daily.shift_description">Planned working hours for this day</p>
+                                </div>
+                            </div>
+                        </div>
                         <div id="scheduledShiftDisplay" class="text-sm text-gray-700">
                             <!-- Scheduled shift info will be displayed here -->
                         </div>
                     </div>
 
                     <!-- Pending Case Treatment (shown only for pending cases) -->
-                    <div id="pendingTreatmentSection"
-                        class="mb-6 bg-orange-50 border border-orange-200 rounded-lg p-4 hidden">
-                        <h4 class="font-medium text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-exclamation-triangle text-orange-600 mr-2"></i>
-                            <span data-translate="attendance.daily.pending_case_treatment">Pending Case Treatment</span>
-                        </h4>
-                        <p class="text-sm text-gray-600 mb-4"
-                            data-translate="attendance.daily.pending_case_description">
-                            This day has a single punch and requires treatment. Choose how to handle this partial
-                            attendance:
-                        </p>
+                    <div id="pendingTreatmentSection" class="director-panel hidden" style="background: linear-gradient(135deg, rgba(254, 215, 170, 0.1), rgba(251, 207, 161, 0.2)); border: 1px solid rgba(249, 115, 22, 0.2);">
+                        <div class="director-panel-header">
+                            <div class="director-panel-title">
+                                <div class="director-panel-title-icon" style="background: radial-gradient(circle at top left, rgba(249, 115, 22, 0.22), rgba(249, 115, 22, 0.05)); color: #ea580c;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900" data-translate="attendance.daily.pending_case_treatment">Pending Case Treatment</h4>
+                                    <p class="text-xs text-gray-500 mt-0.5" data-translate="attendance.daily.pending_case_description">This day has a single punch and requires treatment</p>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="space-y-3">
-                            <label
-                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-white cursor-pointer">
-                                <input type="radio" name="pendingAction" value="full_day"
-                                    class="text-blue-600 focus:ring-blue-500" onchange="toggleDeductionInput()">
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition-all">
+                                <input type="radio" name="pendingAction" value="full_day" class="text-blue-600 focus:ring-blue-500" onchange="toggleDeductionInput()">
                                 <div class="ml-3">
-                                    <div class="font-medium text-gray-900"
-                                        data-translate="attendance.daily.full_day_validation">Full Day Validation</div>
-                                    <div class="text-sm text-gray-600"
-                                        data-translate="attendance.daily.full_day_description">Count as full day present
-                                        (full daily pay)</div>
+                                    <div class="font-medium text-gray-900" data-translate="attendance.daily.full_day_validation">Full Day Validation</div>
+                                    <div class="text-sm text-gray-600" data-translate="attendance.daily.full_day_description">Count as full day present (full daily pay)</div>
                                 </div>
                             </label>
 
-                            <label
-                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-white cursor-pointer">
-                                <input type="radio" name="pendingAction" value="half_day"
-                                    class="text-blue-600 focus:ring-blue-500" onchange="toggleDeductionInput()">
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition-all">
+                                <input type="radio" name="pendingAction" value="half_day" class="text-blue-600 focus:ring-blue-500" onchange="toggleDeductionInput()">
                                 <div class="ml-3">
-                                    <div class="font-medium text-gray-900"
-                                        data-translate="attendance.daily.half_day_validation">Half Day Validation</div>
-                                    <div class="text-sm text-gray-600"
-                                        data-translate="attendance.daily.half_day_description">Count as present but with
-                                        half daily pay</div>
+                                    <div class="font-medium text-gray-900" data-translate="attendance.daily.half_day_validation">Half Day Validation</div>
+                                    <div class="text-sm text-gray-600" data-translate="attendance.daily.half_day_description">Count as present but with half daily pay</div>
                                 </div>
                             </label>
 
-                            <label
-                                class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-white cursor-pointer">
-                                <input type="radio" name="pendingAction" value="refuse"
-                                    class="text-blue-600 focus:ring-blue-500" onchange="toggleDeductionInput()">
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition-all">
+                                <input type="radio" name="pendingAction" value="refuse" class="text-blue-600 focus:ring-blue-500" onchange="toggleDeductionInput()">
                                 <div class="ml-3">
-                                    <div class="font-medium text-gray-900" data-translate="attendance.daily.refuse">
-                                        Refuse</div>
-                                    <div class="text-sm text-gray-600"
-                                        data-translate="attendance.daily.refuse_description">Mark as absent (absent
-                                        deduction applied)</div>
+                                    <div class="font-medium text-gray-900" data-translate="attendance.daily.refuse">Refuse</div>
+                                    <div class="text-sm text-gray-600" data-translate="attendance.daily.refuse_description">Mark as absent (absent deduction applied)</div>
                                 </div>
                             </label>
                         </div>
 
                         <!-- Deduction Section (only for Full Day) -->
-                        <div id="deductionSection"
-                            class="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4 hidden">
-                            <h5 class="font-medium text-gray-900 mb-3 flex items-center">
-                                <i class="fas fa-money-bill-wave text-yellow-600 mr-2"></i>
-                                <span data-translate="attendance.daily.wage_deduction_optional">Wage Deduction
-                                    (Optional)</span>
-                            </h5>
-                            <p class="text-sm text-gray-600 mb-3"
-                                data-translate="attendance.daily.wage_deduction_description">
-                                You can apply a wage deduction for this full day validation:
-                            </p>
-
-                            <div class="flex items-center space-x-4">
-                                <label class="flex items-center">
-                                    <input type="checkbox" id="applyDeduction"
-                                        class="text-blue-600 focus:ring-blue-500">
-                                    <span class="ml-2 text-sm font-medium text-gray-700"
-                                        data-translate="attendance.daily.apply_deduction">Apply deduction</span>
-                                </label>
-
-                                <div id="deductionAmountContainer" class="flex items-center space-x-2 hidden">
-                                    <input type="number" id="deductionAmount" step="0.01" min="0"
-                                        class="w-24 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="0.00">
-                                    <span class="text-sm text-gray-600">DA</span>
+                        <div id="deductionSection" class="director-panel mt-4 hidden" style="background: linear-gradient(135deg, rgba(254, 243, 199, 0.1), rgba(253, 230, 138, 0.2)); border: 1px solid rgba(245, 158, 11, 0.2);">
+                            <div class="director-panel-header">
+                                <div class="director-panel-title">
+                                    <div class="director-panel-title-icon" style="background: radial-gradient(circle at top left, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.05)); color: #d97706;">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-medium text-gray-900" data-translate="attendance.daily.wage_deduction_optional">Wage Deduction (Optional)</h5>
+                                        <p class="text-xs text-gray-500 mt-0.5" data-translate="attendance.daily.wage_deduction_description">You can apply a wage deduction for this full day validation</p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <script>
-                                document.getElementById('applyDeduction').addEventListener('change', function () {
-                                    const container = document.getElementById('deductionAmountContainer');
-                                    if (this.checked) {
-                                        container.classList.remove('hidden');
-                                        document.getElementById('deductionAmount').focus();
-                                    } else {
-                                        container.classList.add('hidden');
-                                        document.getElementById('deductionAmount').value = '';
-                                    }
-                                });
-                            </script>
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="applyDeduction" class="text-blue-600 focus:ring-blue-500">
+                                    <span class="ml-2 text-sm font-medium text-gray-700" data-translate="attendance.daily.apply_deduction">Apply deduction</span>
+                                </label>
+
+                                <div id="deductionAmountContainer" class="flex items-center space-x-2 hidden">
+                                    <input type="number" id="deductionAmount" step="0.01" min="0" class="filter-select" style="width: auto;" placeholder="0.00">
+                                    <span class="text-sm text-gray-600">DA</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mt-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2"
-                                data-translate="attendance.daily.reason_optional">
-                                Reason (optional)
-                            </label>
-                            <textarea id="pendingTreatmentReason" rows="2"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                data-translate-placeholder="attendance.daily.reason_placeholder"
-                                placeholder="Add a reason for this treatment..."></textarea>
+                            <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="attendance.daily.reason_optional">Reason (optional)</label>
+                            <textarea id="pendingTreatmentReason" rows="2" class="filter-select" style="min-height: 80px; resize: vertical;" data-translate-placeholder="attendance.daily.reason_placeholder" placeholder="Add a reason for this treatment..."></textarea>
                         </div>
                     </div>
 
                     <!-- Action Preview Card -->
-                    <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
-                        <h4 class="font-medium text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-check-circle text-green-600 mr-2"></i>
-                            <span data-translate="attendance.daily.what_this_will_do">What This Will Do</span>
-                        </h4>
+                    <div class="director-panel" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(5, 150, 105, 0.1)); border: 1px solid rgba(16, 185, 129, 0.2);">
+                        <div class="director-panel-header">
+                            <div class="director-panel-title">
+                                <div class="director-panel-title-icon" style="background: radial-gradient(circle at top left, rgba(16, 185, 129, 0.22), rgba(16, 185, 129, 0.05)); color: #059669;">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900" data-translate="attendance.daily.what_this_will_do">What This Will Do</h4>
+                                    <p class="text-xs text-gray-500 mt-0.5" data-translate="attendance.daily.action_preview">Preview of the changes that will be applied</p>
+                                </div>
+                            </div>
+                        </div>
                         <div id="actionPreviewBox" class="text-sm text-gray-700">
                             <!-- Action preview will be displayed here -->
                         </div>
@@ -611,19 +1372,16 @@
 
                     <!-- Action Buttons -->
                     <div class="flex justify-end space-x-3">
-                        <button type="button" onclick="closeEditDayModal()"
-                            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                            data-translate="common.cancel">
-                            Cancel
+                        <button type="button" onclick="closeEditDayModal()" class="filter-button">
+                            <i class="fas fa-times"></i>
+                            <span data-translate="common.cancel">Cancel</span>
                         </button>
-                        <button id="treatPendingButton" type="button" onclick="treatPendingCase()"
-                            class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors hidden">
-                            <i class="fas fa-gavel mr-2"></i>
+                        <button id="treatPendingButton" type="button" onclick="treatPendingCase()" class="filter-button hidden" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
+                            <i class="fas fa-gavel"></i>
                             <span data-translate="attendance.daily.treat_pending_case">Treat Pending Case</span>
                         </button>
-                        <button id="saveValidateButton" type="button" onclick="saveDayRecordAndValidate()"
-                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                            <i class="fas fa-save mr-2"></i>
+                        <button id="saveValidateButton" type="button" onclick="saveDayRecordAndValidate()" class="filter-button" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                            <i class="fas fa-save"></i>
                             <span data-translate="attendance.daily.save_validate">Save & Validate</span>
                         </button>
                     </div>
@@ -631,6 +1389,20 @@
             </div>
         </div>
     </div>
+
+    <!-- Script for deduction checkbox -->
+    <script>
+        document.getElementById('applyDeduction').addEventListener('change', function () {
+            const container = document.getElementById('deductionAmountContainer');
+            if (this.checked) {
+                container.classList.remove('hidden');
+                document.getElementById('deductionAmount').focus();
+            } else {
+                container.classList.add('hidden');
+                document.getElementById('deductionAmount').value = '';
+            }
+        });
+    </script>
 
     <!-- Script to hide Save & Validate button when pending treatment is shown -->
     <script>
@@ -845,6 +1617,190 @@
     <script src="/frontend/assets/js/translations.js?v=4"></script>
     <script src="/frontend/components/api.js?v=2"></script>
     <script src="attendance-api.js?v=3&t=1736934000"></script>
+    
+    <!-- Additional Arabic Translations for Daily Attendance -->
+    <script>
+        // Enhanced Arabic translations for daily attendance page
+        const additionalArabicTranslations = {
+            // Page Header
+            'attendance.daily.title': 'سجلات الحضور اليومي - منصة إدارة الموارد البشرية',
+            'attendance.daily.subtitle': 'مراجعة وإدارة سجلات الحضور اليومية مع تحليلات مفصلة',
+            
+            // Employee Analytics Card
+            'attendance.daily.employee_analytics': 'تحليلات وإدارة الموظف',
+            'attendance.daily.overview_section': 'نظرة عامة',
+            
+            // Attendance Stats
+            'attendance.daily.attendance_stats': 'إحصائيات الحضور والانصراف',
+            'attendance.daily.stats_section': 'الإحصائيات',
+            
+            // Modal Dialog Labels
+            'attendance.daily.edit_day_record': 'تعديل سجل اليوم',
+            'attendance.daily.edit_description': 'تعديل تفاصيل الحضور والحالة',
+            'attendance.daily.current_status': 'الحالة الحالية',
+            'attendance.daily.current_status_description': 'معلومات سجل الحضور الحالي',
+            'attendance.daily.scheduled_shift': 'الدوام المقرر',
+            'attendance.daily.shift_description': 'ساعات العمل المخطط لهذا اليوم',
+            'attendance.daily.what_this_will_do': 'ما الذي سيتم تنفيذه',
+            'attendance.daily.action_preview': 'معاينة التغييرات التي سيتم تطبيقها',
+            
+            // Pending Case Treatment
+            'attendance.daily.pending_case_treatment': 'معالجة الحالة المعلقة',
+            'attendance.daily.pending_case_description': 'هذا اليوم به تسجيل واحد ويتطلب معالجة',
+            'attendance.daily.full_day_validation': 'التحقق من يوم كامل',
+            'attendance.daily.full_day_description': 'اعتبار يوماً حاضراً (الراتب اليومي الكامل)',
+            'attendance.daily.half_day_validation': 'التحقق من نصف يوم',
+            'attendance.daily.half_day_description': 'اعتبار حاضر ولكن مع نصف الراتب اليومي',
+            'attendance.daily.refuse': 'رفض',
+            'attendance.daily.refuse_description': 'تحديد كغائب (يتم تطبيق خصم الغياب)',
+            'attendance.daily.wage_deduction_optional': 'خصم الراتب (اختياري)',
+            'attendance.daily.wage_deduction_description': 'يمكنك تطبيق خصم راتب لهذا التحقق من اليوم الكامل',
+            'attendance.daily.apply_deduction': 'تطبيق الخصم',
+            'attendance.daily.reason_optional': 'السبب (اختياري)',
+            'attendance.daily.reason_placeholder': 'أضف سبباً لهذه المعالجة...',
+            
+            // Badge Labels
+            'attendance.badges.scheduled': 'مقررة',
+            'attendance.badges.completed': 'منجزة',
+            'attendance.badges.critical': 'حرجة',
+            'attendance.badges.attention': 'تتطلب اهتمام',
+            'attendance.badges.total': 'الإجمالي: {value} دقيقة',
+            'attendance.badges.extra_hours': 'ساعات إضافية',
+            'attendance.badges.currency': 'دينار جزائري',
+            
+            // Improved Stats Labels
+            'attendance.daily.worked_days': 'أيام العمل الفعلية',
+            'attendance.daily.scheduled_days': 'الأيام المقررة',
+            'attendance.daily.absence_days': 'أيام الغياب',
+            'attendance.daily.pending_days': 'الأيام المعلقة',
+            'attendance.daily.late': 'تأخير',
+            'attendance.daily.early': 'مغادرة مبكرة',
+            'attendance.daily.overtime_hours': 'الساعات الإضافية',
+            'attendance.daily.wage_changes': 'تعديلات الراتب',
+            
+            // Actions
+            'attendance.daily.records_title': 'الإجراءات السريعة',
+            'attendance.daily.actions_section': 'الإجراءات',
+            'attendance.daily.view_salary': 'عرض الراتب',
+            'attendance.daily.recalculate': 'إعادة الحساب',
+            'attendance.daily.validate_month': 'التحقق من الشهر',
+            
+            // Attendance Table
+            'attendance.daily.attendance_table': 'سجلات الحضور اليومية',
+            'attendance.daily.table_description': 'سجل تفصيلي للحضور اليومي بالحالة والإجراءات',
+            'attendance.daily.table_section': 'السجلات',
+            'attendance.daily.date': 'التاريخ',
+            'attendance.daily.scheduled_shift': 'الدوام المقرر',
+            'attendance.daily.check_in': 'وقت الدخول',
+            'attendance.daily.check_out': 'وقت الخروج',
+            'attendance.daily.overtime': 'الساعات الإضافية',
+            'attendance.daily.status': 'الحالة',
+            'attendance.daily.actions': 'الإجراءات',
+            'attendance.daily.edit': 'تعديل',
+            
+            // Status Labels
+            'attendance.status.present': 'حاضر',
+            'attendance.status.absent': 'غائب',
+            'attendance.status.late': 'متأخر',
+            'attendance.status.early': 'مغادرة مبكرة',
+            'attendance.status.holiday': 'عطلة',
+            'attendance.status.weekend': 'عطلة نهاية الأسبوع',
+            'attendance.status.leave': 'إجازة',
+            'attendance.status.not_recorded': 'غير مسجل',
+            
+            // Exceptions
+            'attendance.daily.exceptions': 'الاستثناءات',
+            'attendance.daily.exceptions_description': 'استثناءات الحضور والحالات الخاصة',
+            'attendance.daily.exceptions_section': 'الاستثناءات',
+            'attendance.daily.no_exceptions': 'لا توجد استثناءات',
+            'attendance.daily.no_pending_exceptions': 'لا توجد طلبات استثناء معلقة',
+            'attendance.daily.history': 'السجل',
+            'attendance.daily.no_history': 'لا يوجد سجل',
+            
+            // Wage Changes
+            'attendance.daily.wage_changes_title': 'تعديلات الراتب',
+            'attendance.daily.wage_changes_description': 'تعديلات وخصومات الراتب',
+            'attendance.daily.add': 'إضافة',
+            'attendance.daily.no_wage_changes': 'لا توجد تعديلات على الراتب',
+            
+            // Overtime Requests
+            'attendance.daily.overtime_requests': 'طلبات الساعات الإضافية',
+            'attendance.daily.overtime_description': 'طلبات وموافقات الساعات الإضافية',
+            'attendance.daily.pending_requests': 'الطلبات المعلقة',
+            'attendance.daily.no_overtime_requests': 'لا توجد طلبات ساعات إضافية معلقة',
+            'attendance.daily.approved_rejected': 'موافق عليه / مرفوض',
+            'attendance.daily.no_records': 'لا يوجد سجل',
+            
+            // Common
+            'common.back': 'رجوع',
+            'common.loading': 'جاري التحميل...',
+            'common.error': 'خطأ',
+            'common.success': 'نجح',
+            'common.save': 'حفظ',
+            'common.cancel': 'إلغاء',
+            'common.delete': 'حذف',
+            'common.edit': 'تعديل',
+            'common.add': 'إضافة',
+            'common.search': 'بحث',
+            'common.filter': 'تصفية',
+            'common.export': 'تصدير',
+            'common.total': 'الإجمالي',
+            'common.load': 'تحميل',
+            
+            // Months
+            'months.january': 'يناير',
+            'months.february': 'فبراير',
+            'months.march': 'مارس',
+            'months.april': 'أبريل',
+            'months.may': 'مايو',
+            'months.june': 'يونيو',
+            'months.july': 'يوليو',
+            'months.august': 'أغسطس',
+            'months.september': 'سبتمبر',
+            'months.october': 'أكتوبر',
+            'months.november': 'نوفمبر',
+            'months.december': 'ديسمبر'
+        };
+
+        // Override or add translations
+        if (typeof translations !== 'undefined') {
+            // Merge additional Arabic translations
+            if (translations.ar) {
+                Object.assign(translations.ar, additionalArabicTranslations);
+            }
+        }
+
+        // Enhanced translation function
+        function enhancedTranslate(key) {
+            const currentLang = document.documentElement.getAttribute('dir') === 'rtl' ? 'ar' : 'en';
+            
+            // First try the global translations
+            if (typeof translations !== 'undefined' && translations[currentLang] && translations[currentLang][key]) {
+                return translations[currentLang][key];
+            }
+            
+            // Then try additional translations
+            if (currentLang === 'ar' && additionalArabicTranslations[key]) {
+                return additionalArabicTranslations[key];
+            }
+            
+            // Return key as fallback
+            return key;
+        }
+
+        // Apply enhanced translations
+        function applyEnhancedTranslations() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                const translation = enhancedTranslate(key);
+                if (element.tagName === 'INPUT' && element.type === 'placeholder') {
+                    element.placeholder = translation;
+                } else {
+                    element.textContent = translation;
+                }
+            });
+        }
+    </script>
     <script>
         // Override API base URL to ensure it points to the correct port
         if (typeof window !== 'undefined') {
@@ -950,7 +1906,11 @@
             }
 
             // Initialize translations after page loads
-            if (typeof updatePageTranslations === 'function') {
+            if (typeof applyEnhancedTranslations === 'function') {
+                setTimeout(function () {
+                    applyEnhancedTranslations();
+                }, 100);
+            } else if (typeof updatePageTranslations === 'function') {
                 setTimeout(function () {
                     updatePageTranslations();
                 }, 100);
@@ -958,7 +1918,9 @@
 
             // Listen for language changes
             document.addEventListener('languageChanged', function () {
-                if (typeof updatePageTranslations === 'function') {
+                if (typeof applyEnhancedTranslations === 'function') {
+                    applyEnhancedTranslations();
+                } else if (typeof updatePageTranslations === 'function') {
                     updatePageTranslations();
                 }
                 // Reload data to update dynamic content
@@ -1185,7 +2147,8 @@
                 showAttendanceLoading();
 
                 // Load employee details and daily attendance in parallel
-                const [employeeResult, attendanceResult, wageChangesResult, overtimeResult, overtimeHoursResult, pendingExcResult, historyExcResult] = await Promise.all([
+                // Use Promise.allSettled to handle errors gracefully without breaking the entire load
+                const results = await Promise.allSettled([
                     API.getEmployeeDetails(currentEmployeeId),
                     API.getEmployeeDailyAttendance(currentEmployeeId, currentYear, currentMonth),
                     API.getEmployeeWageChanges(currentEmployeeId, currentYear, currentMonth),
@@ -1194,6 +2157,30 @@
                     API.getPendingExceptions({ employee_id: currentEmployeeId, year: currentYear, month: currentMonth }),
                     API.getExceptionHistory({ employee_id: currentEmployeeId, year: currentYear, month: currentMonth })
                 ]);
+                
+                // Extract results, handling both fulfilled and rejected promises
+                const [employeeResult, attendanceResult, wageChangesResult, overtimeResult, overtimeHoursResult, pendingExcResult, historyExcResult] = results.map((result, index) => {
+                    if (result.status === 'fulfilled') {
+                        const value = result.value;
+                        // Debug logging for API responses
+                        if (window.API_DEBUG) {
+                            const apiNames = ['Employee Details', 'Daily Attendance', 'Wage Changes', 'Overtime Requests', 'Overtime Hours', 'Pending Exceptions', 'Exception History'];
+                            console.log(`${apiNames[index]} Response:`, value);
+                        }
+                        return value;
+                    } else {
+                        // Convert rejected promise to error object format
+                        const errorObj = {
+                            success: false,
+                            error: result.reason?.message || 'An error occurred',
+                            status: result.reason?.status || 500
+                        };
+                        if (window.API_DEBUG) {
+                            console.warn('API call failed:', errorObj);
+                        }
+                        return errorObj;
+                    }
+                });
 
                 if (employeeResult.success) {
                     displayEmployeeDetails(employeeResult.employee);
@@ -1209,8 +2196,15 @@
                     displayDailyAttendance(dailyAttendanceData);
                     displayMonthlyStatistics(attendanceResult.data.monthly_summary);
                 } else {
+                    // Handle error gracefully without throwing - show message but continue loading other data
                     const errorMsg = typeof translate === 'function' ? translate('attendance.daily.failed_load_attendance') : 'Failed to load attendance data';
-                    throw new Error(attendanceResult.error || errorMsg);
+                    console.warn('Failed to load attendance data:', attendanceResult.error || errorMsg);
+                    if (attendanceResult.networkError) {
+                        showToast('error', 'Network error. Please check your connection and ensure the server is running.');
+                    } else {
+                        showToast('error', attendanceResult.error || errorMsg);
+                    }
+                    showAttendanceEmpty();
                 }
 
                 if (wageChangesResult.success) {
@@ -1218,22 +2212,71 @@
                     displayWageChanges(wageChangesResult.data);
                 }
 
-                if (overtimeResult.success) {
-                    overtimeRequests = overtimeResult.data;
+                // Handle overtime data - check multiple possible response formats
+                if (overtimeResult && !overtimeResult.error) {
+                    if (overtimeResult.success && overtimeResult.data) {
+                        overtimeRequests = Array.isArray(overtimeResult.data) ? overtimeResult.data : [];
+                    } else if (Array.isArray(overtimeResult)) {
+                        // API might return array directly
+                        overtimeRequests = overtimeResult;
+                    } else if (overtimeResult.data && Array.isArray(overtimeResult.data)) {
+                        overtimeRequests = overtimeResult.data;
+                    }
                 }
-                if (overtimeHoursResult.success) {
-                    overtimeHours = overtimeHoursResult.data;
+                
+                if (overtimeHoursResult && !overtimeHoursResult.error) {
+                    if (overtimeHoursResult.success && overtimeHoursResult.data) {
+                        overtimeHours = Array.isArray(overtimeHoursResult.data) ? overtimeHoursResult.data : [];
+                    } else if (Array.isArray(overtimeHoursResult)) {
+                        overtimeHours = overtimeHoursResult;
+                    } else if (overtimeHoursResult.data && Array.isArray(overtimeHoursResult.data)) {
+                        overtimeHours = overtimeHoursResult.data;
+                    }
                 }
-                displayOvertimePanel(overtimeRequests, overtimeHours);
+                
+                // Debug logging
+                if (window.API_DEBUG) {
+                    console.log('Overtime Requests:', overtimeRequests);
+                    console.log('Overtime Hours:', overtimeHours);
+                }
+                
+                displayOvertimePanel(overtimeRequests || [], overtimeHours || []);
 
-                // Exceptions
-                if (pendingExcResult.success) {
-                    pendingExceptions = pendingExcResult.data || pendingExcResult.exceptions || [];
+                // Exceptions - handle multiple possible response formats
+                if (pendingExcResult && !pendingExcResult.error) {
+                    if (pendingExcResult.success) {
+                        pendingExceptions = pendingExcResult.data || pendingExcResult.exceptions || [];
+                    } else if (Array.isArray(pendingExcResult)) {
+                        // API might return array directly
+                        pendingExceptions = pendingExcResult;
+                    } else if (pendingExcResult.exceptions && Array.isArray(pendingExcResult.exceptions)) {
+                        pendingExceptions = pendingExcResult.exceptions;
+                    } else if (pendingExcResult.data && Array.isArray(pendingExcResult.data)) {
+                        pendingExceptions = pendingExcResult.data;
+                    }
                 }
-                if (historyExcResult.success) {
-                    exceptionsHistory = historyExcResult.data || historyExcResult.exceptions || [];
+                
+                if (historyExcResult && !historyExcResult.error) {
+                    if (historyExcResult.success) {
+                        exceptionsHistory = historyExcResult.data || historyExcResult.exceptions || [];
+                    } else if (Array.isArray(historyExcResult)) {
+                        exceptionsHistory = historyExcResult;
+                    } else if (historyExcResult.exceptions && Array.isArray(historyExcResult.exceptions)) {
+                        exceptionsHistory = historyExcResult.exceptions;
+                    } else if (historyExcResult.data && Array.isArray(historyExcResult.data)) {
+                        exceptionsHistory = historyExcResult.data;
+                    }
                 }
-                displayExceptionsPanel(pendingExceptions, exceptionsHistory);
+                
+                // Debug logging
+                if (window.API_DEBUG) {
+                    console.log('Pending Exceptions:', pendingExceptions);
+                    console.log('Exception History:', exceptionsHistory);
+                    console.log('Pending Exc Result:', pendingExcResult);
+                    console.log('History Exc Result:', historyExcResult);
+                }
+                
+                displayExceptionsPanel(pendingExceptions || [], exceptionsHistory || []);
             } catch (error) {
                 console.error('Load employee data error:', error);
                 // Try to translate error message if it's a known error
@@ -1406,7 +2449,13 @@
             const container = document.getElementById('wageChangesList');
             const emptyState = document.getElementById('wageChangesEmpty');
 
-            if (changes.length === 0) {
+            // Check if elements exist before accessing them
+            if (!container || !emptyState) {
+                console.warn('Wage changes panel elements not found in DOM');
+                return;
+            }
+
+            if (!Array.isArray(changes) || changes.length === 0) {
                 container.innerHTML = '';
                 emptyState.classList.remove('hidden');
                 return;
@@ -1416,22 +2465,33 @@
                 const adjustmentTypeKey = `attendance.daily.${change.adjustment_type.toLowerCase()}`;
                 const adjustmentTypeText = typeof translate === 'function' ? translate(adjustmentTypeKey) : change.adjustment_type;
                 return `
-                <div class="border-b border-gray-200 pb-3 mb-3 last:border-b-0">
+                <div class="group bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all duration-200 hover:border-cyan-300">
                     <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <div class="text-sm font-medium text-gray-900">
-                                ${formatCurrency(change.amount)} 
-                                <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">${adjustmentTypeText}</span>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-lg font-bold text-cyan-600">${formatCurrency(change.amount)}</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
+                                        ${adjustmentTypeText}
+                                    </span>
+                                </div>
                             </div>
-                            <div class="text-xs text-gray-500 mt-1">${formatDate(change.effective_date)}</div>
-                            ${change.description ? `<div class="text-xs text-gray-600 mt-1">${change.description}</div>` : ''}
+                            <div class="flex items-center text-xs text-gray-500 mb-2">
+                                <i class="fas fa-calendar-alt ml-2 text-cyan-400"></i>
+                                ${formatDate(change.effective_date)}
+                            </div>
+                            ${change.description ? `
+                            <div class="text-xs text-gray-600 bg-gray-50 rounded-md p-2 border-l-3 border-cyan-400">
+                                <i class="fas fa-info-circle text-cyan-400 ml-1"></i>
+                                ${change.description}
+                            </div>` : ''}
                         </div>
-                        <div class="flex space-x-1 ml-2">
-                            <button onclick="editWageChange('${change.id}')" class="text-blue-600 hover:text-blue-800 text-xs" title="${typeof translate === 'function' ? translate('attendance.daily.edit') : 'Edit'}">
-                                <i class="fas fa-edit"></i>
+                        <div class="flex flex-col space-y-2 ml-4">
+                            <button onclick="editWageChange('${change.id}')" class="group/btn inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 transition-all duration-200 hover:scale-105" title="${typeof translate === 'function' ? translate('attendance.daily.edit') : 'Edit'}">
+                                <i class="fas fa-edit text-sm"></i>
                             </button>
-                            <button onclick="deleteWageChange('${change.id}')" class="text-red-600 hover:text-red-800 text-xs" title="${typeof translate === 'function' ? translate('attendance.daily.delete') : 'Delete'}">
-                                <i class="fas fa-trash"></i>
+                            <button onclick="deleteWageChange('${change.id}')" class="group/btn inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 transition-all duration-200 hover:scale-105" title="${typeof translate === 'function' ? translate('attendance.daily.delete') : 'Delete'}">
+                                <i class="fas fa-trash text-sm"></i>
                             </button>
                         </div>
                     </div>
@@ -1446,7 +2506,13 @@
             const container = document.getElementById('overtimeRequestsList');
             const emptyState = document.getElementById('overtimeEmpty');
 
-            if (requests.length === 0) {
+            // Check if elements exist before accessing them
+            if (!container || !emptyState) {
+                console.warn('Overtime requests panel elements not found in DOM');
+                return;
+            }
+
+            if (!Array.isArray(requests) || requests.length === 0) {
                 container.innerHTML = '';
                 emptyState.classList.remove('hidden');
                 return;
@@ -1499,6 +2565,12 @@
             const historyList = document.getElementById('overtimeHistoryList');
             const historyEmpty = document.getElementById('overtimeHistoryEmpty');
 
+            // Check if elements exist before accessing them
+            if (!pendingList || !pendingEmpty || !historyList || !historyEmpty) {
+                console.warn('Overtime panel elements not found in DOM');
+                return;
+            }
+
             const reqs = Array.isArray(requests) ? requests : [];
             const pendings = reqs.filter(r => (r.status || '').toLowerCase() === 'pending');
             const history = reqs.filter(r => ['approved', 'declined', 'rejected'].includes((r.status || '').toLowerCase()));
@@ -1509,20 +2581,40 @@
                 pendingEmpty.classList.remove('hidden');
             } else {
                 pendingList.innerHTML = pendings.map(request => `
-                    <div class="border-b border-gray-200 pb-3 mb-3 last:border-b-0">
+                    <div class="group bg-white rounded-lg border border-purple-200 p-4 hover:shadow-md transition-all duration-200 hover:border-purple-300">
                         <div class="flex justify-between items-start">
-                            <div class="flex-1">
-                                <div class="text-sm font-medium text-gray-900">
-                                    ${request.requested_hours}h 
-                                    <span class="text-xs px-2 py-1 status-pending rounded">${typeof translate === 'function' ? translate('attendance.daily.pending_status') : 'Pending'}</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-lg font-bold text-purple-600">${request.requested_hours}h</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 animate-pulse">
+                                            <i class="fas fa-clock ml-1"></i>
+                                            ${typeof translate === 'function' ? translate('attendance.daily.pending_status') : 'Pending'}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="text-xs text-gray-500 mt-1">${formatDate(request.date)}</div>
-                                ${request.description ? `<div class="text-xs text-gray-600 mt-1">${request.description}</div>` : ''}
+                                <div class="flex items-center text-xs text-gray-500 mb-2">
+                                    <i class="fas fa-calendar-alt ml-2 text-purple-400"></i>
+                                    ${formatDate(request.date)}
+                                </div>
+                                ${request.description ? `
+                                <div class="text-xs text-gray-600 bg-purple-50 rounded-md p-2 border-l-3 border-purple-400">
+                                    <i class="fas fa-info-circle text-purple-400 ml-1"></i>
+                                    ${request.description}
+                                </div>` : ''}
                             </div>
-                            <div class="flex items-center space-x-2 ml-2">
-                                <button class="text-green-600 hover:text-green-800 text-xs" onclick="approveOvertimeRequest('${request.id}')"><i class="fas fa-check mr-1"></i>${typeof translate === 'function' ? translate('attendance.daily.approve') : 'Approve'}</button>
-                                <button class="text-red-600 hover:text-red-800 text-xs" onclick="declineOvertimeRequest('${request.id}')"><i class="fas fa-times mr-1"></i>${typeof translate === 'function' ? translate('attendance.daily.reject') : 'Reject'}</button>
-                                <button class="text-gray-500 hover:text-gray-700 text-xs" onclick="deleteOvertimeRequest('${request.id}')"><i class="fas fa-trash mr-1"></i>${typeof translate === 'function' ? translate('attendance.daily.delete') : 'Delete'}</button>
+                            <div class="flex flex-col space-y-2 ml-4">
+                                <button onclick="approveOvertimeRequest('${request.id}')" class="group/btn inline-flex items-center justify-center px-3 py-1.5 rounded-lg bg-green-50 hover:bg-green-100 text-green-600 hover:text-green-700 transition-all duration-200 hover:scale-105 text-xs font-medium" title="${typeof translate === 'function' ? translate('attendance.daily.approve') : 'Approve'}">
+                                    <i class="fas fa-check ml-1"></i>
+                                    ${typeof translate === 'function' ? translate('attendance.daily.approve') : 'Approve'}
+                                </button>
+                                <button onclick="declineOvertimeRequest('${request.id}')" class="group/btn inline-flex items-center justify-center px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 transition-all duration-200 hover:scale-105 text-xs font-medium" title="${typeof translate === 'function' ? translate('attendance.daily.reject') : 'Reject'}">
+                                    <i class="fas fa-times ml-1"></i>
+                                    ${typeof translate === 'function' ? translate('attendance.daily.reject') : 'Reject'}
+                                </button>
+                                <button onclick="deleteOvertimeRequest('${request.id}')" class="group/btn inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-700 transition-all duration-200 hover:scale-105" title="${typeof translate === 'function' ? translate('attendance.daily.delete') : 'Delete'}">
+                                    <i class="fas fa-trash text-sm"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1536,18 +2628,32 @@
                 historyEmpty.classList.remove('hidden');
             } else {
                 historyList.innerHTML = history.map(request => `
-                    <div class="border-b border-gray-200 pb-3 mb-3 last:border-b-0">
+                    <div class="group bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300">
                         <div class="flex justify-between items-start">
-                            <div class="flex-1">
-                                <div class="text-sm font-medium text-gray-900">
-                                    ${request.requested_hours}h 
-                                    <span class="text-xs px-2 py-1 ${request.status === 'Approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} rounded">${request.status === 'Approved' ? (typeof translate === 'function' ? translate('attendance.daily.approved') : 'Approved') : (request.status === 'Declined' || request.status === 'Rejected' ? (typeof translate === 'function' ? translate('attendance.daily.rejected') : request.status) : request.status)}</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-lg font-bold text-gray-700">${request.requested_hours}h</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${request.status === 'Approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                            <i class="fas ${request.status === 'Approved' ? 'fa-check-circle' : 'fa-times-circle'} ml-1"></i>
+                                            ${request.status === 'Approved' ? (typeof translate === 'function' ? translate('attendance.daily.approved') : 'Approved') : (request.status === 'Declined' || request.status === 'Rejected' ? (typeof translate === 'function' ? translate('attendance.daily.rejected') : request.status) : request.status)}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="text-xs text-gray-500 mt-1">${formatDate(request.date)}</div>
-                                ${request.description ? `<div class="text-xs text-gray-600 mt-1">${request.description}</div>` : ''}
+                                <div class="flex items-center text-xs text-gray-500 mb-2">
+                                    <i class="fas fa-calendar-alt ml-2 text-gray-400"></i>
+                                    ${formatDate(request.date)}
+                                </div>
+                                ${request.description ? `
+                                <div class="text-xs text-gray-600 bg-gray-50 rounded-md p-2 border-l-3 border-gray-400">
+                                    <i class="fas fa-info-circle text-gray-400 ml-1"></i>
+                                    ${request.description}
+                                </div>` : ''}
                             </div>
-                            <div class="flex items-center space-x-2 ml-2">
-                                <button class="text-gray-500 hover:text-gray-700 text-xs" onclick="deleteOvertimeRequest('${request.id}')"><i class="fas fa-trash mr-1"></i>${typeof translate === 'function' ? translate('attendance.daily.delete') : 'Delete'}</button>
+                            <div class="flex flex-col space-y-2 ml-4">
+                                <button onclick="deleteOvertimeRequest('${request.id}')" class="group/btn inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-700 transition-all duration-200 hover:scale-105" title="${typeof translate === 'function' ? translate('attendance.daily.delete') : 'Delete'}">
+                                    <i class="fas fa-trash text-sm"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1573,6 +2679,12 @@
             const historyContainer = document.getElementById('exceptionsHistoryList');
             const emptyState = document.getElementById('exceptionsEmpty');
 
+            // Check if elements exist before accessing them
+            if (!pendingContainer || !historyContainer || !emptyState) {
+                console.warn('Exceptions panel elements not found in DOM');
+                return;
+            }
+
             const hasPending = Array.isArray(pendingList) && pendingList.length > 0;
             const hasHistory = Array.isArray(historyList) && historyList.length > 0;
 
@@ -1590,30 +2702,42 @@
             pendingContainer.innerHTML = hasPending ? `
                 <div class="mb-2 text-xs font-semibold text-gray-600">${pendingLabel}</div>
                 ${pendingList.map(ex => `
-                    <div class="border-b border-gray-200 pb-3 mb-3 last:border-b-0">
+                    <div class="group bg-white rounded-lg border border-amber-200 p-4 hover:shadow-md transition-all duration-200 hover:border-amber-300">
                         <div class="flex justify-between items-start">
-                            <div class="flex-1">
-                                <div class="text-sm font-medium text-gray-900">
-                                    ${ex.type || (typeof translate === 'function' ? translate('attendance.daily.exception') : 'Exception')}
-                                    <span class="text-xs px-2 py-1 ${getExceptionStatusClass(ex.status)} rounded status-pending">${(() => {
-                    const statusLower = (ex.status || '').toLowerCase();
-                    if (typeof translate === 'function') {
-                        if (statusLower === 'approved') return translate('attendance.daily.approved');
-                        if (statusLower === 'declined' || statusLower === 'rejected') return translate('attendance.daily.rejected');
-                        if (statusLower === 'pending') return translate('attendance.daily.pending_status');
-                    }
-                    return ex.status || (typeof translate === 'function' ? translate('attendance.daily.pending_status') : 'Pending');
-                })()}</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm font-bold text-amber-700">${ex.type || (typeof translate === 'function' ? translate('attendance.daily.exception') : 'Exception')}</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getExceptionStatusClass(ex.status)} animate-pulse">
+                                            <i class="fas fa-exclamation-triangle ml-1"></i>
+                                            ${(() => {
+                        const statusLower = (ex.status || '').toLowerCase();
+                        if (typeof translate === 'function') {
+                            if (statusLower === 'approved') return translate('attendance.daily.approved');
+                            if (statusLower === 'declined' || statusLower === 'rejected') return translate('attendance.daily.rejected');
+                            if (statusLower === 'pending') return translate('attendance.daily.pending_status');
+                        }
+                        return ex.status || (typeof translate === 'function' ? translate('attendance.daily.pending_status') : 'Pending');
+                    })()}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="text-xs text-gray-500 mt-1">${ex.date ? formatDate(ex.date) : ''}</div>
-                                ${ex.payload ? `<div class=\"text-xs text-gray-600 mt-1\">${formatExceptionPayload(ex.type, ex.payload)}</div>` : ''}
+                                <div class="flex items-center text-xs text-gray-500 mb-2">
+                                    <i class="fas fa-calendar-alt ml-2 text-amber-400"></i>
+                                    ${ex.date ? formatDate(ex.date) : ''}
+                                </div>
+                                ${ex.payload ? `
+                                <div class="text-xs text-gray-600 bg-amber-50 rounded-md p-2 border-l-3 border-amber-400">
+                                    <i class="fas fa-info-circle text-amber-400 ml-1"></i>
+                                    ${formatExceptionPayload(ex.type, ex.payload)}
+                                </div>` : ''}
                             </div>
-                            <div class="flex space-x-1 ml-2">
-                                <button onclick="approveExceptionFromDaily('${ex.id}')" class="text-green-600 hover:text-green-800 text-xs" title="${typeof translate === 'function' ? translate('attendance.daily.approve') : 'Approve'}">
-                                    <i class="fas fa-check"></i>
+                            <div class="flex flex-col space-y-2 ml-4">
+                                <button onclick="approveExceptionFromDaily('${ex.id}')" class="group/btn inline-flex items-center justify-center w-8 h-8 rounded-lg bg-green-50 hover:bg-green-100 text-green-600 hover:text-green-700 transition-all duration-200 hover:scale-105" title="${typeof translate === 'function' ? translate('attendance.daily.approve') : 'Approve'}">
+                                    <i class="fas fa-check text-sm"></i>
                                 </button>
-                                <button onclick="declineExceptionFromDaily('${ex.id}')" class="text-red-600 hover:text-red-800 text-xs" title="${typeof translate === 'function' ? translate('attendance.daily.decline') : 'Decline'}">
-                                    <i class="fas fa-times"></i>
+                                <button onclick="declineExceptionFromDaily('${ex.id}')" class="group/btn inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 transition-all duration-200 hover:scale-105" title="${typeof translate === 'function' ? translate('attendance.daily.decline') : 'Decline'}">
+                                    <i class="fas fa-times text-sm"></i>
                                 </button>
                             </div>
                         </div>
@@ -1632,12 +2756,20 @@
             historyContainer.innerHTML = hasHistory ? `
                 <div class="mb-2 text-xs font-semibold text-gray-600">${historyLabel}</div>
                 ${historyList.map(ex => `
-                    <div class="border-b border-gray-200 pb-3 mb-3 last:border-b-0">
+                    <div class="group bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300">
                         <div class="flex justify-between items-start">
-                            <div class="flex-1">
-                                <div class="text-sm font-medium text-gray-900">
-                                    ${ex.type || (typeof translate === 'function' ? translate('attendance.daily.exception') : 'Exception')}
-                                    <span class="text-xs px-2 py-1 ${getExceptionStatusClass(ex.status)} rounded">${(() => {
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm font-bold text-gray-700">${ex.type || (typeof translate === 'function' ? translate('attendance.daily.exception') : 'Exception')}</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getExceptionStatusClass(ex.status)}">
+                                            <i class="fas ${(() => {
+                        const statusLower = (ex.status || '').toLowerCase();
+                        if (statusLower === 'approved') return 'fa-check-circle';
+                        if (statusLower === 'declined' || statusLower === 'rejected') return 'fa-times-circle';
+                        return 'fa-clock';
+                                            })()} ml-1"></i>
+                                            ${(() => {
                     const statusLower = (ex.status || '').toLowerCase();
                     if (typeof translate === 'function') {
                         if (statusLower === 'approved') return translate('attendance.daily.approved');
@@ -1645,10 +2777,19 @@
                         if (statusLower === 'pending') return translate('attendance.daily.pending_status');
                     }
                     return ex.status || '';
-                })()}</span>
+                })()}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="text-xs text-gray-500 mt-1">${ex.date ? formatDate(ex.date) : ''}</div>
-                                ${ex.payload ? `<div class=\"text-xs text-gray-600 mt-1\">${formatExceptionPayload(ex.type, ex.payload)}</div>` : ''}
+                                <div class="flex items-center text-xs text-gray-500 mb-2">
+                                    <i class="fas fa-calendar-alt ml-2 text-gray-400"></i>
+                                    ${ex.date ? formatDate(ex.date) : ''}
+                                </div>
+                                ${ex.payload ? `
+                                <div class="text-xs text-gray-600 bg-gray-50 rounded-md p-2 border-l-3 border-gray-400">
+                                    <i class="fas fa-info-circle text-gray-400 ml-1"></i>
+                                    ${formatExceptionPayload(ex.type, ex.payload)}
+                                </div>` : ''}
                             </div>
                         </div>
                     </div>
@@ -2518,42 +3659,70 @@
         }
 
         function openSalaryPopup() {
-            // Get the current authentication token
-            const token = localStorage.getItem('token');
+            // Build the URL with parameters (token is already in localStorage, no need to pass it)
+            const params = new URLSearchParams({
+                employeeId: currentEmployeeId,
+                year: currentYear,
+                month: currentMonth
+            });
 
-            // Try multiple possible frontend URLs
-            const possibleUrls = [
-                `http://127.0.0.1:5502/pages/salary-management.html?employeeId=${currentEmployeeId}&year=${currentYear}&month=${currentMonth}${token ? `&token=${encodeURIComponent(token)}` : ''}`,
-                `http://localhost:5502/pages/salary-management.html?employeeId=${currentEmployeeId}&year=${currentYear}&month=${currentMonth}${token ? `&token=${encodeURIComponent(token)}` : ''}`,
-                `http://127.0.0.1:5503/pages/salary-management.html?employeeId=${currentEmployeeId}&year=${currentYear}&month=${currentMonth}${token ? `&token=${encodeURIComponent(token)}` : ''}`,
-                `http://localhost:5503/pages/salary-management.html?employeeId=${currentEmployeeId}&year=${currentYear}&month=${currentMonth}${token ? `&token=${encodeURIComponent(token)}` : ''}`,
-                `../frontend/pages/salary-management.html?employeeId=${currentEmployeeId}&year=${currentYear}&month=${currentMonth}${token ? `&token=${encodeURIComponent(token)}` : ''}`
-            ];
-
-            console.log('Trying to open salary popup...');
-
-            // Try each URL until one works
-            let success = false;
-            for (let i = 0; i < possibleUrls.length; i++) {
+            // Determine the correct frontend URL based on current location
+            let salaryUrl;
+            const currentHost = window.location.hostname;
+            const currentPort = window.location.port;
+            
+            // If we're on localhost:3000 (attendance service), navigate to frontend
+            if (currentPort === '3000' || currentHost === 'localhost' || currentHost === '127.0.0.1') {
+                // Try to determine frontend port - check common ports
+                const possiblePorts = ['5502', '5503', '5500', '5501'];
+                let frontendPort = null;
+                
+                // Check if we can determine the frontend port from parent window or referrer
                 try {
-                    console.log(`Trying URL ${i + 1}:`, possibleUrls[i]);
-                    const newWindow = window.open(possibleUrls[i], '_blank');
-
-                    // Check if the window opened successfully
-                    if (newWindow && !newWindow.closed && typeof newWindow.closed !== 'undefined') {
-                        success = true;
-                        console.log('Successfully opened salary popup');
-                        break;
+                    if (window.parent && window.parent !== window && window.parent.location.port) {
+                        frontendPort = window.parent.location.port;
+                    } else if (document.referrer) {
+                        const referrerUrl = new URL(document.referrer);
+                        if (referrerUrl.port && referrerUrl.port !== '3000') {
+                            frontendPort = referrerUrl.port;
+                        }
                     }
-                } catch (error) {
-                    console.log(`URL ${i + 1} failed:`, error.message);
-                    continue;
+                } catch (e) {
+                    // Cross-origin or other error, continue with defaults
                 }
+                
+                // Use determined port or try common ports
+                if (frontendPort && possiblePorts.includes(frontendPort)) {
+                    salaryUrl = `http://${currentHost}:${frontendPort}/pages/salary-management.html?${params.toString()}`;
+                } else {
+                    // Try relative path first (works if frontend and attendance service are on same domain)
+                    salaryUrl = `../frontend/pages/salary-management.html?${params.toString()}`;
+                }
+            } else {
+                // Use relative path
+                salaryUrl = `../frontend/pages/salary-management.html?${params.toString()}`;
             }
 
-            if (!success) {
-                const errorMsg = typeof translate === 'function' ? translate('attendance.daily.cannot_connect_frontend') : 'Cannot connect to frontend service. Please ensure the frontend is running on port 5502 or 5503. You can start it with: cd frontend && python -m http.server 5502';
-                showToast('error', errorMsg);
+            console.log('Navigating to salary management:', salaryUrl);
+            
+            // Navigate in the same window instead of opening a new tab
+            // If embedded in iframe, navigate parent window
+            try {
+                if (window.parent && window.parent !== window) {
+                    // We're in an iframe, navigate the parent window
+                    window.parent.location.href = salaryUrl;
+                } else {
+                    // We're in the main window, navigate normally
+                    window.location.href = salaryUrl;
+                }
+            } catch (error) {
+                console.error('Error navigating to salary page:', error);
+                // If parent navigation fails (cross-origin), try same window
+                try {
+                    window.location.href = salaryUrl;
+                } catch (e) {
+                    showToast('error', 'Unable to navigate to salary page. Please check the URL.');
+                }
             }
         }
 

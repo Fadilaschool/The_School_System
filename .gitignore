@@ -9,12 +9,12 @@ dist/
 build/
 *.log
 
-# Environment files
+# Environment files — NEVER commit real credentials
 .env
 .env.*
 !.env.example
 
-# IDE files
+# IDE / Editor
 .vscode/
 .idea/
 *.swp
@@ -23,18 +23,30 @@ build/
 # OS files
 .DS_Store
 Thumbs.db
+-files  grep .env
 
 # Temporary files
 *.tmp
 *.temp
 .cache/
 
-# Database files (consider if these contain sensitive data)
-# *.sql
-# *.xls
-
-# Uploads (may contain sensitive files)
-# uploads/
-
-# Large files
+# Large binary / data files — do NOT push to GitHub
 *.zip
+*.xls
+*.xlsx
+
+# Large SQL dumps — keep migration scripts but not full data backups
+current.sql
+Necessaire.sql
+hr_data.sql
+hr_operations_platform_existing_data_temp.sql
+hr_schema.sql
+users_hr.sql
+
+# Uploads (user-uploaded files — use Docker volumes instead)
+uploads/
+*/uploads/
+
+# Word/PDF documents (employee files)
+*.docx
+*.pdf

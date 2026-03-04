@@ -9,11 +9,135 @@
     
     <link rel="stylesheet" href="tailwind.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../../../frontend/assets/css/rtl.css">
     <style>
+    :root {
+      --director-blue: #2563eb;
+      --director-slate: #0f172a;
+      --director-card-bg: #ffffff;
+    }
+    body {
+      font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+      color: var(--director-slate);
+      background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+    }
+    .page-header-tasks {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    .page-header-tasks .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 0.5rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+    .page-header-tasks .page-title i { color: #3b82f6; font-size: 1.75rem; }
+    .page-header-tasks .page-subtitle { font-size: 1rem; color: #64748b; margin: 0; font-weight: 500; }
+    .director-panel-tasks {
+      background: var(--director-card-bg);
+      border-radius: 22px;
+      padding: 24px 28px;
+      box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .director-panel-tasks::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(37, 99, 235, 0.06), rgba(124, 58, 237, 0.04));
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .director-panel-tasks > * { position: relative; z-index: 1; }
+    .director-panel-tasks:hover { box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08); }
+    .task-item-card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.98));
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
+      margin-bottom: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+    .task-item-card:hover {
+      border-color: rgba(59, 130, 246, 0.25);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+      transform: translateY(-2px);
+    }
+    .task-item-card.instruction-card {
+      border-right: 4px solid #eab308;
+      background: linear-gradient(145deg, rgba(254, 249, 195, 0.4), rgba(255, 255, 255, 0.98));
+    }
+    .task-list-container #tasksList .task-item-card:last-child {
+      margin-bottom: 0;
+    }
+    .task-list-container { width: 100%; max-width: 100%; }
+    .task-list-container #tasksList { width: 100%; max-width: 100%; }
+    .task-list-container #tasksList > div { width: 100%; max-width: 100%; overflow-x: auto; }
+    .task-list-container #tasksList table { width: 100%; min-width: 100%; }
+    /* Full width content */
+    #my-tasks-content-wrap { width: 100%; max-width: 100%; margin: 0 !important; box-sizing: border-box; }
+    [dir="rtl"] #my-tasks-content-wrap { margin-right: 0 !important; margin-left: 0 !important; }
+    .profile-input-tasks,
+    .profile-select-tasks {
+      border-radius: 12px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      padding: 0.6rem 0.75rem;
+      transition: all 0.2s ease;
+    }
+    .profile-input-tasks:focus,
+    .profile-select-tasks:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+    .btn-tasks-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: 12px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      transition: all 0.3s ease;
+    }
+    .btn-tasks-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35); }
+    .btn-tasks-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: 12px;
+      font-weight: 600;
+      background: rgba(248, 250, 252, 0.95);
+      color: #475569;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-tasks-secondary:hover { background: rgba(241, 245, 249, 1); transform: translateY(-1px); }
     /* Toast notifications */
-    .toast-container { position: fixed; top: 16px; right: 16px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+    .toast-container { position: fixed; top: 16px; right: 16px; left: 16px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; max-width: 100%; }
+    @media (min-width: 480px) { .toast-container { left: auto; } }
     .toast { display: flex; align-items: flex-start; gap: 10px; min-width: 260px; max-width: 380px; padding: 12px 14px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.06); background: #ffffff; animation: toast-in 200ms ease-out; }
     .toast-title { font-weight: 600; color: #0f172a; font-size: 14px; }
     .toast-body { color: #334155; font-size: 13px; margin-top: 2px; }
@@ -88,8 +212,11 @@
     
     /* Tab Panel Content */
     .tab-panel-content {
-        padding: 32px;
+        padding: 1rem;
         animation: fadeIn 0.3s ease-in-out;
+    }
+    @media (min-width: 768px) {
+        .tab-panel-content { padding: 32px; }
     }
     
     @keyframes fadeIn {
@@ -103,35 +230,63 @@
         }
     }
     
-    /* Enhanced Statistics Cards */
+    /* Enhanced Statistics Cards – director style */
     .stat-card {
-        background: white;
-        border-radius: 12px;
-        padding: 24px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 24px 26px;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(148, 163, 184, 0.12);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border-left: 4px solid transparent;
+        position: relative;
+        overflow: hidden;
     }
-    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        opacity: 0.9;
+    }
     .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06);
+        border-color: rgba(148, 163, 184, 0.2);
     }
-    
-    .stat-card.blue { border-left-color: #3b82f6; }
-    .stat-card.green { border-left-color: #10b981; }
-    .stat-card.yellow { border-left-color: #f59e0b; }
-    .stat-card.red { border-left-color: #ef4444; }
-    
+    .stat-card.blue::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+    .stat-card.green::before { background: linear-gradient(90deg, #10b981, #34d399); }
+    .stat-card.yellow::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .stat-card.red::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+    .stat-card.blue { border-left: none; }
+    .stat-card.green { border-left: none; }
+    .stat-card.yellow { border-left: none; }
+    .stat-card.red { border-left: none; }
     .stat-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 12px;
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        font-size: 22px;
+        color: #fff;
+        flex-shrink: 0;
     }
+    .stat-card.blue .stat-icon { background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35); }
+    .stat-card.green .stat-icon { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
+    .stat-card.yellow .stat-icon { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35); }
+    .stat-card.red .stat-icon { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35); }
+    .stat-card .text-sm { font-size: 0.8125rem; font-weight: 600; color: #64748b; letter-spacing: 0.02em; }
+    .stat-card .text-3xl { font-size: 1.875rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; }
+    /* Arabic/RTL: icon on the right (row in RTL = start is right, so icon first) */
+    [dir="rtl"] .stat-card .flex.items-center,
+    html[lang="ar"] .stat-card .flex.items-center { flex-direction: row !important; }
+    [dir="rtl"] .stat-card .stat-icon,
+    html[lang="ar"] .stat-card .stat-icon { margin-inline-end: 1rem !important; margin-inline-start: 0 !important; }
+    [dir="rtl"] .stat-card .flex.items-center > .ml-4,
+    html[lang="ar"] .stat-card .flex.items-center > .ml-4 { margin-left: 0 !important; margin-right: 0 !important; }
     
     /* Exceptions Sub-tabs */
     .exceptions-sub-tabs {
@@ -178,6 +333,617 @@
     .modern-tab-button .badge-count {
         margin-left: 8px;
     }
+
+    /* Tasks/Instructions tab pills */
+    .report-type-tabs-tasks { gap: 0; }
+    .report-type-tab-tasks {
+        transition: all 0.25s ease;
+        border: none;
+        cursor: pointer;
+        background: transparent;
+    }
+    .report-type-tab-tasks:hover:not(.active) { color: #1e293b; background: rgba(255,255,255,0.7); }
+    .report-type-tab-tasks.active {
+        color: #2563eb;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    /* Director My Tasks – timetable card & actions (match director.html) */
+    .timetable-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid rgba(148, 163, 184, 0.15);
+        border-radius: 20px;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        overflow: hidden;
+    }
+    .timetable-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+        border-color: #3B82F6;
+    }
+    .timetable-card.border-red-300 { border-color: #fca5a5; }
+    .dir-table-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 16px;
+        border-radius: 12px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        border: 1.5px solid rgba(148, 163, 184, 0.25);
+        background: #ffffff;
+        color: #475569;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .dir-table-action:hover {
+        border-color: #3B82F6;
+        background: rgba(59, 130, 246, 0.05);
+        color: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15);
+    }
+    .dir-table-action.primary {
+        background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+    }
+    .dir-table-action.primary:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+        color: #ffffff;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(59, 130, 246, 0.4);
+    }
+    /* Director-style filters bar */
+    .director-filters-bar {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .director-filters-bar .filter-label-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 8px;
+        border-left: 3px solid #3b82f6;
+    }
+    .director-filters-bar .filter-label-box i { color: #3b82f6; font-size: 15px; }
+    .director-filters-bar .filter-label-box span { font-size: 14px; font-weight: 600; color: #1e40af; }
+    .director-filters-bar .filter-select,
+    .director-filters-bar .filter-input {
+        padding: 8px 14px;
+        font-size: 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: white;
+        color: #374151;
+        min-width: 110px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        transition: all 0.2s;
+    }
+    .director-filters-bar .filter-select:hover,
+    .director-filters-bar .filter-input:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+    .director-filters-bar .filter-input { padding-left: 36px; width: 160px; }
+    .director-filters-bar .filter-input:focus,
+    .director-filters-bar .filter-select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+    /* Filters bar RTL (Arabic) */
+    html[lang="ar"] .director-filters-bar .flex-wrap,
+    .director-filters-bar[dir="rtl"] .flex-wrap {
+        flex-direction: row-reverse;
+    }
+    html[lang="ar"] .director-filters-bar .filter-label-box,
+    .director-filters-bar[dir="rtl"] .filter-label-box {
+        border-left: none;
+        border-right: 3px solid #3b82f6;
+    }
+    html[lang="ar"] .director-filters-bar .ml-auto,
+    .director-filters-bar[dir="rtl"] .ml-auto {
+        margin-left: 0;
+        margin-right: auto;
+    }
+    html[lang="ar"] .director-filters-bar .relative .fa-search,
+    .director-filters-bar[dir="rtl"] .relative .fa-search {
+        left: auto;
+        right: 12px;
+    }
+    html[lang="ar"] .director-filters-bar .filter-input,
+    .director-filters-bar[dir="rtl"] .filter-input {
+        padding-left: 14px;
+        padding-right: 36px;
+    }
+    html[lang="ar"] .director-filters-bar .btn-clear-filters,
+    .director-filters-bar[dir="rtl"] .btn-clear-filters {
+        flex-direction: row-reverse;
+    }
+    .director-filters-bar .btn-clear-filters {
+        padding: 8px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #6b7280;
+        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .director-filters-bar .btn-clear-filters:hover {
+        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .director-list-header-title { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+    .director-list-header-desc { color: #64748b; font-size: 0.9375rem; margin-top: 4px; }
+    .director-view-mode-btn {
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #f1f5f9;
+        color: #64748b;
+    }
+    .director-view-mode-btn:hover { color: #0f172a; background: #e2e8f0; }
+    .director-view-mode-btn.active { background: #3b82f6; color: white; }
+    .dir-info-block { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 14px; }
+    .dir-info-block.blue { background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.04)); border: 1px solid rgba(59, 130, 246, 0.2); }
+    .dir-info-block.purple { background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(124, 58, 237, 0.04)); border: 1px solid rgba(124, 58, 237, 0.2); }
+    .dir-info-block.green { background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.04)); border: 1px solid rgba(16, 185, 129, 0.2); }
+    .dir-info-block .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
+    .dir-info-block.blue .icon-box { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+    .dir-info-block.purple .icon-box { background: linear-gradient(135deg, #7C3AED, #6D28D9); }
+    .dir-info-block.green .icon-box { background: linear-gradient(135deg, #10B981, #059669); }
+    .dir-info-block .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; margin: 0 0 4px 0; font-weight: 600; }
+    .dir-info-block.blue .label { color: #3B82F6; }
+    .dir-info-block.purple .label { color: #7C3AED; }
+    .dir-info-block.green .label { color: #10B981; }
+    .dir-info-block .value { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Modals - director style */
+    .modal-panel-tasks {
+        background: #fff;
+        border-radius: 22px;
+        padding: 1.5rem;
+        box-shadow: 0 24px 48px rgba(15, 23, 42, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+    /* Task Details Modal – improved */
+    #taskDetailsModal {
+        backdrop-filter: blur(4px);
+    }
+    /* Force column layout: rtl.css sets [dir="rtl"] .flex { row-reverse } which breaks this panel */
+    #taskDetailsModal > div {
+        flex-direction: column !important;
+    }
+    #taskDetailsModal .modal-details-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+        padding: 1rem 1.5rem 1.25rem;
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+        border-radius: 22px 22px 0 0;
+        display: flex;
+        flex-direction: column !important;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    #taskDetailsModal .modal-details-header .modal-details-close {
+        align-self: flex-start;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    [dir="rtl"] #taskDetailsModal .modal-details-header .modal-details-close {
+        align-self: flex-end;
+    }
+    #taskDetailsModal .modal-details-header .details-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-width: 0;
+    }
+    #taskDetailsModal .modal-details-header .details-title-wrap i {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+    #taskDetailsModal .modal-details-header h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #taskDetailsModal .modal-details-close {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        background: #fff;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        flex-shrink: 0;
+    }
+    #taskDetailsModal .modal-details-close:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+        border-color: #e2e8f0;
+    }
+    #taskDetailsModal #taskDetailsContent {
+        padding: 0;
+    }
+    #taskDetailsModal #taskDetailsContent h4 {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        margin-bottom: 0.35rem;
+    }
+    #taskDetailsModal #taskDetailsContent .detail-block {
+        background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.5));
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: 14px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1rem;
+    }
+    #taskDetailsModal #taskDetailsContent .grid.grid-cols-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem 1.25rem;
+    }
+    #taskDetailsModal .comments-section {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(226, 232, 240, 0.9);
+    }
+    #taskDetailsModal .comments-section h4 {
+        font-size: 0.875rem;
+        font-weight: 700;
+        text-transform: none;
+        letter-spacing: 0;
+        color: #0f172a;
+        margin-bottom: 0.75rem;
+    }
+    #taskDetailsModal #taskComments {
+        max-height: 200px;
+        border-radius: 12px;
+        background: #f8fafc;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        padding: 0.75rem;
+    }
+    #taskDetailsModal #taskDetailsContent .bg-gray-50 {
+        background: linear-gradient(135deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.8));
+        border-radius: 14px;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        padding: 1rem;
+    }
+    /* Task details modal: allow body to scroll (flex child must shrink) */
+    #taskDetailsModal .task-details-modal-inner {
+        display: flex;
+        flex-direction: column;
+    }
+    #taskDetailsModal .task-details-modal-inner .flex-1.overflow-y-auto {
+        min-height: 0;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* ========== Stats: mobile = one card per row; tablet = 2 cols; desktop = 4 cols ========== */
+    .tasks-stats-grid {
+        display: block !important;
+        margin-bottom: 1.5rem;
+    }
+    .tasks-stats-grid .stat-card {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box;
+        margin-bottom: 0.75rem;
+    }
+    .tasks-stats-grid .stat-card:last-child { margin-bottom: 0; }
+    @media (min-width: 768px) {
+        .tasks-stats-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        .tasks-stats-grid .stat-card { margin-bottom: 0 !important; width: auto !important; max-width: none !important; }
+    }
+    @media (min-width: 1024px) {
+        .tasks-stats-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+    }
+    /* Mobile only: force one card per row */
+    @media (max-width: 767px) {
+        .tasks-stats-grid {
+            display: block !important;
+            grid-template-columns: none !important;
+        }
+        .tasks-stats-grid .stat-card {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            flex: none !important;
+            margin-bottom: 0.75rem;
+        }
+        .tasks-stats-grid .stat-card:last-child { margin-bottom: 0; }
+    }
+
+    /* ========== Responsive: mobile-first ========== */
+    @media (max-width: 767px) {
+        main { padding: 1rem !important; }
+        .page-header-tasks {
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.25rem;
+        }
+        .page-header-tasks .page-title { font-size: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .page-header-tasks .flex-wrap { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+        .page-header-tasks #taskActions {
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .page-header-tasks #taskActions .btn-tasks-primary,
+        .page-header-tasks #taskActions .btn-tasks-secondary {
+            flex: 1 1 auto;
+            min-width: 0;
+            justify-content: center;
+        }
+        .stat-card {
+            padding: 1rem 1.25rem;
+        }
+        .stat-card .flex.items-center { flex-wrap: wrap; gap: 0.5rem; }
+        .stat-card .stat-icon { width: 44px; height: 44px; font-size: 18px; }
+        .stat-card .text-3xl { font-size: 1.5rem; }
+        .stat-card .ml-4 { margin-left: 0.75rem; }
+        /* Filters bar: stack, full width */
+        .director-filters-bar {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box;
+        }
+        .director-filters-inner {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1rem !important;
+            width: 100% !important;
+        }
+        .director-filters-bar .filter-label-box { 
+            align-self: flex-start;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.5rem;
+            width: 100% !important;
+            box-sizing: border-box;
+        }
+        .director-filters-bar .filter-label-box span {
+            font-size: 16px !important;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .director-filters-bar .filter-label-box i {
+            font-size: 16px !important;
+        }
+        .director-filters-controls {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1rem !important;
+            width: 100% !important;
+            flex-wrap: nowrap !important;
+        }
+        .director-filters-bar .filter-select,
+        .director-filters-bar .filter-input {
+            min-width: 0;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 12px 16px !important;
+            font-size: 14px !important;
+            border-radius: 8px;
+            min-height: 44px;
+            box-sizing: border-box;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .director-filters-bar .filter-select option {
+            white-space: nowrap;
+            padding: 8px;
+        }
+        .director-filters-bar .relative { 
+            width: 100% !important;
+            max-width: 100% !important;
+            position: relative;
+        }
+        .director-filters-bar .filter-input { 
+            width: 100% !important;
+            max-width: 100% !important;
+            padding-left: 44px !important;
+            padding-right: 16px !important;
+        }
+        .director-filters-bar .relative .fa-search {
+            left: 16px !important;
+            font-size: 14px !important;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .director-filters-bar .ml-auto { 
+            margin-left: 0 !important; 
+            margin-right: 0 !important; 
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        .director-filters-bar .btn-clear-filters { 
+            width: 100% !important; 
+            max-width: 100% !important;
+            justify-content: center;
+            padding: 12px 16px !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            min-height: 44px;
+            border-radius: 8px;
+            display: flex !important;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        .director-filters-bar .btn-clear-filters i {
+            font-size: 12px !important;
+            flex-shrink: 0;
+        }
+        .director-filters-bar .btn-clear-filters span {
+            font-size: 14px !important;
+            white-space: nowrap;
+        }
+        /* Ensure no horizontal scrolling */
+        .director-filters-bar * {
+            box-sizing: border-box;
+        }
+        /* Prevent text overflow in selects */
+        .director-filters-bar select {
+            text-overflow: ellipsis;
+            overflow-x: hidden;
+        }
+        /* Phone: hide grid/list view toggle, card view only */
+        @media (max-width: 767px) {
+            .view-mode-toggle-grid-list-wrap { display: none !important; }
+        }
+        
+        /* Extra small mobile: ensure all elements are visible */
+        @media (max-width: 480px) {
+            .director-filters-bar {
+                padding: 0.75rem !important;
+            }
+            .director-filters-inner {
+                gap: 0.75rem !important;
+            }
+            .director-filters-bar .filter-label-box {
+                padding: 0.5rem 0.75rem !important;
+            }
+            .director-filters-bar .filter-label-box span {
+                font-size: 15px !important;
+            }
+            .director-filters-controls {
+                gap: 0.75rem !important;
+            }
+            .director-filters-bar .filter-select,
+            .director-filters-bar .filter-input {
+                padding: 10px 14px !important;
+                font-size: 13px !important;
+                min-height: 40px !important;
+            }
+            .director-filters-bar .btn-clear-filters {
+                padding: 10px 14px !important;
+                font-size: 13px !important;
+                min-height: 40px !important;
+            }
+            .director-filters-bar .btn-clear-filters span {
+                font-size: 13px !important;
+            }
+        }
+        /* Tasks panel: no padding on mobile; tabs + view mode */
+        #panel-tasks.tab-panel-content { padding: 0 !important; }
+        .task-list-container { padding: 0 !important; }
+        .director-panel-tasks .px-6 { padding-left: 0 !important; padding-right: 0 !important; }
+        .director-panel-tasks .py-4 { padding-top: 0 !important; padding-bottom: 0 !important; }
+        .director-panel-tasks .flex.flex-wrap.items-center.justify-between.gap-4 {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+        }
+        .report-type-tabs-tasks {
+            display: flex;
+            width: 100%;
+            justify-content: stretch;
+        }
+        .report-type-tab-tasks { flex: 1; text-align: center; padding: 0.5rem 0.75rem; font-size: 0.8125rem; }
+        .director-panel-tasks .flex.items-center.gap-1 {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .director-view-mode-btn {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8125rem;
+        }
+        .director-view-mode-btn .mr-1 { margin-right: 0.25rem; }
+        .task-list-container { padding: 1rem !important; }
+        .task-item-card {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .task-item-card .flex { flex-wrap: wrap; gap: 0.5rem; }
+        .task-item-card .dir-table-action { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+        /* Card view (timetable-card) in tasks list */
+        #tasksList .timetable-card { padding: 1rem !important; }
+        #tasksList .timetable-card [style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+        #tasksList .timetable-card [style*="display: flex"][style*="justify-content: space-between"] { flex-wrap: wrap; gap: 0.75rem; }
+        #tasksList .timetable-card .dir-info-block { min-width: 0; }
+        #tasksList .timetable-card .dir-table-action { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+        /* Modal */
+        #taskModal { padding: 0.5rem !important; align-items: flex-start !important; padding-top: 1rem !important; }
+        .modal-panel-tasks { max-height: 85vh; }
+        #taskForm .grid.grid-cols-2 { grid-template-columns: 1fr !important; }
+    }
+    /* List view: responsive table */
+    @media (max-width: 767px) {
+        .task-list-container #tasksList table { display: block; }
+        .task-list-container #tasksList thead { display: none; }
+        .task-list-container #tasksList tr { display: block; margin-bottom: 1rem; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.75rem; background: #fff; }
+        .task-list-container #tasksList td {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.35rem 0;
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .task-list-container #tasksList td:last-child { border-bottom: none; }
+        .task-list-container #tasksList td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+    }
     </style>
     
 </head>
@@ -188,24 +954,16 @@
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Content -->
-            <main class="flex-1 overflow-y-auto p-6">
-                <div class="max-w-7xl mx-auto">
+            <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+                <div id="my-tasks-content-wrap" class="w-full">
                     <!-- Page Header -->
-                    <div class="mb-8">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h1 class="text-3xl font-bold text-gray-900 mb-2" data-translate="tasks.my_tasks">My Tasks</h1>
-                                <p class="text-gray-600 text-lg" data-translate="tasks.description">View and manage your assigned tasks and instructions</p>
+                    <div class="page-header-tasks mb-8">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div class="flex-1 min-w-0">
+                                <h1 class="page-title" data-translate="tasks.my_tasks"><i class="fas fa-tasks"></i> My Tasks</h1>
+                                <p class="page-subtitle" data-translate="tasks.description">View and manage your assigned tasks and instructions</p>
                             </div>
-                            <div id="taskActions" class="flex space-x-2">
-                                <!-- Language Selector -->
-                                <select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
-                                    <option value="en">English</option>
-                                    <option value="fr">Français</option>
-                                    <option value="ar">العربية</option>
-                                </select>
-                                <!-- Task actions will be populated based on user role -->
-                            </div>
+                            <div id="taskActions" class="flex items-center gap-2 flex-shrink-0"></div>
                         </div>
                     </div>
 
@@ -214,7 +972,7 @@
                         <!-- Tasks Tab Panel -->
                         <div id="panel-tasks" class="tab-panel-content">
                             <!-- Task Statistics -->
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="tasks-stats-grid grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                         <div class="stat-card blue">
                             <div class="flex items-center">
                                 <div class="stat-icon bg-blue-100 text-blue-600">
@@ -264,71 +1022,89 @@
                         </div>
                     </div>
 
-                    <!-- Filters and Search -->
-                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-                            <div class="flex-1 max-w-md">
-                                <div class="relative">
-                                    <input type="text" id="searchInput" data-translate-placeholder="common.search_tasks" placeholder="Search tasks..." 
-                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                                </div>
+                    <!-- Filters (Director My Tasks style) -->
+                    <section class="director-filters-bar">
+                        <div class="flex flex-wrap items-center gap-4 director-filters-inner">
+                            <div class="filter-label-box">
+                                <i class="fas fa-filter"></i>
+                                <span data-translate="director.filters_label">Filters</span>
                             </div>
-                            <div class="flex space-x-2">
-                                <select id="statusFilter" class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <div class="flex flex-wrap items-center gap-2 director-filters-controls">
+                                <select id="statusFilter" class="filter-select">
                                     <option value="" data-translate="common.all_status">All Status</option>
                                     <option value="Pending" data-translate="status.pending">Pending</option>
                                     <option value="In Progress" data-translate="status.in_progress">In Progress</option>
                                     <option value="Completed" data-translate="status.completed">Completed</option>
                                     <option value="Overdue" data-translate="tasks.overdue">Overdue</option>
                                 </select>
-                                <select id="typeFilter" class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <select id="typeFilter" class="filter-select">
                                     <option value="" data-translate="common.all_types">All Types</option>
                                     <option value="Daily" data-translate="tasks.daily">Daily</option>
                                     <option value="Special" data-translate="tasks.special">Special</option>
                                 </select>
-                                <select id="priorityFilter" class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <select id="priorityFilter" class="filter-select">
                                     <option value="" data-translate="common.all_priorities">All Priorities</option>
                                     <option value="High" data-translate="tasks.high">High</option>
                                     <option value="Medium" data-translate="tasks.medium">Medium</option>
                                     <option value="Low" data-translate="tasks.low">Low</option>
                                 </select>
-                               <select id="assignedByFilter" class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-    <option value="" data-translate="common.assigned_by_all">Assigned By (All)</option>
-    <option value="Director" data-translate="common.director">Director</option>
-    <option value="Others" data-translate="common.others">Others</option>
-</select>
+                                <select id="assignedByFilter" class="filter-select">
+                                    <option value="" data-translate="common.assigned_by_all">Assigned By (All)</option>
+                                    <option value="Director" data-translate="common.director">Director</option>
+                                    <option value="Others" data-translate="common.others">Others</option>
+                                </select>
+                                <div class="relative">
+                                    <input type="text" id="searchInput" class="filter-input" data-translate-placeholder="common.search_tasks" placeholder="Search tasks...">
+                                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm pointer-events-none"></i>
+                                </div>
+                            </div>
+                            <div class="ml-auto flex items-center gap-2">
+                                <button type="button" id="clearFiltersBtn" class="btn-clear-filters">
+                                    <i class="fas fa-times text-xs"></i>
+                                    <span data-translate="director.clear">Clear</span>
+                                </button>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- Tasks List -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-                        <div class="px-6 py-4 border-b border-gray-200">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-medium text-gray-900" data-translate="tasks.title">Tasks</h3>
-                                <div class="flex gap-2">
-                                    <button id="tasksToggleBtn" class="px-3 py-1 text-xs rounded bg-blue-600 text-white" data-translate="tasks.title">Tasks</button>
-                                    <button id="instrToggleBtn" class="px-3 py-1 text-xs rounded bg-gray-200 text-gray-800" data-translate="tasks.instructions">Instructions</button>
+                    <!-- Tasks List (Director My Tasks style) -->
+                    <div class="director-panel-tasks p-0 overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200/80 bg-gray-50/50">
+                            <div class="flex flex-wrap items-center justify-between gap-4">
+                                <div class="flex items-center gap-3 flex-wrap">
+                                    <div class="report-type-tabs-tasks flex rounded-xl p-1 bg-gray-100">
+                                        <button id="tasksToggleBtn" class="report-type-tab-tasks active px-4 py-2 text-sm font-semibold rounded-lg" data-translate="tasks.title">Tasks</button>
+                                        <button id="instrToggleBtn" class="report-type-tab-tasks px-4 py-2 text-sm font-semibold rounded-lg text-gray-600" data-translate="tasks.instructions">Instructions</button>
+                                    </div>
+                                    <span class="text-sm text-gray-500 hidden sm:inline" data-translate="director.task_list_description">Manage and track all your tasks</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <button id="dirTasksSortToggle" class="director-view-mode-btn p-2 rounded-lg" title="Toggle Sort"><i class="fas fa-sort-alpha-down" id="dirTasksSortIcon"></i></button>
+                                    <div class="view-mode-toggle-grid-list-wrap">
+                                        <button id="dirViewModeCards" class="director-view-mode-btn active" title="Cards" data-translate-title="tasks.view_cards"><i class="fas fa-border-all mr-1"></i><span class="hidden sm:inline" data-translate="tasks.view_cards">Cards</span></button>
+                                        <button id="dirViewModeList" class="director-view-mode-btn" title="List" data-translate-title="tasks.view_list"><i class="fas fa-list mr-1"></i><span class="hidden sm:inline" data-translate="tasks.view_list">List</span></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div id="tasksList" class="divide-y divide-gray-200">
+                        <div class="task-list-container p-6 w-full">
+                        <div id="tasksList" class="space-y-0 w-full">
                             <!-- Tasks will be loaded here -->
+                        </div>
                         </div>
                         
                         <!-- Loading State -->
-                        <div id="loadingState" class="text-center py-8">
-                            <i class="fas fa-spinner fa-spin text-blue-600 text-2xl"></i>
-                            <p class="text-gray-600 mt-2">Loading tasks...</p>
+                        <div id="loadingState" class="text-center py-12">
+                            <i class="fas fa-spinner fa-spin text-blue-600 text-3xl"></i>
+                            <p class="text-gray-600 mt-3 font-medium" data-translate="tasks.loading_tasks">Loading tasks...</p>
                         </div>
                         
                         <!-- Empty State -->
-                        <div id="emptyState" class="text-center py-12 hidden">
-                            <i class="fas fa-tasks text-gray-400 text-4xl mb-4"></i>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">No tasks found</h3>
-                            <p class="text-gray-600">Tasks will appear here once assigned</p>
+                        <div id="emptyState" class="text-center py-16 hidden">
+                            <i class="fas fa-tasks text-blue-200 text-5xl mb-4"></i>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2" data-translate="tasks.no_tasks_found">No tasks found</h3>
+                            <p class="text-gray-600" data-translate="tasks.tasks_will_appear">Tasks will appear here once assigned</p>
                         </div>
                     </div>
                         </div>
@@ -343,10 +1119,10 @@
     <!-- Task Details Modal -->
 
     <!-- Add/Edit Task Modal -->
-    <div id="taskModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
+    <div id="taskModal" class="fixed inset-0 bg-black/50 flex hidden items-center justify-center z-50 p-4">
+    <div class="modal-panel-tasks w-full max-w-lg mx-auto max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
-            <h3 id="modalTitle" class="text-lg font-semibold">Add Task</h3>
+            <h3 id="modalTitle" class="text-lg font-semibold" data-translate="tasks.add_task">Add Task</h3>
             <button id="closeModal" class="text-gray-500 hover:text-gray-700">
                 <i class="fas fa-times"></i>
             </button>
@@ -355,72 +1131,67 @@
         <form id="taskForm">
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="tasks.task_title">Task Title</label>
                     <input type="text" id="taskTitle" required 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="profile-input-tasks w-full px-3 py-2">
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="tasks.task_description">Description</label>
                     <textarea id="taskDescription" rows="3" 
-                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                              class="profile-input-tasks w-full px-3 py-2"></textarea>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                        <select id="taskType" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="Daily">Daily </option>
-                            <option value="Special">Special </option>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="tasks.type">Type</label>
+                        <select id="taskType" required class="profile-select-tasks w-full px-3 py-2">
+                            <option value="Daily" data-translate="tasks.daily">Daily</option>
+                            <option value="Special" data-translate="tasks.special">Special</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                        <select id="taskPriority" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="tasks.priority">Priority</label>
+                        <select id="taskPriority" required class="profile-select-tasks w-full px-3 py-2">
+                            <option value="Low" data-translate="tasks.low">Low</option>
+                            <option value="Medium" data-translate="tasks.medium">Medium</option>
+                            <option value="High" data-translate="tasks.high">High</option>
                         </select>
                     </div>
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="tasks.due_date">Due Date</label>
                     <input type="date" id="taskDueDate" required 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="profile-input-tasks w-full px-3 py-2">
                 </div>
                 
                 <div id="assigneeSection">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Assign To</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="tasks.assign_to">Assign To</label>
                     
-                    <!-- Barre de recherche -->
                     <div class="search-container">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="employeeSearch" placeholder="Search employees..." 
-                               class="w-full px-3 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" id="employeeSearch" data-translate-placeholder="tasks.search_employees" placeholder="Search employees..." 
+                               class="profile-input-tasks w-full px-3 py-2 pl-10">
                     </div>
                     
-                    <!-- Liste des employés avec cases à cocher -->
                     <div class="employee-list-container" id="employeeList">
-                        <!-- Les employés seront chargés ici dynamiquement -->
                     </div>
                     
-                    <!-- Employés sélectionnés -->
                     <div class="mt-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Selected Employees</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="tasks.selected_employees">Selected Employees</label>
                         <div class="selected-employees-container" id="selectedEmployees">
-                            <!-- Les employés sélectionnés apparaîtront ici -->
-                            <p class="text-gray-500 text-sm p-2" id="noSelectionText">No employees selected</p>
+                            <p class="text-gray-500 text-sm p-2" id="noSelectionText" data-translate="tasks.no_employees_selected">No employees selected</p>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="flex justify-end space-x-2 mt-6">
-                <button type="button" id="cancelBtn" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+            <div class="flex justify-end gap-2 mt-6">
+                <button type="button" id="cancelBtn" class="btn-tasks-secondary" data-translate="common.cancel">
                     Cancel
                 </button>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <button type="submit" class="btn-tasks-primary" data-translate="tasks.save_task">
                     Save Task
                 </button>
             </div>
@@ -429,62 +1200,57 @@
 </div>
 
   <!-- Task Details Modal -->
-<div id="taskDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 w-full max-w-2xl mx-4">
-            <div class="flex items-center justify-between mb-4">
-                <h3 id="detailsTitle" class="text-lg font-semibold">Task Details</h3>
-                <button id="closeDetailsModal" class="text-gray-500 hover:text-gray-700">
+<div id="taskDetailsModal" class="fixed inset-0 bg-black/50 flex hidden items-center justify-center z-50 p-4">
+        <div class="modal-panel-tasks task-details-modal-inner w-full max-w-2xl mx-auto h-[90vh] max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="modal-details-header">
+                <button type="button" id="closeDetailsModal" class="modal-details-close" aria-label="Close">
                     <i class="fas fa-times"></i>
                 </button>
+                <div class="details-title-wrap">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3 id="detailsTitle" data-translate="tasks.task_details">Task Details</h3>
+                </div>
             </div>
-            
+            <div class="flex-1 overflow-y-auto px-1">
             <div id="taskDetailsContent">
-                <!-- Task details will be populated here -->
+                <div id="taskDetailsBody"><!-- Task details populated here --></div>
+                <div class="comments-section">
+                    <h4 data-translate="tasks.comments">Comments</h4>
+                    <div id="taskComments" class="space-y-3 overflow-y-auto mb-4">
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="newComment" data-translate-placeholder="tasks.add_comment" placeholder="Add a comment..." 
+                               class="profile-input-tasks flex-1 px-3 py-2">
+                        <button type="button" id="addCommentBtn" class="btn-tasks-primary">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            
-            <div class="mt-6">
-                <h4 class="text-sm font-medium text-gray-900 mb-3">Comments</h4>
-                <div id="taskComments" class="space-y-3 max-h-40 overflow-y-auto mb-4">
-                    <!-- Comments will be loaded here -->
-                </div>
-                
-                <div class="flex space-x-2">
-                    <input type="text" id="newComment" placeholder="Add a comment..." 
-                           class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button id="addCommentBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
             </div>
         </div>
     </div>
-<!-- Popup d'édition -->
-<div id="editModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-  <div class="bg-white rounded-lg shadow-lg w-96 p-4">
-    <h2 class="text-lg font-semibold mb-3">Modifier votre commentaire</h2>
+<!-- Edit comment modal -->
+<div id="editModal" class="hidden fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
+  <div class="modal-panel-tasks w-full max-w-md">
+    <h2 class="text-lg font-semibold mb-3" data-translate="tasks.modify_comment">Modify your comment</h2>
     <textarea id="editCommentInput" 
-              class="w-full border border-gray-300 rounded-lg p-2 text-sm"
+              class="profile-input-tasks w-full p-2 text-sm"
               rows="3"></textarea>
-    <div class="flex justify-end space-x-3 mt-4">
-      <button onclick="closeEditModal()" 
-              class="px-3 py-1 text-gray-600 font-medium hover:underline">
-        Annuler
-      </button>
-      <button id="saveEditBtn" 
-              class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-        Enregistrer
-      </button>
+    <div class="flex justify-end gap-3 mt-4">
+      <button onclick="closeEditModal()" class="btn-tasks-secondary" data-translate="common.cancel">Cancel</button>
+      <button id="saveEditBtn" class="btn-tasks-primary" data-translate="common.save">Save</button>
     </div>
   </div>
 </div>
 
 <!-- Exception Details Modal -->
-<div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+<div id="detailsModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden p-4">
+    <div class="modal-panel-tasks w-full max-w-2xl mx-auto max-h-[90vh] overflow-y-auto">
         <div class="p-6 border-b border-gray-200">
             <div class="flex justify-between items-center">
                 <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Exception Details</h3>
-                <button onclick="closeDetailsModal()" class="text-gray-400 hover:text-gray-600">
+                <button onclick="closeExceptionDetailsModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
@@ -497,8 +1263,8 @@
 </div>
 
 <!-- Confirmation Modal -->
-<div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg max-w-md w-full mx-4">
+<div id="confirmModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden p-4">
+    <div class="modal-panel-tasks w-full max-w-md mx-auto">
         <div class="p-6">
             <div class="flex items-center mb-4">
                 <div id="confirmIcon" class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mr-4">
@@ -659,21 +1425,23 @@
     <script src="genererR.js"></script>
 
     <script>
-        // Translation helper function
+        // Translation helper – use window.translate first, then direct lookup so cards get correct language
         function t(key, fallback = '') {
+            if (!key) return fallback || '';
             try {
-                // Check for translate function from translations.js
-                if (typeof window !== 'undefined' && typeof window.translate === 'function') {
-                    const translated = window.translate(key);
-                    return translated && translated !== key ? translated : (fallback || key);
+                var lang = (typeof window !== 'undefined' && window.currentLanguage) ? window.currentLanguage : (typeof localStorage !== 'undefined' && (localStorage.getItem('language') || localStorage.getItem('lang'))) || 'en';
+                if (typeof window !== 'undefined' && window.translations && typeof window.translations[lang] === 'object' && window.translations[lang][key]) {
+                    return window.translations[lang][key];
                 }
-                if (typeof window !== 'undefined' && typeof translate === 'function') {
-                    const translated = translate(key);
-                    return translated && translated !== key ? translated : (fallback || key);
+                if (typeof window !== 'undefined' && typeof window.translate === 'function') {
+                    var translated = window.translate(key);
+                    if (translated && translated !== key) return translated;
+                }
+                if (typeof window !== 'undefined' && window.translations && window.translations['en'] && window.translations['en'][key]) {
+                    return window.translations['en'][key];
                 }
                 return fallback || key;
             } catch (e) {
-                console.warn('Translation error for key:', key, e);
                 return fallback || key;
             }
         }
@@ -717,8 +1485,33 @@
 let currentOriginalText = null;
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Dev mode: allow bypassing auth with URL params (e.g., ?dev=1&role=Department_Responsible&first=Dev&last=User)
             const urlParams = new URLSearchParams(window.location.search);
+            // Apply language: from URL first (e.g. ?embed=1&lang=ar), then localStorage, so card labels translate
+            var langToApply = urlParams.get('lang');
+            if (!langToApply || (langToApply !== 'ar' && langToApply !== 'fr' && langToApply !== 'en')) {
+                langToApply = (typeof localStorage !== 'undefined' && (localStorage.getItem('language') || localStorage.getItem('lang'))) || 'en';
+                if (langToApply !== 'ar' && langToApply !== 'fr') langToApply = 'en';
+            }
+            if (langToApply) {
+                if (typeof window !== 'undefined') {
+                    window.currentLanguage = langToApply;
+                }
+                if (typeof window.setLanguage === 'function') {
+                    window.setLanguage(langToApply);
+                }
+                if (typeof localStorage !== 'undefined') {
+                    localStorage.setItem('language', langToApply);
+                    localStorage.setItem('lang', langToApply);
+                }
+                if (document.documentElement) {
+                    document.documentElement.setAttribute('dir', langToApply === 'ar' ? 'rtl' : 'ltr');
+                    document.documentElement.setAttribute('lang', langToApply);
+                }
+                if (typeof window.updatePageTranslations === 'function') {
+                    window.updatePageTranslations();
+                }
+            }
+            // Dev mode: allow bypassing auth with URL params (e.g., ?dev=1&role=Department_Responsible&first=Dev&last=User)
             const isDevMode = urlParams.get('dev') === '1';
             if (isDevMode) {
                 // Récupération complète des infos depuis l'URL pour le mode dev
@@ -840,6 +1633,52 @@ let currentOriginalText = null;
             const assignedByFilter = document.getElementById('assignedByFilter');
             if (assignedByFilter) assignedByFilter.addEventListener('change', filterTasks);
 
+            // Clear filters (Director style)
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('statusFilter').value = '';
+                    document.getElementById('typeFilter').value = '';
+                    document.getElementById('priorityFilter').value = '';
+                    if (document.getElementById('assignedByFilter')) document.getElementById('assignedByFilter').value = '';
+                    filterTasks();
+                });
+            }
+            // View mode: Cards / List (Director My Tasks style)
+            window.__tasksCardsListMode = window.__tasksCardsListMode || 'cards';
+            window.__tasksSortOrder = window.__tasksSortOrder || 'asc';
+            const dirViewModeCards = document.getElementById('dirViewModeCards');
+            const dirViewModeList = document.getElementById('dirViewModeList');
+            const dirTasksSortToggle = document.getElementById('dirTasksSortToggle');
+            const dirTasksSortIcon = document.getElementById('dirTasksSortIcon');
+            function updateTasksViewModeButtons() {
+                if (!dirViewModeCards || !dirViewModeList) return;
+                if (window.__tasksCardsListMode === 'cards') {
+                    dirViewModeCards.classList.add('active'); dirViewModeList.classList.remove('active');
+                } else {
+                    dirViewModeList.classList.add('active'); dirViewModeCards.classList.remove('active');
+                }
+            }
+            function updateSortIcon() {
+                if (!dirTasksSortIcon) return;
+                dirTasksSortIcon.className = window.__tasksSortOrder === 'asc' ? 'fas fa-sort-alpha-down' : 'fas fa-sort-alpha-down-alt';
+            }
+            if (dirViewModeCards) dirViewModeCards.addEventListener('click', function() { window.__tasksCardsListMode = 'cards'; updateTasksViewModeButtons(); renderTasks(); });
+            if (dirViewModeList) dirViewModeList.addEventListener('click', function() { window.__tasksCardsListMode = 'list'; updateTasksViewModeButtons(); renderTasks(); });
+            if (dirTasksSortToggle) dirTasksSortToggle.addEventListener('click', function() { window.__tasksSortOrder = window.__tasksSortOrder === 'asc' ? 'desc' : 'asc'; updateSortIcon(); renderTasks(); });
+            updateTasksViewModeButtons();
+            updateSortIcon();
+            function ensureCardViewOnMobile() {
+                if (window.innerWidth <= 767 && window.__tasksCardsListMode === 'list') {
+                    window.__tasksCardsListMode = 'cards';
+                    updateTasksViewModeButtons();
+                    if (typeof renderTasks === 'function') renderTasks();
+                }
+            }
+            window.addEventListener('resize', ensureCardViewOnMobile);
+            ensureCardViewOnMobile();
+
             // Tab switching removed - only Tasks tab now
 
             // Language selector
@@ -905,14 +1744,13 @@ let currentOriginalText = null;
                         console.error('[tasks.html] updatePageTranslations not found!');
                     }
                     
-                    // Reload task cards when language changes
+                    // Re-render task list when language changes so all t() strings update
                     setTimeout(() => {
-                        if (tasks && tasks.length > 0) {
-                            filterTasks();
+                        if (typeof updatePageTranslations === 'function') {
+                            updatePageTranslations();
                         }
-                        // Force another translation update after tasks render
-                        if (updateFunc) {
-                            updateFunc();
+                        if (tasks && tasks.length > 0 && typeof renderTasks === 'function') {
+                            renderTasks();
                         }
                     }, 300);
                 });
@@ -924,8 +1762,8 @@ let currentOriginalText = null;
                         if (typeof updatePageTranslations === 'function') {
                             updatePageTranslations();
                         }
-                        if (tasks && tasks.length > 0) {
-                            filterTasks();
+                        if (tasks && tasks.length > 0 && typeof renderTasks === 'function') {
+                            renderTasks();
                         }
                     }, 100);
                 });
@@ -955,13 +1793,11 @@ let currentOriginalText = null;
                 const setMode = (mode) => {
                   window.__tasksViewMode = mode;
                   if (mode === 'tasks') {
-                    btnA.classList.add('bg-blue-600','text-white');
-                    btnB.classList.remove('bg-blue-600','text-white');
-                    btnB.classList.add('bg-gray-200','text-gray-800');
+                    btnA.classList.add('active');
+                    btnB.classList.remove('active');
                   } else {
-                    btnB.classList.add('bg-blue-600','text-white');
-                    btnA.classList.remove('bg-blue-600','text-white');
-                    btnA.classList.add('bg-gray-200','text-gray-800');
+                    btnB.classList.add('active');
+                    btnA.classList.remove('active');
                   }
                   renderTasks();
                   updateTaskStatistics();
@@ -2009,8 +2845,8 @@ function filterAssigneeOptions(searchTerm) {
 
             if (isDepartmentResponsible) {
                 actions.innerHTML = `
-                    <button id="addTaskBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-plus mr-2"></i>
+                    <button id="addTaskBtn" class="btn-tasks-primary">
+                        <i class="fas fa-plus"></i>
                         <span data-translate="tasks.add_task">Add Task</span>
                     </button>
                 `;
@@ -2341,15 +3177,15 @@ function getEmployeeNameById(id) {
 
   emptyState.style.display = 'none';
 
-  console.log('🔍 [DEBUG] renderTasks called:', {
-    totalTasks: tasks.length,
-    viewTasks: viewTasks.length,
-    currentUserRole: currentUser?.role,
-    currentEmployeeId: getCurrentEmployeeId(),
-    mode: mode
+  const viewMode = window.__tasksCardsListMode || 'cards';
+  const sortOrder = window.__tasksSortOrder || 'asc';
+  viewTasks.sort((a, b) => {
+    const ta = (a.title || '').toLowerCase();
+    const tb = (b.title || '').toLowerCase();
+    return sortOrder === 'asc' ? (ta < tb ? -1 : ta > tb ? 1 : 0) : (tb < ta ? -1 : tb > ta ? 1 : 0);
   });
 
-  container.innerHTML = viewTasks.map(task => {
+  const buildRowOrCard = (task) => {
     // Use getCurrentEmployeeId() instead of currentUser.id since task.assigned_by is an employee ID
     const currentEmployeeId = getCurrentEmployeeId();
     const isOwnedByCurrent = String(task.assigned_by) === String(currentEmployeeId || (currentUser&&currentUser.id)||'');
@@ -2414,117 +3250,68 @@ function getEmployeeNameById(id) {
       roleString: String(task.assigned_by_role)
     });
     
-    // Debug logging for director-assigned tasks
     const isDirectorTask = isAssignedByDirector(task);
-    const showDirectorBadge = isDirectorTask; // Show badge for all users when task is assigned by director
+    const showDirectorBadge = isDirectorTask;
+    const overdueClass = isOverdue(task) ? 'border-red-300' : '';
+    let actionBtns = `<button type="button" class="dir-table-action" onclick="event.stopPropagation(); showTaskDetails('${task.id}')" title="${t('common.view', 'View')}"><i class="fas fa-eye"></i></button>`;
+    if (!isInstruction) {
+      if (currentUserIsAssignee) {
+        if (isCompleted) actionBtns += `<div id="task-actions-${task.id}" class="inline"><span class="text-green-600 font-semibold text-sm mr-2">✅</span><button type="button" class="dir-table-action primary" onclick="event.stopPropagation(); openReportModal('${task.id}')" title="${t('report.add_report', 'Add Report')}"><i class="fas fa-file-alt"></i></button></div>`;
+        else actionBtns += `<div id="task-actions-${task.id}" class="inline"><button type="button" class="dir-table-action" onclick="event.stopPropagation(); completeMyAssignment('${task.id}')" title="${t('tasks.mark_as_complete', 'Mark Complete')}"><i class="fas fa-check"></i></button></div>`;
+      }
+      if (isDR && isOwnedByCurrent) {
+        actionBtns += `<button type="button" class="dir-table-action" onclick="event.stopPropagation(); editTask('${task.id}')" title="Edit"><i class="fas fa-edit"></i></button><button type="button" class="dir-table-action" onclick="event.stopPropagation(); deleteTask('${task.id}')" title="Delete"><i class="fas fa-trash"></i></button><button type="button" class="dir-table-action" onclick="event.stopPropagation(); loadReports('${task.id}')" title="Reports"><i class="fas fa-file-alt"></i></button>`;
+      }
+    } else {
+      if (currentUser?.role === 'Employee') actionBtns += `<button type="button" class="dir-table-action" onclick="event.stopPropagation(); acknowledgeInstruction('${task.id}')" title="Acknowledge"><i class="fas fa-check"></i></button>`;
+    }
 
-    return `
-      <div class="p-6 ${isForeignForDR?'bg-indigo-50':''} ${isInstruction?'bg-yellow-50 border-l-4 border-yellow-400':''} hover:bg-gray-50 transition-colors cursor-pointer" onclick="showTaskDetails('${task.id}')">
-        <div class="flex items-start justify-between">
-          <div class="flex-1">
-            <div class="flex items-center space-x-3 mb-2">
-              <h4 class="text-lg font-semibold text-gray-900">${task.title}</h4>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(task.status)}">
-                ${translateStatus(task.status)}
-              </span>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(task.priority)}">
-                ${translatePriority(task.priority)}
-              </span>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getTypeClass(task.type)}">
-                ${task.type ? translateType(task.type) : (isInstruction ? t('tasks.instructions', 'Instruction') : t('tasks.title', 'Task'))}
-              </span>
-              ${showDirectorBadge ? `<span class="inline-flex px-2 py-1 text-[11px] font-bold rounded-full bg-purple-100 text-purple-800 border-2 border-purple-300 shadow-sm">
-                <i class="fas fa-crown mr-1 text-purple-600"></i>
-                ${t('tasks.assigned_by_director', 'Assigned by Director')}
-              </span>` : ''}
-            </div>
-            
-            <p class="text-gray-600 mb-3">${task.description}</p>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
-              <div class="flex items-center">
-                <i class="fas fa-calendar mr-2 text-blue-600"></i>
-                ${t('tasks.due', 'Due')}: ${Utils.formatDate(task.due_date)}
-              </div>
-              ${!isInstruction ? `
-                <div class="flex items-center">
-                  <i class="fas fa-users mr-2 text-blue-600"></i>
-                  ${t('tasks.assigned_to_label', 'Assigned to')}: ${assigneesList}
-                </div>
-              ` : ''}
-              <div class="flex items-center">
-                <i class="fas fa-user-tie mr-2 text-blue-600"></i>
-                ${t('tasks.by', 'By')}: ${task.assigned_by_first_name || t('common.director', 'Direction')} ${task.assigned_by_last_name || ''}
-                ${showDirectorBadge ? `<i class="fas fa-crown ml-1 text-purple-600" title="${t('common.director', 'Director')}"></i>` : ''}
-              </div>
-              <div class="flex items-center">
-                <i class="fas fa-clock mr-2 text-blue-600"></i>
-                ${Utils.formatDateTime(task.created_at)}
-              </div>
-            </div>
-          </div>
-          
-          <div class="flex flex-col space-y-2 ml-4 items-end">
-          ${!isInstruction ? `
-            ${currentUserIsAssignee ? (
-  isCompleted 
-    ? `<div id="task-actions-${task.id}" class="flex flex-col items-center space-y-1">
-         <span class="text-green-600 font-semibold text-sm">${t('tasks.completed', 'Completed')} ✅</span>
-         <button onclick=\"event.stopPropagation(); openReportModal('${task.id}')\" 
-                 class=\"w-9 h-9 flex items-center justify-center rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50\" 
-                 title=\"${t('report.add_report', 'Add Report')}\">
-           <i class=\"fas fa-file-alt\"></i>
-         </button>
-       </div>`
-    : `<div id="task-actions-${task.id}">
-         <button onclick=\"event.stopPropagation(); completeMyAssignment('${task.id}')\" 
-                 class=\"w-9 h-9 flex items-center justify-center rounded-lg border border-green-600 text-green-600 hover:bg-green-50\" 
-                 title=\"${t('tasks.mark_as_complete', 'Mark as Complete')}\">
-           <i class=\"fas fa-check\"></i>
-         </button>
-       </div>`
-) : ''}
+    if (viewMode === 'list') {
+      const titleLabel = (typeof t === 'function' ? t('director.title', 'Title') : 'Title');
+      const statusLabel = (typeof t === 'function' ? t('director.status', 'Status') : 'Status');
+      const dueLabel = (typeof t === 'function' ? t('tasks.due', 'Due') : 'Due');
+      const priorityLabel = (typeof t === 'function' ? t('tasks.priority', 'Priority') : 'Priority');
+      const assignedLabel = (typeof t === 'function' ? t('director.assigned', 'Assigned') : 'Assigned');
+      const actionsLabel = (typeof t === 'function' ? t('director.actions', 'Actions') : 'Actions');
+      return `<tr class="hover:bg-gray-50 cursor-pointer" onclick="showTaskDetails('${task.id}')">
+        <td class="px-6 py-4" data-label="${titleLabel}"><div class="text-sm font-medium text-gray-900">${(task.title || '').replace(/</g, '&lt;')}</div><div class="text-sm text-gray-500">${(task.description || '').substring(0,80).replace(/</g, '&lt;')}${(task.description||'').length > 80 ? '…' : ''}</div></td>
+        <td class="px-6 py-4 whitespace-nowrap" data-label="${statusLabel}"><span class="px-2 py-1 inline-flex text-xs font-semibold rounded-full ${getStatusClass(task.status)}">${translateStatus(task.status)}</span></td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="${dueLabel}">${Utils.formatDate(task.due_date)}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="${priorityLabel}">${translatePriority(task.priority)}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="${assignedLabel}" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${(assigneesList||'').replace(/"/g, '&quot;')}">${(assigneesList||'').replace(/</g, '&lt;')}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-right" data-label="${actionsLabel}" onclick="event.stopPropagation();"><div class="flex justify-end gap-2 flex-wrap">${actionBtns}</div></td>
+      </tr>`;
+    }
 
-            ${isDR ? (
-              isOwnedByCurrent
-                ? `
-                  <button onclick=\"event.stopPropagation(); editTask('${task.id}')\" 
-                          class=\"text-blue-600 hover:text-blue-800\" title=\"Edit\">
-                    <i class=\"fas fa-edit\"></i>
-                  </button>
-                  <button onclick=\"event.stopPropagation(); deleteTask('${task.id}')\" 
-                          class=\"text-red-600 hover:text-red-800\" title=\"Delete\">
-                    <i class=\"fas fa-trash\"></i>
-                  </button>
-                  <button onclick=\"event.stopPropagation(); loadReports('${task.id}')\" 
-                          class=\"text-purple-600 hover:text-purple-800\" title=\"Rapports\">
-                    <i class=\"fas fa-file-alt\"></i>
-                  </button>
-                  <button onclick=\"event.stopPropagation(); showTaskDetails('${task.id}')\" 
-                          class=\"px-2 py-1 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50\" title=\"Details\">Details</button>
-                `
-                : ''
-            ) : ''}
-          ` : `
-            <!-- Pour les instructions, afficher uniquement un bouton de lecture -->
-            <div class="flex flex-col space-y-2">
-              <button onclick=\"event.stopPropagation(); showTaskDetails('${task.id}')\" 
-                      class=\"px-3 py-1 text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200\" title=\"Lire l'instruction\">
-                <i class=\"fas fa-eye mr-1\"></i> Lire
-              </button>
-              ${currentUser?.role === 'Employee' ? `
-                <button onclick=\"event.stopPropagation(); acknowledgeInstruction('${task.id}')\" 
-                        class=\"px-3 py-1 text-green-700 bg-green-100 rounded-lg hover:bg-green-200\" title=\"Marquer comme lu\">
-                  <i class=\"fas fa-check mr-1\"></i> Lu
-                </button>
-              ` : ''}
+    return `<div class="timetable-card ${overdueClass}" style="padding: 24px;" onclick="event.stopPropagation();">
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+          <div style="flex: 1; min-width: 0;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+              <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #64748b;">${task.type ? translateType(task.type) : (isInstruction ? t('tasks.instructions', 'Instruction') : t('tasks.title', 'Task'))}</span>
+              ${isOverdue(task) ? `<span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: linear-gradient(135deg, #fef2f2, #fee2e2); border: 1px solid #fecaca; border-radius: 999px; font-size: 0.7rem; font-weight: 700; color: #dc2626;"><i class="fas fa-exclamation-triangle"></i>${t('tasks.overdue', 'Overdue')}</span>` : ''}
+              ${showDirectorBadge ? `<span class="inline-flex px-2 py-1 text-[11px] font-bold rounded-full bg-purple-100 text-purple-800 border border-purple-300"><i class="fas fa-crown mr-1"></i>${t('tasks.assigned_by_director', 'Director')}</span>` : ''}
             </div>
-          `}
+            <h4 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin: 0 0 8px 0; line-height: 1.3; cursor: pointer;" onclick="showTaskDetails('${task.id}')">${(task.title || '').replace(/</g, '&lt;')}</h4>
+            <p style="font-size: 0.9rem; color: #64748b; line-height: 1.5; margin: 0;">${(task.description || '').replace(/</g, '&lt;')}</p>
           </div>
+          <span style="display: inline-block; padding: 6px 14px; font-size: 0.75rem; font-weight: 600; border-radius: 999px; white-space: nowrap;" class="${getStatusClass(task.status)}">${translateStatus(task.status)}</span>
         </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+          ${!isInstruction ? `<div class="dir-info-block blue"><div class="icon-box"><i class="fas fa-users" style="font-size: 1rem;"></i></div><div style="flex:1;min-width:0;"><p class="label">${t('tasks.assigned_to_label', 'Assigned')}</p><p class="value" title="${(assigneesList||'').replace(/"/g, '&quot;')}">${(assigneesList||'').replace(/</g, '&lt;')}</p></div></div>` : ''}
+          <div class="dir-info-block purple"><div class="icon-box"><i class="fas fa-bolt" style="font-size: 1rem;"></i></div><div style="flex:1;min-width:0;"><p class="label">${t('tasks.priority', 'Priority')}</p><p class="value">${translatePriority(task.priority)}</p></div></div>
+          <div class="dir-info-block green"><div class="icon-box"><i class="fas fa-calendar" style="font-size: 1rem;"></i></div><div style="flex:1;min-width:0;"><p class="label">${t('tasks.due', 'Due')}</p><p class="value">${Utils.formatDate(task.due_date)}</p></div></div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 16px; border-top: 1px solid rgba(148, 163, 184, 0.15);" onclick="event.stopPropagation();">${actionBtns}</div>
       </div>
-    `;
-  }).join('');
+    </div>`;
+  };
+  const parts = viewTasks.map(buildRowOrCard);
+  if (viewMode === 'list') {
+    container.innerHTML = `<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden w-full"><table class="min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="director.title">Title</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="director.status">Status</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="tasks.due">Due</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="tasks.priority">Priority</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="director.assigned">Assigned</th><th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="director.actions">Actions</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">${parts.join('')}</tbody></table></div>`;
+  } else {
+    container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${parts.join('')}</div>`;
+  }
 }
 
 // Fonction pour marquer une instruction comme lue
@@ -2627,6 +3414,9 @@ async function acknowledgeInstruction(instructionId) {
   document.getElementById('overdueTasks').textContent = overdue;
 }
 
+        function isOverdue(task) {
+            return task.status !== 'Completed' && task.due_date && new Date(task.due_date) < new Date();
+        }
         function getStatusClass(status) {
            switch (status) {
         case 'Completed':
@@ -2831,12 +3621,12 @@ function filterTasks() {
             });
         }
         
-        // Pour les instructions, masquer les assignés - afficher "Confidentiel"
+        // Pour les instructions, masquer les assignés - afficher traduction
         const assigneesList = isInstruction 
-            ? 'Confidentiel'
+            ? t('tasks.confidential', 'Confidential')
             : (task.assignees && task.assignees.length > 0 
                 ? task.assignees.map(a => `${a.first_name} ${a.last_name}`).join(', ')
-                : 'Unassigned');
+                : t('tasks.unassigned', 'Unassigned'));
 
         // Use employee ID for matching since assignee.id is an employee ID, not a user ID
         const currentEmployeeIdForMatching = getCurrentEmployeeId();
@@ -2917,7 +3707,7 @@ function filterTasks() {
                         ${!isInstruction ? `
                         ${currentUserIsAssignee ? (
                             isCompleted 
-                                ? '<span class="text-green-600 font-semibold text-sm">Task Completed</span>'
+                                ? '<span class="text-green-600 font-semibold text-sm">' + t('tasks.task_completed', 'Task Completed') + '</span>'
                                 : `<div id="task-actions-${task.id}">
                                     <button onclick=\"event.stopPropagation(); completeMyAssignment('${task.id}')\" 
                                             class=\"w-9 h-9 flex items-center justify-center rounded-lg border border-green-600 text-green-600 hover:bg-green-50\" 
@@ -2931,19 +3721,19 @@ function filterTasks() {
                           isOwnedByCurrent
                             ? `
                               <button onclick=\"event.stopPropagation(); editTask('${task.id}')\" 
-                                      class=\"text-blue-600 hover:text-blue-800\" title=\"Edit\">
+                                      class=\"text-blue-600 hover:text-blue-800\" title=\"${t('common.edit', 'Edit')}\">
                                 <i class=\"fas fa-edit\"></i>
                               </button>
                               <button onclick=\"event.stopPropagation(); deleteTask('${task.id}')\" 
-                                      class=\"text-red-600 hover:text-red-800\" title=\"Delete\">
+                                      class=\"text-red-600 hover:text-red-800\" title=\"${t('common.delete', 'Delete')}\">
                                 <i class=\"fas fa-trash\"></i>
                               </button>
                               <button onclick=\"event.stopPropagation(); loadReports('${task.id}')\" 
-                                      class=\"text-purple-600 hover:text-purple-800\" title=\"Rapport\">
+                                      class=\"text-purple-600 hover:text-purple-800\" title=\"${t('tasks.report', 'Report')}\">
                                 <i class=\"fas fa-file-alt\"></i>
                               </button>
                               <button onclick=\"event.stopPropagation(); showTaskDetails('${task.id}')\" 
-                                      class=\"px-2 py-1 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50\" title=\"Details\">Details</button>
+                                      class=\"px-2 py-1 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50\" title=\"${t('tasks.details', 'Details')}\">${t('tasks.details', 'Details')}</button>
                             `
                             : ''
                         ) : ''}
@@ -2951,13 +3741,13 @@ function filterTasks() {
                         <!-- Pour les instructions, afficher uniquement des boutons de lecture -->
                         <div class="flex flex-col space-y-2">
                             <button onclick=\"event.stopPropagation(); showTaskDetails('${task.id}')\" 
-                                    class=\"px-3 py-1 text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200\" title=\"Lire l'instruction\">
-                                <i class=\"fas fa-eye mr-1\"></i> Lire
+                                    class=\"px-3 py-1 text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200\" title=\"${t('tasks.read_instruction', 'Read instruction')}\">
+                                <i class=\"fas fa-eye mr-1\"></i> ${t('tasks.read', 'Read')}
                             </button>
                             ${currentUser?.role === 'Employee' ? `
                                 <button onclick=\"event.stopPropagation(); acknowledgeInstruction('${task.id}')\" 
-                                        class=\"px-3 py-1 text-green-700 bg-green-100 rounded-lg hover:bg-green-200\" title=\"Marquer comme lu\">
-                                    <i class=\"fas fa-check mr-1\"></i> Lu
+                                        class=\"px-3 py-1 text-green-700 bg-green-100 rounded-lg hover:bg-green-200\" title=\"${t('tasks.mark_as_read', 'Mark as read')}\">
+                                    <i class=\"fas fa-check mr-1\"></i> ${t('tasks.mark_as_read', 'Mark as read')}
                                 </button>
                             ` : ''}
                         </div>
@@ -2967,6 +3757,9 @@ function filterTasks() {
             </div>
         `;
     }).join('');
+    if (typeof updatePageTranslations === 'function') {
+        updatePageTranslations();
+    }
 }
 
 // Améliorer aussi la fonction filterTasks pour inclure la recherche + Assigned By et respecter le mode
@@ -3022,12 +3815,14 @@ function filterTasks() {
 
         function openAddModal() {
     currentTaskId = null; // S'assurer qu'on est en mode création
-    document.getElementById('modalTitle').textContent = 'Add Task';
+    const modalTitleEl = document.getElementById('modalTitle');
+    if (modalTitleEl) modalTitleEl.textContent = typeof t === 'function' ? t('tasks.add_task', 'Add Task') : 'Add Task';
     document.getElementById('taskForm').reset();
     
     // Vider la sélection d'employés
+    const noSelText = typeof t === 'function' ? t('tasks.no_employees_selected', 'No employees selected') : 'No employees selected';
     document.getElementById('selectedEmployees').innerHTML = 
-        '<p class="text-gray-500 text-sm p-2" id="noSelectionText">No employees selected</p>';
+        '<p class="text-gray-500 text-sm p-2" id="noSelectionText">' + noSelText + '</p>';
     renderEmployeeList(employees);
     
     // Set default due date to tomorrow
@@ -3113,7 +3908,7 @@ document.getElementById('saveEditBtn').addEventListener('click', async () => {
     // Stocker l'ID de la tâche en cours d'édition
     currentTaskId = id;
     
-    document.getElementById('modalTitle').textContent = 'Edit Task';
+    document.getElementById('modalTitle').textContent = typeof t === 'function' ? t('tasks.edit_task', 'Edit Task') : 'Edit Task';
     document.getElementById('taskTitle').value = task.title || '';
     document.getElementById('taskDescription').value = task.description || '';
     document.getElementById('taskType').value = task.type || 'Daily';
@@ -3135,7 +3930,7 @@ document.getElementById('saveEditBtn').addEventListener('click', async () => {
     
     // Vider et repeupler la zone de sélection
     const selectedContainer = document.getElementById('selectedEmployees');
-    selectedContainer.innerHTML = '<p class="text-gray-500 text-sm p-2" id="noSelectionText">No employees selected</p>';
+    selectedContainer.innerHTML = '<p class="text-gray-500 text-sm p-2" id="noSelectionText">' + (typeof t === 'function' ? t('tasks.no_employees_selected', 'No employees selected') : 'No employees selected') + '</p>';
     
     // Ajouter les employés pré-sélectionnés à la zone de sélection
     assignedEmployeeIds.forEach(id => {
@@ -3279,202 +4074,72 @@ async function addComment() {
     Utils.showNotification('Error adding comment: ' + error.message, 'error');
   }
 }
-// Modifier la fonction renderTasks pour afficher tous les assignés
-// AJOUTER CE CODE TEMPORAIREMENT dans renderTasks() pour débugger
+function isOverdueTask(t) { return t && t.status !== 'Completed' && t.due_date && new Date(t.due_date) < new Date(); }
+// Global renderTasks – uses same director-style list/cards as director My Tasks tab
 function renderTasks() {
-  // Ensure currentUser is properly initialized before rendering
   ensureCurrentUserInitialized();
-
   const container = document.getElementById('tasksList');
   const emptyState = document.getElementById('emptyState');
-
   const mode = window.__tasksViewMode || 'tasks';
   const isInstr = (t) => (t.title||'').startsWith('Instruction:') || t.isInstruction === true;
-  const viewTasks = Array.isArray(tasks) ? tasks.filter(t => mode==='instructions' ? isInstr(t) : !isInstr(t)) : [];
-
+  let viewTasks = Array.isArray(tasks) ? tasks.filter(t => mode==='instructions' ? isInstr(t) : !isInstr(t)) : [];
   if (!Array.isArray(viewTasks) || viewTasks.length === 0) {
-    container.innerHTML = '';
-    emptyState.style.display = 'block';
+    if (container) container.innerHTML = '';
+    if (emptyState) emptyState.style.display = 'block';
     return;
   }
-
-  emptyState.style.display = 'none';
-
-  console.log('🔍 [DEBUG] renderTasks (global) called:', {
-    totalTasks: tasks.length,
-    viewTasks: viewTasks.length,
-    currentUserRole: currentUser?.role,
-    currentEmployeeId: getCurrentEmployeeId(),
-    mode: mode
+  if (emptyState) emptyState.style.display = 'none';
+  const viewMode = window.__tasksCardsListMode || 'cards';
+  const sortOrder = window.__tasksSortOrder || 'asc';
+  viewTasks = viewTasks.slice().sort((a, b) => {
+    const ta = (a.title || '').toLowerCase();
+    const tb = (b.title || '').toLowerCase();
+    return sortOrder === 'asc' ? (ta < tb ? -1 : ta > tb ? 1 : 0) : (tb < ta ? -1 : tb > ta ? 1 : 0);
   });
-
-  container.innerHTML = viewTasks.map(task => {
-    // Use getCurrentEmployeeId() instead of currentUser.id since task.assigned_by is an employee ID
+  const buildRowOrCard = (task) => {
     const currentEmployeeId = getCurrentEmployeeId();
     const isOwnedByCurrent = String(task.assigned_by) === String(currentEmployeeId || (currentUser&&currentUser.id)||'');
     const isDR = (function(r){ if(!r) return false; const n=r.toString().trim().toLowerCase().replace(/\s+/g,'_'); return n==='department_responsible'||n==='responsible'||n==='responsable'||n==='dept_responsible'||n==='departmentresponsible'; })(currentUser?.role);
-    const isForeignForDR = isDR && !isOwnedByCurrent;
     const isInstruction = (task.title||'').startsWith('Instruction:') || task.isInstruction === true;
-    
-    // Debug logging for Department_Responsible users
-    if (isDR) {
-        console.log('🔍 [DEBUG renderTasks global] Task ownership check:', {
-            taskId: task.id,
-            taskTitle: task.title,
-            taskAssignedBy: task.assigned_by,
-            currentEmployeeId: currentEmployeeId,
-            currentUserId: currentUser?.id,
-            currentUserEmployeeId: currentUser?.employee_id,
-            isOwnedByCurrent: isOwnedByCurrent,
-            isDR: isDR,
-            willShowButtons: isDR && isOwnedByCurrent
-        });
-    }
-    
-    // Pour les instructions, ne pas afficher les assignés
-    const assigneesList = isInstruction 
-      ? 'Confidentiel' 
-      : (task.assignees && task.assignees.length > 0 
-          ? task.assignees.map(a => `${a.first_name} ${a.last_name}`).join(', ')
-          : 'Unassigned');
-
-    // Use employee ID for matching since assignee.id is an employee ID, not a user ID
+    const assigneesList = isInstruction ? t('tasks.confidential', 'Confidential') : (task.assignees && task.assignees.length > 0 ? task.assignees.map(a => `${a.first_name} ${a.last_name}`).join(', ') : t('tasks.unassigned', 'Unassigned'));
     const currentEmployeeIdForMatching = getCurrentEmployeeId();
-    
-    // Try multiple matching strategies
-    const currentUserAssignee = task.assignees ? task.assignees.find(
-      assignee => {
-        // Strategy 1: Direct employee ID match
-        if (currentEmployeeIdForMatching && String(assignee.id) === String(currentEmployeeIdForMatching)) {
-          return true;
-        }
-        // Strategy 2: Name match (fallback)
-        const assigneeName = `${assignee.first_name || ''} ${assignee.last_name || ''}`.trim().toLowerCase();
-        const userName = `${currentUser?.first_name || ''} ${currentUser?.last_name || ''}`.trim().toLowerCase();
-        if (assigneeName && userName && assigneeName === userName) {
-          return true;
-        }
-        return false;
-      }
-    ) : null;
-
+    const currentUserAssignee = task.assignees ? task.assignees.find(a => (currentEmployeeIdForMatching && String(a.id) === String(currentEmployeeIdForMatching)) || `${(a.first_name||'')} ${(a.last_name||'')}`.trim().toLowerCase() === `${(currentUser?.first_name||'')} ${(currentUser?.last_name||'')}`.trim().toLowerCase()) : null;
     const currentUserIsAssignee = !!currentUserAssignee;
     const isCompleted = currentUserAssignee?.status === 'Completed';
-
-    // Debug: Log task assignment data to see what we're getting from backend
-    console.log('📋 [Task Data - Global Render]', {
-      taskId: task.id,
-      taskTitle: task.title,
-      assigned_by: task.assigned_by,
-      assigned_by_role: task.assigned_by_role,
-      assigned_by_first_name: task.assigned_by_first_name,
-      assigned_by_last_name: task.assigned_by_last_name,
-      roleValue: typeof task.assigned_by_role,
-      roleString: String(task.assigned_by_role)
-    });
-    
-    // Badge directeur - condition améliorée
     const isDirectorTask = isAssignedByDirector(task);
-    const showDirectorBadge = isDirectorTask; // Show badge for all users when task is assigned by director
-
-    return `
-      <div class="p-6 ${isForeignForDR?'bg-indigo-50':''} ${isInstruction?'bg-yellow-50 border-l-4 border-yellow-400':''} hover:bg-gray-50 transition-colors cursor-pointer" onclick="showTaskDetails('${task.id}')">
-        <div class="flex items-start justify-between">
-          <div class="flex-1">
-            <div class="flex items-center space-x-3 mb-2 flex-wrap">
-              <h4 class="text-lg font-semibold text-gray-900">${task.title}</h4>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(task.status)}">
-                ${task.status}
-              </span>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(task.priority)}">
-                ${task.priority}
-              </span>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getTypeClass(task.type)}">
-                ${task.type || (isInstruction ? 'Instruction' : 'Task')}
-              </span>
-              ${showDirectorBadge ? `
-                <span class="inline-flex px-2 py-1 text-[11px] font-bold rounded-full bg-purple-100 text-purple-800 border-2 border-purple-300 shadow-sm">
-                 
-                  Assignée par Directeur
-                </span>
-              ` : ''}
-            </div>
-            
-            <p class="text-gray-600 mb-3">${task.description}</p>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
-              <div class="flex items-center">
-                <i class="fas fa-calendar mr-2 text-blue-600"></i>
-                Due: ${Utils.formatDate(task.due_date)}
-              </div>
-              ${!isInstruction ? `
-                <div class="flex items-center">
-                  <i class="fas fa-users mr-2 text-blue-600"></i>
-                  Assigned to: ${assigneesList}
-                </div>
-              ` : ''}
-              <div class="flex items-center">
-                <i class="fas fa-user-tie mr-2 text-blue-600"></i>
-                By: ${task.assigned_by_first_name || 'Direction'} ${task.assigned_by_last_name || ''}
-                ${showDirectorBadge ? '<i class="fas fa-crown ml-1 text-purple-600" title="Directeur"></i>' : ''}
-              </div>
-              <div class="flex items-center">
-                <i class="fas fa-clock mr-2 text-blue-600"></i>
-                ${Utils.formatDateTime(task.created_at)}
-              </div>
-            </div>
-          </div>
-          
-          <div class="flex flex-col space-y-2 ml-4 items-end">
-          ${!isInstruction ? `
-            ${currentUserIsAssignee ? (
-  isCompleted 
-    ? `<div id="task-actions-${task.id}" class="flex flex-col items-center space-y-1">
-         <span class="text-green-600 font-semibold text-sm">${t('tasks.completed', 'Completed')} ✅</span>
-         <button onclick=\"event.stopPropagation(); openReportModal('${task.id}')\" 
-                 class=\"w-9 h-9 flex items-center justify-center rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50\" 
-                 title=\"${t('report.add_report', 'Add Report')}\">
-           <i class=\"fas fa-file-alt\"></i>
-         </button>
-       </div>`
-    : `<div id="task-actions-${task.id}">
-         <button onclick=\"event.stopPropagation(); completeMyAssignment('${task.id}')\" 
-                 class=\"w-9 h-9 flex items-center justify-center rounded-lg border border-green-600 text-green-600 hover:bg-green-50\" 
-                 title=\"${t('tasks.mark_as_complete', 'Mark as Complete')}\">
-           <i class=\"fas fa-check\"></i>
-         </button>
-       </div>`
-) : ''}
-
-            ${isDR ? (
-              isOwnedByCurrent
-                ? `
-                  <button onclick=\"event.stopPropagation(); editTask('${task.id}')\" 
-                          class=\"text-blue-600 hover:text-blue-800\" title=\"Edit\">
-                    <i class=\"fas fa-edit\"></i>
-                  </button>
-                  <button onclick=\"event.stopPropagation(); deleteTask('${task.id}')\" 
-                          class=\"text-red-600 hover:text-red-800\" title=\"Delete\">
-                    <i class=\"fas fa-trash\"></i>
-                  </button>
-                  <button onclick=\"event.stopPropagation(); loadReports('${task.id}')\" 
-                          class=\"text-purple-600 hover:text-purple-800\" title=\"Rapports\">
-                    <i class=\"fas fa-file-alt\"></i>
-                  </button>
-                  <button onclick=\"event.stopPropagation(); showTaskDetails('${task.id}')\" 
-                          class=\"px-2 py-1 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50\" title=\"Details\">Details</button>
-                `
-                : ''
-            ) : ''}
-          ` : `
-            <!-- Pour les instructions, afficher uniquement un bouton de lecture -->
-           
-          `}
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
+    const showDirectorBadge = isDirectorTask;
+    const isOverdueFn = typeof isOverdue === 'function' ? isOverdue : isOverdueTask;
+    const overdueClass = isOverdueFn(task) ? 'border-red-300' : '';
+    let actionBtns = `<button type="button" class="dir-table-action" onclick="event.stopPropagation(); showTaskDetails('${task.id}')" title="${t('common.view', 'View')}"><i class="fas fa-eye"></i></button>`;
+    if (!isInstruction) {
+      if (currentUserIsAssignee) {
+        if (isCompleted) actionBtns += `<div id="task-actions-${task.id}" class="inline"><span class="text-green-600 font-semibold text-sm mr-2">✅</span><button type="button" class="dir-table-action primary" onclick="event.stopPropagation(); openReportModal('${task.id}')" title="${t('report.add_report', 'Add Report')}"><i class="fas fa-file-alt"></i></button></div>`;
+        else actionBtns += `<div id="task-actions-${task.id}" class="inline"><button type="button" class="dir-table-action" onclick="event.stopPropagation(); completeMyAssignment('${task.id}')" title="${t('tasks.mark_as_complete', 'Mark Complete')}"><i class="fas fa-check"></i></button></div>`;
+      }
+      if (isDR && isOwnedByCurrent) actionBtns += `<button type="button" class="dir-table-action" onclick="event.stopPropagation(); editTask('${task.id}')" title="${t('common.edit', 'Edit')}"><i class="fas fa-edit"></i></button><button type="button" class="dir-table-action" onclick="event.stopPropagation(); deleteTask('${task.id}')" title="${t('common.delete', 'Delete')}"><i class="fas fa-trash"></i></button><button type="button" class="dir-table-action" onclick="event.stopPropagation(); loadReports('${task.id}')" title="${t('tasks.report', 'Reports')}"><i class="fas fa-file-alt"></i></button>`;
+    } else {
+      if (currentUser?.role === 'Employee') actionBtns += `<button type="button" class="dir-table-action" onclick="event.stopPropagation(); acknowledgeInstruction('${task.id}')" title="${t('tasks.mark_as_read', 'Acknowledge')}"><i class="fas fa-check"></i></button>`;
+    }
+    if (viewMode === 'list') {
+      const titleL = (typeof t === 'function' ? t('director.title', 'Title') : 'Title');
+      const statusL = (typeof t === 'function' ? t('director.status', 'Status') : 'Status');
+      const dueL = (typeof t === 'function' ? t('tasks.due', 'Due') : 'Due');
+      const priorityL = (typeof t === 'function' ? t('tasks.priority', 'Priority') : 'Priority');
+      const assignedL = (typeof t === 'function' ? t('director.assigned', 'Assigned') : 'Assigned');
+      const actionsL = (typeof t === 'function' ? t('director.actions', 'Actions') : 'Actions');
+      return `<tr class="hover:bg-gray-50 cursor-pointer" onclick="showTaskDetails('${task.id}')"><td class="px-6 py-4" data-label="${titleL}"><div class="text-sm font-medium text-gray-900">${(task.title || '').replace(/</g, '&lt;')}</div><div class="text-sm text-gray-500">${(task.description || '').substring(0,80).replace(/</g, '&lt;')}${(task.description||'').length > 80 ? '…' : ''}</div></td><td class="px-6 py-4 whitespace-nowrap" data-label="${statusL}"><span class="px-2 py-1 inline-flex text-xs font-semibold rounded-full ${getStatusClass(task.status)}">${translateStatus(task.status)}</span></td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="${dueL}">${Utils.formatDate(task.due_date)}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="${priorityL}">${translatePriority(task.priority)}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="${assignedL}" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${(assigneesList||'').replace(/"/g, '&quot;')}">${(assigneesList||'').replace(/</g, '&lt;')}</td><td class="px-6 py-4 whitespace-nowrap text-right" data-label="${actionsL}" onclick="event.stopPropagation();"><div class="flex justify-end gap-2 flex-wrap">${actionBtns}</div></td></tr>`;
+    }
+    return `<div class="timetable-card ${overdueClass}" style="padding: 24px;" onclick="event.stopPropagation();"><div style="display: flex; flex-direction: column; gap: 20px;"><div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;"><div style="flex: 1; min-width: 0;"><div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;"><span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #64748b;">${task.type ? translateType(task.type) : (isInstruction ? t('tasks.instructions', 'Instruction') : t('tasks.title', 'Task'))}</span>${isOverdueFn(task) ? `<span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: linear-gradient(135deg, #fef2f2, #fee2e2); border: 1px solid #fecaca; border-radius: 999px; font-size: 0.7rem; font-weight: 700; color: #dc2626;"><i class="fas fa-exclamation-triangle"></i>${t('tasks.overdue', 'Overdue')}</span>` : ''}${showDirectorBadge ? `<span class="inline-flex px-2 py-1 text-[11px] font-bold rounded-full bg-purple-100 text-purple-800 border border-purple-300"><i class="fas fa-crown mr-1"></i>${t('tasks.assigned_by_director', 'Director')}</span>` : ''}</div><h4 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin: 0 0 8px 0; line-height: 1.3; cursor: pointer;" onclick="showTaskDetails('${task.id}')">${(task.title || '').replace(/</g, '&lt;')}</h4><p style="font-size: 0.9rem; color: #64748b; line-height: 1.5; margin: 0;">${(task.description || '').replace(/</g, '&lt;')}</p></div><span style="display: inline-block; padding: 6px 14px; font-size: 0.75rem; font-weight: 600; border-radius: 999px; white-space: nowrap;" class="${getStatusClass(task.status)}">${translateStatus(task.status)}</span></div><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">${!isInstruction ? `<div class="dir-info-block blue"><div class="icon-box"><i class="fas fa-users" style="font-size: 1rem;"></i></div><div style="flex:1;min-width:0;"><p class="label">${t('tasks.assigned_to_label', 'Assigned')}</p><p class="value" title="${(assigneesList||'').replace(/"/g, '&quot;')}">${(assigneesList||'').replace(/</g, '&lt;')}</p></div></div>` : ''}<div class="dir-info-block purple"><div class="icon-box"><i class="fas fa-bolt" style="font-size: 1rem;"></i></div><div style="flex:1;min-width:0;"><p class="label">${t('tasks.priority', 'Priority')}</p><p class="value">${translatePriority(task.priority)}</p></div></div><div class="dir-info-block green"><div class="icon-box"><i class="fas fa-calendar" style="font-size: 1rem;"></i></div><div style="flex:1;min-width:0;"><p class="label">${t('tasks.due', 'Due')}</p><p class="value">${Utils.formatDate(task.due_date)}</p></div></div></div><div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 16px; border-top: 1px solid rgba(148, 163, 184, 0.15);" onclick="event.stopPropagation();">${actionBtns}</div></div></div>`;
+  };
+  const parts = viewTasks.map(buildRowOrCard);
+  if (viewMode === 'list') {
+    container.innerHTML = `<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden w-full"><table class="min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t('director.title', 'Title')}</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t('director.status', 'Status')}</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t('tasks.due', 'Due')}</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t('tasks.priority', 'Priority')}</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${t('director.assigned', 'Assigned')}</th><th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">${t('director.actions', 'Actions')}</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">${parts.join('')}</tbody></table></div>`;
+  } else {
+    container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${parts.join('')}</div>`;
+  }
+  if (typeof updatePageTranslations === 'function') {
+    updatePageTranslations();
+  }
 }
 
 // Note: getCurrentEmployeeId is defined earlier with URL param + user fallbacks
@@ -3656,70 +4321,59 @@ async function showTaskDetails(id) {
             <div>
               <p class="font-medium">${assignee.first_name} ${assignee.last_name}</p>
               <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(assignee.status)}">
-                ${assignee.status}
+                ${translateStatus(assignee.status)}
               </span>
               ${assignee.completed_at ? `
                 <p class="text-xs text-gray-500 mt-1">
-                  Completed: ${Utils.formatDateTime(assignee.completed_at)}
+                  ${t('tasks.completed', 'Completed')}: ${Utils.formatDateTime(assignee.completed_at)}
                 </p>
               ` : ''}
             </div>
             ${isCurrentUser && assignee.status !== 'Completed' ? `
               <button onclick="completeMyAssignment('${task.id}')" 
                       class="px-3 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
-                Mark as Complete
+                ${t('tasks.mark_as_complete', 'Mark as Complete')}
               </button>
             ` : ''}
           </div>
         `;
       }).join('')
-    : '<p class="text-gray-500">No assignees</p>';
+    : '<p class="text-gray-500">' + t('director.no_assignees', 'No assignees') + '</p>';
 
-  const content = document.getElementById('taskDetailsContent');
+  const content = document.getElementById('taskDetailsBody');
   content.innerHTML = `
     <div class="space-y-4">
-      <div>
-        <h4 class="text-sm font-medium text-gray-900">Description</h4>
-        <p class="text-gray-600">${task.description}</p>
+      <div class="detail-block">
+        <h4>Description</h4>
+        <p class="text-gray-700 leading-relaxed mt-1">${(task.description || '').replace(/</g, '&lt;')}</p>
       </div>
-      
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <h4 class="text-sm font-medium text-gray-900">Task Status</h4>
-          <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(task.status)}">
-            ${task.status}
-          </span>
-        </div>
-        <div>
-          <h4 class="text-sm font-medium text-gray-900">Priority</h4>
-          <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(task.priority)}">
-            ${task.priority}
-          </span>
-        </div>
-        <div>
-          <h4 class="text-sm font-medium text-gray-900">Type</h4>
-          <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getTypeClass(task.type)}">
-            ${task.type}
-          </span>
-        </div>
-        <div>
-          <h4 class="text-sm font-medium text-gray-900">Due Date</h4>
-          <p class="text-gray-600">${Utils.formatDate(task.due_date)}</p>
-        </div>
-        <div>
-          <h4 class="text-sm font-medium text-gray-900">Assigned By</h4>
-          <p class="text-gray-600">${task.assigned_by_first_name} ${task.assigned_by_last_name}</p>
-        </div>
-        ${task.completed_at ? `
+      <div class="detail-block">
+        <div class="grid grid-cols-2 gap-4">
           <div>
-            <h4 class="text-sm font-medium text-gray-900">Completed At</h4>
-            <p class="text-gray-600">${Utils.formatDateTime(task.completed_at)}</p>
+            <h4>${t('director.status', 'Task Status')}</h4>
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(task.status)}">${translateStatus(task.status)}</span>
           </div>
-        ` : ''}
+          <div>
+            <h4>${t('tasks.priority', 'Priority')}</h4>
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(task.priority)}">${translatePriority(task.priority)}</span>
+          </div>
+          <div>
+            <h4>${t('tasks.type', 'Type')}</h4>
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getTypeClass(task.type)}">${task.type ? translateType(task.type) : ''}</span>
+          </div>
+          <div>
+            <h4>${t('tasks.due_date', 'Due Date')}</h4>
+            <p class="text-gray-700 mt-1">${Utils.formatDate(task.due_date)}</p>
+          </div>
+          <div>
+            <h4>${t('tasks.submitted_by', 'Assigned By')}</h4>
+            <p class="text-gray-700 mt-1">${(task.assigned_by_first_name || '')} ${(task.assigned_by_last_name || '')}</p>
+          </div>
+          ${task.completed_at ? `<div><h4>${t('tasks.completed', 'Completed')}</h4><p class="text-gray-700 mt-1">${Utils.formatDateTime(task.completed_at)}</p></div>` : ''}
+        </div>
       </div>
-      
-      <div>
-        <h4 class="text-sm font-medium text-gray-900 mb-2">Assignees</h4>
+      <div class="detail-block">
+        <h4 class="mb-2">${t('director.assignees', 'Assignees')}</h4>
         <div class="bg-gray-50 rounded-lg p-3">
           ${assigneesHtml}
         </div>
@@ -3821,7 +4475,7 @@ async function deleteComment(commentId) {
       // Vérifier s'il reste des commentaires
       const commentsContainer = document.getElementById('taskComments');
       if (commentsContainer.children.length === 0) {
-        commentsContainer.innerHTML = '<p class="text-gray-500 text-sm">No comments yet</p>';
+        commentsContainer.innerHTML = '<p class="text-gray-500 text-sm">' + (typeof t === 'function' ? t('tasks.no_comments', 'No comments yet') : 'No comments yet') + '</p>';
       }
       
       Utils.showNotification('Commentaire supprimé avec succès', 'success');
@@ -3837,7 +4491,7 @@ async function deleteComment(commentId) {
 async function loadAndDisplayTaskComments(taskId) {
   try {
     const commentsContainer = document.getElementById('taskComments');
-    commentsContainer.innerHTML = '<p class="text-gray-500 text-sm">Loading comments...</p>';
+    commentsContainer.innerHTML = '<p class="text-gray-500 text-sm">' + (typeof t === 'function' ? t('tasks.loading_tasks', 'Loading comments...') : 'Loading comments...') + '</p>';
     
     const response = await fetch(`http://localhost:3020/tasks/${taskId}/comments`);
     
@@ -3869,13 +4523,13 @@ async function loadAndDisplayTaskComments(taskId) {
   style="all:unset; cursor:pointer; font-size:1rem; font-weight:600; color:#111827 !important; margin-right:20px !important;"
   onmouseover="this.style.textDecoration='underline'"
   onmouseout="this.style.textDecoration='none'">
-  Edit
+  ${typeof t === 'function' ? t('common.edit', 'Edit') : 'Edit'}
 </button>
           <button onclick="deleteComment('${comment.id}')"
             style="all:unset; cursor:pointer; font-size:1rem; font-weight:600; color:#111827 !important;"
             onmouseover="this.style.textDecoration='underline'"
             onmouseout="this.style.textDecoration='none'">
-            Delete
+            ${typeof t === 'function' ? t('common.delete', 'Delete') : 'Delete'}
           </button>
         </div>
       ` : ''}
@@ -3887,11 +4541,11 @@ async function loadAndDisplayTaskComments(taskId) {
 
 
     } else {
-      commentsContainer.innerHTML = '<p class="text-gray-500 text-sm">No comments yet</p>';
+      commentsContainer.innerHTML = '<p class="text-gray-500 text-sm">' + (typeof t === 'function' ? t('tasks.no_comments', 'No comments yet') : 'No comments yet') + '</p>';
     }
   } catch (error) {
     console.error('Error loading comments:', error);
-    commentsContainer.innerHTML = '<p class="text-red-500 text-sm">Error loading comments</p>';
+    commentsContainer.innerHTML = '<p class="text-red-500 text-sm">' + (typeof t === 'function' ? t('tasks.error_adding_comment', 'Error loading comments') : 'Error loading comments') + '</p>';
   }
 }
 
@@ -5145,7 +5799,7 @@ function viewInvitationDetails(invitationId) {
 // Exception details and confirmation modals functions
 // Note: _lastLoadedPending is already declared earlier in the file
 
-function closeDetailsModal() {
+function closeExceptionDetailsModal() {
     const modal = document.getElementById('detailsModal');
     if (modal) modal.classList.add('hidden');
 }

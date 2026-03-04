@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,15 +8,483 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
     
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    
     <style>
+        /* Director-themed base styles */
+        :root {
+            --director-indigo: #4338ca;
+            --director-blue: #2563eb;
+            --director-purple: #7c3aed;
+            --director-slate: #0f172a;
+            --director-card-bg: #ffffff;
+            --director-surface: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--director-slate);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        main {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Page Header Styles */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: #3b82f6;
+            font-size: 1.75rem;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Director Panel */
+        .director-panel {
+            margin-top: 16px;
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .director-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .director-panel>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Enhanced Buttons */
+        .filter-button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.95));
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-button:hover {
+            background: linear-gradient(135deg, #e5edff, #dbeafe);
+            border-color: #93c5fd;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .filter-button.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.35);
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced Action Buttons */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .action-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .action-btn i {
+            font-size: 0.875rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Enhanced Form Elements */
+        .filter-select {
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            background: #ffffff;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            background-color: #f9fafb;
+        }
+
+        .filter-select:hover {
+            border-color: #94a3b8;
+            background-color: #f8fafc;
+        }
+
+        /* Report Stat Cards */
+        .report-stat-card-inline {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .report-stat-card-inline:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+        }
+
+        .report-stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .report-stat-content {
+            flex: 1;
+        }
+
+        .report-stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .report-stat-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .report-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Enhanced Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .complaints-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 1000px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .complaints-table thead {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-bottom: 3px solid #e2e8f0;
+        }
+
+        .complaints-table th {
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #475569;
+            padding: 1.5rem 1rem;
+            border-right: 2px solid #e2e8f0;
+            vertical-align: middle;
+            position: relative;
+            white-space: nowrap;
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .complaints-table th:last-child {
+            border-right: none;
+        }
+
+        .complaints-table tbody tr {
+            background: white;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .complaints-table tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .complaints-table tbody tr:hover {
+            background: linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 100%);
+            transform: translateX(2px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .complaints-table td {
+            padding: 1.5rem 1rem;
+            font-size: 0.875rem;
+            color: #1e293b;
+            vertical-align: middle;
+            border-right: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+            text-align: center;
+            position: relative;
+        }
+
+        .complaints-table td:last-child {
+            border-right: none;
+        }
+
+        /* Special alignment for specific columns */
+        .complaints-table td:first-child {
+            text-align: center;
+            width: 80px;
+        }
+
+        .complaints-table td:nth-child(2) {
+            text-align: left;
+            width: 250px;
+            padding-left: 1.5rem;
+        }
+
+        .complaints-table td:nth-child(3) {
+            text-align: center;
+            width: 180px;
+        }
+
+        .complaints-table td:nth-child(4) {
+            text-align: center;
+            width: 200px;
+        }
+
+        .complaints-table td:nth-child(5) {
+            text-align: center;
+            width: 160px;
+        }
+
+        .complaints-table td:nth-child(6) {
+            text-align: center;
+            width: 140px;
+        }
+
+        .complaints-table td:last-child {
+            text-align: center;
+            width: 220px;
+        }
+
+        /* Column width for headers */
+        .complaints-table th:first-child {
+            width: 80px;
+        }
+
+        .complaints-table th:nth-child(2) {
+            width: 250px;
+            text-align: left;
+            padding-left: 1.5rem;
+        }
+
+        .complaints-table th:nth-child(3) {
+            width: 180px;
+        }
+
+        .complaints-table th:nth-child(4) {
+            width: 200px;
+        }
+
+        .complaints-table th:nth-child(5) {
+            width: 160px;
+        }
+
+        .complaints-table th:nth-child(6) {
+            width: 140px;
+        }
+
+        .complaints-table th:last-child {
+            width: 220px;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            background: var(--director-card-bg);
+            border-radius: 22px;
+            padding: 0;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.15);
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            position: relative;
+            overflow: hidden;
+            width: 90%;
+            max-width: 75rem;
+            margin: 2rem auto;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(37, 99, 235, 0.12),
+                    rgba(124, 58, 237, 0.08),
+                    rgba(56, 189, 248, 0.08));
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .modal-content > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-header {
+            padding: 24px 28px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.98));
+        }
+
+        .modal-body {
+            padding: 28px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.5);
+            border-radius: 4px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.7);
+        }
+
+        /* Legacy salary card styles */
         .salary-card {
             transition: all 0.3s ease;
             border: 2px solid transparent;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
         }
         .salary-card:hover {
-            
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
             border-color: #3B82F6;
         }
         .status-paid {
@@ -53,235 +521,777 @@
             padding: 16px;
             background: white;
         }
+
+        /* RTL Support */
+        [dir="rtl"] .director-panel {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .filter-select {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        [dir="rtl"] .complaints-table {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .complaints-table th,
+        [dir="rtl"] .complaints-table td {
+            text-align: right;
+        }
+
+        [dir="rtl"] .complaints-table tbody tr:hover {
+            transform: translateX(-2px);
+        }
+
+        [dir="rtl"] .director-panel-header {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .director-panel-title {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .flex {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .flex.items-center.justify-between {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .flex.items-center.justify-end {
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+        }
+
+        [dir="rtl"] .ml-2 {
+            margin-left: 0 !important;
+            margin-right: 0.5rem !important;
+        }
+
+        [dir="rtl"] .ml-3 {
+            margin-left: 0 !important;
+            margin-right: 0.75rem !important;
+        }
+
+        [dir="rtl"] .mr-2 {
+            margin-right: 0 !important;
+            margin-left: 0.5rem !important;
+        }
+
+        [dir="rtl"] .mr-1 {
+            margin-right: 0 !important;
+            margin-left: 0.25rem !important;
+        }
+
+        [dir="rtl"] .text-left {
+            text-align: right !important;
+        }
+
+        [dir="rtl"] .text-right {
+            text-align: left !important;
+        }
+
+        [dir="rtl"] .justify-end {
+            justify-content: flex-start !important;
+        }
+
+        [dir="rtl"] .justify-start {
+            justify-content: flex-end !important;
+        }
+
+        [dir="rtl"] .space-x-2 > * + * {
+            margin-left: 0 !important;
+            margin-right: 0.5rem !important;
+        }
+
+        [dir="rtl"] .space-x-3 > * + * {
+            margin-left: 0 !important;
+            margin-right: 0.75rem !important;
+        }
+
+        [dir="rtl"] .gap-2 > *,
+        [dir="rtl"] .gap-3 > *,
+        [dir="rtl"] .gap-4 > * {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .pl-9 {
+            padding-left: 0 !important;
+            padding-right: 2.25rem !important;
+        }
+
+        [dir="rtl"] .left-3 {
+            left: auto !important;
+            right: 0.75rem !important;
+        }
+
+        [dir="rtl"] .report-stat-card-inline {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .report-stat-content {
+            text-align: right;
+        }
+
+        [dir="rtl"] .page-header {
+            direction: rtl;
+            text-align: center !important;
+        }
+
+        [dir="rtl"] .page-title {
+            direction: rtl;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        [dir="rtl"] .page-title .flex {
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        [dir="rtl"] .page-subtitle {
+            text-align: center !important;
+        }
+
+        [dir="rtl"] .space-x-3 {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .space-x-reverse {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .truncate {
+            text-align: right !important;
+        }
+
+        [dir="rtl"] .department-flex {
+            direction: rtl;
+            justify-content: flex-end;
+        }
+
+        [dir="rtl"] .director-panel {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .director-panel-header {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .director-panel-title {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .bg-gray-50.rounded-lg.p-4 {
+            direction: rtl;
+            text-align: right;
+        }
+
+        [dir="rtl"] .grid {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .grid.grid-cols-1.lg\:grid-cols-2 {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-6 {
+            direction: rtl;
+        }
+
+        [dir="rtl"] label {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        [dir="rtl"] select,
+        [dir="rtl"] input {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        [dir="rtl"] .text-lg.font-semibold.text-gray-900 {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        [dir="rtl"] .text-sm.font-semibold.text-gray-700 {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        [dir="rtl"] .text-sm.text-gray-600 {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        [dir="rtl"] .text-xs.text-gray-600 {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        [dir="rtl"] .text-xs.text-gray-500 {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        [dir="rtl"] .flex.items-center.gap-3 {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .flex.items-center.gap-2 {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .flex.items-center.space-x-3 {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .flex.items-center.space-x-3 > .flex-shrink-0 {
+            order: 2;
+            margin-left: 0.75rem !important;
+            margin-right: 0 !important;
+        }
+
+        [dir="rtl"] .flex.items-center.space-x-3 > .flex-1 {
+            order: 1;
+        }
+
+        [dir="rtl"] .flex.items-center.space-x-4 {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] td .flex.items-center.space-x-3 {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] td .flex.items-center.space-x-3 > .flex-shrink-0 {
+            order: 2;
+        }
+
+        [dir="rtl"] td .flex.items-center.space-x-3 > .flex-1 {
+            order: 1;
+        }
+
+        /* Additional RTL fixes for proper right alignment */
+        [dir="rtl"] .flex.items-center.justify-between {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .flex.items-center {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] h3.text-lg.font-semibold {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        [dir="rtl"] h4.text-sm.font-semibold {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+
+        [dir="rtl"] .director-panel > div:first-child {
+            text-align: right !important;
+        }
+
+        [dir="rtl"] .bg-gray-50.rounded-lg.p-4 > h4 {
+            text-align: right !important;
+        }
+
+        [dir="rtl"] .bg-gray-50.rounded-lg.p-4 > div {
+            direction: rtl !important;
+        }
+
+        [dir="rtl"] .fa-filter,
+        [dir="rtl"] .fa-calendar,
+        [dir="rtl"] .fa-search {
+            margin-left: 0.5rem !important;
+            margin-right: 0 !important;
+        }
+
+        [dir="rtl"] .mr-2 {
+            margin-right: 0 !important;
+            margin-left: 0.5rem !important;
+        }
+
+        /* Fix centering for circular elements */
+        .rounded-full {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .h-12.w-12.rounded-full {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Fix employee circle nested structure */
+        .flex-shrink-0 .h-12.w-12.rounded-full {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .flex-shrink-0 .h-12.w-12.rounded-full span {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Force text centering in all circles */
+        .rounded-full span,
+        .h-12.w-12.rounded-full span,
+        .w-16.h-16.rounded-full span {
+            text-align: center !important;
+            align-self: center !important;
+            justify-self: center !important;
+            margin: 0 auto !important;
+        }
+
+        .w-16.h-16.rounded-full {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Fix nested structure in work/absent days circles */
+        .w-16.h-16.rounded-full > .text-center {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .w-16.h-16.rounded-full > .text-center > div {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Fix centering for labels below circles */
+        .flex.items-center.space-x-4 .text-center {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        .flex.items-center.space-x-4 .text-center .text-xs {
+            text-align: center !important;
+            align-self: center !important;
+        }
+
+        /* RTL fixes for circles */
+        [dir="rtl"] .rounded-full {
+            direction: ltr !important;
+        }
+
+        [dir="rtl"] .h-12.w-12.rounded-full {
+            direction: ltr !important;
+        }
+
+        [dir="rtl"] .flex-shrink-0 .h-12.w-12.rounded-full {
+            direction: ltr !important;
+        }
+
+        [dir="rtl"] .flex-shrink-0 .h-12.w-12.rounded-full span {
+            direction: ltr !important;
+        }
+
+        [dir="rtl"] .w-16.h-16.rounded-full {
+            direction: ltr !important;
+        }
+
+        [dir="rtl"] .w-16.h-16.rounded-full > .text-center {
+            direction: ltr !important;
+        }
+
+        [dir="rtl"] .flex.items-center.space-x-4 .text-center {
+            direction: ltr !important;
+            text-align: center !important;
+        }
+
+        /* Force all flex containers to align right in RTL */
+        [dir="rtl"] .flex:not(.page-title):not(.page-header) {
+            justify-content: flex-end !important;
+            text-align: right !important;
+        }
+
+        [dir="rtl"] .flex.items-center:not(.page-title) {
+            justify-content: flex-end !important;
+        }
+
+        [dir="rtl"] .flex.items-center:not(.page-title) > div:first-child {
+            margin-right: auto !important;
+            margin-left: 0 !important;
+        }
+
+        [dir="rtl"] .flex.items-center:not(.page-title) > div:last-child {
+            margin-left: auto !important;
+            margin-right: 0 !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .page-title i {
+                font-size: 1.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .report-stat-card-inline {
+                min-width: 160px;
+                padding: 16px;
+            }
+
+            .report-stat-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.25rem;
+            }
+
+            .report-stat-value {
+                font-size: 1.875rem;
+            }
+
+            .modal-content {
+                max-width: 100%;
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 1.25rem;
+            }
+
+            .modal-section-title {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
     <!-- The reusable navbar will be automatically inserted here -->
     
     <!-- Main Content -->
     <div class="main-content flex-1 overflow-y-auto">
+        <!-- Content -->
+        <main class="flex-1 overflow-y-auto">
+            <div class="w-full px-6 py-6">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-title">
+                        <i class="fas fa-money-check-alt"></i>
+                        <span data-translate="nav.salary_overview">Salary Management</span>
+                    </div>
+                    <p class="page-subtitle" data-translate="salary.description">Manage employee salaries and payroll (DA Currency)</p>
+        </div>
 
-            <!-- Content -->
-            <main class="flex-1 overflow-y-auto p-6">
-                <div class="max-w-7xl mx-auto">
-                    <!-- Page Header -->
-                    <div class="mb-6">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h1 class="text-2xl font-bold text-gray-900" data-translate="nav.salary_overview">Salary Management</h1>
-                                <p class="text-gray-600" data-translate="salary.description">Manage employee salaries and payroll (DA Currency)</p>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <!-- Language Selector -->
-                                <select id="languageSelector" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="en">English</option>
-                                    <option value="fr">Français</option>
-                                    <option value="ar">العربية</option>
-                                </select>
-                                <button onclick="exportSalaries()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                                    <i class="fas fa-download mr-2"></i>Export Report
-                                </button>
-                            </div>
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
+            <div class="report-stat-card-inline">
+                <div class="report-stat-icon bg-blue-500">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="report-stat-content">
+                    <div class="report-stat-label" data-translate="salary.total_employees">Total Employees</div>
+                    <div id="totalEmployees" class="report-stat-value">0</div>
+                </div>
+            </div>
+            <div class="report-stat-card-inline">
+                <div class="report-stat-icon bg-green-500">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="report-stat-content">
+                    <div class="report-stat-label" data-translate="salary.total_payroll">Total Payroll</div>
+                    <div id="totalPayroll" class="report-stat-value da-currency">0 DA</div>
+                </div>
+            </div>
+            <div class="report-stat-card-inline">
+                <div class="report-stat-icon bg-purple-500">
+                    <i class="fas fa-money-check-alt"></i>
+                </div>
+                <div class="report-stat-content">
+                    <div class="report-stat-label" data-translate="salary.payment_status">Payment Status</div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-center">
+                            <p class="text-xs text-gray-500" data-translate="salary.paid">Paid</p>
+                            <p id="paidCount" class="text-lg font-semibold text-green-600">0</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-xs text-gray-500" data-translate="salary.pending">Pending</p>
+                            <p id="pendingCount" class="text-lg font-semibold text-orange-600">0</p>
                         </div>
                     </div>
-        <!-- Validation Info Banner -->
-        <div id="validationInfoBanner" class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-lg p-4 mb-6 hidden">
-            <div class="flex items-start">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-info-circle text-blue-600 text-xl mt-0.5"></i>
                 </div>
-                <div class="ml-3 flex-1">
-                    <h3 class="text-sm font-semibold text-blue-900 mb-1">Monthly Attendance Validation Required</h3>
-                    <p class="text-sm text-blue-700 mb-2">
-                        Before calculating salaries, monthly attendance must be validated for each employee. This ensures accuracy and allows you to review attendance data, approve overtime, and handle exceptions.
-                    </p>
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        <button onclick="showBulkValidationModal()" class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-check-double mr-1"></i>
-                            Bulk Validate All
-                        </button>
-                        <button onclick="hideValidationBanner()" class="inline-flex items-center px-3 py-1.5 bg-white text-blue-700 text-xs font-medium rounded-lg border border-blue-300 hover:bg-blue-50 transition-colors">
-                            <i class="fas fa-times mr-1"></i>
-                            Dismiss
-                        </button>
-                    </div>
+            </div>
+            <div class="report-stat-card-inline">
+                <div class="report-stat-icon bg-emerald-500">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="report-stat-content">
+                    <div class="report-stat-label" data-translate="salary.total_raise">Total Raise</div>
+                    <div id="totalRaise" class="report-stat-value text-emerald-600">0 DA</div>
+                </div>
+            </div>
+            <div class="report-stat-card-inline">
+                <div class="report-stat-icon bg-red-500">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+                <div class="report-stat-content">
+                    <div class="report-stat-label" data-translate="salary.total_decrease">Total Decrease</div>
+                    <div id="totalDecrease" class="report-stat-value text-red-600">0 DA</div>
                 </div>
             </div>
         </div>
 
         <!-- Period Selector and Filters -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-            <div class="flex flex-wrap items-center gap-4">
-                <div class="period-selector text-white px-4 py-2 rounded-lg">
-                    <div class="flex items-center space-x-4">
+        <div class="director-panel mb-6">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-gray-500"><span data-translate="salary.last_updated">Last updated</span>: <span id="lastUpdated" data-translate="salary.never">Never</span></span>
+                    <button onclick="loadSalaries()" class="action-btn bg-blue-600 hover:bg-blue-700 text-white text-sm">
+                        <i class="fas fa-sync"></i>
+                        <span data-translate="salary.refresh">Refresh</span>
+                    </button>
+                </div>
+                <div class="text-right">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center justify-end">
+                    <i class="fas fa-filter text-blue-600 ml-2"></i>
+                        <span data-translate="salary.filters">Salary Filters</span>
+                </h3>
+                    <p class="text-sm text-gray-600 mt-1" data-translate="salary.filter_description">Filter and search employee salary data</p>
+            </div>
+            </div>
+
+            <!-- Filter Sections -->
+            <div class="space-y-4">
+                <!-- Date Period Section -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center justify-end">
+                        <i class="fas fa-calendar text-blue-500 ml-2"></i>
+                        <span data-translate="salary.pay_period">Pay Period</span>
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-2xl">
                         <div>
-                            <label class="block text-xs font-medium mb-1">Month</label>
-                            <select id="monthSelect" class="bg-white text-gray-900 border-0 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500">
-                                <option value="1">January</option>
-                                <option value="2">February</option>
-                                <option value="3">March</option>
-                                <option value="4">April</option>
-                                <option value="5">May</option>
-                                <option value="6">June</option>
-                                <option value="7">July</option>
-                                <option value="8">August</option>
-                                <option value="9">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
+                            <label class="block text-xs font-medium text-gray-600 mb-1" data-translate="salary.month_label">Month</label>
+                            <select id="monthSelect" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="1" data-translate="salary.january">January</option>
+                                <option value="2" data-translate="salary.february">February</option>
+                                <option value="3" data-translate="salary.march">March</option>
+                                <option value="4" data-translate="salary.april">April</option>
+                                <option value="5" data-translate="salary.may">May</option>
+                                <option value="6" data-translate="salary.june">June</option>
+                                <option value="7" data-translate="salary.july">July</option>
+                                <option value="8" data-translate="salary.august">August</option>
+                                <option value="9" data-translate="salary.september">September</option>
+                                <option value="10" data-translate="salary.october">October</option>
+                                <option value="11" data-translate="salary.november">November</option>
+                                <option value="12" data-translate="salary.december">December</option>
+                                </select>
+                            </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1" data-translate="salary.year_label">Year</label>
+                            <select id="yearSelect" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <!-- Years will be populated by JavaScript -->
+                                </select>
+                            </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1" data-translate="salary.department">Department</label>
+                            <select id="departmentFilter" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="" data-translate="salary.all_departments">All Departments</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium mb-1">Year</label>
-                            <select id="yearSelect" class="bg-white text-gray-900 border-0 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500">
-                                <!-- Years will be populated by JavaScript -->
+                            <label class="block text-xs font-medium text-gray-600 mb-1" data-translate="salary.branch">Branch</label>
+                            <select id="branchFilter" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="" data-translate="salary.all_branches">All Branches</option>
+                                <option value="headquarters" data-translate="salary.headquarters">Headquarters</option>
+                                <option value="north-branch" data-translate="salary.north_branch">North Branch</option>
+                                <option value="south-branch" data-translate="salary.south_branch">South Branch</option>
+                                <option value="east-branch" data-translate="salary.east_branch">East Branch</option>
+                                <option value="west-branch" data-translate="salary.west_branch">West Branch</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 
-                <div class="flex-1 min-w-64">
+                <!-- Search Section -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center justify-end">
+                        <i class="fas fa-search text-blue-500 ml-2"></i>
+                        <span data-translate="salary.search_employee">Search Employee</span>
+                    </h4>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 max-w-xl">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1" data-translate="salary.employee_name">Employee Name</label>
                     <div class="relative">
-                        <input type="text" id="searchInput" placeholder="Search employees..." 
-                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
-                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                <input type="text" id="searchInput" data-translate-placeholder="salary.search_placeholder" placeholder="Search employees..." 
+                                       class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <i class="fas fa-user absolute left-3 top-2.5 text-gray-400 text-sm"></i>
                     </div>
                 </div>
-                
-                <select id="departmentFilter" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="">All Departments</option>
-                </select>
-                
-                <button onclick="loadSalaries()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-                    <i class="fas fa-sync mr-2"></i>Load Salaries
+                        <div class="flex items-end">
+                            <button onclick="loadSalaries()" class="w-full action-btn bg-blue-600 hover:bg-blue-700 text-white text-sm">
+                                <i class="fas fa-search"></i>
+                                <span data-translate="salary.search">Search</span>
+                            </button>
+                        </div>
+                </div>
+            </div>
+            
+                <!-- Actions Section -->
+                <div class="flex items-center justify-end pt-4 border-t border-gray-200">
+                    <div class="flex items-center gap-2">
+                        <button onclick="resetFilters()" class="text-sm text-gray-600 hover:text-gray-900 font-medium">
+                            <i class="fas fa-undo mr-1"></i>
+                            <span data-translate="salary.reset_filters">Reset Filters</span>
                 </button>
+                        <span class="text-gray-300">|</span>
+                        <button onclick="exportSalaries()" class="text-sm text-green-600 hover:text-green-900 font-medium">
+                            <i class="fas fa-download mr-1"></i>
+                            <span data-translate="salary.export_data">Export Data</span>
+                </button>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        <span id="recordCount">0 <span data-translate="salary.records_found">records</span></span> <span data-translate="common.found">found</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-blue-100">
-                        <i class="fas fa-users text-blue-600 text-xl"></i>
+        <!-- Bulk Validation Section -->
+        <div id="validationInfoBanner" class="director-panel mb-6 hidden">
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-amber-600 text-lg mt-0.5"></i>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Total Employees</p>
-                        <p id="totalEmployees" class="text-2xl font-semibold text-gray-900">0</p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-green-100">
-                        <i class="fas fa-coins text-green-600 text-xl"></i>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Total Payroll</p>
-                        <p id="totalPayroll" class="text-2xl font-semibold da-currency">0 DA</p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-purple-100">
-                        <i class="fas fa-money-check-alt text-purple-600 text-xl"></i>
-                    </div>
-                    <div class="ml-4 flex-1">
-                        <p class="text-sm font-medium text-gray-600 mb-2">Payment Status</p>
-                        <div class="flex justify-between items-center">
-                            <div class="text-center">
-                                <p class="text-xs text-gray-500">Paid</p>
-                                <p id="paidCount" class="text-lg font-semibold text-green-600">0</p>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-xs text-gray-500">Pending</p>
-                                <p id="pendingCount" class="text-lg font-semibold text-orange-600">0</p>
-                            </div>
+                    <div class="ml-3 flex-1">
+                        <h4 class="text-sm font-semibold text-amber-900" data-translate="salary.attendance_validation_required">Attendance Validation Required</h4>
+                        <p class="text-xs text-amber-700 mt-1" data-translate="salary.validation_message">Monthly attendance must be validated before calculating salaries.</p>
+                        <div class="mt-2">
+                            <button onclick="showBulkValidationModal()" class="text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-md font-medium">
+                                <span data-translate="salary.validate_all">Validate All Attendance</span>
+                            </button>
+                            <button onclick="hideValidationBanner()" class="text-xs text-amber-700 hover:text-amber-900 ml-2">
+                                <span data-translate="salary.dismiss">Dismiss</span>
+                </button>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-emerald-100">
-                        <i class="fas fa-arrow-up text-emerald-600 text-xl"></i>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Total Raise</p>
-                        <p id="totalRaise" class="text-2xl font-semibold text-emerald-600">0 DA</p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-red-100">
-                        <i class="fas fa-arrow-down text-red-600 text-xl"></i>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Total Decrease</p>
-                        <p id="totalDecrease" class="text-2xl font-semibold text-red-600">0 DA</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Salaries Table -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex flex-wrap items-center gap-3">
-                    <label class="inline-flex items-center text-sm text-gray-700">
-                        <input id="selectAllCheckbox" type="checkbox" class="w-4 h-4 mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                        Select all on page
-                    </label>
-                    <button id="clearSelectionBtn" class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
-                        Clear selection
-                    </button>
-                    <button id="paySelectedBtn" class="px-3 py-1.5 text-sm rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                        <i class="fas fa-check mr-1"></i>
-                        Pay selected <span id="paySelectedCount">(0)</span>
-                    </button>
+        <div class="director-panel">
+            <div class="mb-6">
+                <div class="flex items-center justify-end">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-table text-blue-600 ml-2"></i>
+                        <span data-translate="salary.employee_salary_list">Employee Salary List</span>
+                    </h3>
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fas fa-info-circle"></i>
+                        <span id="recordCount">0 <span data-translate="salary.records_found">records</span></span>
+                    </div>
                 </div>
             </div>
             
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+            <!-- Bulk Actions -->
+            <div class="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <label class="inline-flex items-center text-sm font-medium text-gray-700 cursor-pointer">
+                            <input id="selectAllCheckbox" type="checkbox" class="w-4 h-4 mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <span data-translate="salary.select_all">Select all on page</span>
+                        </label>
+                        <button id="clearSelectionBtn" class="filter-button text-sm">
+                            <i class="fas fa-times"></i>
+                            <span data-translate="salary.clear_selection">Clear selection</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-600 font-medium"><span data-translate="salary.selected">Selected</span>: <span id="paySelectedCount" class="text-blue-600 font-bold">0</span></span>
+                        <button id="paySelectedBtn" class="action-btn bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+                            <i class="fas fa-check"></i>
+                            <span data-translate="salary.pay_selected">Pay Selected</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Table -->
+            <div class="table-wrapper">
+                <table class="complaints-table">
+                    <thead>
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Select</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Worked Days</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Net Salary (DA)</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th class="w-12">
+                                <input type="checkbox" id="headerSelectAll" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            </th>
+                            <th class="min-w-[200px]" data-translate="salary.employee">Employee</th>
+                            <th class="min-w-[150px]" data-translate="salary.position">Position</th>
+                            <th class="min-w-[120px]" data-translate="salary.worked_days_label">Worked Days</th>
+                            <th class="min-w-[140px]" data-translate="salary.net_salary_da">Net Salary (DA)</th>
+                            <th class="min-w-[120px]" data-translate="salary.status">Status</th>
+                            <th class="min-w-[200px]" data-translate="salary.actions">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="salariesTableBody" class="bg-white divide-y divide-gray-200">
+                    <tbody id="salariesTableBody">
                         <!-- Salary rows will be loaded here -->
                     </tbody>
                 </table>
             </div>
             
             <!-- Pagination -->
-            <div id="paginationContainer" class="px-6 py-3 border-t border-gray-200 bg-gray-50">
+            <div id="paginationContainer" class="mt-6 pt-6 border-t border-gray-200">
                 <!-- Pagination will be loaded here -->
             </div>
         </div>
 
         <!-- Loading State -->
-        <div id="loadingState" class="text-center py-12 hidden">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p class="mt-2 text-gray-600">Loading salaries...</p>
+        <div id="loadingState" class="director-panel text-center py-12 hidden">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <p class="mt-4 text-gray-600 font-medium" data-translate="salary.loading_salaries">Loading salaries...</p>
         </div>
 
         <!-- Empty State -->
-        <div id="emptyState" class="text-center py-12 hidden">
-            <div class="mx-auto h-24 w-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+        <div id="emptyState" class="director-panel text-center py-12 hidden">
+            <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
                 <i class="fas fa-money-bill-wave text-gray-400 text-3xl"></i>
             </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">No salary data found</h3>
-            <p class="text-gray-500">Try selecting a different month or year.</p>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3" data-translate="salary.no_salary_data">No salary data found</h3>
+            <p class="text-gray-500" data-translate="salary.try_different_period">Try selecting a different month or year.</p>
         </div>
     </div>
 
@@ -441,24 +1451,57 @@
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
+            // Update page direction based on language
+            function updatePageDirection(lang) {
+                const html = document.documentElement;
+                const body = document.body;
+                if (lang === 'ar') {
+                    html.setAttribute('dir', 'rtl');
+                    html.setAttribute('lang', 'ar');
+                    body.setAttribute('dir', 'rtl');
+                } else {
+                    html.setAttribute('dir', 'ltr');
+                    html.setAttribute('lang', lang || 'en');
+                    body.setAttribute('dir', 'ltr');
+                }
+            }
+
             // Language selector
             const languageSelector = document.getElementById('languageSelector');
             if (languageSelector) {
-                languageSelector.value = (typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'en'));
+                const currentLang = (typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'en'));
+                languageSelector.value = currentLang;
+                updatePageDirection(currentLang);
+                
                 languageSelector.addEventListener('change', (e) => {
                     if (typeof setLanguage === 'function') {
                         setLanguage(e.target.value);
                     }
+                    updatePageDirection(e.target.value);
                     if (typeof updatePageTranslations === 'function') {
                         updatePageTranslations();
                     }
                 });
             }
+
+            // Listen for language changes
+            document.addEventListener('languageChanged', function() {
+                const lang = window.currentLanguage || localStorage.getItem('language') || 'en';
+                updatePageDirection(lang);
+            });
             
             // Initialize translations
             if (typeof updatePageTranslations === 'function') {
                 updatePageTranslations();
             }
+            
+            // Force update translations after a short delay to ensure they're applied
+            setTimeout(() => {
+                if (typeof updatePageTranslations === 'function') {
+                    updatePageTranslations();
+                }
+            }, 100);
+            
             requireAuth();
             
             // Ensure API object is available
@@ -722,7 +1765,8 @@
             const tbody = document.getElementById('salariesTableBody');
             
             if (currentSalaries.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">No salary data found</td></tr>';
+                const noDataText = typeof translate === 'function' ? translate('salary.no_salary_data') : 'No salary data found';
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-gray-500">${noDataText}</td></tr>`;
                 return;
             }
             
@@ -735,86 +1779,109 @@
                         <input type="checkbox" class="row-select-checkbox w-4 h-4" data-employee-id="${salary.employee_id}" ${eligible ? '' : 'disabled'} ${checked ? 'checked' : ''} />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10">
-                                <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <span class="text-sm font-medium text-blue-600">${salary.employee_name.split(' ').map(n => n[0]).join('')}</span>
+                        <div class="flex items-center space-x-3">
+                            <div class="flex-shrink-0">
+                                <div class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+                                    <span class="text-sm font-bold text-white">${salary.employee_name.split(' ').map(n => n[0]).join('')}</span>
                                 </div>
                             </div>
-                            <div class="ml-4">
-                                <div class="text-sm font-medium text-gray-900">${salary.employee_name}</div>
-                                <div class="text-xs text-gray-500">${salary.department_name || 'N/A'}</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm font-semibold text-gray-900 truncate">${salary.employee_name}</div>
+                                <div class="text-xs text-gray-500 flex items-center department-flex">
+                                    <i class="fas fa-building mr-1"></i>
+                                    ${salary.department_name || (typeof translate === 'function' ? translate('common.not_applicable') : 'N/A')}
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${salary.position || 'N/A'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div class="flex flex-col">
-                            <span class="font-medium">${salary.worked_days || 0}</span>
-                            <span class="text-xs text-gray-500">Absent: ${salary.absent_days || 0}</span>
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        ${salary.worked_days === 0 && salary.net_salary === 0 ? `
-                            <div class="flex flex-col gap-1">
-                                <div class="text-sm font-medium text-gray-500 line-through">${formatCurrency(salary.net_salary || 0)} DA</div>
-                                <div class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                    <i class="fas fa-ban mr-1"></i>
-                                    No Worked Days
-                                </div>
+                        <div class="text-sm font-medium text-gray-900">${salary.position || (typeof translate === 'function' ? translate('common.not_applicable') : 'N/A')}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-center">
+                                <div class="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 relative">
+                                    <div class="text-center">
+                                        <div class="text-xl font-bold text-green-700">${salary.worked_days || 0}</div>
+                                        <div class="text-xs text-green-600 font-medium" data-translate="salary.days">days</div>
                             </div>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1 font-semibold" data-translate="salary.worked">${typeof translate === 'function' ? translate('salary.worked') : 'Worked'}</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200 relative">
+                                    <div class="text-center">
+                                        <div class="text-xl font-bold text-red-700">${salary.absent_days || 0}</div>
+                                        <div class="text-xs text-red-600 font-medium" data-translate="salary.days">${typeof translate === 'function' ? translate('salary.days') : 'days'}</div>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1 font-semibold">${typeof translate === 'function' ? translate('salary.absent') : 'Absent'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        ${salary.worked_days > 0 ? `
+                        <div class="flex flex-col">
+                            <div class="text-lg font-bold da-currency">${formatCurrency(salary.net_salary || 0)} DA</div>
+                            ${salary.validation_status === 'Validated' ? 
+                                `<div class="text-xs text-green-600 flex items-center mt-1">
+                                    <i class="fas fa-check-circle mr-1"></i><span data-translate="salary.validated">${typeof translate === 'function' ? translate('salary.validated') : 'Validated'}</span>
+                                </div>` : 
+                                salary.error && salary.error.includes('not validated') ?
+                                `<div class="text-xs text-orange-600 flex items-center mt-1">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    <span class="font-medium" data-translate="salary.awaiting_validation">${typeof translate === 'function' ? translate('salary.awaiting_validation') : 'Awaiting Validation'}</span>
+                                </div>` :
+                                `<div class="text-xs text-orange-600 flex items-center mt-1">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i><span data-translate="salary.not_validated">${typeof translate === 'function' ? translate('salary.not_validated') : 'Not Validated'}</span>
+                                </div>`
+                            }
+                            ${salary.error && !salary.error.includes('not validated') ? `<div class="text-xs text-red-500 mt-1"><i class="fas fa-exclamation-circle mr-1"></i>${salary.error}</div>` : ''}
+                        </div>
                         ` : `
-                        <div class="text-sm font-medium da-currency">
-                            ${formatCurrency(salary.net_salary || 0)} DA
+                        <div class="inline-flex items-center px-3 py-2 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                            <i class="fas fa-ban mr-2"></i>
+                            ${typeof translate === 'function' ? translate('salary.no_worked_days') : 'No Worked Days'}
                         </div>
                         `}
-                        ${salary.validation_status === 'Validated' ? 
-                            `<div class="text-xs text-green-600 flex items-center"><i class="fas fa-check-circle mr-1"></i>Validated</div>` : 
-                            salary.error && salary.error.includes('not validated') ?
-                            `<div class="text-xs text-orange-600 flex items-center">
-                                <i class="fas fa-clock mr-1"></i>
-                                <span class="font-medium">Awaiting Validation</span>
-                            </div>` :
-                            `<div class="text-xs text-orange-600 flex items-center"><i class="fas fa-exclamation-triangle mr-1"></i>Not Validated</div>`
-                        }
-                        ${salary.error && !salary.error.includes('not validated') ? `<div class="text-xs text-red-500"><i class="fas fa-exclamation-circle mr-1"></i>${salary.error}</div>` : ''}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex flex-col gap-1">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full text-white ${getStatusClass(salary.payment_status)}">
-                            ${salary.payment_status || 'Not Paid'}
+                        <div class="flex flex-col gap-2">
+                        <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full text-white ${getStatusClass(salary.payment_status)}">
+                            <i class="fas ${salary.payment_status === 'Paid' ? 'fa-check-circle' : 'fa-clock'} mr-1"></i>
+                            ${salary.payment_status === 'Paid' ? (typeof translate === 'function' ? translate('salary.paid') : 'Paid') : (typeof translate === 'function' ? translate('salary.not_paid') : 'Not Paid')}
                         </span>
                             ${salary.payment_status === 'Paid' && salary.payment_method ? `
-                                <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full ${salary.payment_method === 'worked_days' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'}">
-                                    ${salary.payment_method === 'worked_days' ? 'Exception Method' : 'Standard Method'}
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${salary.payment_method === 'worked_days' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'}">
+                                    ${salary.payment_method === 'worked_days' ? (typeof translate === 'function' ? translate('salary.exception_method') : 'Exception Method') : (typeof translate === 'function' ? translate('salary.standard_method') : 'Standard Method')}
                                 </span>
                             ` : ''}
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-wrap gap-2">
                             ${salary.validation_status === 'Validated' ? `
                                 <button onclick="viewSalaryDetails('${salary.employee_id}')" 
-                                        class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors" title="View Salary Details">
-                                    <i class="fas fa-eye mr-1"></i>
-                                    View
+                                        class="action-btn bg-blue-600 hover:bg-blue-700 text-white text-xs" title="${typeof translate === 'function' ? translate('salary.view') : 'View'}">
+                                    <i class="fas fa-eye"></i>
+                                    <span>${typeof translate === 'function' ? translate('salary.view') : 'View'}</span>
                                 </button>
                             ` : `
                                 <button onclick="openDailyAttendanceForValidation('${salary.employee_id}', ${salary.year}, ${salary.month})" 
-                                        class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full hover:from-orange-600 hover:to-orange-700 transition-all shadow-sm" title="Review and validate monthly attendance to enable salary calculation">
-                                    <i class="fas fa-calendar-check mr-1"></i>
-                                    Validate Attendance
+                                        class="action-btn bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-xs" title="${typeof translate === 'function' ? translate('salary.validate') : 'Validate'}">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span>${typeof translate === 'function' ? translate('salary.validate') : 'Validate'}</span>
                                 </button>
                             `}
                             <button onclick="addAdjustment('${salary.employee_id}')" 
-                                    class="inline-flex items-center px-3 py-1.5 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors" title="Add Adjustment">
+                                    class="action-btn bg-green-600 hover:bg-green-700 text-white text-xs" title="${typeof translate === 'function' ? translate('salary.add_adjustment') : 'Add Adjustment'}">
                                 <i class="fas fa-plus"></i>
                             </button>
                             ${salary.payment_status !== 'Paid' ? `
                                 <button onclick="markAsPaid('${salary.employee_id}')" 
-                                        class="inline-flex items-center px-3 py-1.5 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors ${salary.validation_status !== 'Validated' ? 'opacity-50 cursor-not-allowed' : ''}" ${salary.validation_status !== 'Validated' ? 'disabled title=\"Validate attendance first\"' : 'title=\"Mark as Paid\"'}>
-                                    <i class="fas fa-check mr-1"></i>
-                                    Mark Paid
+                                        class="action-btn bg-purple-600 hover:bg-purple-700 text-white text-xs disabled:opacity-50 disabled:cursor-not-allowed ${salary.validation_status !== 'Validated' ? 'opacity-50 cursor-not-allowed' : ''}" ${salary.validation_status !== 'Validated' ? 'disabled title=\"Validate attendance first\"' : `title="${typeof translate === 'function' ? translate('salary.pay') : 'Pay'}"`}>
+                                    <i class="fas fa-check"></i>
+                                    <span>${typeof translate === 'function' ? translate('salary.pay') : 'Pay'}</span>
                                 </button>
                             ` : ''}
                         </div>
@@ -825,6 +1892,21 @@
 
             bindRowSelectionHandlers();
             refreshBulkControls();
+            
+            // Update record count
+            const recordCount = document.getElementById('recordCount');
+            if (recordCount) {
+                const totalRecords = currentPagination ? currentPagination.total : currentSalaries.length;
+                const recordsText = typeof translate === 'function' ? translate('salary.records_found') : 'records';
+                recordCount.textContent = `${totalRecords} ${recordsText}`;
+            }
+            
+            // Update translations for dynamically generated content
+            if (typeof updatePageTranslations === 'function') {
+                setTimeout(() => {
+                    updatePageTranslations();
+                }, 100);
+            }
         }
 
         function bindRowSelectionHandlers() {
@@ -903,10 +1985,17 @@
                 return;
             }
             
+            const showingText = typeof translate === 'function' ? translate('salary.showing') : 'Showing';
+            const toText = typeof translate === 'function' ? translate('salary.to') : 'to';
+            const ofText = typeof translate === 'function' ? translate('salary.of') : 'of';
+            const resultsText = typeof translate === 'function' ? translate('salary.results') : 'results';
+            const previousText = typeof translate === 'function' ? translate('salary.previous') : 'Previous';
+            const nextText = typeof translate === 'function' ? translate('salary.next') : 'Next';
+            
             let paginationHtml = `
                 <div class="flex items-center justify-between">
                     <div class="text-sm text-gray-700">
-                        Showing ${((page - 1) * limit) + 1} to ${Math.min(page * limit, total)} of ${total} results
+                        ${showingText} ${((page - 1) * limit) + 1} ${toText} ${Math.min(page * limit, total)} ${ofText} ${total} ${resultsText}
                     </div>
                     <div class="flex space-x-2">
             `;
@@ -915,7 +2004,7 @@
             if (page > 1) {
                 paginationHtml += `
                     <button onclick="loadSalaries(${page - 1})" class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors">
-                        Previous
+                        ${previousText}
                     </button>
                 `;
             }
@@ -940,7 +2029,7 @@
             if (page < pages) {
                 paginationHtml += `
                     <button onclick="loadSalaries(${page + 1})" class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors">
-                        Next
+                        ${nextText}
                     </button>
                 `;
             }
@@ -2365,10 +3454,21 @@
             window.location.href = 'hr-dashboard.html';
         }
 
+        // Reset filters function
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('departmentFilter').value = '';
+            document.getElementById('branchFilter').value = '';
+            document.getElementById('monthSelect').value = new Date().getMonth() + 1;
+            document.getElementById('yearSelect').value = new Date().getFullYear();
+            loadSalaries();
+        }
+
         // Event listeners
         document.getElementById('monthSelect').addEventListener('change', () => loadSalaries());
         document.getElementById('yearSelect').addEventListener('change', () => loadSalaries());
         document.getElementById('departmentFilter').addEventListener('change', () => loadSalaries());
+        document.getElementById('branchFilter').addEventListener('change', () => loadSalaries());
 
         document.getElementById('searchInput').addEventListener('input', function() {
             clearTimeout(this.searchTimeout);
