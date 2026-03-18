@@ -28,7 +28,6 @@ services:
     build:
       context: ./auth-service
       dockerfile: Dockerfile
-    container_name: hr_auth_service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -36,10 +35,6 @@ services:
       PORT: 3001
     ports:
       - "3001:3001"
-    volumes:
-      - ./auth-service:/app
-      - /app/node_modules
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -51,7 +46,6 @@ services:
     build:
       context: ./user-management-service
       dockerfile: Dockerfile
-    container_name: hr_user_management
     restart: unless-stopped
     env_file: .env
     environment:
@@ -60,11 +54,7 @@ services:
     ports:
       - "3002:3002"
     volumes:
-      - ./user-management-service:/app
-      - /app/node_modules
       - uploads_user:/app/uploads
-      - ./user-management-service/contract-templates:/app/contract-templates:ro
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -76,7 +66,6 @@ services:
     build:
       context: ./department-service
       dockerfile: Dockerfile
-    container_name: hr_department_service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -84,10 +73,6 @@ services:
       PORT: 3003
     ports:
       - "3003:3003"
-    volumes:
-      - ./department-service:/app
-      - /app/node_modules
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -99,7 +84,6 @@ services:
     build:
       context: ./task-service
       dockerfile: Dockerfile
-    container_name: hr_task_service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -107,10 +91,6 @@ services:
       PORT: 3004
     ports:
       - "3004:3004"
-    volumes:
-      - ./task-service:/app
-      - /app/node_modules
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -122,7 +102,6 @@ services:
     build:
       context: ./meeting-service
       dockerfile: Dockerfile
-    container_name: hr_meeting_service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -130,10 +109,6 @@ services:
       PORT: 3005
     ports:
       - "3005:3005"
-    volumes:
-      - ./meeting-service:/app
-      - /app/node_modules
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -145,7 +120,6 @@ services:
     build:
       context: ./payment-service
       dockerfile: Dockerfile
-    container_name: hr_payment_service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -153,10 +127,6 @@ services:
       PORT: 3006
     ports:
       - "3006:3006"
-    volumes:
-      - ./payment-service:/app
-      - /app/node_modules
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -168,7 +138,6 @@ services:
     build:
       context: ./notification-service
       dockerfile: Dockerfile
-    container_name: hr_notification_service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -176,10 +145,6 @@ services:
       PORT: 3007
     ports:
       - "3007:3007"
-    volumes:
-      - ./notification-service:/app
-      - /app/node_modules
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -191,7 +156,6 @@ services:
     build:
       context: ./attendance-service
       dockerfile: Dockerfile
-    container_name: hr_attendance_service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -200,11 +164,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./attendance-service:/app
-      - /app/node_modules
       - uploads_attendance:/app/uploads
-      - ./frontend:/app/frontend
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -216,7 +176,6 @@ services:
     build:
       context: ./request-service
       dockerfile: Dockerfile
-    container_name: hr_request_service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -224,10 +183,6 @@ services:
       PORT: 3009
     ports:
       - "3009:3009"
-    volumes:
-      - ./request-service:/app
-      - /app/node_modules
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -239,7 +194,6 @@ services:
     build:
       context: ./timetable-service
       dockerfile: Dockerfile
-    container_name: hr_timetable_service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -248,10 +202,6 @@ services:
       TIMETABLE_SERVICE_PORT: 3011
     ports:
       - "3011:3011"
-    volumes:
-      - ./timetable-service:/app
-      - /app/node_modules
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -263,7 +213,6 @@ services:
     build:
       context: ./salary-service
       dockerfile: Dockerfile
-    container_name: hr_salary_service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -273,10 +222,7 @@ services:
     ports:
       - "3010:3010"
     volumes:
-      - ./salary-service:/app
-      - /app/node_modules
       - uploads_salary:/app/uploads
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -288,7 +234,6 @@ services:
     build:
       context: ./hr_tasks/hr_tasks
       dockerfile: Dockerfile
-    container_name: hr_tasks_service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -298,10 +243,7 @@ services:
     ports:
       - "3020:3020"
     volumes:
-      - ./hr_tasks/hr_tasks:/app
-      - /app/node_modules
       - uploads_hr_tasks:/app/uploads
-    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -313,13 +255,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: hr_frontend
     restart: unless-stopped
     ports:
       - "8082:80"
-    volumes:
-      - ./frontend:/usr/share/nginx/html
-      - ./hr_tasks/hr_tasks/public:/usr/share/nginx/html/hr_tasks/hr_tasks/public
     depends_on:
       - auth-service
       - attendance-service
