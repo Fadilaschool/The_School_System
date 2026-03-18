@@ -3,8 +3,9 @@ version: '3.9'
 services:
   # ─── DATABASE ─────────────────────────────────────────────────────────────────
   postgres:
-    image: postgres:15-alpine
-    container_name: hr_postgres
+    build:
+      context: .
+      dockerfile: postgres/Dockerfile
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME}
@@ -12,7 +13,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./backup.sql:/docker-entrypoint-initdb.d/01_schema.sql
     ports:
       - "5432:5432"
     healthcheck:
