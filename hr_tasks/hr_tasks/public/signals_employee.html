@@ -489,6 +489,18 @@
       align-items: center;
       flex-wrap: wrap;
     }
+    
+    @media (max-width: 768px) {
+      .view-controls,
+      .view-controls .view-toggle,
+      .view-controls .toggle-btn {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+      }
+    }
 
     .view-toggle {
       display: flex;

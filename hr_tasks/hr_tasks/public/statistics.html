@@ -538,6 +538,210 @@
         .badge-high { background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%); color: #92400e; }
         .badge-medium { background: linear-gradient(135deg, #bfdbfe 0%, #60a5fa 100%); color: #1e3a8a; }
         .badge-low { background: linear-gradient(135deg, #a7f3d0 0%, #34d399 100%); color: #065f46; }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+                margin: 0;
+            }
+
+            .director-panel {
+                padding: 16px;
+                border-radius: 16px;
+                margin-bottom: 16px;
+            }
+
+            .director-panel-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .director-panel-title {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .director-panel-title-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .director-panel h3 {
+                font-size: 1rem !important;
+            }
+
+            /* KPI Cards - grid layout */
+            .grid:not(.grid-cols-1):not(.grid-cols-2):not(.grid-cols-3):not(.grid-cols-4):not(.grid-cols-5) {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+            }
+
+            .kpi-card {
+                padding: 16px;
+                border-radius: 16px;
+                min-width: unset !important;
+            }
+
+            .kpi-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+                margin-bottom: 12px;
+            }
+
+            .kpi-value {
+                font-size: 1.75rem !important;
+            }
+
+            .kpi-label {
+                font-size: 0.7rem !important;
+            }
+
+            /* Chart containers */
+            .mb-8, .mb-6 {
+                margin-bottom: 16px !important;
+            }
+
+            .h-80, .h-96 {
+                height: 300px !important;
+            }
+
+            canvas {
+                max-height: 300px !important;
+            }
+
+            /* Stats grid */
+            .grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+
+            .grid-cols-3 {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            .grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            .grid-cols-5 {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            /* Table styles */
+            .overflow-x-auto {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 10px 8px !important;
+                font-size: 0.75rem !important;
+            }
+
+            /* Badges */
+            .badge {
+                padding: 0.2rem 0.5rem;
+                font-size: 0.7rem !important;
+            }
+
+            /* Section headers */
+            .text-2xl, .text-xl {
+                font-size: 1.25rem !important;
+            }
+
+            .text-lg {
+                font-size: 1rem !important;
+            }
+
+            /* Filters and buttons */
+            .flex.gap-4, .flex.gap-3 {
+                flex-direction: column !important;
+                gap: 8px !important;
+            }
+
+            select, .director-input {
+                width: 100% !important;
+                padding: 10px !important;
+                font-size: 0.85rem !important;
+                border-radius: 10px !important;
+            }
+
+            /* Page hero */
+            .page-hero {
+                padding: 20px !important;
+                border-radius: 16px !important;
+            }
+
+            .page-hero h1 {
+                font-size: 1.5rem !important;
+            }
+
+            /* Stat cards */
+            .bg-white.rounded-2xl {
+                padding: 16px !important;
+                border-radius: 14px !important;
+            }
+
+            /* Time period buttons */
+            .inline-flex.rounded-xl {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .px-4.py-2 {
+                padding: 8px 12px !important;
+                font-size: 0.8rem !important;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .director-panel {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+
+            .grid:not(.grid-cols-1):not(.grid-cols-2):not(.grid-cols-3):not(.grid-cols-4):not(.grid-cols-5) {
+                grid-template-columns: 1fr !important;
+            }
+
+            .grid-cols-3, .grid-cols-4, .grid-cols-5 {
+                grid-template-columns: 1fr !important;
+            }
+
+            .kpi-card {
+                padding: 12px;
+            }
+
+            .kpi-value {
+                font-size: 1.5rem !important;
+            }
+
+            .h-80, .h-96, canvas {
+                height: 250px !important;
+            }
+
+            th, td {
+                padding: 8px 6px !important;
+                font-size: 0.7rem !important;
+            }
+
+            .text-2xl, .text-xl {
+                font-size: 1.1rem !important;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -788,20 +992,17 @@
                 if (window.API_BASE) {
                     return window.API_BASE;
                 }
-                const origin = (window.location && window.location.origin) || '';
                 const hostname = (window.location && window.location.hostname) || '';
                 const port = window.location.port || '';
-                const portNumber = parseInt(port, 10);
-                const isLiveServerPort = !Number.isNaN(portNumber) && portNumber >= 5500 && portNumber <= 5599;
                 const isLocalHost = /^(127\.0\.0\.1|localhost)$/i.test(hostname || '');
-                if ((isLocalHost && isLiveServerPort) || !origin || !/^https?:\/\//i.test(origin)) {
-                    // Use same hostname as current page to avoid CORS issues
-                    const apiHost = hostname === '127.0.0.1' ? '127.0.0.1' : 'localhost';
-                    return `http://${apiHost}:3020`;
+                
+                if (isLocalHost) {
+                    // Always use port 8080 for local development with nginx
+                    return 'http://localhost:8080';
                 }
-                return origin;
+                return window.location.origin;
             } catch (_) {
-                return 'http://localhost:3020';
+                return 'http://localhost:8080';
             }
         })();
 

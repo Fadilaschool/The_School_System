@@ -60,14 +60,15 @@
 				}, 200);
 				
 				// Load the HR Tasks Reports UI inside an iframe in embed mode (hides its own sidebar)
-				var frame = document.getElementById('rapportempFrame');
-				// Relative from /frontend/pages/ to /hr_tasks/hr_tasks/public/rapportemp.html
-				frame.src = '../../hr_tasks/hr_tasks/public/rapportemp.html?embed=1';
+                var frame = document.getElementById('rapportempFrame');
+                // Relative from /frontend/pages/ to /hr_tasks/hr_tasks/public/rapportemp.html
+                // Add cache-busting parameter to force reload of updated CSS
+                var cacheBuster = new Date().getTime();
+                frame.src = '../../hr_tasks/hr_tasks/public/rapportemp.html?embed=1&v=' + cacheBuster + '&force=' + Math.random();
 			});
 		});
 	</script>
 </body>
 </html>
-
 
 

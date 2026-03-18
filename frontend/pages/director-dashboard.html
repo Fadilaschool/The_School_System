@@ -11,6 +11,7 @@
 	<style>
 		.embed-container {
 			height: 100vh;
+			overflow: auto;
 		}
 
 		.embed-frame {
@@ -18,6 +19,32 @@
 			height: 100%;
 			border: 0;
 			background: #fff;
+		}
+		
+		/* Mobile responsive iframe container */
+		@media (max-width: 768px) {
+			.embed-container {
+				height: auto;
+				overflow: visible;
+				min-height: 100vh;
+			}
+			
+			.embed-frame {
+				width: 100%;
+				height: 100vh;
+			}
+		}
+		
+		/* Ensure no scrollbars on mobile */
+		body {
+			overflow: visible;
+			margin: 0;
+			padding: 0;
+		}
+		
+		main {
+			margin: 0;
+			padding: 0;
 		}
 	</style>
 </head>
@@ -45,7 +72,7 @@
 			}
 			console.log('Access granted for Director role:', userRole);
 			initializeCollapsibleSidebar();
-			document.getElementById('directorFrame').src = '../../hr_tasks/hr_tasks/public/director.html?embed=1&v=35';
+			document.getElementById('directorFrame').src = '../../hr_tasks/hr_tasks/public/director.html?embed=1&v=41';
 
 			// Initialize translations
 			if (typeof updatePageTranslations === 'function') {

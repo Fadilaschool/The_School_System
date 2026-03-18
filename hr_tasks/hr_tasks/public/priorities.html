@@ -584,6 +584,233 @@
         [dir="rtl"] .report-stat-content {
             text-align: right;
         }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+                margin: 0;
+            }
+
+            .director-panel {
+                padding: 16px;
+                border-radius: 16px;
+                margin-top: 12px;
+            }
+
+            .director-panel-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .director-panel-title {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            /* Stats cards - stack horizontally on mobile */
+            #statsCards {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+
+            .report-stat-card-inline {
+                flex-direction: column !important;
+                text-align: center;
+                padding: 14px !important;
+                min-width: unset !important;
+                border-radius: 14px !important;
+            }
+
+            .report-stat-icon {
+                width: 42px !important;
+                height: 42px !important;
+                font-size: 1.2rem !important;
+                margin-bottom: 8px !important;
+            }
+
+            .report-stat-content {
+                text-align: center !important;
+                width: 100% !important;
+            }
+
+            .report-stat-value {
+                font-size: 1.5rem !important;
+            }
+
+            .report-stat-label {
+                font-size: 0.7rem !important;
+            }
+
+            /* Filter buttons - full width stack */
+            .flex.gap-3 {
+                flex-direction: column !important;
+                gap: 8px !important;
+            }
+
+            .director-btn {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 12px 16px !important;
+                font-size: 0.85rem !important;
+                border-radius: 10px !important;
+            }
+
+            /* Search and filters */
+            .mb-6 {
+                margin-bottom: 16px !important;
+            }
+
+            .director-input {
+                width: 100% !important;
+                padding: 12px !important;
+                font-size: 0.9rem !important;
+                border-radius: 10px !important;
+            }
+
+            /* Report cards - full width */
+            #reportsContainer {
+                gap: 12px !important;
+            }
+
+            .report-card {
+                padding: 16px !important;
+                border-radius: 14px !important;
+            }
+
+            .report-card-header {
+                flex-direction: column !important;
+                gap: 12px !important;
+            }
+
+            .report-card-title {
+                font-size: 1.1rem !important;
+            }
+
+            .report-card-description {
+                font-size: 0.85rem !important;
+            }
+
+            .report-card-meta {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px !important;
+            }
+
+            .report-meta-item {
+                padding: 10px !important;
+                border-radius: 10px !important;
+                flex-direction: column !important;
+                text-align: center !important;
+                gap: 8px !important;
+            }
+
+            .report-meta-icon {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 0.9rem !important;
+            }
+
+            .report-meta-content {
+                text-align: center !important;
+            }
+
+            .report-meta-label {
+                font-size: 0.65rem !important;
+            }
+
+            .report-meta-value {
+                font-size: 0.8rem !important;
+            }
+
+            .report-card-actions {
+                flex-direction: column !important;
+                gap: 8px !important;
+            }
+
+            .report-action-btn {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 10px 14px !important;
+                font-size: 0.8rem !important;
+            }
+
+            /* Page hero */
+            .page-hero {
+                padding: 20px !important;
+                border-radius: 16px !important;
+            }
+
+            .page-hero h1 {
+                font-size: 1.5rem !important;
+            }
+
+            .page-hero p {
+                font-size: 0.9rem !important;
+            }
+
+            /* Stats row */
+            .flex.gap-4.mb-6 {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            /* Grid stats */
+            .grid.grid-cols-5 {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .director-panel {
+                padding: 12px;
+                margin-top: 8px;
+            }
+
+            #statsCards {
+                grid-template-columns: 1fr !important;
+            }
+
+            .report-stat-card-inline {
+                flex-direction: row !important;
+                text-align: right;
+            }
+
+            .report-stat-content {
+                text-align: right !important;
+            }
+
+            .report-card-meta {
+                grid-template-columns: 1fr !important;
+            }
+
+            .report-meta-item {
+                flex-direction: row !important;
+                text-align: right !important;
+                justify-content: flex-start;
+            }
+
+            .report-meta-icon {
+                width: 32px !important;
+                height: 32px !important;
+            }
+
+            .grid.grid-cols-5 {
+                grid-template-columns: 1fr !important;
+            }
+
+            .director-btn {
+                padding: 10px 12px !important;
+                font-size: 0.8rem !important;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -682,18 +909,17 @@
                 if (window.API_BASE) {
                     return window.API_BASE;
                 }
-                const origin = (window.location && window.location.origin) || '';
                 const hostname = (window.location && window.location.hostname) || '';
                 const port = window.location.port || '';
-                const portNumber = parseInt(port, 10);
-                const isLiveServerPort = !Number.isNaN(portNumber) && portNumber >= 5500 && portNumber <= 5599;
-                const isLocalHost = /^(127\.0\.0\.1|localhost)$/i.test(hostname || '');
-                if ((isLocalHost && isLiveServerPort) || !origin || !/^https?:\/\//i.test(origin)) {
-                    return 'http://localhost:3020';
+                const isLocalHost = /^(127\.0\.0.1|localhost)$/i.test(hostname || '');
+                
+                if (isLocalHost) {
+                    // Always use port 8080 for local development with nginx
+                    return 'http://localhost:8080';
                 }
-                return origin;
+                return window.location.origin;
             } catch (_) {
-                return 'http://localhost:3020';
+                return 'http://localhost:8080';
             }
         })();
 

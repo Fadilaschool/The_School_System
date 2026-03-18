@@ -1,7 +1,6 @@
 version: '3.9'
 
 services:
-
   # ─── DATABASE ─────────────────────────────────────────────────────────────────
   postgres:
     image: postgres:15-alpine
@@ -13,7 +12,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./current.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./backup.sql:/docker-entrypoint-initdb.d/01_schema.sql
     ports:
       - "5432:5432"
     healthcheck:
@@ -37,6 +36,10 @@ services:
       PORT: 3001
     ports:
       - "3001:3001"
+    volumes:
+      - ./auth-service:/app
+      - /app/node_modules
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -57,8 +60,11 @@ services:
     ports:
       - "3002:3002"
     volumes:
+      - ./user-management-service:/app
+      - /app/node_modules
       - uploads_user:/app/uploads
       - ./user-management-service/contract-templates:/app/contract-templates:ro
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -78,6 +84,10 @@ services:
       PORT: 3003
     ports:
       - "3003:3003"
+    volumes:
+      - ./department-service:/app
+      - /app/node_modules
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -97,6 +107,10 @@ services:
       PORT: 3004
     ports:
       - "3004:3004"
+    volumes:
+      - ./task-service:/app
+      - /app/node_modules
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -116,6 +130,10 @@ services:
       PORT: 3005
     ports:
       - "3005:3005"
+    volumes:
+      - ./meeting-service:/app
+      - /app/node_modules
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -135,6 +153,10 @@ services:
       PORT: 3006
     ports:
       - "3006:3006"
+    volumes:
+      - ./payment-service:/app
+      - /app/node_modules
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -154,6 +176,10 @@ services:
       PORT: 3007
     ports:
       - "3007:3007"
+    volumes:
+      - ./notification-service:/app
+      - /app/node_modules
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -174,7 +200,11 @@ services:
     ports:
       - "3000:3000"
     volumes:
+      - ./attendance-service:/app
+      - /app/node_modules
       - uploads_attendance:/app/uploads
+      - ./frontend:/app/frontend
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -194,6 +224,10 @@ services:
       PORT: 3009
     ports:
       - "3009:3009"
+    volumes:
+      - ./request-service:/app
+      - /app/node_modules
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -214,6 +248,10 @@ services:
       TIMETABLE_SERVICE_PORT: 3011
     ports:
       - "3011:3011"
+    volumes:
+      - ./timetable-service:/app
+      - /app/node_modules
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -235,7 +273,10 @@ services:
     ports:
       - "3010:3010"
     volumes:
+      - ./salary-service:/app
+      - /app/node_modules
       - uploads_salary:/app/uploads
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -257,7 +298,10 @@ services:
     ports:
       - "3020:3020"
     volumes:
+      - ./hr_tasks/hr_tasks:/app
+      - /app/node_modules
       - uploads_hr_tasks:/app/uploads
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
@@ -273,6 +317,9 @@ services:
     restart: unless-stopped
     ports:
       - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+      - ./hr_tasks/hr_tasks/public:/usr/share/nginx/html/hr_tasks/hr_tasks/public
     depends_on:
       - auth-service
       - attendance-service

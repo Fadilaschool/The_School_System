@@ -1,7 +1,7 @@
 const express = require('express');
 const { Pool } = require('pg');
 const moment = require('moment-timezone');
-const fetch = require('node-fetch');
+// Using built-in fetch from Node.js 18+
 
 // JWT verification middleware (will be injected)
 let verifyToken;

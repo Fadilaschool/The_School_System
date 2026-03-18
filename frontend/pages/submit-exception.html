@@ -12,21 +12,73 @@
     <style>
         :root { --exception-blue: #2563eb; --exception-slate: #0f172a; }
         body { font-family: 'Outfit', 'Inter', system-ui, sans-serif; color: var(--exception-slate); background: radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 45%), #f5f7fb; }
-        #exception-main-content,
-        #exception-main-content.main-content { margin: 0 !important; padding: 0; width: 100% !important; max-width: 100% !important; min-width: 0; box-sizing: border-box; }
-        [dir="rtl"] #exception-main-content,
-        [dir="rtl"] #exception-main-content.main-content { margin-right: 0 !important; margin-left: 0 !important; padding-right: 0 !important; }
         .form-section { transition: all 0.2s ease; }
         .dynamic-fields { display: none; }
         .dynamic-fields.show { display: block; }
-        /* Page header - director style */
-        .page-header-exception { text-align: center; margin-bottom: 2rem; padding: 2rem; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; border: 1px solid rgba(148, 163, 184, 0.1); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
-        .page-header-exception .page-title { font-size: 2rem; font-weight: 700; color: #1e293b; margin: 0 0 0.5rem 0; display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
-        .page-header-exception .page-title i { color: #3b82f6; font-size: 1.75rem; }
-        .page-header-exception .page-subtitle { font-size: 1rem; color: #64748b; margin: 0; font-weight: 500; }
-        html[dir="rtl"] .page-header-exception .page-title { flex-direction: row-reverse; }
+        /* Page Header Styles - Match Employee Dashboard */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: #3b82f6;
+            font-size: 1.75rem;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        html[dir="rtl"] .page-title {
+            flex-direction: row-reverse;
+        }
         /* Tabs - Director style (pill) */
         .director-tabs-exception { display: inline-flex; flex-wrap: wrap; gap: 6px; padding: 6px; background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 999px; }
+        
+        /* Mobile styles for tabs */
+        @media (max-width: 768px) {
+            .director-tabs-exception {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                border-radius: 16px !important;
+                padding: 12px !important;
+                gap: 8px !important;
+            }
+            
+            .director-tab-exception {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 12px 16px !important;
+                font-size: 0.8rem !important;
+                border-radius: 10px !important;
+            }
+            
+            .director-tab-exception i {
+                font-size: 0.9rem !important;
+            }
+        }
+        
         .director-tab-exception { border-radius: 999px; padding: 8px 16px; border: none; background: transparent; color: #475569; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease; cursor: pointer; font-size: 0.875rem; }
         .director-tab-exception:hover { background: rgba(59, 130, 246, 0.1); color: #1d4ed8; transform: translateY(-1px); }
         .director-tab-exception.active { background: linear-gradient(120deg, #2563eb, #7c3aed); color: white; box-shadow: 0 10px 22px rgba(37, 99, 235, 0.25); transform: translateY(-1px); }
@@ -95,21 +147,31 @@
         .history-view-btn.active { background: #3b82f6; color: white; }
         #historyTableWrap.hidden { display: none !important; }
         #historyCardsWrap.hidden { display: none !important; }
+        
+        /* Hide list/card buttons on mobile */
+        @media (max-width: 768px) {
+            #historyViewCards, #historyViewList {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50">
     <!-- The reusable navbar will be automatically inserted here -->
     
     <!-- Main Content -->
-    <div id="exception-main-content" class="main-content flex-1 flex flex-col overflow-hidden">
-    <div class="w-full max-w-full py-6 px-4 sm:px-6 lg:px-8">
-        <!-- Page Header -->
-        <div class="page-header-exception flex flex-col items-center justify-center gap-4 text-center">
-            <div class="w-full">
-                <h1 class="page-title justify-center" data-translate="requests.title"><i class="fas fa-file-pen"></i> <span>Requests</span></h1>
-                <p class="page-subtitle text-center mx-auto" data-translate="requests.my_requests">Submit exceptions, view your request history, and manage pending extra hours</p>
-            </div>
-        </div>
+    <div class="main-content flex-1 flex flex-col overflow-hidden" style="margin-right: 0 !important;">
+        <!-- Content -->
+        <main class="flex-1 overflow-y-auto">
+            <div class="p-6">
+                <!-- Page Header -->
+                <div class="page-header m-6">
+                    <h1 class="page-title" data-translate="requests.title">
+                        <i class="fas fa-file-pen"></i>
+                        <span>Requests</span>
+                    </h1>
+                    <p class="page-subtitle" data-translate="requests.my_requests">Submit exceptions, view your request history, and manage pending extra hours</p>
+                </div>
 
         <!-- Tabs (Director style: pill tabs) -->
         <nav class="director-tabs-exception flex flex-wrap gap-2 mb-6" aria-label="Tabs">
@@ -574,6 +636,7 @@
             </div>
         </div>
     </div>
+    </main>
     </div>
 
     <script src="../assets/js/translations.js"></script>

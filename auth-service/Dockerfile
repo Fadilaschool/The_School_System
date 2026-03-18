@@ -8,8 +8,8 @@ WORKDIR /app
 # Copy package files first (layer caching optimization)
 COPY package*.json ./
 
-# Install production dependencies only
-RUN npm ci --only=production && npm cache clean --force
+# Install all dependencies (including devDependencies for nodemon)
+RUN npm install && npm cache clean --force
 
 # Copy source code
 COPY . .

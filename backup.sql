@@ -5,12 +5,9 @@
 -- Dumped from database version 17.5
 -- Dumped by pg_dump version 17.5
 
--- Started on 2026-03-04 11:54:03
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -20,26 +17,34 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 6 (class 2615 OID 2200)
--- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
-CREATE SCHEMA public;
-
-
-ALTER SCHEMA public OWNER TO pg_database_owner;
-
---
--- TOC entry 6173 (class 0 OID 0)
--- Dependencies: 6
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
---
-
-COMMENT ON SCHEMA public IS 'standard public schema';
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
--- TOC entry 322 (class 1255 OID 221624)
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
+
+
+--
 -- Name: calculate_contract_duration(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -63,7 +68,6 @@ $$;
 ALTER FUNCTION public.calculate_contract_duration() OWNER TO postgres;
 
 --
--- TOC entry 373 (class 1255 OID 156003)
 -- Name: can_validate_month(integer, integer, uuid); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -94,8 +98,6 @@ $$;
 ALTER FUNCTION public.can_validate_month(p_year integer, p_month integer, p_department_id uuid) OWNER TO postgres;
 
 --
--- TOC entry 6174 (class 0 OID 0)
--- Dependencies: 373
 -- Name: FUNCTION can_validate_month(p_year integer, p_month integer, p_department_id uuid); Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -103,7 +105,6 @@ COMMENT ON FUNCTION public.can_validate_month(p_year integer, p_month integer, p
 
 
 --
--- TOC entry 304 (class 1255 OID 190142)
 -- Name: check_task_completion(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -115,7 +116,6 @@ CREATE FUNCTION public.check_task_completion() RETURNS trigger
 ALTER FUNCTION public.check_task_completion() OWNER TO postgres;
 
 --
--- TOC entry 320 (class 1255 OID 107221)
 -- Name: extract_month_from_timestamp_immutable(timestamp with time zone); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -131,7 +131,6 @@ $$;
 ALTER FUNCTION public.extract_month_from_timestamp_immutable(ts_val timestamp with time zone) OWNER TO postgres;
 
 --
--- TOC entry 317 (class 1255 OID 107219)
 -- Name: extract_month_immutable(date); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -147,7 +146,6 @@ $$;
 ALTER FUNCTION public.extract_month_immutable(date_val date) OWNER TO postgres;
 
 --
--- TOC entry 335 (class 1255 OID 107222)
 -- Name: extract_year_from_timestamp_immutable(timestamp with time zone); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -163,7 +161,6 @@ $$;
 ALTER FUNCTION public.extract_year_from_timestamp_immutable(ts_val timestamp with time zone) OWNER TO postgres;
 
 --
--- TOC entry 338 (class 1255 OID 107220)
 -- Name: extract_year_immutable(date); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -179,7 +176,6 @@ $$;
 ALTER FUNCTION public.extract_year_immutable(date_val date) OWNER TO postgres;
 
 --
--- TOC entry 356 (class 1255 OID 221626)
 -- Name: generate_contract_number(date); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -208,7 +204,6 @@ $$;
 ALTER FUNCTION public.generate_contract_number(contract_start_date date) OWNER TO postgres;
 
 --
--- TOC entry 370 (class 1255 OID 106741)
 -- Name: get_employee_name_match_condition(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -229,7 +224,6 @@ $$;
 ALTER FUNCTION public.get_employee_name_match_condition() OWNER TO postgres;
 
 --
--- TOC entry 371 (class 1255 OID 156002)
 -- Name: get_employee_pending_count(uuid, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -274,8 +268,6 @@ $$;
 ALTER FUNCTION public.get_employee_pending_count(p_employee_id uuid, p_year integer, p_month integer) OWNER TO postgres;
 
 --
--- TOC entry 6175 (class 0 OID 0)
--- Dependencies: 371
 -- Name: FUNCTION get_employee_pending_count(p_employee_id uuid, p_year integer, p_month integer); Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -283,7 +275,6 @@ COMMENT ON FUNCTION public.get_employee_pending_count(p_employee_id uuid, p_year
 
 
 --
--- TOC entry 318 (class 1255 OID 172418)
 -- Name: levels_compatible(character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -302,7 +293,6 @@ $$;
 ALTER FUNCTION public.levels_compatible(req_level character varying, cand_level character varying) OWNER TO postgres;
 
 --
--- TOC entry 348 (class 1255 OID 172420)
 -- Name: on_attendance_exception_status_change(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -322,7 +312,6 @@ $$;
 ALTER FUNCTION public.on_attendance_exception_status_change() OWNER TO postgres;
 
 --
--- TOC entry 326 (class 1255 OID 172419)
 -- Name: process_approved_leave_exception(uuid); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -416,7 +405,6 @@ $$;
 ALTER FUNCTION public.process_approved_leave_exception(p_exception_id uuid) OWNER TO postgres;
 
 --
--- TOC entry 347 (class 1255 OID 123211)
 -- Name: recalculate_employee_monthly_data(uuid, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -479,8 +467,6 @@ $$;
 ALTER FUNCTION public.recalculate_employee_monthly_data(p_employee_id uuid, p_month integer, p_year integer) OWNER TO postgres;
 
 --
--- TOC entry 6176 (class 0 OID 0)
--- Dependencies: 347
 -- Name: FUNCTION recalculate_employee_monthly_data(p_employee_id uuid, p_month integer, p_year integer); Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -488,7 +474,6 @@ COMMENT ON FUNCTION public.recalculate_employee_monthly_data(p_employee_id uuid,
 
 
 --
--- TOC entry 307 (class 1255 OID 172422)
 -- Name: respond_to_invitation(uuid, uuid, text); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -551,7 +536,6 @@ END;$$;
 ALTER FUNCTION public.respond_to_invitation(p_invitation_id uuid, p_actor_user_id uuid, p_action text) OWNER TO postgres;
 
 --
--- TOC entry 314 (class 1255 OID 190143)
 -- Name: set_updated_at(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -568,7 +552,6 @@ $$;
 ALTER FUNCTION public.set_updated_at() OWNER TO postgres;
 
 --
--- TOC entry 311 (class 1255 OID 190144)
 -- Name: update_task_status_on_completion(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -580,7 +563,6 @@ CREATE FUNCTION public.update_task_status_on_completion() RETURNS trigger
 ALTER FUNCTION public.update_task_status_on_completion() OWNER TO postgres;
 
 --
--- TOC entry 352 (class 1255 OID 66171)
 -- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -597,7 +579,6 @@ $$;
 ALTER FUNCTION public.update_updated_at_column() OWNER TO postgres;
 
 --
--- TOC entry 309 (class 1255 OID 123212)
 -- Name: validate_employee_monthly_data(uuid, integer, integer, uuid); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -690,8 +671,6 @@ $$;
 ALTER FUNCTION public.validate_employee_monthly_data(p_employee_id uuid, p_month integer, p_year integer, p_validated_by_user_id uuid) OWNER TO postgres;
 
 --
--- TOC entry 6177 (class 0 OID 0)
--- Dependencies: 309
 -- Name: FUNCTION validate_employee_monthly_data(p_employee_id uuid, p_month integer, p_year integer, p_validated_by_user_id uuid); Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -703,7 +682,6 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 262 (class 1259 OID 190145)
 -- Name: attendance; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -723,7 +701,6 @@ CREATE TABLE public.attendance (
 ALTER TABLE public.attendance OWNER TO postgres;
 
 --
--- TOC entry 248 (class 1259 OID 123181)
 -- Name: attendance_calculations_cache; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -741,8 +718,6 @@ CREATE TABLE public.attendance_calculations_cache (
 ALTER TABLE public.attendance_calculations_cache OWNER TO postgres;
 
 --
--- TOC entry 6178 (class 0 OID 0)
--- Dependencies: 248
 -- Name: TABLE attendance_calculations_cache; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -750,7 +725,6 @@ COMMENT ON TABLE public.attendance_calculations_cache IS 'Cache for real-time at
 
 
 --
--- TOC entry 232 (class 1259 OID 90376)
 -- Name: attendance_exceptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -777,7 +751,6 @@ CREATE TABLE public.attendance_exceptions (
 ALTER TABLE public.attendance_exceptions OWNER TO postgres;
 
 --
--- TOC entry 233 (class 1259 OID 90406)
 -- Name: attendance_overrides; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -799,8 +772,6 @@ CREATE TABLE public.attendance_overrides (
 ALTER TABLE public.attendance_overrides OWNER TO postgres;
 
 --
--- TOC entry 6179 (class 0 OID 0)
--- Dependencies: 233
 -- Name: COLUMN attendance_overrides.pending_status; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -808,7 +779,6 @@ COMMENT ON COLUMN public.attendance_overrides.pending_status IS 'Status for part
 
 
 --
--- TOC entry 230 (class 1259 OID 90328)
 -- Name: attendance_punches; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -829,7 +799,6 @@ CREATE TABLE public.attendance_punches (
 ALTER TABLE public.attendance_punches OWNER TO postgres;
 
 --
--- TOC entry 231 (class 1259 OID 90351)
 -- Name: attendance_settings; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -863,7 +832,6 @@ CREATE TABLE public.attendance_settings (
 ALTER TABLE public.attendance_settings OWNER TO postgres;
 
 --
--- TOC entry 234 (class 1259 OID 90432)
 -- Name: audit_logs; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -881,7 +849,6 @@ CREATE TABLE public.audit_logs (
 ALTER TABLE public.audit_logs OWNER TO postgres;
 
 --
--- TOC entry 258 (class 1259 OID 164249)
 -- Name: branch_levels; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -894,7 +861,6 @@ CREATE TABLE public.branch_levels (
 ALTER TABLE public.branch_levels OWNER TO postgres;
 
 --
--- TOC entry 257 (class 1259 OID 164237)
 -- Name: branches; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -915,8 +881,6 @@ CREATE TABLE public.branches (
 ALTER TABLE public.branches OWNER TO postgres;
 
 --
--- TOC entry 6180 (class 0 OID 0)
--- Dependencies: 257
 -- Name: COLUMN branches.address; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -924,8 +888,6 @@ COMMENT ON COLUMN public.branches.address IS 'Full address of the branch (e.g., 
 
 
 --
--- TOC entry 6181 (class 0 OID 0)
--- Dependencies: 257
 -- Name: COLUMN branches.wilaya; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -933,8 +895,6 @@ COMMENT ON COLUMN public.branches.wilaya IS 'Wilaya (province) where the branch 
 
 
 --
--- TOC entry 6182 (class 0 OID 0)
--- Dependencies: 257
 -- Name: COLUMN branches.registration_number; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -942,7 +902,6 @@ COMMENT ON COLUMN public.branches.registration_number IS 'Registration number (N
 
 
 --
--- TOC entry 277 (class 1259 OID 205191)
 -- Name: complaint_attachments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -959,7 +918,6 @@ CREATE TABLE public.complaint_attachments (
 ALTER TABLE public.complaint_attachments OWNER TO postgres;
 
 --
--- TOC entry 278 (class 1259 OID 205198)
 -- Name: complaint_history; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -977,7 +935,6 @@ CREATE TABLE public.complaint_history (
 ALTER TABLE public.complaint_history OWNER TO postgres;
 
 --
--- TOC entry 279 (class 1259 OID 205205)
 -- Name: complaint_messages; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -995,7 +952,6 @@ CREATE TABLE public.complaint_messages (
 ALTER TABLE public.complaint_messages OWNER TO postgres;
 
 --
--- TOC entry 280 (class 1259 OID 205213)
 -- Name: complaint_notifications; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1014,7 +970,6 @@ CREATE TABLE public.complaint_notifications (
 ALTER TABLE public.complaint_notifications OWNER TO postgres;
 
 --
--- TOC entry 281 (class 1259 OID 205221)
 -- Name: complaint_types; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1029,7 +984,6 @@ CREATE TABLE public.complaint_types (
 ALTER TABLE public.complaint_types OWNER TO postgres;
 
 --
--- TOC entry 282 (class 1259 OID 205228)
 -- Name: complaints; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1060,7 +1014,6 @@ CREATE TABLE public.complaints (
 ALTER TABLE public.complaints OWNER TO postgres;
 
 --
--- TOC entry 222 (class 1259 OID 41184)
 -- Name: departments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1076,7 +1029,6 @@ CREATE TABLE public.departments (
 ALTER TABLE public.departments OWNER TO postgres;
 
 --
--- TOC entry 223 (class 1259 OID 41199)
 -- Name: employee_departments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1091,7 +1043,6 @@ CREATE TABLE public.employee_departments (
 ALTER TABLE public.employee_departments OWNER TO postgres;
 
 --
--- TOC entry 245 (class 1259 OID 114892)
 -- Name: employee_monthly_summaries; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1128,8 +1079,6 @@ CREATE TABLE public.employee_monthly_summaries (
 ALTER TABLE public.employee_monthly_summaries OWNER TO postgres;
 
 --
--- TOC entry 6183 (class 0 OID 0)
--- Dependencies: 245
 -- Name: COLUMN employee_monthly_summaries.half_days; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1137,7 +1086,6 @@ COMMENT ON COLUMN public.employee_monthly_summaries.half_days IS 'Count of days 
 
 
 --
--- TOC entry 243 (class 1259 OID 107193)
 -- Name: employee_monthly_validations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1157,8 +1105,6 @@ CREATE TABLE public.employee_monthly_validations (
 ALTER TABLE public.employee_monthly_validations OWNER TO postgres;
 
 --
--- TOC entry 6184 (class 0 OID 0)
--- Dependencies: 243
 -- Name: TABLE employee_monthly_validations; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1166,8 +1112,6 @@ COMMENT ON TABLE public.employee_monthly_validations IS 'Tracks validation statu
 
 
 --
--- TOC entry 6185 (class 0 OID 0)
--- Dependencies: 243
 -- Name: COLUMN employee_monthly_validations.month; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1175,8 +1119,6 @@ COMMENT ON COLUMN public.employee_monthly_validations.month IS 'Month (1-12)';
 
 
 --
--- TOC entry 6186 (class 0 OID 0)
--- Dependencies: 243
 -- Name: COLUMN employee_monthly_validations.year; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1184,8 +1126,6 @@ COMMENT ON COLUMN public.employee_monthly_validations.year IS 'Year (2020-2100)'
 
 
 --
--- TOC entry 6187 (class 0 OID 0)
--- Dependencies: 243
 -- Name: COLUMN employee_monthly_validations.notes; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1193,7 +1133,6 @@ COMMENT ON COLUMN public.employee_monthly_validations.notes IS 'Optional validat
 
 
 --
--- TOC entry 242 (class 1259 OID 107169)
 -- Name: employee_overtime_hours; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1213,8 +1152,6 @@ CREATE TABLE public.employee_overtime_hours (
 ALTER TABLE public.employee_overtime_hours OWNER TO postgres;
 
 --
--- TOC entry 6188 (class 0 OID 0)
--- Dependencies: 242
 -- Name: TABLE employee_overtime_hours; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1222,8 +1159,6 @@ COMMENT ON TABLE public.employee_overtime_hours IS 'Tracks overtime hours worked
 
 
 --
--- TOC entry 6189 (class 0 OID 0)
--- Dependencies: 242
 -- Name: COLUMN employee_overtime_hours.hours; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1231,8 +1166,6 @@ COMMENT ON COLUMN public.employee_overtime_hours.hours IS 'Number of overtime ho
 
 
 --
--- TOC entry 6190 (class 0 OID 0)
--- Dependencies: 242
 -- Name: COLUMN employee_overtime_hours.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1240,7 +1173,6 @@ COMMENT ON COLUMN public.employee_overtime_hours.description IS 'Optional descri
 
 
 --
--- TOC entry 241 (class 1259 OID 106712)
 -- Name: employee_salary_adjustments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1261,8 +1193,6 @@ CREATE TABLE public.employee_salary_adjustments (
 ALTER TABLE public.employee_salary_adjustments OWNER TO postgres;
 
 --
--- TOC entry 6191 (class 0 OID 0)
--- Dependencies: 241
 -- Name: TABLE employee_salary_adjustments; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1270,7 +1200,6 @@ COMMENT ON TABLE public.employee_salary_adjustments IS 'Employee-specific salary
 
 
 --
--- TOC entry 228 (class 1259 OID 58158)
 -- Name: employee_timetables; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1289,7 +1218,6 @@ CREATE TABLE public.employee_timetables (
 ALTER TABLE public.employee_timetables OWNER TO postgres;
 
 --
--- TOC entry 221 (class 1259 OID 41162)
 -- Name: employees; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1333,8 +1261,6 @@ CREATE TABLE public.employees (
 ALTER TABLE public.employees OWNER TO postgres;
 
 --
--- TOC entry 6192 (class 0 OID 0)
--- Dependencies: 221
 -- Name: COLUMN employees.place_of_birth; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1342,8 +1268,6 @@ COMMENT ON COLUMN public.employees.place_of_birth IS 'Place of birth of the empl
 
 
 --
--- TOC entry 6193 (class 0 OID 0)
--- Dependencies: 221
 -- Name: COLUMN employees.social_security_number; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1351,7 +1275,6 @@ COMMENT ON COLUMN public.employees.social_security_number IS 'Social security nu
 
 
 --
--- TOC entry 239 (class 1259 OID 98513)
 -- Name: raw_punches; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1368,7 +1291,6 @@ CREATE TABLE public.raw_punches (
 ALTER TABLE public.raw_punches OWNER TO postgres;
 
 --
--- TOC entry 227 (class 1259 OID 58142)
 -- Name: timetable_intervals; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1391,7 +1313,6 @@ CREATE TABLE public.timetable_intervals (
 ALTER TABLE public.timetable_intervals OWNER TO postgres;
 
 --
--- TOC entry 249 (class 1259 OID 123255)
 -- Name: comprehensive_monthly_statistics; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -1516,8 +1437,6 @@ CREATE VIEW public.comprehensive_monthly_statistics AS
 ALTER VIEW public.comprehensive_monthly_statistics OWNER TO postgres;
 
 --
--- TOC entry 6194 (class 0 OID 0)
--- Dependencies: 249
 -- Name: VIEW comprehensive_monthly_statistics; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1525,7 +1444,6 @@ COMMENT ON VIEW public.comprehensive_monthly_statistics IS 'Comprehensive monthl
 
 
 --
--- TOC entry 303 (class 1259 OID 221617)
 -- Name: contract_number_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -1540,7 +1458,6 @@ CREATE SEQUENCE public.contract_number_seq
 ALTER SEQUENCE public.contract_number_seq OWNER TO postgres;
 
 --
--- TOC entry 299 (class 1259 OID 205629)
 -- Name: localisations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1562,7 +1479,6 @@ CREATE TABLE public.localisations (
 ALTER TABLE public.localisations OWNER TO postgres;
 
 --
--- TOC entry 283 (class 1259 OID 205240)
 -- Name: signalisations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1591,7 +1507,6 @@ CREATE TABLE public.signalisations (
 ALTER TABLE public.signalisations OWNER TO postgres;
 
 --
--- TOC entry 284 (class 1259 OID 205252)
 -- Name: suggestions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1617,7 +1532,6 @@ CREATE TABLE public.suggestions (
 ALTER TABLE public.suggestions OWNER TO postgres;
 
 --
--- TOC entry 300 (class 1259 OID 205649)
 -- Name: critical_alerts; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -1649,7 +1563,6 @@ UNION ALL
 ALTER VIEW public.critical_alerts OWNER TO postgres;
 
 --
--- TOC entry 285 (class 1259 OID 205261)
 -- Name: department_performance_detail; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -1676,7 +1589,6 @@ CREATE VIEW public.department_performance_detail AS
 ALTER VIEW public.department_performance_detail OWNER TO postgres;
 
 --
--- TOC entry 286 (class 1259 OID 205266)
 -- Name: director_dashboard; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -1721,7 +1633,6 @@ CREATE VIEW public.director_dashboard AS
 ALTER VIEW public.director_dashboard OWNER TO postgres;
 
 --
--- TOC entry 252 (class 1259 OID 164182)
 -- Name: employee_compensations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1740,7 +1651,6 @@ CREATE TABLE public.employee_compensations (
 ALTER TABLE public.employee_compensations OWNER TO postgres;
 
 --
--- TOC entry 301 (class 1259 OID 221575)
 -- Name: employee_contracts; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1765,8 +1675,6 @@ CREATE TABLE public.employee_contracts (
 ALTER TABLE public.employee_contracts OWNER TO postgres;
 
 --
--- TOC entry 6195 (class 0 OID 0)
--- Dependencies: 301
 -- Name: TABLE employee_contracts; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1774,8 +1682,6 @@ COMMENT ON TABLE public.employee_contracts IS 'Stores employee contract history.
 
 
 --
--- TOC entry 6196 (class 0 OID 0)
--- Dependencies: 301
 -- Name: COLUMN employee_contracts.contract_number; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1783,8 +1689,6 @@ COMMENT ON COLUMN public.employee_contracts.contract_number IS 'Unique contract 
 
 
 --
--- TOC entry 6197 (class 0 OID 0)
--- Dependencies: 301
 -- Name: COLUMN employee_contracts.duration_months; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1792,8 +1696,6 @@ COMMENT ON COLUMN public.employee_contracts.duration_months IS 'Contract duratio
 
 
 --
--- TOC entry 6198 (class 0 OID 0)
--- Dependencies: 301
 -- Name: COLUMN employee_contracts.probation_months; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1801,8 +1703,6 @@ COMMENT ON COLUMN public.employee_contracts.probation_months IS 'Probation perio
 
 
 --
--- TOC entry 6199 (class 0 OID 0)
--- Dependencies: 301
 -- Name: COLUMN employee_contracts.contract_salary; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1810,8 +1710,6 @@ COMMENT ON COLUMN public.employee_contracts.contract_salary IS 'Salary specific 
 
 
 --
--- TOC entry 6200 (class 0 OID 0)
--- Dependencies: 301
 -- Name: COLUMN employee_contracts.document_path; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1819,7 +1717,6 @@ COMMENT ON COLUMN public.employee_contracts.document_path IS 'Path to generated 
 
 
 --
--- TOC entry 246 (class 1259 OID 114919)
 -- Name: employee_daily_attendance; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1853,7 +1750,6 @@ CREATE TABLE public.employee_daily_attendance (
 ALTER TABLE public.employee_daily_attendance OWNER TO postgres;
 
 --
--- TOC entry 302 (class 1259 OID 221597)
 -- Name: employee_identities; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1874,8 +1770,6 @@ CREATE TABLE public.employee_identities (
 ALTER TABLE public.employee_identities OWNER TO postgres;
 
 --
--- TOC entry 6201 (class 0 OID 0)
--- Dependencies: 302
 -- Name: TABLE employee_identities; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1883,8 +1777,6 @@ COMMENT ON TABLE public.employee_identities IS 'Stores legal/ID card information
 
 
 --
--- TOC entry 6202 (class 0 OID 0)
--- Dependencies: 302
 -- Name: COLUMN employee_identities.id_card_number; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1892,8 +1784,6 @@ COMMENT ON COLUMN public.employee_identities.id_card_number IS 'National ID card
 
 
 --
--- TOC entry 6203 (class 0 OID 0)
--- Dependencies: 302
 -- Name: COLUMN employee_identities.id_issue_date; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1901,8 +1791,6 @@ COMMENT ON COLUMN public.employee_identities.id_issue_date IS 'Date when ID card
 
 
 --
--- TOC entry 6204 (class 0 OID 0)
--- Dependencies: 302
 -- Name: COLUMN employee_identities.id_issue_authority; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1910,8 +1798,6 @@ COMMENT ON COLUMN public.employee_identities.id_issue_authority IS 'Authority th
 
 
 --
--- TOC entry 6205 (class 0 OID 0)
--- Dependencies: 302
 -- Name: COLUMN employee_identities.arabic_place_of_birth; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1919,8 +1805,6 @@ COMMENT ON COLUMN public.employee_identities.arabic_place_of_birth IS 'Place of 
 
 
 --
--- TOC entry 6206 (class 0 OID 0)
--- Dependencies: 302
 -- Name: COLUMN employee_identities.arabic_address; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1928,8 +1812,6 @@ COMMENT ON COLUMN public.employee_identities.arabic_address IS 'Address in Arabi
 
 
 --
--- TOC entry 6207 (class 0 OID 0)
--- Dependencies: 302
 -- Name: COLUMN employee_identities.arabic_nationality; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1937,7 +1819,6 @@ COMMENT ON COLUMN public.employee_identities.arabic_nationality IS 'Nationality 
 
 
 --
--- TOC entry 244 (class 1259 OID 107223)
 -- Name: employee_monthly_statistics; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -2011,8 +1892,6 @@ CREATE VIEW public.employee_monthly_statistics AS
 ALTER VIEW public.employee_monthly_statistics OWNER TO postgres;
 
 --
--- TOC entry 6208 (class 0 OID 0)
--- Dependencies: 244
 -- Name: VIEW employee_monthly_statistics; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2020,7 +1899,6 @@ COMMENT ON VIEW public.employee_monthly_statistics IS 'Consolidated view of empl
 
 
 --
--- TOC entry 263 (class 1259 OID 190151)
 -- Name: employee_reports; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2048,7 +1926,6 @@ CREATE TABLE public.employee_reports (
 ALTER TABLE public.employee_reports OWNER TO postgres;
 
 --
--- TOC entry 225 (class 1259 OID 41404)
 -- Name: position_salaries; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2068,7 +1945,6 @@ CREATE TABLE public.position_salaries (
 ALTER TABLE public.position_salaries OWNER TO postgres;
 
 --
--- TOC entry 220 (class 1259 OID 41152)
 -- Name: positions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2083,7 +1959,6 @@ CREATE TABLE public.positions (
 ALTER TABLE public.positions OWNER TO postgres;
 
 --
--- TOC entry 253 (class 1259 OID 164199)
 -- Name: employee_salary_calculation_view; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -2135,7 +2010,6 @@ CREATE VIEW public.employee_salary_calculation_view AS
 ALTER VIEW public.employee_salary_calculation_view OWNER TO postgres;
 
 --
--- TOC entry 264 (class 1259 OID 190163)
 -- Name: instruction_recipients; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2153,7 +2027,6 @@ CREATE TABLE public.instruction_recipients (
 ALTER TABLE public.instruction_recipients OWNER TO postgres;
 
 --
--- TOC entry 265 (class 1259 OID 190169)
 -- Name: instructions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2175,7 +2048,6 @@ CREATE TABLE public.instructions (
 ALTER TABLE public.instructions OWNER TO postgres;
 
 --
--- TOC entry 256 (class 1259 OID 164220)
 -- Name: level_subjects; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2188,7 +2060,6 @@ CREATE TABLE public.level_subjects (
 ALTER TABLE public.level_subjects OWNER TO postgres;
 
 --
--- TOC entry 255 (class 1259 OID 164212)
 -- Name: levels; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2201,7 +2072,6 @@ CREATE TABLE public.levels (
 ALTER TABLE public.levels OWNER TO postgres;
 
 --
--- TOC entry 266 (class 1259 OID 190181)
 -- Name: meeting_attendees; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2215,7 +2085,6 @@ CREATE TABLE public.meeting_attendees (
 ALTER TABLE public.meeting_attendees OWNER TO postgres;
 
 --
--- TOC entry 267 (class 1259 OID 190185)
 -- Name: meetings; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2235,7 +2104,6 @@ CREATE TABLE public.meetings (
 ALTER TABLE public.meetings OWNER TO postgres;
 
 --
--- TOC entry 268 (class 1259 OID 190193)
 -- Name: notifications; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2258,7 +2126,6 @@ CREATE TABLE public.notifications (
 ALTER TABLE public.notifications OWNER TO postgres;
 
 --
--- TOC entry 247 (class 1259 OID 123146)
 -- Name: overtime_requests; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2282,8 +2149,6 @@ CREATE TABLE public.overtime_requests (
 ALTER TABLE public.overtime_requests OWNER TO postgres;
 
 --
--- TOC entry 6209 (class 0 OID 0)
--- Dependencies: 247
 -- Name: TABLE overtime_requests; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2291,7 +2156,6 @@ COMMENT ON TABLE public.overtime_requests IS 'Employee overtime requests that re
 
 
 --
--- TOC entry 250 (class 1259 OID 147804)
 -- Name: payslip_batches; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2310,7 +2174,6 @@ CREATE TABLE public.payslip_batches (
 ALTER TABLE public.payslip_batches OWNER TO postgres;
 
 --
--- TOC entry 251 (class 1259 OID 147819)
 -- Name: payslips; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2334,7 +2197,6 @@ CREATE TABLE public.payslips (
 ALTER TABLE public.payslips OWNER TO postgres;
 
 --
--- TOC entry 269 (class 1259 OID 190201)
 -- Name: permission_requests; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2359,7 +2221,6 @@ CREATE TABLE public.permission_requests (
 ALTER TABLE public.permission_requests OWNER TO postgres;
 
 --
--- TOC entry 237 (class 1259 OID 90495)
 -- Name: punch_file_uploads; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2386,7 +2247,6 @@ CREATE TABLE public.punch_file_uploads (
 ALTER TABLE public.punch_file_uploads OWNER TO postgres;
 
 --
--- TOC entry 270 (class 1259 OID 190212)
 -- Name: report_acknowledgements; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2404,7 +2264,6 @@ CREATE TABLE public.report_acknowledgements (
 ALTER TABLE public.report_acknowledgements OWNER TO postgres;
 
 --
--- TOC entry 298 (class 1259 OID 205587)
 -- Name: report_viewed_tracking; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2419,7 +2278,6 @@ CREATE TABLE public.report_viewed_tracking (
 ALTER TABLE public.report_viewed_tracking OWNER TO postgres;
 
 --
--- TOC entry 271 (class 1259 OID 190219)
 -- Name: reports; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2437,7 +2295,6 @@ CREATE TABLE public.reports (
 ALTER TABLE public.reports OWNER TO postgres;
 
 --
--- TOC entry 272 (class 1259 OID 190225)
 -- Name: salaries; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2458,7 +2315,6 @@ CREATE TABLE public.salaries (
 ALTER TABLE public.salaries OWNER TO postgres;
 
 --
--- TOC entry 238 (class 1259 OID 90512)
 -- Name: salary_calculations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2487,7 +2343,6 @@ CREATE TABLE public.salary_calculations (
 ALTER TABLE public.salary_calculations OWNER TO postgres;
 
 --
--- TOC entry 273 (class 1259 OID 190233)
 -- Name: salary_history; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2505,7 +2360,6 @@ CREATE TABLE public.salary_history (
 ALTER TABLE public.salary_history OWNER TO postgres;
 
 --
--- TOC entry 240 (class 1259 OID 106700)
 -- Name: salary_parameters; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2522,8 +2376,6 @@ CREATE TABLE public.salary_parameters (
 ALTER TABLE public.salary_parameters OWNER TO postgres;
 
 --
--- TOC entry 6210 (class 0 OID 0)
--- Dependencies: 240
 -- Name: TABLE salary_parameters; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2531,7 +2383,6 @@ COMMENT ON TABLE public.salary_parameters IS 'Configurable parameters for salary
 
 
 --
--- TOC entry 236 (class 1259 OID 90470)
 -- Name: salary_payments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2555,8 +2406,6 @@ CREATE TABLE public.salary_payments (
 ALTER TABLE public.salary_payments OWNER TO postgres;
 
 --
--- TOC entry 6211 (class 0 OID 0)
--- Dependencies: 236
 -- Name: COLUMN salary_payments.calculation_method; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2564,7 +2413,6 @@ COMMENT ON COLUMN public.salary_payments.calculation_method IS 'The calculation 
 
 
 --
--- TOC entry 235 (class 1259 OID 90448)
 -- Name: salary_raises; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2585,7 +2433,6 @@ CREATE TABLE public.salary_raises (
 ALTER TABLE public.salary_raises OWNER TO postgres;
 
 --
--- TOC entry 287 (class 1259 OID 205271)
 -- Name: signal_type_responsibles; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2600,7 +2447,6 @@ CREATE TABLE public.signal_type_responsibles (
 ALTER TABLE public.signal_type_responsibles OWNER TO postgres;
 
 --
--- TOC entry 288 (class 1259 OID 205275)
 -- Name: signal_types; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2615,7 +2461,6 @@ CREATE TABLE public.signal_types (
 ALTER TABLE public.signal_types OWNER TO postgres;
 
 --
--- TOC entry 289 (class 1259 OID 205282)
 -- Name: signalisations_status_history; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2632,7 +2477,6 @@ CREATE TABLE public.signalisations_status_history (
 ALTER TABLE public.signalisations_status_history OWNER TO postgres;
 
 --
--- TOC entry 290 (class 1259 OID 205289)
 -- Name: signalisations_views; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2646,7 +2490,6 @@ CREATE TABLE public.signalisations_views (
 ALTER TABLE public.signalisations_views OWNER TO postgres;
 
 --
--- TOC entry 254 (class 1259 OID 164204)
 -- Name: subjects; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2659,7 +2502,6 @@ CREATE TABLE public.subjects (
 ALTER TABLE public.subjects OWNER TO postgres;
 
 --
--- TOC entry 261 (class 1259 OID 180616)
 -- Name: substitution_history; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2683,8 +2525,6 @@ CREATE TABLE public.substitution_history (
 ALTER TABLE public.substitution_history OWNER TO postgres;
 
 --
--- TOC entry 6212 (class 0 OID 0)
--- Dependencies: 261
 -- Name: TABLE substitution_history; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2692,8 +2532,6 @@ COMMENT ON TABLE public.substitution_history IS 'History of completed substituti
 
 
 --
--- TOC entry 6213 (class 0 OID 0)
--- Dependencies: 261
 -- Name: COLUMN substitution_history.substitute_employee_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2701,8 +2539,6 @@ COMMENT ON COLUMN public.substitution_history.substitute_employee_id IS 'The tea
 
 
 --
--- TOC entry 6214 (class 0 OID 0)
--- Dependencies: 261
 -- Name: COLUMN substitution_history.absent_employee_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2710,8 +2546,6 @@ COMMENT ON COLUMN public.substitution_history.absent_employee_id IS 'The teacher
 
 
 --
--- TOC entry 6215 (class 0 OID 0)
--- Dependencies: 261
 -- Name: COLUMN substitution_history.status; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2719,8 +2553,6 @@ COMMENT ON COLUMN public.substitution_history.status IS 'completed = substitutio
 
 
 --
--- TOC entry 6216 (class 0 OID 0)
--- Dependencies: 261
 -- Name: COLUMN substitution_history.completed_at; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2728,7 +2560,6 @@ COMMENT ON COLUMN public.substitution_history.completed_at IS 'When the substitu
 
 
 --
--- TOC entry 260 (class 1259 OID 172450)
 -- Name: substitution_invitations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2753,7 +2584,6 @@ CREATE TABLE public.substitution_invitations (
 ALTER TABLE public.substitution_invitations OWNER TO postgres;
 
 --
--- TOC entry 259 (class 1259 OID 172430)
 -- Name: substitution_requests; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2781,7 +2611,6 @@ CREATE TABLE public.substitution_requests (
 ALTER TABLE public.substitution_requests OWNER TO postgres;
 
 --
--- TOC entry 291 (class 1259 OID 205293)
 -- Name: suggestion_attachments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2798,7 +2627,6 @@ CREATE TABLE public.suggestion_attachments (
 ALTER TABLE public.suggestion_attachments OWNER TO postgres;
 
 --
--- TOC entry 292 (class 1259 OID 205300)
 -- Name: suggestion_history; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2816,7 +2644,6 @@ CREATE TABLE public.suggestion_history (
 ALTER TABLE public.suggestion_history OWNER TO postgres;
 
 --
--- TOC entry 293 (class 1259 OID 205307)
 -- Name: suggestion_messages; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2834,7 +2661,6 @@ CREATE TABLE public.suggestion_messages (
 ALTER TABLE public.suggestion_messages OWNER TO postgres;
 
 --
--- TOC entry 294 (class 1259 OID 205315)
 -- Name: suggestion_notifications; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2853,7 +2679,6 @@ CREATE TABLE public.suggestion_notifications (
 ALTER TABLE public.suggestion_notifications OWNER TO postgres;
 
 --
--- TOC entry 295 (class 1259 OID 205323)
 -- Name: suggestion_types; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2868,7 +2693,6 @@ CREATE TABLE public.suggestion_types (
 ALTER TABLE public.suggestion_types OWNER TO postgres;
 
 --
--- TOC entry 274 (class 1259 OID 190239)
 -- Name: task_assignments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2886,7 +2710,6 @@ CREATE TABLE public.task_assignments (
 ALTER TABLE public.task_assignments OWNER TO postgres;
 
 --
--- TOC entry 275 (class 1259 OID 190246)
 -- Name: task_comments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2903,7 +2726,6 @@ CREATE TABLE public.task_comments (
 ALTER TABLE public.task_comments OWNER TO postgres;
 
 --
--- TOC entry 224 (class 1259 OID 41216)
 -- Name: tasks; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2927,7 +2749,6 @@ CREATE TABLE public.tasks (
 ALTER TABLE public.tasks OWNER TO postgres;
 
 --
--- TOC entry 226 (class 1259 OID 58132)
 -- Name: timetables; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2949,7 +2770,6 @@ CREATE TABLE public.timetables (
 ALTER TABLE public.timetables OWNER TO postgres;
 
 --
--- TOC entry 296 (class 1259 OID 205330)
 -- Name: top_contributors; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -2973,7 +2793,6 @@ CREATE VIEW public.top_contributors AS
 ALTER VIEW public.top_contributors OWNER TO postgres;
 
 --
--- TOC entry 297 (class 1259 OID 205335)
 -- Name: trend_analysis; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -2996,7 +2815,6 @@ UNION ALL
 ALTER VIEW public.trend_analysis OWNER TO postgres;
 
 --
--- TOC entry 229 (class 1259 OID 90317)
 -- Name: uploads; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3019,7 +2837,6 @@ CREATE TABLE public.uploads (
 ALTER TABLE public.uploads OWNER TO postgres;
 
 --
--- TOC entry 276 (class 1259 OID 190254)
 -- Name: user_sessions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3036,7 +2853,6 @@ CREATE TABLE public.user_sessions (
 ALTER TABLE public.user_sessions OWNER TO postgres;
 
 --
--- TOC entry 219 (class 1259 OID 41139)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3054,8 +2870,6 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 6131 (class 0 OID 190145)
--- Dependencies: 262
 -- Data for Name: attendance; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3064,8 +2878,6 @@ COPY public.attendance (id, employee_id, check_in_time, check_out_time, total_ho
 
 
 --
--- TOC entry 6119 (class 0 OID 123181)
--- Dependencies: 248
 -- Data for Name: attendance_calculations_cache; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3074,8 +2886,6 @@ COPY public.attendance_calculations_cache (id, employee_id, date, month, year, r
 
 
 --
--- TOC entry 6104 (class 0 OID 90376)
--- Dependencies: 232
 -- Data for Name: attendance_exceptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3118,8 +2928,6 @@ c65af095-0acf-4d29-a2f1-0d657d6ddc26	e508b46e-f0b1-4580-b096-9ab7cd352405	Missin
 
 
 --
--- TOC entry 6105 (class 0 OID 90406)
--- Dependencies: 233
 -- Data for Name: attendance_overrides; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3428,8 +3236,6 @@ bdfce758-764d-438e-b48c-9a3522ee7a71	83aeda46-b8c0-48e4-bca8-840b9aae71ea	2026-0
 
 
 --
--- TOC entry 6102 (class 0 OID 90328)
--- Dependencies: 230
 -- Data for Name: attendance_punches; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3586,8 +3392,6 @@ f2eace3e-de16-4a59-809f-c600514ce8d3	30c76e9b-a94e-4183-822c-5376453e5a3a	2025-1
 
 
 --
--- TOC entry 6103 (class 0 OID 90351)
--- Dependencies: 231
 -- Data for Name: attendance_settings; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3597,8 +3401,6 @@ COPY public.attendance_settings (id, scope, department_id, timezone, grace_minut
 
 
 --
--- TOC entry 6106 (class 0 OID 90432)
--- Dependencies: 234
 -- Data for Name: audit_logs; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3688,8 +3490,6 @@ e29653ba-9557-4f7a-bfeb-c7de2590d100	employee_month_recalculation	72b0cb1e-bea1-
 
 
 --
--- TOC entry 6127 (class 0 OID 164249)
--- Dependencies: 258
 -- Data for Name: branch_levels; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3699,8 +3499,6 @@ COPY public.branch_levels (branch_id, level_id) FROM stdin;
 
 
 --
--- TOC entry 6126 (class 0 OID 164237)
--- Dependencies: 257
 -- Data for Name: branches; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3710,8 +3508,6 @@ COPY public.branches (id, name, description, website, phone, created_at, updated
 
 
 --
--- TOC entry 6146 (class 0 OID 205191)
--- Dependencies: 277
 -- Data for Name: complaint_attachments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3729,8 +3525,6 @@ a7f32385-0ff1-4710-baa2-782bbbe7e3d8	968ee93f-09a9-4ef0-9aba-47dd64d86171	/uploa
 
 
 --
--- TOC entry 6147 (class 0 OID 205198)
--- Dependencies: 278
 -- Data for Name: complaint_history; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -4369,8 +4163,6 @@ b8ee462d-b6fa-4d7e-b123-7cea0d42be29	1b743060-7f32-44b2-bc77-faf64052a531	49459f
 
 
 --
--- TOC entry 6148 (class 0 OID 205205)
--- Dependencies: 279
 -- Data for Name: complaint_messages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -4397,8 +4189,6 @@ df9e0792-04b7-4de8-8117-6a8caf4439a7	1b743060-7f32-44b2-bc77-faf64052a531	49459f
 
 
 --
--- TOC entry 6149 (class 0 OID 205213)
--- Dependencies: 280
 -- Data for Name: complaint_notifications; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7263,8 +7053,6 @@ a7e987ae-0cd3-46a6-a760-29a28a3279b3	1b743060-7f32-44b2-bc77-faf64052a531	49459f
 
 
 --
--- TOC entry 6150 (class 0 OID 205221)
--- Dependencies: 281
 -- Data for Name: complaint_types; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7283,8 +7071,6 @@ ebcd7481-f4b8-4985-944d-c37f94314881	TRANSPORT	شكاوي النقل المدر�
 
 
 --
--- TOC entry 6151 (class 0 OID 205228)
--- Dependencies: 282
 -- Data for Name: complaints; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7305,8 +7091,6 @@ f19fd934-c68d-470a-a9d6-7730c118bc06	ad4800fd-c13f-4d2a-8558-cae29f052ea0	41dafe
 
 
 --
--- TOC entry 6094 (class 0 OID 41184)
--- Dependencies: 222
 -- Data for Name: departments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7320,8 +7104,6 @@ d04b462c-4e4c-49b6-801c-b5d95aca634f	depa	fa322927-92b0-49b9-ae44-da1cf8e485ec	2
 
 
 --
--- TOC entry 6122 (class 0 OID 164182)
--- Dependencies: 252
 -- Data for Name: employee_compensations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7357,8 +7139,6 @@ fee0d044-5460-4ad8-98e1-812ded35e951	ff910c2e-0a8d-44da-9b22-22b12fe131e0	50000.
 
 
 --
--- TOC entry 6165 (class 0 OID 221575)
--- Dependencies: 301
 -- Data for Name: employee_contracts; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7400,8 +7180,6 @@ f2a39b7a-963c-43bc-9b02-15df4e10c2de	6a63ad35-c9c2-4f36-93bd-884593db4f8d	46947b
 
 
 --
--- TOC entry 6117 (class 0 OID 114919)
--- Dependencies: 246
 -- Data for Name: employee_daily_attendance; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7475,8 +7253,6 @@ b455c90b-a22a-41c2-9e60-263758004af1	72b0cb1e-bea1-43c0-bb4b-58ff21e714ff	2025-0
 
 
 --
--- TOC entry 6095 (class 0 OID 41199)
--- Dependencies: 223
 -- Data for Name: employee_departments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7502,8 +7278,6 @@ e53978dd-3afe-4ad2-b06e-7ad01de42f81	4a950d19-299d-498a-b1b0-928626e137a8	2025-0
 
 
 --
--- TOC entry 6166 (class 0 OID 221597)
--- Dependencies: 302
 -- Data for Name: employee_identities; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7526,8 +7300,6 @@ ecdf9a66-a529-4e79-8506-1fa36a1c812c	db2d402f-5842-4c20-b280-93e7279e144b	545453
 
 
 --
--- TOC entry 6116 (class 0 OID 114892)
--- Dependencies: 245
 -- Data for Name: employee_monthly_summaries; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7594,8 +7366,6 @@ bfe1fd07-8c82-495e-9654-99e234c8c52d	72b0cb1e-bea1-43c0-bb4b-58ff21e714ff	2	2026
 
 
 --
--- TOC entry 6115 (class 0 OID 107193)
--- Dependencies: 243
 -- Data for Name: employee_monthly_validations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7626,8 +7396,6 @@ b02b00f6-98ef-45ff-b482-c02015b63d0e	bb3e2594-b78e-4823-b56c-2920966d598e	9	2025
 
 
 --
--- TOC entry 6114 (class 0 OID 107169)
--- Dependencies: 242
 -- Data for Name: employee_overtime_hours; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7642,8 +7410,6 @@ e070241f-2c6d-4716-916d-02d0ebc716e0	72b0cb1e-bea1-43c0-bb4b-58ff21e714ff	2025-1
 
 
 --
--- TOC entry 6132 (class 0 OID 190151)
--- Dependencies: 263
 -- Data for Name: employee_reports; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7669,8 +7435,6 @@ ea1081ff-1f32-42c7-b7d6-663ff6ac5a57	17eab49d-0e03-4c68-bfc4-69999f93c5f3	تقر
 
 
 --
--- TOC entry 6113 (class 0 OID 106712)
--- Dependencies: 241
 -- Data for Name: employee_salary_adjustments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7702,8 +7466,6 @@ b143b58d-97ae-41ca-a1d1-695ca414350f	e508b46e-f0b1-4580-b096-9ab7cd352405	decrea
 
 
 --
--- TOC entry 6100 (class 0 OID 58158)
--- Dependencies: 228
 -- Data for Name: employee_timetables; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7721,8 +7483,6 @@ dc4f677f-f7a2-482b-bc8e-83e9dd24dd03	49459fe7-4d26-4199-a022-7cb8d906f20f	82fad6
 
 
 --
--- TOC entry 6093 (class 0 OID 41162)
--- Dependencies: 221
 -- Data for Name: employees; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7795,8 +7555,6 @@ b0ba2984-9098-408c-91d0-cd36d591c1a2	589eea17-e890-436f-ad04-ba754a6b584c	\N	\N	
 
 
 --
--- TOC entry 6133 (class 0 OID 190163)
--- Dependencies: 264
 -- Data for Name: instruction_recipients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7848,8 +7606,6 @@ cc5b5cab-0aaf-455b-bccf-0c4e6ab757d9	49459fe7-4d26-4199-a022-7cb8d906f20f	2025-0
 
 
 --
--- TOC entry 6134 (class 0 OID 190169)
--- Dependencies: 265
 -- Data for Name: instructions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7886,8 +7642,6 @@ cc5b5cab-0aaf-455b-bccf-0c4e6ab757d9	LOOLOLO	normal	2025-09-25 00:00:00+01	activ
 
 
 --
--- TOC entry 6125 (class 0 OID 164220)
--- Dependencies: 256
 -- Data for Name: level_subjects; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7896,8 +7650,6 @@ COPY public.level_subjects (level_id, subject_id) FROM stdin;
 
 
 --
--- TOC entry 6124 (class 0 OID 164212)
--- Dependencies: 255
 -- Data for Name: levels; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7910,8 +7662,6 @@ e19d0f7b-9a16-4697-b289-cf303b431ae0	ابتدائي
 
 
 --
--- TOC entry 6164 (class 0 OID 205629)
--- Dependencies: 299
 -- Data for Name: localisations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7922,8 +7672,6 @@ COPY public.localisations (id, code_emplacement, batiment, etage, description_fr
 
 
 --
--- TOC entry 6135 (class 0 OID 190181)
--- Dependencies: 266
 -- Data for Name: meeting_attendees; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7932,8 +7680,6 @@ COPY public.meeting_attendees (meeting_id, employee_id, created_at) FROM stdin;
 
 
 --
--- TOC entry 6136 (class 0 OID 190185)
--- Dependencies: 267
 -- Data for Name: meetings; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7942,8 +7688,6 @@ COPY public.meetings (id, title, description, scheduled_by, start_time, end_time
 
 
 --
--- TOC entry 6137 (class 0 OID 190193)
--- Dependencies: 268
 -- Data for Name: notifications; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -8849,8 +8593,6 @@ b3f11305-1d84-40c1-b1ac-e97b2b3b9b66	8e5d7421-43c8-43df-aac0-12cddffebd06	\N	com
 
 
 --
--- TOC entry 6118 (class 0 OID 123146)
--- Dependencies: 247
 -- Data for Name: overtime_requests; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -8865,8 +8607,6 @@ f382f575-7bf3-44b1-b3c5-24c55c35334d	72b0cb1e-bea1-43c0-bb4b-58ff21e714ff	2026-0
 
 
 --
--- TOC entry 6120 (class 0 OID 147804)
--- Dependencies: 250
 -- Data for Name: payslip_batches; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -8878,8 +8618,6 @@ ac2c2db4-5863-4959-9b78-16e2411bbadc	6	2025	2de7085b-ec28-4ac6-8ef3-535d6d4839ca
 
 
 --
--- TOC entry 6121 (class 0 OID 147819)
--- Dependencies: 251
 -- Data for Name: payslips; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -8893,8 +8631,6 @@ a3787ecb-da17-495f-b64d-5f30a8470ee9	83aeda46-b8c0-48e4-bca8-840b9aae71ea	9	2025
 
 
 --
--- TOC entry 6138 (class 0 OID 190201)
--- Dependencies: 269
 -- Data for Name: permission_requests; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -8903,8 +8639,6 @@ COPY public.permission_requests (id, employee_id, type, start_date, end_date, re
 
 
 --
--- TOC entry 6097 (class 0 OID 41404)
--- Dependencies: 225
 -- Data for Name: position_salaries; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -8921,8 +8655,6 @@ ed3881ac-7f62-4693-83c3-df37ba214262	3858cf67-648e-43ef-9e83-66cdd0e19465	3000.0
 
 
 --
--- TOC entry 6092 (class 0 OID 41152)
--- Dependencies: 220
 -- Data for Name: positions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -8961,8 +8693,6 @@ d2cf5e7f-f787-401f-9dfe-8c630d77ae8d	مراقبة عامة	2025-12-15 14:06:47.9
 
 
 --
--- TOC entry 6109 (class 0 OID 90495)
--- Dependencies: 237
 -- Data for Name: punch_file_uploads; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -8973,8 +8703,6 @@ COPY public.punch_file_uploads (id, filename, original_filename, file_path, file
 
 
 --
--- TOC entry 6111 (class 0 OID 98513)
--- Dependencies: 239
 -- Data for Name: raw_punches; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9224,8 +8952,6 @@ c2dd9622-0137-4554-9acd-7a1a8943f1ad	BOULAICHE NASSIM	2025-08-24 15:59:00+01	upl
 
 
 --
--- TOC entry 6139 (class 0 OID 190212)
--- Dependencies: 270
 -- Data for Name: report_acknowledgements; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9240,8 +8966,6 @@ b5b2761b-8688-4b7f-ad0d-769aef25721a	9ed18065-0c5f-4b87-aa7d-cda3d8df09c6	49459f
 
 
 --
--- TOC entry 6163 (class 0 OID 205587)
--- Dependencies: 298
 -- Data for Name: report_viewed_tracking; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9250,8 +8974,6 @@ COPY public.report_viewed_tracking (id, report_id, viewer_id, viewed_at) FROM st
 
 
 --
--- TOC entry 6140 (class 0 OID 190219)
--- Dependencies: 271
 -- Data for Name: reports; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9267,8 +8989,6 @@ COPY public.reports (id, task_id, employee_id, description, remarks, created_at,
 
 
 --
--- TOC entry 6141 (class 0 OID 190225)
--- Dependencies: 272
 -- Data for Name: salaries; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9277,8 +8997,6 @@ COPY public.salaries (id, employee_id, position_id, amount, currency, payment_fr
 
 
 --
--- TOC entry 6110 (class 0 OID 90512)
--- Dependencies: 238
 -- Data for Name: salary_calculations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9287,8 +9005,6 @@ COPY public.salary_calculations (id, employee_id, calculation_period_start, calc
 
 
 --
--- TOC entry 6142 (class 0 OID 190233)
--- Dependencies: 273
 -- Data for Name: salary_history; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9297,8 +9013,6 @@ COPY public.salary_history (id, employee_id, salary_id, old_amount, new_amount, 
 
 
 --
--- TOC entry 6112 (class 0 OID 106700)
--- Dependencies: 240
 -- Data for Name: salary_parameters; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9311,8 +9025,6 @@ c0740649-2bbe-48b4-ba99-2472063f5594	grace_minutes	15.00	Grace period for late a
 
 
 --
--- TOC entry 6108 (class 0 OID 90470)
--- Dependencies: 236
 -- Data for Name: salary_payments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9325,8 +9037,6 @@ COPY public.salary_payments (id, employee_id, month, year, status, paid_at, paid
 
 
 --
--- TOC entry 6107 (class 0 OID 90448)
--- Dependencies: 235
 -- Data for Name: salary_raises; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9336,8 +9046,6 @@ COPY public.salary_raises (id, employee_id, raise_type, amount, effective_date, 
 
 
 --
--- TOC entry 6154 (class 0 OID 205271)
--- Dependencies: 287
 -- Data for Name: signal_type_responsibles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9356,8 +9064,6 @@ cd2efb1e-b5b3-429f-861a-1ca3d371aefe	30f3cf89-bfe7-433b-9d6a-e54c314913c5	4f5067
 
 
 --
--- TOC entry 6155 (class 0 OID 205275)
--- Dependencies: 288
 -- Data for Name: signal_types; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9375,8 +9081,6 @@ f17846b0-16b4-4c81-a0bc-5c350ba44bf0	HHHH	hhhh	2025-12-10 14:48:13.345556
 
 
 --
--- TOC entry 6152 (class 0 OID 205240)
--- Dependencies: 283
 -- Data for Name: signalisations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -9398,8 +9102,6 @@ c884d8fd-bf28-4e58-adc1-46c942cb07dd	f7cedf4e-f684-485b-a43d-922a35611f54	2ab3b9
 
 
 --
--- TOC entry 6156 (class 0 OID 205282)
--- Dependencies: 289
 -- Data for Name: signalisations_status_history; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11573,8 +11275,6 @@ e4d1da60-9856-4364-a380-8f2b82484981	1c42946d-594f-4b90-a350-e00c08244d80	VIEWED
 
 
 --
--- TOC entry 6157 (class 0 OID 205289)
--- Dependencies: 290
 -- Data for Name: signalisations_views; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11631,8 +11331,6 @@ fd8d2c28-cdcc-4af4-a733-a45a458f2c2a	ded61506-b389-4004-83f8-33eed0ea6c76	2026-0
 
 
 --
--- TOC entry 6123 (class 0 OID 164204)
--- Dependencies: 254
 -- Data for Name: subjects; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11651,8 +11349,6 @@ e05fa2b7-5ed1-463e-afeb-5b491be53132	الاعلام الآلي
 
 
 --
--- TOC entry 6130 (class 0 OID 180616)
--- Dependencies: 261
 -- Data for Name: substitution_history; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11663,8 +11359,6 @@ COPY public.substitution_history (id, invitation_id, request_id, substitute_empl
 
 
 --
--- TOC entry 6129 (class 0 OID 172450)
--- Dependencies: 260
 -- Data for Name: substitution_invitations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11682,8 +11376,6 @@ f6a14d24-14e5-4e24-947b-17fc050b1d2a	cc320610-559c-46a0-9176-ac2188bc5c86	72b0cb
 
 
 --
--- TOC entry 6128 (class 0 OID 172430)
--- Dependencies: 259
 -- Data for Name: substitution_requests; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11709,8 +11401,6 @@ c8e012bc-3cb3-4f46-a154-133d80a82fa2	83aeda46-b8c0-48e4-bca8-840b9aae71ea	20b10b
 
 
 --
--- TOC entry 6158 (class 0 OID 205293)
--- Dependencies: 291
 -- Data for Name: suggestion_attachments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11719,8 +11409,6 @@ COPY public.suggestion_attachments (id, suggestion_id, file_path, file_name, upl
 
 
 --
--- TOC entry 6159 (class 0 OID 205300)
--- Dependencies: 292
 -- Data for Name: suggestion_history; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11736,8 +11424,6 @@ f3d70c6a-2d33-4448-b67d-06a94f662a74	a5ce7749-8360-43b5-b1d8-62e3ce544283	ad4800
 
 
 --
--- TOC entry 6160 (class 0 OID 205307)
--- Dependencies: 293
 -- Data for Name: suggestion_messages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11746,8 +11432,6 @@ COPY public.suggestion_messages (id, suggestion_id, sender_id, sender_role, body
 
 
 --
--- TOC entry 6161 (class 0 OID 205315)
--- Dependencies: 294
 -- Data for Name: suggestion_notifications; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11781,8 +11465,6 @@ ed7cb1b9-c456-47a5-8702-3f55a3639233	9f3501fb-8a53-43fd-961a-0e7252caef61	72b0cb
 
 
 --
--- TOC entry 6162 (class 0 OID 205323)
--- Dependencies: 295
 -- Data for Name: suggestion_types; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11799,8 +11481,6 @@ b9a4e856-8dd1-4de6-a747-b059097e465e	POLICY	سياسات	2025-11-30 22:30:26.907
 
 
 --
--- TOC entry 6153 (class 0 OID 205252)
--- Dependencies: 284
 -- Data for Name: suggestions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -11814,8 +11494,6 @@ a5ce7749-8360-43b5-b1d8-62e3ce544283	ad4800fd-c13f-4d2a-8558-cae29f052ea0	489c6d
 
 
 --
--- TOC entry 6143 (class 0 OID 190239)
--- Dependencies: 274
 -- Data for Name: task_assignments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -12046,8 +11724,6 @@ b6c8697e-b05d-4227-b1a1-92528c3b2161	21ac7995-1670-4edd-be2b-e92dc6561578	72b0cb
 
 
 --
--- TOC entry 6144 (class 0 OID 190246)
--- Dependencies: 275
 -- Data for Name: task_comments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -12109,8 +11785,6 @@ dada02cc-73c4-4f16-8e7b-04ff3d11f5b6	0591ef3c-2c3f-4c92-96b7-8d477d99597c	49459f
 
 
 --
--- TOC entry 6096 (class 0 OID 41216)
--- Dependencies: 224
 -- Data for Name: tasks; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -12128,8 +11802,6 @@ eae34b86-e55b-4f54-be1a-017ebce1fec2	ttt444	ttt444	Special	\N	7606015b-d687-46b7
 
 
 --
--- TOC entry 6099 (class 0 OID 58142)
--- Dependencies: 227
 -- Data for Name: timetable_intervals; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -12161,8 +11833,6 @@ d18d7253-20e2-48a2-b96d-2e3f90b621e3	82fad68a-1a3e-49b3-a9f2-21d17c1a8408	0	07:0
 
 
 --
--- TOC entry 6098 (class 0 OID 58132)
--- Dependencies: 226
 -- Data for Name: timetables; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -12183,8 +11853,6 @@ d9df460f-6544-42d2-a085-de612f8c2016	moh	Template	UTC	2025-09-17 10:36:29.112919
 
 
 --
--- TOC entry 6101 (class 0 OID 90317)
--- Dependencies: 229
 -- Data for Name: uploads; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -12204,8 +11872,6 @@ f6fa38ff-8f1d-4a56-be68-3ebe61855980	1758551296993-AchouakBenmeziane.pdf	Achouak
 
 
 --
--- TOC entry 6145 (class 0 OID 190254)
--- Dependencies: 276
 -- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -12214,8 +11880,6 @@ COPY public.user_sessions (id, user_id, token_hash, expires_at, created_at, last
 
 
 --
--- TOC entry 6091 (class 0 OID 41139)
--- Dependencies: 219
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -12553,8 +12217,6 @@ c94e209d-5add-4435-92d5-dd5ba9300289	testfirst3.testlast3	$2a$10$TQkduoD8GGlrwVU
 
 
 --
--- TOC entry 6217 (class 0 OID 0)
--- Dependencies: 303
 -- Name: contract_number_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -12562,7 +12224,6 @@ SELECT pg_catalog.setval('public.contract_number_seq', 24, true);
 
 
 --
--- TOC entry 5608 (class 2606 OID 123191)
 -- Name: attendance_calculations_cache attendance_calculations_cache_employee_date_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12571,7 +12232,6 @@ ALTER TABLE ONLY public.attendance_calculations_cache
 
 
 --
--- TOC entry 5610 (class 2606 OID 123189)
 -- Name: attendance_calculations_cache attendance_calculations_cache_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12580,7 +12240,6 @@ ALTER TABLE ONLY public.attendance_calculations_cache
 
 
 --
--- TOC entry 5538 (class 2606 OID 90388)
 -- Name: attendance_exceptions attendance_exceptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12589,7 +12248,6 @@ ALTER TABLE ONLY public.attendance_exceptions
 
 
 --
--- TOC entry 5543 (class 2606 OID 90415)
 -- Name: attendance_overrides attendance_overrides_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12598,7 +12256,6 @@ ALTER TABLE ONLY public.attendance_overrides
 
 
 --
--- TOC entry 5528 (class 2606 OID 90338)
 -- Name: attendance_punches attendance_punches_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12607,7 +12264,6 @@ ALTER TABLE ONLY public.attendance_punches
 
 
 --
--- TOC entry 5666 (class 2606 OID 190262)
 -- Name: attendance attendance_records_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12616,7 +12272,6 @@ ALTER TABLE ONLY public.attendance
 
 
 --
--- TOC entry 5534 (class 2606 OID 90368)
 -- Name: attendance_settings attendance_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12625,7 +12280,6 @@ ALTER TABLE ONLY public.attendance_settings
 
 
 --
--- TOC entry 5547 (class 2606 OID 90441)
 -- Name: audit_logs audit_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12634,7 +12288,6 @@ ALTER TABLE ONLY public.audit_logs
 
 
 --
--- TOC entry 5641 (class 2606 OID 164253)
 -- Name: branch_levels branch_levels_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12643,7 +12296,6 @@ ALTER TABLE ONLY public.branch_levels
 
 
 --
--- TOC entry 5637 (class 2606 OID 164248)
 -- Name: branches branches_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12652,7 +12304,6 @@ ALTER TABLE ONLY public.branches
 
 
 --
--- TOC entry 5639 (class 2606 OID 164246)
 -- Name: branches branches_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12661,7 +12312,6 @@ ALTER TABLE ONLY public.branches
 
 
 --
--- TOC entry 5727 (class 2606 OID 205341)
 -- Name: complaint_attachments complaint_attachments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12670,7 +12320,6 @@ ALTER TABLE ONLY public.complaint_attachments
 
 
 --
--- TOC entry 5730 (class 2606 OID 205343)
 -- Name: complaint_history complaint_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12679,7 +12328,6 @@ ALTER TABLE ONLY public.complaint_history
 
 
 --
--- TOC entry 5733 (class 2606 OID 205345)
 -- Name: complaint_messages complaint_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12688,7 +12336,6 @@ ALTER TABLE ONLY public.complaint_messages
 
 
 --
--- TOC entry 5736 (class 2606 OID 205347)
 -- Name: complaint_notifications complaint_notifications_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12697,7 +12344,6 @@ ALTER TABLE ONLY public.complaint_notifications
 
 
 --
--- TOC entry 5740 (class 2606 OID 205349)
 -- Name: complaint_types complaint_types_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12706,7 +12352,6 @@ ALTER TABLE ONLY public.complaint_types
 
 
 --
--- TOC entry 5742 (class 2606 OID 205351)
 -- Name: complaint_types complaint_types_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12715,7 +12360,6 @@ ALTER TABLE ONLY public.complaint_types
 
 
 --
--- TOC entry 5744 (class 2606 OID 205353)
 -- Name: complaints complaints_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12724,7 +12368,6 @@ ALTER TABLE ONLY public.complaints
 
 
 --
--- TOC entry 5498 (class 2606 OID 190264)
 -- Name: departments departments_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12733,7 +12376,6 @@ ALTER TABLE ONLY public.departments
 
 
 --
--- TOC entry 5500 (class 2606 OID 41191)
 -- Name: departments departments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12742,7 +12384,6 @@ ALTER TABLE ONLY public.departments
 
 
 --
--- TOC entry 5621 (class 2606 OID 164190)
 -- Name: employee_compensations employee_compensations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12751,7 +12392,6 @@ ALTER TABLE ONLY public.employee_compensations
 
 
 --
--- TOC entry 5801 (class 2606 OID 221620)
 -- Name: employee_contracts employee_contracts_contract_number_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12760,7 +12400,6 @@ ALTER TABLE ONLY public.employee_contracts
 
 
 --
--- TOC entry 5803 (class 2606 OID 221583)
 -- Name: employee_contracts employee_contracts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12769,7 +12408,6 @@ ALTER TABLE ONLY public.employee_contracts
 
 
 --
--- TOC entry 5600 (class 2606 OID 114936)
 -- Name: employee_daily_attendance employee_daily_attendance_employee_id_date_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12778,7 +12416,6 @@ ALTER TABLE ONLY public.employee_daily_attendance
 
 
 --
--- TOC entry 5602 (class 2606 OID 114934)
 -- Name: employee_daily_attendance employee_daily_attendance_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12787,7 +12424,6 @@ ALTER TABLE ONLY public.employee_daily_attendance
 
 
 --
--- TOC entry 5809 (class 2606 OID 221607)
 -- Name: employee_identities employee_identities_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12796,7 +12432,6 @@ ALTER TABLE ONLY public.employee_identities
 
 
 --
--- TOC entry 5594 (class 2606 OID 114908)
 -- Name: employee_monthly_summaries employee_monthly_summaries_employee_id_month_year_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12805,7 +12440,6 @@ ALTER TABLE ONLY public.employee_monthly_summaries
 
 
 --
--- TOC entry 5596 (class 2606 OID 114906)
 -- Name: employee_monthly_summaries employee_monthly_summaries_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12814,7 +12448,6 @@ ALTER TABLE ONLY public.employee_monthly_summaries
 
 
 --
--- TOC entry 5587 (class 2606 OID 107203)
 -- Name: employee_monthly_validations employee_monthly_validations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12823,7 +12456,6 @@ ALTER TABLE ONLY public.employee_monthly_validations
 
 
 --
--- TOC entry 5589 (class 2606 OID 107205)
 -- Name: employee_monthly_validations employee_monthly_validations_unique_employee_month_year; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12832,7 +12464,6 @@ ALTER TABLE ONLY public.employee_monthly_validations
 
 
 --
--- TOC entry 5579 (class 2606 OID 139605)
 -- Name: employee_overtime_hours employee_overtime_hours_employee_date_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12841,7 +12472,6 @@ ALTER TABLE ONLY public.employee_overtime_hours
 
 
 --
--- TOC entry 5581 (class 2606 OID 107179)
 -- Name: employee_overtime_hours employee_overtime_hours_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12850,7 +12480,6 @@ ALTER TABLE ONLY public.employee_overtime_hours
 
 
 --
--- TOC entry 5669 (class 2606 OID 190268)
 -- Name: employee_reports employee_reports_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12859,7 +12488,6 @@ ALTER TABLE ONLY public.employee_reports
 
 
 --
--- TOC entry 5572 (class 2606 OID 106722)
 -- Name: employee_salary_adjustments employee_salary_adjustments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12868,7 +12496,6 @@ ALTER TABLE ONLY public.employee_salary_adjustments
 
 
 --
--- TOC entry 5521 (class 2606 OID 58166)
 -- Name: employee_timetables employee_timetables_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12877,7 +12504,6 @@ ALTER TABLE ONLY public.employee_timetables
 
 
 --
--- TOC entry 5493 (class 2606 OID 41173)
 -- Name: employees employees_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12886,7 +12512,6 @@ ALTER TABLE ONLY public.employees
 
 
 --
--- TOC entry 5679 (class 2606 OID 190270)
 -- Name: instruction_recipients instruction_recipients_instruction_id_employee_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12895,7 +12520,6 @@ ALTER TABLE ONLY public.instruction_recipients
 
 
 --
--- TOC entry 5685 (class 2606 OID 190272)
 -- Name: instructions instructions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12904,7 +12528,6 @@ ALTER TABLE ONLY public.instructions
 
 
 --
--- TOC entry 5635 (class 2606 OID 164224)
 -- Name: level_subjects level_subjects_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12913,7 +12536,6 @@ ALTER TABLE ONLY public.level_subjects
 
 
 --
--- TOC entry 5629 (class 2606 OID 164219)
 -- Name: levels levels_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12922,7 +12544,6 @@ ALTER TABLE ONLY public.levels
 
 
 --
--- TOC entry 5631 (class 2606 OID 164217)
 -- Name: levels levels_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12931,7 +12552,6 @@ ALTER TABLE ONLY public.levels
 
 
 --
--- TOC entry 5797 (class 2606 OID 205641)
 -- Name: localisations localisations_code_emplacement_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12940,7 +12560,6 @@ ALTER TABLE ONLY public.localisations
 
 
 --
--- TOC entry 5799 (class 2606 OID 205639)
 -- Name: localisations localisations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12949,7 +12568,6 @@ ALTER TABLE ONLY public.localisations
 
 
 --
--- TOC entry 5687 (class 2606 OID 190274)
 -- Name: meeting_attendees meeting_attendees_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12958,7 +12576,6 @@ ALTER TABLE ONLY public.meeting_attendees
 
 
 --
--- TOC entry 5691 (class 2606 OID 190276)
 -- Name: meetings meetings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12967,7 +12584,6 @@ ALTER TABLE ONLY public.meetings
 
 
 --
--- TOC entry 5696 (class 2606 OID 190278)
 -- Name: notifications notifications_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12976,7 +12592,6 @@ ALTER TABLE ONLY public.notifications
 
 
 --
--- TOC entry 5606 (class 2606 OID 123158)
 -- Name: overtime_requests overtime_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12985,7 +12600,6 @@ ALTER TABLE ONLY public.overtime_requests
 
 
 --
--- TOC entry 5613 (class 2606 OID 147813)
 -- Name: payslip_batches payslip_batches_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -12994,7 +12608,6 @@ ALTER TABLE ONLY public.payslip_batches
 
 
 --
--- TOC entry 5618 (class 2606 OID 147831)
 -- Name: payslips payslips_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13003,7 +12616,6 @@ ALTER TABLE ONLY public.payslips
 
 
 --
--- TOC entry 5700 (class 2606 OID 190280)
 -- Name: permission_requests permission_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13012,7 +12624,6 @@ ALTER TABLE ONLY public.permission_requests
 
 
 --
--- TOC entry 5511 (class 2606 OID 190282)
 -- Name: position_salaries position_salaries_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13021,7 +12632,6 @@ ALTER TABLE ONLY public.position_salaries
 
 
 --
--- TOC entry 5489 (class 2606 OID 190284)
 -- Name: positions positions_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13030,7 +12640,6 @@ ALTER TABLE ONLY public.positions
 
 
 --
--- TOC entry 5491 (class 2606 OID 190286)
 -- Name: positions positions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13039,7 +12648,6 @@ ALTER TABLE ONLY public.positions
 
 
 --
--- TOC entry 5561 (class 2606 OID 90511)
 -- Name: punch_file_uploads punch_file_uploads_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13048,7 +12656,6 @@ ALTER TABLE ONLY public.punch_file_uploads
 
 
 --
--- TOC entry 5705 (class 2606 OID 190288)
 -- Name: report_acknowledgements report_acknowledgements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13057,7 +12664,6 @@ ALTER TABLE ONLY public.report_acknowledgements
 
 
 --
--- TOC entry 5791 (class 2606 OID 205593)
 -- Name: report_viewed_tracking report_viewed_tracking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13066,7 +12672,6 @@ ALTER TABLE ONLY public.report_viewed_tracking
 
 
 --
--- TOC entry 5793 (class 2606 OID 205595)
 -- Name: report_viewed_tracking report_viewed_tracking_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13075,7 +12680,6 @@ ALTER TABLE ONLY public.report_viewed_tracking
 
 
 --
--- TOC entry 5710 (class 2606 OID 190290)
 -- Name: reports reports_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13084,7 +12688,6 @@ ALTER TABLE ONLY public.reports
 
 
 --
--- TOC entry 5712 (class 2606 OID 190292)
 -- Name: salaries salaries_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13093,7 +12696,6 @@ ALTER TABLE ONLY public.salaries
 
 
 --
--- TOC entry 5566 (class 2606 OID 90529)
 -- Name: salary_calculations salary_calculations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13102,7 +12704,6 @@ ALTER TABLE ONLY public.salary_calculations
 
 
 --
--- TOC entry 5714 (class 2606 OID 190294)
 -- Name: salary_history salary_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13111,7 +12712,6 @@ ALTER TABLE ONLY public.salary_history
 
 
 --
--- TOC entry 5568 (class 2606 OID 106711)
 -- Name: salary_parameters salary_parameters_parameter_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13120,7 +12720,6 @@ ALTER TABLE ONLY public.salary_parameters
 
 
 --
--- TOC entry 5570 (class 2606 OID 106709)
 -- Name: salary_parameters salary_parameters_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13129,7 +12728,6 @@ ALTER TABLE ONLY public.salary_parameters
 
 
 --
--- TOC entry 5554 (class 2606 OID 90482)
 -- Name: salary_payments salary_payments_employee_id_month_year_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13138,7 +12736,6 @@ ALTER TABLE ONLY public.salary_payments
 
 
 --
--- TOC entry 5556 (class 2606 OID 90480)
 -- Name: salary_payments salary_payments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13147,7 +12744,6 @@ ALTER TABLE ONLY public.salary_payments
 
 
 --
--- TOC entry 5551 (class 2606 OID 90458)
 -- Name: salary_raises salary_raises_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13156,7 +12752,6 @@ ALTER TABLE ONLY public.salary_raises
 
 
 --
--- TOC entry 5760 (class 2606 OID 205355)
 -- Name: signal_type_responsibles signal_type_responsibles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13165,7 +12760,6 @@ ALTER TABLE ONLY public.signal_type_responsibles
 
 
 --
--- TOC entry 5762 (class 2606 OID 205357)
 -- Name: signal_types signal_types_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13174,7 +12768,6 @@ ALTER TABLE ONLY public.signal_types
 
 
 --
--- TOC entry 5764 (class 2606 OID 205359)
 -- Name: signal_types signal_types_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13183,7 +12776,6 @@ ALTER TABLE ONLY public.signal_types
 
 
 --
--- TOC entry 5752 (class 2606 OID 205361)
 -- Name: signalisations signalisations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13192,7 +12784,6 @@ ALTER TABLE ONLY public.signalisations
 
 
 --
--- TOC entry 5766 (class 2606 OID 205363)
 -- Name: signalisations_status_history signalisations_status_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13201,7 +12792,6 @@ ALTER TABLE ONLY public.signalisations_status_history
 
 
 --
--- TOC entry 5769 (class 2606 OID 205365)
 -- Name: signalisations_views signalisations_views_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13210,7 +12800,6 @@ ALTER TABLE ONLY public.signalisations_views
 
 
 --
--- TOC entry 5625 (class 2606 OID 164211)
 -- Name: subjects subjects_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13219,7 +12808,6 @@ ALTER TABLE ONLY public.subjects
 
 
 --
--- TOC entry 5627 (class 2606 OID 164209)
 -- Name: subjects subjects_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13228,7 +12816,6 @@ ALTER TABLE ONLY public.subjects
 
 
 --
--- TOC entry 5664 (class 2606 OID 180623)
 -- Name: substitution_history substitution_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13237,7 +12824,6 @@ ALTER TABLE ONLY public.substitution_history
 
 
 --
--- TOC entry 5656 (class 2606 OID 172458)
 -- Name: substitution_invitations substitution_invitations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13246,7 +12832,6 @@ ALTER TABLE ONLY public.substitution_invitations
 
 
 --
--- TOC entry 5658 (class 2606 OID 172460)
 -- Name: substitution_invitations substitution_invitations_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13255,7 +12840,6 @@ ALTER TABLE ONLY public.substitution_invitations
 
 
 --
--- TOC entry 5649 (class 2606 OID 172439)
 -- Name: substitution_requests substitution_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13264,7 +12848,6 @@ ALTER TABLE ONLY public.substitution_requests
 
 
 --
--- TOC entry 5772 (class 2606 OID 205367)
 -- Name: suggestion_attachments suggestion_attachments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13273,7 +12856,6 @@ ALTER TABLE ONLY public.suggestion_attachments
 
 
 --
--- TOC entry 5775 (class 2606 OID 205369)
 -- Name: suggestion_history suggestion_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13282,7 +12864,6 @@ ALTER TABLE ONLY public.suggestion_history
 
 
 --
--- TOC entry 5778 (class 2606 OID 205371)
 -- Name: suggestion_messages suggestion_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13291,7 +12872,6 @@ ALTER TABLE ONLY public.suggestion_messages
 
 
 --
--- TOC entry 5782 (class 2606 OID 205373)
 -- Name: suggestion_notifications suggestion_notifications_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13300,7 +12880,6 @@ ALTER TABLE ONLY public.suggestion_notifications
 
 
 --
--- TOC entry 5784 (class 2606 OID 205375)
 -- Name: suggestion_types suggestion_types_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13309,7 +12888,6 @@ ALTER TABLE ONLY public.suggestion_types
 
 
 --
--- TOC entry 5786 (class 2606 OID 205377)
 -- Name: suggestion_types suggestion_types_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13318,7 +12896,6 @@ ALTER TABLE ONLY public.suggestion_types
 
 
 --
--- TOC entry 5757 (class 2606 OID 205379)
 -- Name: suggestions suggestions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13327,7 +12904,6 @@ ALTER TABLE ONLY public.suggestions
 
 
 --
--- TOC entry 5718 (class 2606 OID 190296)
 -- Name: task_assignments task_assignments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13336,7 +12912,6 @@ ALTER TABLE ONLY public.task_assignments
 
 
 --
--- TOC entry 5721 (class 2606 OID 190298)
 -- Name: task_comments task_comments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13345,7 +12920,6 @@ ALTER TABLE ONLY public.task_comments
 
 
 --
--- TOC entry 5507 (class 2606 OID 41228)
 -- Name: tasks tasks_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13354,7 +12928,6 @@ ALTER TABLE ONLY public.tasks
 
 
 --
--- TOC entry 5519 (class 2606 OID 58152)
 -- Name: timetable_intervals timetable_intervals_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13363,7 +12936,6 @@ ALTER TABLE ONLY public.timetable_intervals
 
 
 --
--- TOC entry 5514 (class 2606 OID 58141)
 -- Name: timetables timetables_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13372,7 +12944,6 @@ ALTER TABLE ONLY public.timetables
 
 
 --
--- TOC entry 5813 (class 2606 OID 221609)
 -- Name: employee_identities unique_employee_identity; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13381,7 +12952,6 @@ ALTER TABLE ONLY public.employee_identities
 
 
 --
--- TOC entry 5707 (class 2606 OID 190300)
 -- Name: report_acknowledgements unique_report_employee; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13390,7 +12960,6 @@ ALTER TABLE ONLY public.report_acknowledgements
 
 
 --
--- TOC entry 5526 (class 2606 OID 90327)
 -- Name: uploads uploads_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13399,7 +12968,6 @@ ALTER TABLE ONLY public.uploads
 
 
 --
--- TOC entry 5725 (class 2606 OID 190302)
 -- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13408,7 +12976,6 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
--- TOC entry 5485 (class 2606 OID 41149)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13417,7 +12984,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 5487 (class 2606 OID 190304)
 -- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -13426,7 +12992,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 5611 (class 1259 OID 123197)
 -- Name: idx_attendance_calculations_cache_employee_month; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13434,7 +12999,6 @@ CREATE INDEX idx_attendance_calculations_cache_employee_month ON public.attendan
 
 
 --
--- TOC entry 5667 (class 1259 OID 190305)
 -- Name: idx_attendance_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13442,7 +13006,6 @@ CREATE INDEX idx_attendance_employee_id ON public.attendance USING btree (employ
 
 
 --
--- TOC entry 5539 (class 1259 OID 147803)
 -- Name: idx_attendance_exceptions_document_upload_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13450,7 +13013,6 @@ CREATE INDEX idx_attendance_exceptions_document_upload_id ON public.attendance_e
 
 
 --
--- TOC entry 5540 (class 1259 OID 123244)
 -- Name: idx_attendance_exceptions_employee_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13458,7 +13020,6 @@ CREATE INDEX idx_attendance_exceptions_employee_date ON public.attendance_except
 
 
 --
--- TOC entry 5541 (class 1259 OID 90405)
 -- Name: idx_attendance_exceptions_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13466,7 +13027,6 @@ CREATE INDEX idx_attendance_exceptions_status ON public.attendance_exceptions US
 
 
 --
--- TOC entry 5544 (class 1259 OID 90431)
 -- Name: idx_attendance_overrides_employee_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13474,7 +13034,6 @@ CREATE INDEX idx_attendance_overrides_employee_date ON public.attendance_overrid
 
 
 --
--- TOC entry 5545 (class 1259 OID 156001)
 -- Name: idx_attendance_overrides_pending; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13482,7 +13041,6 @@ CREATE INDEX idx_attendance_overrides_pending ON public.attendance_overrides USI
 
 
 --
--- TOC entry 5529 (class 1259 OID 107228)
 -- Name: idx_attendance_punches_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13490,7 +13048,6 @@ CREATE INDEX idx_attendance_punches_employee_id ON public.attendance_punches USI
 
 
 --
--- TOC entry 5530 (class 1259 OID 90349)
 -- Name: idx_attendance_punches_employee_time; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13498,7 +13055,6 @@ CREATE INDEX idx_attendance_punches_employee_time ON public.attendance_punches U
 
 
 --
--- TOC entry 5531 (class 1259 OID 107229)
 -- Name: idx_attendance_punches_punch_time; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13506,7 +13062,6 @@ CREATE INDEX idx_attendance_punches_punch_time ON public.attendance_punches USIN
 
 
 --
--- TOC entry 5532 (class 1259 OID 90350)
 -- Name: idx_attendance_punches_upload_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13514,7 +13069,6 @@ CREATE INDEX idx_attendance_punches_upload_id ON public.attendance_punches USING
 
 
 --
--- TOC entry 5548 (class 1259 OID 90447)
 -- Name: idx_audit_logs_entity; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13522,7 +13076,6 @@ CREATE INDEX idx_audit_logs_entity ON public.audit_logs USING btree (entity_type
 
 
 --
--- TOC entry 5642 (class 1259 OID 164264)
 -- Name: idx_branch_levels_branch; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13530,7 +13083,6 @@ CREATE INDEX idx_branch_levels_branch ON public.branch_levels USING btree (branc
 
 
 --
--- TOC entry 5643 (class 1259 OID 164265)
 -- Name: idx_branch_levels_level; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13538,7 +13090,6 @@ CREATE INDEX idx_branch_levels_level ON public.branch_levels USING btree (level_
 
 
 --
--- TOC entry 5728 (class 1259 OID 205380)
 -- Name: idx_complaint_attachments_complaint; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13546,7 +13097,6 @@ CREATE INDEX idx_complaint_attachments_complaint ON public.complaint_attachments
 
 
 --
--- TOC entry 5731 (class 1259 OID 205381)
 -- Name: idx_complaint_history_complaint; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13554,7 +13104,6 @@ CREATE INDEX idx_complaint_history_complaint ON public.complaint_history USING b
 
 
 --
--- TOC entry 5734 (class 1259 OID 205382)
 -- Name: idx_complaint_messages_complaint; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13562,7 +13111,6 @@ CREATE INDEX idx_complaint_messages_complaint ON public.complaint_messages USING
 
 
 --
--- TOC entry 5737 (class 1259 OID 205383)
 -- Name: idx_complaint_notifications_recipient; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13570,7 +13118,6 @@ CREATE INDEX idx_complaint_notifications_recipient ON public.complaint_notificat
 
 
 --
--- TOC entry 5738 (class 1259 OID 205384)
 -- Name: idx_complaint_notifications_user; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13578,7 +13125,6 @@ CREATE INDEX idx_complaint_notifications_user ON public.complaint_notifications 
 
 
 --
--- TOC entry 5745 (class 1259 OID 205385)
 -- Name: idx_complaints_employee; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13586,7 +13132,6 @@ CREATE INDEX idx_complaints_employee ON public.complaints USING btree (employee_
 
 
 --
--- TOC entry 5746 (class 1259 OID 205386)
 -- Name: idx_complaints_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13594,7 +13139,6 @@ CREATE INDEX idx_complaints_status ON public.complaints USING btree (status, cre
 
 
 --
--- TOC entry 5622 (class 1259 OID 164197)
 -- Name: idx_employee_compensations_effective_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13602,7 +13146,6 @@ CREATE INDEX idx_employee_compensations_effective_date ON public.employee_compen
 
 
 --
--- TOC entry 5623 (class 1259 OID 164196)
 -- Name: idx_employee_compensations_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13610,7 +13153,6 @@ CREATE INDEX idx_employee_compensations_employee_id ON public.employee_compensat
 
 
 --
--- TOC entry 5804 (class 1259 OID 221623)
 -- Name: idx_employee_contracts_contract_number; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13618,7 +13160,6 @@ CREATE INDEX idx_employee_contracts_contract_number ON public.employee_contracts
 
 
 --
--- TOC entry 5805 (class 1259 OID 221594)
 -- Name: idx_employee_contracts_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13626,7 +13167,6 @@ CREATE INDEX idx_employee_contracts_employee_id ON public.employee_contracts USI
 
 
 --
--- TOC entry 5806 (class 1259 OID 221596)
 -- Name: idx_employee_contracts_is_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13634,7 +13174,6 @@ CREATE INDEX idx_employee_contracts_is_active ON public.employee_contracts USING
 
 
 --
--- TOC entry 5807 (class 1259 OID 221595)
 -- Name: idx_employee_contracts_start_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13642,7 +13181,6 @@ CREATE INDEX idx_employee_contracts_start_date ON public.employee_contracts USIN
 
 
 --
--- TOC entry 5501 (class 1259 OID 190306)
 -- Name: idx_employee_departments_department_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13650,7 +13188,6 @@ CREATE INDEX idx_employee_departments_department_id ON public.employee_departmen
 
 
 --
--- TOC entry 5502 (class 1259 OID 190307)
 -- Name: idx_employee_departments_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13658,7 +13195,6 @@ CREATE INDEX idx_employee_departments_employee_id ON public.employee_departments
 
 
 --
--- TOC entry 5810 (class 1259 OID 221615)
 -- Name: idx_employee_identities_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13666,7 +13202,6 @@ CREATE INDEX idx_employee_identities_employee_id ON public.employee_identities U
 
 
 --
--- TOC entry 5811 (class 1259 OID 221616)
 -- Name: idx_employee_identities_id_card_number; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13674,7 +13209,6 @@ CREATE INDEX idx_employee_identities_id_card_number ON public.employee_identitie
 
 
 --
--- TOC entry 5597 (class 1259 OID 123213)
 -- Name: idx_employee_monthly_summaries_calculation_method; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13682,7 +13216,6 @@ CREATE INDEX idx_employee_monthly_summaries_calculation_method ON public.employe
 
 
 --
--- TOC entry 5598 (class 1259 OID 123214)
 -- Name: idx_employee_monthly_summaries_validated; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13690,7 +13223,6 @@ CREATE INDEX idx_employee_monthly_summaries_validated ON public.employee_monthly
 
 
 --
--- TOC entry 5590 (class 1259 OID 107216)
 -- Name: idx_employee_monthly_validations_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13698,7 +13230,6 @@ CREATE INDEX idx_employee_monthly_validations_employee_id ON public.employee_mon
 
 
 --
--- TOC entry 5591 (class 1259 OID 107217)
 -- Name: idx_employee_monthly_validations_month_year; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13706,7 +13237,6 @@ CREATE INDEX idx_employee_monthly_validations_month_year ON public.employee_mont
 
 
 --
--- TOC entry 5592 (class 1259 OID 107218)
 -- Name: idx_employee_monthly_validations_validated_by; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13714,7 +13244,6 @@ CREATE INDEX idx_employee_monthly_validations_validated_by ON public.employee_mo
 
 
 --
--- TOC entry 5582 (class 1259 OID 107191)
 -- Name: idx_employee_overtime_hours_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13722,7 +13251,6 @@ CREATE INDEX idx_employee_overtime_hours_date ON public.employee_overtime_hours 
 
 
 --
--- TOC entry 5583 (class 1259 OID 107192)
 -- Name: idx_employee_overtime_hours_employee_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13730,7 +13258,6 @@ CREATE INDEX idx_employee_overtime_hours_employee_date ON public.employee_overti
 
 
 --
--- TOC entry 5584 (class 1259 OID 107190)
 -- Name: idx_employee_overtime_hours_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13738,7 +13265,6 @@ CREATE INDEX idx_employee_overtime_hours_employee_id ON public.employee_overtime
 
 
 --
--- TOC entry 5585 (class 1259 OID 123215)
 -- Name: idx_employee_overtime_hours_employee_month; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13746,7 +13272,6 @@ CREATE INDEX idx_employee_overtime_hours_employee_month ON public.employee_overt
 
 
 --
--- TOC entry 5670 (class 1259 OID 190308)
 -- Name: idx_employee_reports_created; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13754,7 +13279,6 @@ CREATE INDEX idx_employee_reports_created ON public.employee_reports USING btree
 
 
 --
--- TOC entry 5671 (class 1259 OID 190309)
 -- Name: idx_employee_reports_employee; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13762,7 +13286,6 @@ CREATE INDEX idx_employee_reports_employee ON public.employee_reports USING btre
 
 
 --
--- TOC entry 5672 (class 1259 OID 190310)
 -- Name: idx_employee_reports_recipient_ids; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13770,7 +13293,6 @@ CREATE INDEX idx_employee_reports_recipient_ids ON public.employee_reports USING
 
 
 --
--- TOC entry 5673 (class 1259 OID 190311)
 -- Name: idx_employee_reports_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13778,7 +13300,6 @@ CREATE INDEX idx_employee_reports_status ON public.employee_reports USING btree 
 
 
 --
--- TOC entry 5573 (class 1259 OID 107231)
 -- Name: idx_employee_salary_adjustments_effective_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13786,7 +13307,6 @@ CREATE INDEX idx_employee_salary_adjustments_effective_date ON public.employee_s
 
 
 --
--- TOC entry 5574 (class 1259 OID 106733)
 -- Name: idx_employee_salary_adjustments_employee_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13794,7 +13314,6 @@ CREATE INDEX idx_employee_salary_adjustments_employee_date ON public.employee_sa
 
 
 --
--- TOC entry 5575 (class 1259 OID 107230)
 -- Name: idx_employee_salary_adjustments_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13802,7 +13321,6 @@ CREATE INDEX idx_employee_salary_adjustments_employee_id ON public.employee_sala
 
 
 --
--- TOC entry 5576 (class 1259 OID 123216)
 -- Name: idx_employee_salary_adjustments_employee_month; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13810,7 +13328,6 @@ CREATE INDEX idx_employee_salary_adjustments_employee_month ON public.employee_s
 
 
 --
--- TOC entry 5577 (class 1259 OID 106734)
 -- Name: idx_employee_salary_adjustments_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13818,7 +13335,6 @@ CREATE INDEX idx_employee_salary_adjustments_type ON public.employee_salary_adju
 
 
 --
--- TOC entry 5522 (class 1259 OID 58181)
 -- Name: idx_employee_timetables_effective_dates; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13826,7 +13342,6 @@ CREATE INDEX idx_employee_timetables_effective_dates ON public.employee_timetabl
 
 
 --
--- TOC entry 5523 (class 1259 OID 58179)
 -- Name: idx_employee_timetables_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13834,7 +13349,6 @@ CREATE INDEX idx_employee_timetables_employee_id ON public.employee_timetables U
 
 
 --
--- TOC entry 5524 (class 1259 OID 58180)
 -- Name: idx_employee_timetables_timetable_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13842,7 +13356,6 @@ CREATE INDEX idx_employee_timetables_timetable_id ON public.employee_timetables 
 
 
 --
--- TOC entry 5494 (class 1259 OID 190312)
 -- Name: idx_employees_email; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13850,7 +13363,6 @@ CREATE INDEX idx_employees_email ON public.employees USING btree (email);
 
 
 --
--- TOC entry 5495 (class 1259 OID 190313)
 -- Name: idx_employees_position_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13858,7 +13370,6 @@ CREATE INDEX idx_employees_position_id ON public.employees USING btree (position
 
 
 --
--- TOC entry 5496 (class 1259 OID 190314)
 -- Name: idx_employees_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13866,7 +13377,6 @@ CREATE INDEX idx_employees_user_id ON public.employees USING btree (user_id);
 
 
 --
--- TOC entry 5674 (class 1259 OID 190315)
 -- Name: idx_instr_rec_acknowledged; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13874,7 +13384,6 @@ CREATE INDEX idx_instr_rec_acknowledged ON public.instruction_recipients USING b
 
 
 --
--- TOC entry 5675 (class 1259 OID 190316)
 -- Name: idx_instr_rec_completed; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13882,7 +13391,6 @@ CREATE INDEX idx_instr_rec_completed ON public.instruction_recipients USING btre
 
 
 --
--- TOC entry 5676 (class 1259 OID 190317)
 -- Name: idx_instr_rec_employee; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13890,7 +13398,6 @@ CREATE INDEX idx_instr_rec_employee ON public.instruction_recipients USING btree
 
 
 --
--- TOC entry 5677 (class 1259 OID 190318)
 -- Name: idx_instr_rec_instruction; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13898,7 +13405,6 @@ CREATE INDEX idx_instr_rec_instruction ON public.instruction_recipients USING bt
 
 
 --
--- TOC entry 5680 (class 1259 OID 190319)
 -- Name: idx_instructions_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13906,7 +13412,6 @@ CREATE INDEX idx_instructions_created_at ON public.instructions USING btree (cre
 
 
 --
--- TOC entry 5681 (class 1259 OID 190320)
 -- Name: idx_instructions_due_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13914,7 +13419,6 @@ CREATE INDEX idx_instructions_due_at ON public.instructions USING btree (due_at)
 
 
 --
--- TOC entry 5682 (class 1259 OID 190321)
 -- Name: idx_instructions_priority; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13922,7 +13426,6 @@ CREATE INDEX idx_instructions_priority ON public.instructions USING btree (prior
 
 
 --
--- TOC entry 5683 (class 1259 OID 190322)
 -- Name: idx_instructions_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13930,7 +13433,6 @@ CREATE INDEX idx_instructions_status ON public.instructions USING btree (status)
 
 
 --
--- TOC entry 5632 (class 1259 OID 164235)
 -- Name: idx_level_subjects_level; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13938,7 +13440,6 @@ CREATE INDEX idx_level_subjects_level ON public.level_subjects USING btree (leve
 
 
 --
--- TOC entry 5633 (class 1259 OID 164236)
 -- Name: idx_level_subjects_subject; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13946,7 +13447,6 @@ CREATE INDEX idx_level_subjects_subject ON public.level_subjects USING btree (su
 
 
 --
--- TOC entry 5794 (class 1259 OID 205642)
 -- Name: idx_localisations_batiment; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13954,7 +13454,6 @@ CREATE INDEX idx_localisations_batiment ON public.localisations USING btree (bat
 
 
 --
--- TOC entry 5795 (class 1259 OID 205643)
 -- Name: idx_localisations_code; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13962,7 +13461,6 @@ CREATE INDEX idx_localisations_code ON public.localisations USING btree (code_em
 
 
 --
--- TOC entry 5688 (class 1259 OID 190323)
 -- Name: idx_meetings_scheduled_by; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13970,7 +13468,6 @@ CREATE INDEX idx_meetings_scheduled_by ON public.meetings USING btree (scheduled
 
 
 --
--- TOC entry 5689 (class 1259 OID 190324)
 -- Name: idx_meetings_start_time; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13978,7 +13475,6 @@ CREATE INDEX idx_meetings_start_time ON public.meetings USING btree (start_time)
 
 
 --
--- TOC entry 5692 (class 1259 OID 190325)
 -- Name: idx_notifications_recipient_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13986,7 +13482,6 @@ CREATE INDEX idx_notifications_recipient_id ON public.notifications USING btree 
 
 
 --
--- TOC entry 5693 (class 1259 OID 190326)
 -- Name: idx_notifications_user_created; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -13994,7 +13489,6 @@ CREATE INDEX idx_notifications_user_created ON public.notifications USING btree 
 
 
 --
--- TOC entry 5694 (class 1259 OID 190327)
 -- Name: idx_notifications_user_read; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14002,7 +13496,6 @@ CREATE INDEX idx_notifications_user_read ON public.notifications USING btree (us
 
 
 --
--- TOC entry 5603 (class 1259 OID 123174)
 -- Name: idx_overtime_requests_employee_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14010,7 +13503,6 @@ CREATE INDEX idx_overtime_requests_employee_date ON public.overtime_requests USI
 
 
 --
--- TOC entry 5604 (class 1259 OID 123175)
 -- Name: idx_overtime_requests_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14018,7 +13510,6 @@ CREATE INDEX idx_overtime_requests_status ON public.overtime_requests USING btre
 
 
 --
--- TOC entry 5614 (class 1259 OID 147849)
 -- Name: idx_payslips_batch; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14026,7 +13517,6 @@ CREATE INDEX idx_payslips_batch ON public.payslips USING btree (batch_id);
 
 
 --
--- TOC entry 5615 (class 1259 OID 147848)
 -- Name: idx_payslips_month_year; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14034,7 +13524,6 @@ CREATE INDEX idx_payslips_month_year ON public.payslips USING btree (year, month
 
 
 --
--- TOC entry 5697 (class 1259 OID 190328)
 -- Name: idx_permission_requests_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14042,7 +13531,6 @@ CREATE INDEX idx_permission_requests_employee_id ON public.permission_requests U
 
 
 --
--- TOC entry 5698 (class 1259 OID 190329)
 -- Name: idx_permission_requests_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14050,7 +13538,6 @@ CREATE INDEX idx_permission_requests_status ON public.permission_requests USING 
 
 
 --
--- TOC entry 5508 (class 1259 OID 190330)
 -- Name: idx_position_salaries_effective_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14058,7 +13545,6 @@ CREATE INDEX idx_position_salaries_effective_date ON public.position_salaries US
 
 
 --
--- TOC entry 5509 (class 1259 OID 190331)
 -- Name: idx_position_salaries_position_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14066,7 +13552,6 @@ CREATE INDEX idx_position_salaries_position_id ON public.position_salaries USING
 
 
 --
--- TOC entry 5557 (class 1259 OID 90544)
 -- Name: idx_punch_file_uploads_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14074,7 +13559,6 @@ CREATE INDEX idx_punch_file_uploads_status ON public.punch_file_uploads USING bt
 
 
 --
--- TOC entry 5558 (class 1259 OID 90545)
 -- Name: idx_punch_file_uploads_upload_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14082,7 +13566,6 @@ CREATE INDEX idx_punch_file_uploads_upload_date ON public.punch_file_uploads USI
 
 
 --
--- TOC entry 5559 (class 1259 OID 90543)
 -- Name: idx_punch_file_uploads_uploaded_by; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14090,7 +13573,6 @@ CREATE INDEX idx_punch_file_uploads_uploaded_by ON public.punch_file_uploads USI
 
 
 --
--- TOC entry 5701 (class 1259 OID 190332)
 -- Name: idx_report_acknowledgements_acknowledged; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14098,7 +13580,6 @@ CREATE INDEX idx_report_acknowledgements_acknowledged ON public.report_acknowled
 
 
 --
--- TOC entry 5702 (class 1259 OID 190333)
 -- Name: idx_report_acknowledgements_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14106,7 +13587,6 @@ CREATE INDEX idx_report_acknowledgements_employee_id ON public.report_acknowledg
 
 
 --
--- TOC entry 5703 (class 1259 OID 190334)
 -- Name: idx_report_acknowledgements_report_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14114,7 +13594,6 @@ CREATE INDEX idx_report_acknowledgements_report_id ON public.report_acknowledgem
 
 
 --
--- TOC entry 5787 (class 1259 OID 205606)
 -- Name: idx_report_viewed_tracking_report_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14122,7 +13601,6 @@ CREATE INDEX idx_report_viewed_tracking_report_id ON public.report_viewed_tracki
 
 
 --
--- TOC entry 5788 (class 1259 OID 205608)
 -- Name: idx_report_viewed_tracking_viewed_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14130,7 +13608,6 @@ CREATE INDEX idx_report_viewed_tracking_viewed_at ON public.report_viewed_tracki
 
 
 --
--- TOC entry 5789 (class 1259 OID 205607)
 -- Name: idx_report_viewed_tracking_viewer_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14138,7 +13615,6 @@ CREATE INDEX idx_report_viewed_tracking_viewer_id ON public.report_viewed_tracki
 
 
 --
--- TOC entry 5708 (class 1259 OID 190335)
 -- Name: idx_reports_task_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14146,7 +13622,6 @@ CREATE INDEX idx_reports_task_id ON public.reports USING btree (task_id);
 
 
 --
--- TOC entry 5562 (class 1259 OID 90546)
 -- Name: idx_salary_calculations_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14154,7 +13629,6 @@ CREATE INDEX idx_salary_calculations_employee_id ON public.salary_calculations U
 
 
 --
--- TOC entry 5563 (class 1259 OID 90547)
 -- Name: idx_salary_calculations_period; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14162,7 +13636,6 @@ CREATE INDEX idx_salary_calculations_period ON public.salary_calculations USING 
 
 
 --
--- TOC entry 5564 (class 1259 OID 90548)
 -- Name: idx_salary_calculations_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14170,7 +13643,6 @@ CREATE INDEX idx_salary_calculations_status ON public.salary_calculations USING 
 
 
 --
--- TOC entry 5552 (class 1259 OID 90493)
 -- Name: idx_salary_payments_period; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14178,7 +13650,6 @@ CREATE INDEX idx_salary_payments_period ON public.salary_payments USING btree (y
 
 
 --
--- TOC entry 5549 (class 1259 OID 90469)
 -- Name: idx_salary_raises_employee_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14186,7 +13657,6 @@ CREATE INDEX idx_salary_raises_employee_date ON public.salary_raises USING btree
 
 
 --
--- TOC entry 5758 (class 1259 OID 205387)
 -- Name: idx_signal_type_responsibles_employee; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14194,7 +13664,6 @@ CREATE INDEX idx_signal_type_responsibles_employee ON public.signal_type_respons
 
 
 --
--- TOC entry 5747 (class 1259 OID 205388)
 -- Name: idx_signalisations_created_by; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14202,7 +13671,6 @@ CREATE INDEX idx_signalisations_created_by ON public.signalisations USING btree 
 
 
 --
--- TOC entry 5748 (class 1259 OID 205389)
 -- Name: idx_signalisations_localisation_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14210,7 +13678,6 @@ CREATE INDEX idx_signalisations_localisation_id ON public.signalisations USING b
 
 
 --
--- TOC entry 5749 (class 1259 OID 205390)
 -- Name: idx_signalisations_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14218,7 +13685,6 @@ CREATE INDEX idx_signalisations_status ON public.signalisations USING btree (is_
 
 
 --
--- TOC entry 5750 (class 1259 OID 205391)
 -- Name: idx_signalisations_type_created; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14226,7 +13692,6 @@ CREATE INDEX idx_signalisations_type_created ON public.signalisations USING btre
 
 
 --
--- TOC entry 5767 (class 1259 OID 205392)
 -- Name: idx_signalisations_views_viewer; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14234,7 +13699,6 @@ CREATE INDEX idx_signalisations_views_viewer ON public.signalisations_views USIN
 
 
 --
--- TOC entry 5659 (class 1259 OID 180645)
 -- Name: idx_substitution_history_absent; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14242,7 +13706,6 @@ CREATE INDEX idx_substitution_history_absent ON public.substitution_history USIN
 
 
 --
--- TOC entry 5660 (class 1259 OID 180646)
 -- Name: idx_substitution_history_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14250,7 +13713,6 @@ CREATE INDEX idx_substitution_history_date ON public.substitution_history USING 
 
 
 --
--- TOC entry 5661 (class 1259 OID 180647)
 -- Name: idx_substitution_history_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14258,7 +13720,6 @@ CREATE INDEX idx_substitution_history_status ON public.substitution_history USIN
 
 
 --
--- TOC entry 5662 (class 1259 OID 180644)
 -- Name: idx_substitution_history_substitute; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14266,7 +13727,6 @@ CREATE INDEX idx_substitution_history_substitute ON public.substitution_history 
 
 
 --
--- TOC entry 5650 (class 1259 OID 172474)
 -- Name: idx_substitution_invitations_candidate; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14274,7 +13734,6 @@ CREATE INDEX idx_substitution_invitations_candidate ON public.substitution_invit
 
 
 --
--- TOC entry 5651 (class 1259 OID 172477)
 -- Name: idx_substitution_invitations_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14282,7 +13741,6 @@ CREATE INDEX idx_substitution_invitations_date ON public.substitution_invitation
 
 
 --
--- TOC entry 5652 (class 1259 OID 180732)
 -- Name: idx_substitution_invitations_grade_level; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14290,7 +13748,6 @@ CREATE INDEX idx_substitution_invitations_grade_level ON public.substitution_inv
 
 
 --
--- TOC entry 5653 (class 1259 OID 172475)
 -- Name: idx_substitution_invitations_request; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14298,7 +13755,6 @@ CREATE INDEX idx_substitution_invitations_request ON public.substitution_invitat
 
 
 --
--- TOC entry 5654 (class 1259 OID 172476)
 -- Name: idx_substitution_invitations_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14306,7 +13762,6 @@ CREATE INDEX idx_substitution_invitations_status ON public.substitution_invitati
 
 
 --
--- TOC entry 5644 (class 1259 OID 172471)
 -- Name: idx_substitution_requests_absent_employee; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14314,7 +13769,6 @@ CREATE INDEX idx_substitution_requests_absent_employee ON public.substitution_re
 
 
 --
--- TOC entry 5645 (class 1259 OID 172472)
 -- Name: idx_substitution_requests_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14322,7 +13776,6 @@ CREATE INDEX idx_substitution_requests_date ON public.substitution_requests USIN
 
 
 --
--- TOC entry 5646 (class 1259 OID 180731)
 -- Name: idx_substitution_requests_grade_level; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14330,7 +13783,6 @@ CREATE INDEX idx_substitution_requests_grade_level ON public.substitution_reques
 
 
 --
--- TOC entry 5647 (class 1259 OID 172473)
 -- Name: idx_substitution_requests_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14338,7 +13790,6 @@ CREATE INDEX idx_substitution_requests_status ON public.substitution_requests US
 
 
 --
--- TOC entry 5770 (class 1259 OID 205393)
 -- Name: idx_suggestion_attachments_suggestion; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14346,7 +13797,6 @@ CREATE INDEX idx_suggestion_attachments_suggestion ON public.suggestion_attachme
 
 
 --
--- TOC entry 5773 (class 1259 OID 205394)
 -- Name: idx_suggestion_history_suggestion; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14354,7 +13804,6 @@ CREATE INDEX idx_suggestion_history_suggestion ON public.suggestion_history USIN
 
 
 --
--- TOC entry 5776 (class 1259 OID 205395)
 -- Name: idx_suggestion_messages_suggestion; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14362,7 +13811,6 @@ CREATE INDEX idx_suggestion_messages_suggestion ON public.suggestion_messages US
 
 
 --
--- TOC entry 5779 (class 1259 OID 205396)
 -- Name: idx_suggestion_notifications_recipient; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14370,7 +13818,6 @@ CREATE INDEX idx_suggestion_notifications_recipient ON public.suggestion_notific
 
 
 --
--- TOC entry 5780 (class 1259 OID 205397)
 -- Name: idx_suggestion_notifications_user; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14378,7 +13825,6 @@ CREATE INDEX idx_suggestion_notifications_user ON public.suggestion_notification
 
 
 --
--- TOC entry 5753 (class 1259 OID 205398)
 -- Name: idx_suggestions_department; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14386,7 +13832,6 @@ CREATE INDEX idx_suggestions_department ON public.suggestions USING btree (depar
 
 
 --
--- TOC entry 5754 (class 1259 OID 205399)
 -- Name: idx_suggestions_employee; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14394,7 +13839,6 @@ CREATE INDEX idx_suggestions_employee ON public.suggestions USING btree (employe
 
 
 --
--- TOC entry 5755 (class 1259 OID 205400)
 -- Name: idx_suggestions_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14402,7 +13846,6 @@ CREATE INDEX idx_suggestions_status ON public.suggestions USING btree (status, c
 
 
 --
--- TOC entry 5715 (class 1259 OID 190336)
 -- Name: idx_task_assignments_employee_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14410,7 +13853,6 @@ CREATE INDEX idx_task_assignments_employee_id ON public.task_assignments USING b
 
 
 --
--- TOC entry 5716 (class 1259 OID 190337)
 -- Name: idx_task_assignments_task_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14418,7 +13860,6 @@ CREATE INDEX idx_task_assignments_task_id ON public.task_assignments USING btree
 
 
 --
--- TOC entry 5719 (class 1259 OID 190338)
 -- Name: idx_task_comments_task_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14426,7 +13867,6 @@ CREATE INDEX idx_task_comments_task_id ON public.task_comments USING btree (task
 
 
 --
--- TOC entry 5503 (class 1259 OID 190339)
 -- Name: idx_tasks_assigned_by; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14434,7 +13874,6 @@ CREATE INDEX idx_tasks_assigned_by ON public.tasks USING btree (assigned_by);
 
 
 --
--- TOC entry 5504 (class 1259 OID 41386)
 -- Name: idx_tasks_assigned_to; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14442,7 +13881,6 @@ CREATE INDEX idx_tasks_assigned_to ON public.tasks USING btree (assigned_to);
 
 
 --
--- TOC entry 5505 (class 1259 OID 190340)
 -- Name: idx_tasks_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14450,7 +13888,6 @@ CREATE INDEX idx_tasks_status ON public.tasks USING btree (status);
 
 
 --
--- TOC entry 5515 (class 1259 OID 180730)
 -- Name: idx_timetable_intervals_grade_level; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14458,7 +13895,6 @@ CREATE INDEX idx_timetable_intervals_grade_level ON public.timetable_intervals U
 
 
 --
--- TOC entry 5516 (class 1259 OID 58177)
 -- Name: idx_timetable_intervals_timetable_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14466,7 +13902,6 @@ CREATE INDEX idx_timetable_intervals_timetable_id ON public.timetable_intervals 
 
 
 --
--- TOC entry 5517 (class 1259 OID 58178)
 -- Name: idx_timetable_intervals_weekday; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14474,7 +13909,6 @@ CREATE INDEX idx_timetable_intervals_weekday ON public.timetable_intervals USING
 
 
 --
--- TOC entry 5512 (class 1259 OID 180729)
 -- Name: idx_timetables_grade_level_mode; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14482,7 +13916,6 @@ CREATE INDEX idx_timetables_grade_level_mode ON public.timetables USING btree (g
 
 
 --
--- TOC entry 5722 (class 1259 OID 190341)
 -- Name: idx_user_sessions_token_hash; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14490,7 +13923,6 @@ CREATE INDEX idx_user_sessions_token_hash ON public.user_sessions USING btree (t
 
 
 --
--- TOC entry 5723 (class 1259 OID 190342)
 -- Name: idx_user_sessions_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14498,7 +13930,6 @@ CREATE INDEX idx_user_sessions_user_id ON public.user_sessions USING btree (user
 
 
 --
--- TOC entry 5483 (class 1259 OID 190343)
 -- Name: idx_users_username; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14506,7 +13937,6 @@ CREATE INDEX idx_users_username ON public.users USING btree (username);
 
 
 --
--- TOC entry 5616 (class 1259 OID 147847)
 -- Name: payslips_employee_period_unique; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14514,7 +13944,6 @@ CREATE UNIQUE INDEX payslips_employee_period_unique ON public.payslips USING btr
 
 
 --
--- TOC entry 5535 (class 1259 OID 90375)
 -- Name: uniq_attendance_settings_dept; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14522,7 +13951,6 @@ CREATE UNIQUE INDEX uniq_attendance_settings_dept ON public.attendance_settings 
 
 
 --
--- TOC entry 5536 (class 1259 OID 90374)
 -- Name: uniq_attendance_settings_global; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14530,7 +13958,6 @@ CREATE UNIQUE INDEX uniq_attendance_settings_global ON public.attendance_setting
 
 
 --
--- TOC entry 5619 (class 1259 OID 147850)
 -- Name: ux_payslips_emp_month_year; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -14538,7 +13965,6 @@ CREATE UNIQUE INDEX ux_payslips_emp_month_year ON public.payslips USING btree (e
 
 
 --
--- TOC entry 5925 (class 2620 OID 114963)
 -- Name: employee_daily_attendance set_updated_at_employee_daily_attendance; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14546,7 +13972,6 @@ CREATE TRIGGER set_updated_at_employee_daily_attendance BEFORE UPDATE ON public.
 
 
 --
--- TOC entry 5924 (class 2620 OID 114962)
 -- Name: employee_monthly_summaries set_updated_at_employee_monthly_summaries; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14554,7 +13979,6 @@ CREATE TRIGGER set_updated_at_employee_monthly_summaries BEFORE UPDATE ON public
 
 
 --
--- TOC entry 5920 (class 2620 OID 172421)
 -- Name: attendance_exceptions trg_attendance_exceptions_status_change; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14562,7 +13986,6 @@ CREATE TRIGGER trg_attendance_exceptions_status_change AFTER UPDATE ON public.at
 
 
 --
--- TOC entry 5936 (class 2620 OID 221625)
 -- Name: employee_contracts trg_calculate_contract_duration; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14570,7 +13993,6 @@ CREATE TRIGGER trg_calculate_contract_duration BEFORE INSERT OR UPDATE ON public
 
 
 --
--- TOC entry 5917 (class 2620 OID 190344)
 -- Name: tasks trg_check_task_completion; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14578,7 +14000,6 @@ CREATE TRIGGER trg_check_task_completion BEFORE UPDATE OF status ON public.tasks
 
 
 --
--- TOC entry 5930 (class 2620 OID 190345)
 -- Name: instructions trg_instructions_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14586,7 +14007,6 @@ CREATE TRIGGER trg_instructions_updated_at BEFORE UPDATE ON public.instructions 
 
 
 --
--- TOC entry 5937 (class 2620 OID 221627)
 -- Name: employee_identities trg_update_employee_identities_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14594,7 +14014,6 @@ CREATE TRIGGER trg_update_employee_identities_updated_at BEFORE UPDATE ON public
 
 
 --
--- TOC entry 5934 (class 2620 OID 190346)
 -- Name: task_assignments trg_update_task_status; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14602,7 +14021,6 @@ CREATE TRIGGER trg_update_task_status AFTER UPDATE OF status ON public.task_assi
 
 
 --
--- TOC entry 5929 (class 2620 OID 190347)
 -- Name: attendance update_attendance_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14610,7 +14028,6 @@ CREATE TRIGGER update_attendance_updated_at BEFORE UPDATE ON public.attendance F
 
 
 --
--- TOC entry 5928 (class 2620 OID 164266)
 -- Name: branches update_branches_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14618,7 +14035,6 @@ CREATE TRIGGER update_branches_updated_at BEFORE UPDATE ON public.branches FOR E
 
 
 --
--- TOC entry 5916 (class 2620 OID 190348)
 -- Name: departments update_departments_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14626,7 +14042,6 @@ CREATE TRIGGER update_departments_updated_at BEFORE UPDATE ON public.departments
 
 
 --
--- TOC entry 5927 (class 2620 OID 164198)
 -- Name: employee_compensations update_employee_compensations_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14634,7 +14049,6 @@ CREATE TRIGGER update_employee_compensations_updated_at BEFORE UPDATE ON public.
 
 
 --
--- TOC entry 5923 (class 2620 OID 106735)
 -- Name: employee_salary_adjustments update_employee_salary_adjustments_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14642,7 +14056,6 @@ CREATE TRIGGER update_employee_salary_adjustments_updated_at BEFORE UPDATE ON pu
 
 
 --
--- TOC entry 5915 (class 2620 OID 190349)
 -- Name: employees update_employees_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14650,7 +14063,6 @@ CREATE TRIGGER update_employees_updated_at BEFORE UPDATE ON public.employees FOR
 
 
 --
--- TOC entry 5931 (class 2620 OID 190350)
 -- Name: meetings update_meetings_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14658,7 +14070,6 @@ CREATE TRIGGER update_meetings_updated_at BEFORE UPDATE ON public.meetings FOR E
 
 
 --
--- TOC entry 5926 (class 2620 OID 123176)
 -- Name: overtime_requests update_overtime_requests_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14666,7 +14077,6 @@ CREATE TRIGGER update_overtime_requests_updated_at BEFORE UPDATE ON public.overt
 
 
 --
--- TOC entry 5932 (class 2620 OID 190351)
 -- Name: permission_requests update_permission_requests_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14674,7 +14084,6 @@ CREATE TRIGGER update_permission_requests_updated_at BEFORE UPDATE ON public.per
 
 
 --
--- TOC entry 5919 (class 2620 OID 190352)
 -- Name: position_salaries update_position_salaries_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14682,7 +14091,6 @@ CREATE TRIGGER update_position_salaries_updated_at BEFORE UPDATE ON public.posit
 
 
 --
--- TOC entry 5921 (class 2620 OID 90551)
 -- Name: punch_file_uploads update_punch_file_uploads_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14690,7 +14098,6 @@ CREATE TRIGGER update_punch_file_uploads_updated_at BEFORE UPDATE ON public.punc
 
 
 --
--- TOC entry 5933 (class 2620 OID 190353)
 -- Name: salaries update_salaries_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14698,7 +14105,6 @@ CREATE TRIGGER update_salaries_updated_at BEFORE UPDATE ON public.salaries FOR E
 
 
 --
--- TOC entry 5922 (class 2620 OID 90552)
 -- Name: salary_calculations update_salary_calculations_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14706,7 +14112,6 @@ CREATE TRIGGER update_salary_calculations_updated_at BEFORE UPDATE ON public.sal
 
 
 --
--- TOC entry 5918 (class 2620 OID 190354)
 -- Name: tasks update_tasks_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14714,7 +14119,6 @@ CREATE TRIGGER update_tasks_updated_at BEFORE UPDATE ON public.tasks FOR EACH RO
 
 
 --
--- TOC entry 5935 (class 2620 OID 190355)
 -- Name: user_sessions update_user_sessions_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14722,7 +14126,6 @@ CREATE TRIGGER update_user_sessions_updated_at BEFORE UPDATE ON public.user_sess
 
 
 --
--- TOC entry 5914 (class 2620 OID 190356)
 -- Name: users update_users_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -14730,7 +14133,6 @@ CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON public.users FOR EACH RO
 
 
 --
--- TOC entry 5853 (class 2606 OID 123192)
 -- Name: attendance_calculations_cache attendance_calculations_cache_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14739,7 +14141,6 @@ ALTER TABLE ONLY public.attendance_calculations_cache
 
 
 --
--- TOC entry 5826 (class 2606 OID 147798)
 -- Name: attendance_exceptions attendance_exceptions_document_upload_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14748,7 +14149,6 @@ ALTER TABLE ONLY public.attendance_exceptions
 
 
 --
--- TOC entry 5827 (class 2606 OID 123245)
 -- Name: attendance_exceptions attendance_exceptions_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14757,7 +14157,6 @@ ALTER TABLE ONLY public.attendance_exceptions
 
 
 --
--- TOC entry 5828 (class 2606 OID 90399)
 -- Name: attendance_exceptions attendance_exceptions_reviewed_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14766,7 +14165,6 @@ ALTER TABLE ONLY public.attendance_exceptions
 
 
 --
--- TOC entry 5829 (class 2606 OID 90394)
 -- Name: attendance_exceptions attendance_exceptions_submitted_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14775,7 +14173,6 @@ ALTER TABLE ONLY public.attendance_exceptions
 
 
 --
--- TOC entry 5830 (class 2606 OID 90426)
 -- Name: attendance_overrides attendance_overrides_created_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14784,7 +14181,6 @@ ALTER TABLE ONLY public.attendance_overrides
 
 
 --
--- TOC entry 5831 (class 2606 OID 90416)
 -- Name: attendance_overrides attendance_overrides_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14793,7 +14189,6 @@ ALTER TABLE ONLY public.attendance_overrides
 
 
 --
--- TOC entry 5832 (class 2606 OID 90421)
 -- Name: attendance_overrides attendance_overrides_exception_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14802,7 +14197,6 @@ ALTER TABLE ONLY public.attendance_overrides
 
 
 --
--- TOC entry 5823 (class 2606 OID 90339)
 -- Name: attendance_punches attendance_punches_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14811,7 +14205,6 @@ ALTER TABLE ONLY public.attendance_punches
 
 
 --
--- TOC entry 5824 (class 2606 OID 90344)
 -- Name: attendance_punches attendance_punches_upload_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14820,7 +14213,6 @@ ALTER TABLE ONLY public.attendance_punches
 
 
 --
--- TOC entry 5871 (class 2606 OID 190357)
 -- Name: attendance attendance_records_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14829,7 +14221,6 @@ ALTER TABLE ONLY public.attendance
 
 
 --
--- TOC entry 5825 (class 2606 OID 90369)
 -- Name: attendance_settings attendance_settings_department_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14838,7 +14229,6 @@ ALTER TABLE ONLY public.attendance_settings
 
 
 --
--- TOC entry 5833 (class 2606 OID 90442)
 -- Name: audit_logs audit_logs_actor_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14847,7 +14237,6 @@ ALTER TABLE ONLY public.audit_logs
 
 
 --
--- TOC entry 5861 (class 2606 OID 164254)
 -- Name: branch_levels branch_levels_branch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14856,7 +14245,6 @@ ALTER TABLE ONLY public.branch_levels
 
 
 --
--- TOC entry 5862 (class 2606 OID 164259)
 -- Name: branch_levels branch_levels_level_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14865,7 +14253,6 @@ ALTER TABLE ONLY public.branch_levels
 
 
 --
--- TOC entry 5888 (class 2606 OID 205401)
 -- Name: complaint_attachments complaint_attachments_complaint_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14874,7 +14261,6 @@ ALTER TABLE ONLY public.complaint_attachments
 
 
 --
--- TOC entry 5889 (class 2606 OID 205416)
 -- Name: complaint_history complaint_history_complaint_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14883,7 +14269,6 @@ ALTER TABLE ONLY public.complaint_history
 
 
 --
--- TOC entry 5890 (class 2606 OID 205421)
 -- Name: complaint_messages complaint_messages_complaint_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14892,7 +14277,6 @@ ALTER TABLE ONLY public.complaint_messages
 
 
 --
--- TOC entry 5891 (class 2606 OID 205431)
 -- Name: complaint_notifications complaint_notifications_complaint_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14901,7 +14285,6 @@ ALTER TABLE ONLY public.complaint_notifications
 
 
 --
--- TOC entry 5892 (class 2606 OID 205446)
 -- Name: complaints complaints_department_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14910,7 +14293,6 @@ ALTER TABLE ONLY public.complaints
 
 
 --
--- TOC entry 5893 (class 2606 OID 205456)
 -- Name: complaints complaints_handled_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14919,7 +14301,6 @@ ALTER TABLE ONLY public.complaints
 
 
 --
--- TOC entry 5894 (class 2606 OID 205461)
 -- Name: complaints complaints_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14928,7 +14309,6 @@ ALTER TABLE ONLY public.complaints
 
 
 --
--- TOC entry 5858 (class 2606 OID 164191)
 -- Name: employee_compensations employee_compensations_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14937,7 +14317,6 @@ ALTER TABLE ONLY public.employee_compensations
 
 
 --
--- TOC entry 5911 (class 2606 OID 221584)
 -- Name: employee_contracts employee_contracts_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14946,7 +14325,6 @@ ALTER TABLE ONLY public.employee_contracts
 
 
 --
--- TOC entry 5912 (class 2606 OID 221589)
 -- Name: employee_contracts employee_contracts_position_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14955,7 +14333,6 @@ ALTER TABLE ONLY public.employee_contracts
 
 
 --
--- TOC entry 5847 (class 2606 OID 114957)
 -- Name: employee_daily_attendance employee_daily_attendance_audit_entry_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14964,7 +14341,6 @@ ALTER TABLE ONLY public.employee_daily_attendance
 
 
 --
--- TOC entry 5848 (class 2606 OID 114937)
 -- Name: employee_daily_attendance employee_daily_attendance_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14973,7 +14349,6 @@ ALTER TABLE ONLY public.employee_daily_attendance
 
 
 --
--- TOC entry 5849 (class 2606 OID 114942)
 -- Name: employee_daily_attendance employee_daily_attendance_validated_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14982,7 +14357,6 @@ ALTER TABLE ONLY public.employee_daily_attendance
 
 
 --
--- TOC entry 5816 (class 2606 OID 190367)
 -- Name: employee_departments employee_departments_department_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14991,7 +14365,6 @@ ALTER TABLE ONLY public.employee_departments
 
 
 --
--- TOC entry 5913 (class 2606 OID 221610)
 -- Name: employee_identities employee_identities_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15000,7 +14373,6 @@ ALTER TABLE ONLY public.employee_identities
 
 
 --
--- TOC entry 5844 (class 2606 OID 114952)
 -- Name: employee_monthly_summaries employee_monthly_summaries_audit_entry_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15009,7 +14381,6 @@ ALTER TABLE ONLY public.employee_monthly_summaries
 
 
 --
--- TOC entry 5845 (class 2606 OID 114909)
 -- Name: employee_monthly_summaries employee_monthly_summaries_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15018,7 +14389,6 @@ ALTER TABLE ONLY public.employee_monthly_summaries
 
 
 --
--- TOC entry 5846 (class 2606 OID 114914)
 -- Name: employee_monthly_summaries employee_monthly_summaries_validated_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15027,7 +14397,6 @@ ALTER TABLE ONLY public.employee_monthly_summaries
 
 
 --
--- TOC entry 5842 (class 2606 OID 107206)
 -- Name: employee_monthly_validations employee_monthly_validations_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15036,7 +14405,6 @@ ALTER TABLE ONLY public.employee_monthly_validations
 
 
 --
--- TOC entry 5843 (class 2606 OID 107211)
 -- Name: employee_monthly_validations employee_monthly_validations_validated_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15045,7 +14413,6 @@ ALTER TABLE ONLY public.employee_monthly_validations
 
 
 --
--- TOC entry 5840 (class 2606 OID 107185)
 -- Name: employee_overtime_hours employee_overtime_hours_created_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15054,7 +14421,6 @@ ALTER TABLE ONLY public.employee_overtime_hours
 
 
 --
--- TOC entry 5841 (class 2606 OID 107180)
 -- Name: employee_overtime_hours employee_overtime_hours_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15063,7 +14429,6 @@ ALTER TABLE ONLY public.employee_overtime_hours
 
 
 --
--- TOC entry 5838 (class 2606 OID 106728)
 -- Name: employee_salary_adjustments employee_salary_adjustments_created_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15072,7 +14437,6 @@ ALTER TABLE ONLY public.employee_salary_adjustments
 
 
 --
--- TOC entry 5839 (class 2606 OID 106723)
 -- Name: employee_salary_adjustments employee_salary_adjustments_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15081,7 +14445,6 @@ ALTER TABLE ONLY public.employee_salary_adjustments
 
 
 --
--- TOC entry 5821 (class 2606 OID 58167)
 -- Name: employee_timetables employee_timetables_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15090,7 +14453,6 @@ ALTER TABLE ONLY public.employee_timetables
 
 
 --
--- TOC entry 5822 (class 2606 OID 58172)
 -- Name: employee_timetables employee_timetables_timetable_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15099,7 +14461,6 @@ ALTER TABLE ONLY public.employee_timetables
 
 
 --
--- TOC entry 5814 (class 2606 OID 190382)
 -- Name: employees employees_position_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15108,7 +14469,6 @@ ALTER TABLE ONLY public.employees
 
 
 --
--- TOC entry 5815 (class 2606 OID 190387)
 -- Name: employees employees_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15117,7 +14477,6 @@ ALTER TABLE ONLY public.employees
 
 
 --
--- TOC entry 5881 (class 2606 OID 190397)
 -- Name: report_acknowledgements fk_employee; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15126,7 +14485,6 @@ ALTER TABLE ONLY public.report_acknowledgements
 
 
 --
--- TOC entry 5882 (class 2606 OID 190402)
 -- Name: report_acknowledgements fk_report; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15135,7 +14493,6 @@ ALTER TABLE ONLY public.report_acknowledgements
 
 
 --
--- TOC entry 5872 (class 2606 OID 190417)
 -- Name: instruction_recipients instruction_recipients_instruction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15144,7 +14501,6 @@ ALTER TABLE ONLY public.instruction_recipients
 
 
 --
--- TOC entry 5873 (class 2606 OID 190422)
 -- Name: instructions instructions_created_by_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15153,7 +14509,6 @@ ALTER TABLE ONLY public.instructions
 
 
 --
--- TOC entry 5874 (class 2606 OID 190427)
 -- Name: instructions instructions_created_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15162,7 +14517,6 @@ ALTER TABLE ONLY public.instructions
 
 
 --
--- TOC entry 5859 (class 2606 OID 164225)
 -- Name: level_subjects level_subjects_level_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15171,7 +14525,6 @@ ALTER TABLE ONLY public.level_subjects
 
 
 --
--- TOC entry 5860 (class 2606 OID 164230)
 -- Name: level_subjects level_subjects_subject_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15180,7 +14533,6 @@ ALTER TABLE ONLY public.level_subjects
 
 
 --
--- TOC entry 5875 (class 2606 OID 190432)
 -- Name: meeting_attendees meeting_attendees_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15189,7 +14541,6 @@ ALTER TABLE ONLY public.meeting_attendees
 
 
 --
--- TOC entry 5876 (class 2606 OID 190437)
 -- Name: meeting_attendees meeting_attendees_meeting_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15198,7 +14549,6 @@ ALTER TABLE ONLY public.meeting_attendees
 
 
 --
--- TOC entry 5877 (class 2606 OID 190442)
 -- Name: meetings meetings_scheduled_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15207,7 +14557,6 @@ ALTER TABLE ONLY public.meetings
 
 
 --
--- TOC entry 5878 (class 2606 OID 190452)
 -- Name: notifications notifications_sender_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15216,7 +14565,6 @@ ALTER TABLE ONLY public.notifications
 
 
 --
--- TOC entry 5850 (class 2606 OID 123159)
 -- Name: overtime_requests overtime_requests_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15225,7 +14573,6 @@ ALTER TABLE ONLY public.overtime_requests
 
 
 --
--- TOC entry 5851 (class 2606 OID 123169)
 -- Name: overtime_requests overtime_requests_reviewed_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15234,7 +14581,6 @@ ALTER TABLE ONLY public.overtime_requests
 
 
 --
--- TOC entry 5852 (class 2606 OID 123164)
 -- Name: overtime_requests overtime_requests_submitted_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15243,7 +14589,6 @@ ALTER TABLE ONLY public.overtime_requests
 
 
 --
--- TOC entry 5854 (class 2606 OID 147814)
 -- Name: payslip_batches payslip_batches_uploaded_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15252,7 +14597,6 @@ ALTER TABLE ONLY public.payslip_batches
 
 
 --
--- TOC entry 5855 (class 2606 OID 147842)
 -- Name: payslips payslips_batch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15261,7 +14605,6 @@ ALTER TABLE ONLY public.payslips
 
 
 --
--- TOC entry 5856 (class 2606 OID 147832)
 -- Name: payslips payslips_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15270,7 +14613,6 @@ ALTER TABLE ONLY public.payslips
 
 
 --
--- TOC entry 5857 (class 2606 OID 147837)
 -- Name: payslips payslips_upload_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15279,7 +14621,6 @@ ALTER TABLE ONLY public.payslips
 
 
 --
--- TOC entry 5879 (class 2606 OID 190457)
 -- Name: permission_requests permission_requests_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15288,7 +14629,6 @@ ALTER TABLE ONLY public.permission_requests
 
 
 --
--- TOC entry 5880 (class 2606 OID 190462)
 -- Name: permission_requests permission_requests_reviewed_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15297,7 +14637,6 @@ ALTER TABLE ONLY public.permission_requests
 
 
 --
--- TOC entry 5819 (class 2606 OID 190467)
 -- Name: position_salaries position_salaries_position_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15306,7 +14645,6 @@ ALTER TABLE ONLY public.position_salaries
 
 
 --
--- TOC entry 5909 (class 2606 OID 205596)
 -- Name: report_viewed_tracking report_viewed_tracking_report_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15315,7 +14653,6 @@ ALTER TABLE ONLY public.report_viewed_tracking
 
 
 --
--- TOC entry 5910 (class 2606 OID 205601)
 -- Name: report_viewed_tracking report_viewed_tracking_viewer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15324,7 +14661,6 @@ ALTER TABLE ONLY public.report_viewed_tracking
 
 
 --
--- TOC entry 5883 (class 2606 OID 190472)
 -- Name: salaries salaries_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15333,7 +14669,6 @@ ALTER TABLE ONLY public.salaries
 
 
 --
--- TOC entry 5884 (class 2606 OID 190477)
 -- Name: salaries salaries_position_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15342,7 +14677,6 @@ ALTER TABLE ONLY public.salaries
 
 
 --
--- TOC entry 5885 (class 2606 OID 190482)
 -- Name: salary_history salary_history_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15351,7 +14685,6 @@ ALTER TABLE ONLY public.salary_history
 
 
 --
--- TOC entry 5886 (class 2606 OID 190487)
 -- Name: salary_history salary_history_salary_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15360,7 +14693,6 @@ ALTER TABLE ONLY public.salary_history
 
 
 --
--- TOC entry 5836 (class 2606 OID 90483)
 -- Name: salary_payments salary_payments_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15369,7 +14701,6 @@ ALTER TABLE ONLY public.salary_payments
 
 
 --
--- TOC entry 5837 (class 2606 OID 90488)
 -- Name: salary_payments salary_payments_paid_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15378,7 +14709,6 @@ ALTER TABLE ONLY public.salary_payments
 
 
 --
--- TOC entry 5834 (class 2606 OID 90464)
 -- Name: salary_raises salary_raises_created_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15387,7 +14717,6 @@ ALTER TABLE ONLY public.salary_raises
 
 
 --
--- TOC entry 5835 (class 2606 OID 90459)
 -- Name: salary_raises salary_raises_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15396,7 +14725,6 @@ ALTER TABLE ONLY public.salary_raises
 
 
 --
--- TOC entry 5900 (class 2606 OID 205476)
 -- Name: signal_type_responsibles signal_type_responsibles_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15405,7 +14733,6 @@ ALTER TABLE ONLY public.signal_type_responsibles
 
 
 --
--- TOC entry 5895 (class 2606 OID 205644)
 -- Name: signalisations signalisations_localisation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15414,7 +14741,6 @@ ALTER TABLE ONLY public.signalisations
 
 
 --
--- TOC entry 5901 (class 2606 OID 205491)
 -- Name: signalisations_status_history signalisations_status_history_signalisation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15423,7 +14749,6 @@ ALTER TABLE ONLY public.signalisations_status_history
 
 
 --
--- TOC entry 5896 (class 2606 OID 205501)
 -- Name: signalisations signalisations_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15432,7 +14757,6 @@ ALTER TABLE ONLY public.signalisations
 
 
 --
--- TOC entry 5902 (class 2606 OID 205506)
 -- Name: signalisations_views signalisations_views_signalisation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15441,7 +14765,6 @@ ALTER TABLE ONLY public.signalisations_views
 
 
 --
--- TOC entry 5867 (class 2606 OID 180639)
 -- Name: substitution_history substitution_history_absent_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15450,7 +14773,6 @@ ALTER TABLE ONLY public.substitution_history
 
 
 --
--- TOC entry 5868 (class 2606 OID 180624)
 -- Name: substitution_history substitution_history_invitation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15459,7 +14781,6 @@ ALTER TABLE ONLY public.substitution_history
 
 
 --
--- TOC entry 5869 (class 2606 OID 180629)
 -- Name: substitution_history substitution_history_request_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15468,7 +14789,6 @@ ALTER TABLE ONLY public.substitution_history
 
 
 --
--- TOC entry 5870 (class 2606 OID 180634)
 -- Name: substitution_history substitution_history_substitute_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15477,7 +14797,6 @@ ALTER TABLE ONLY public.substitution_history
 
 
 --
--- TOC entry 5865 (class 2606 OID 172466)
 -- Name: substitution_invitations substitution_invitations_candidate_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15486,7 +14805,6 @@ ALTER TABLE ONLY public.substitution_invitations
 
 
 --
--- TOC entry 5866 (class 2606 OID 172461)
 -- Name: substitution_invitations substitution_invitations_request_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15495,7 +14813,6 @@ ALTER TABLE ONLY public.substitution_invitations
 
 
 --
--- TOC entry 5863 (class 2606 OID 172440)
 -- Name: substitution_requests substitution_requests_absent_employee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15504,7 +14821,6 @@ ALTER TABLE ONLY public.substitution_requests
 
 
 --
--- TOC entry 5864 (class 2606 OID 172445)
 -- Name: substitution_requests substitution_requests_exception_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15513,7 +14829,6 @@ ALTER TABLE ONLY public.substitution_requests
 
 
 --
--- TOC entry 5903 (class 2606 OID 205516)
 -- Name: suggestion_attachments suggestion_attachments_suggestion_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15522,7 +14837,6 @@ ALTER TABLE ONLY public.suggestion_attachments
 
 
 --
--- TOC entry 5904 (class 2606 OID 205521)
 -- Name: suggestion_attachments suggestion_attachments_uploaded_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15531,7 +14845,6 @@ ALTER TABLE ONLY public.suggestion_attachments
 
 
 --
--- TOC entry 5905 (class 2606 OID 205531)
 -- Name: suggestion_history suggestion_history_suggestion_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15540,7 +14853,6 @@ ALTER TABLE ONLY public.suggestion_history
 
 
 --
--- TOC entry 5906 (class 2606 OID 205536)
 -- Name: suggestion_messages suggestion_messages_sender_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15549,7 +14861,6 @@ ALTER TABLE ONLY public.suggestion_messages
 
 
 --
--- TOC entry 5907 (class 2606 OID 205541)
 -- Name: suggestion_messages suggestion_messages_suggestion_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15558,7 +14869,6 @@ ALTER TABLE ONLY public.suggestion_messages
 
 
 --
--- TOC entry 5908 (class 2606 OID 205556)
 -- Name: suggestion_notifications suggestion_notifications_suggestion_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15567,7 +14877,6 @@ ALTER TABLE ONLY public.suggestion_notifications
 
 
 --
--- TOC entry 5897 (class 2606 OID 205571)
 -- Name: suggestions suggestions_handled_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15576,7 +14885,6 @@ ALTER TABLE ONLY public.suggestions
 
 
 --
--- TOC entry 5898 (class 2606 OID 205576)
 -- Name: suggestions suggestions_redirected_to_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15585,7 +14893,6 @@ ALTER TABLE ONLY public.suggestions
 
 
 --
--- TOC entry 5899 (class 2606 OID 205581)
 -- Name: suggestions suggestions_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15594,7 +14901,6 @@ ALTER TABLE ONLY public.suggestions
 
 
 --
--- TOC entry 5817 (class 2606 OID 190512)
 -- Name: tasks tasks_assigned_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15603,7 +14909,6 @@ ALTER TABLE ONLY public.tasks
 
 
 --
--- TOC entry 5818 (class 2606 OID 41229)
 -- Name: tasks tasks_assigned_to_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15612,7 +14917,6 @@ ALTER TABLE ONLY public.tasks
 
 
 --
--- TOC entry 5820 (class 2606 OID 58153)
 -- Name: timetable_intervals timetable_intervals_timetable_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -15621,15 +14925,12 @@ ALTER TABLE ONLY public.timetable_intervals
 
 
 --
--- TOC entry 5887 (class 2606 OID 190517)
 -- Name: user_sessions user_sessions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.user_sessions
     ADD CONSTRAINT user_sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
-
--- Completed on 2026-03-04 11:54:05
 
 --
 -- PostgreSQL database dump complete

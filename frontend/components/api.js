@@ -4,7 +4,8 @@
 // Resolve service base by endpoint prefix to hit correct microservice instead of frontend origin
 const LIVE_SERVER_PORTS = ['5502', '5503', '5504', '5505', '5506', '5507', '5508', '5518'];
 const isLiveServerPort = LIVE_SERVER_PORTS.includes(window.location.port);
-const DEFAULT_API_BASE_URL = isLiveServerPort ? 'http://localhost:3000' : window.location.origin;
+const port = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+const DEFAULT_API_BASE_URL = isLiveServerPort ? 'http://localhost:3000' : `${window.location.protocol}//${window.location.hostname}:${port}`;
 window.API_BASE_URL = DEFAULT_API_BASE_URL; // Back-compat global
 
 function getServiceBaseForEndpoint(endpoint) {

@@ -59,6 +59,182 @@
     .director-filters-bar-rapport .filter-input { padding: 8px 14px; font-size: 13px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; color: #374151; transition: all 0.2s; }
     .director-filters-bar-rapport .filter-select:focus,
     .director-filters-bar-rapport .filter-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+
+    /* Mobile responsive styles for filter bar - wrap all elements properly */
+    @media (max-width: 768px) {
+        .director-filters-bar-rapport {
+            padding: 8px !important;
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+            box-sizing: border-box;
+        }
+        
+        .director-filters-bar-rapport > .flex {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 8px !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        .director-filters-bar-rapport > .flex > div {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            flex: none !important;
+            margin: 0 !important;
+            padding: 4px 0 !important;
+        }
+        
+        .director-filters-bar-rapport .filter-label-box {
+            width: fit-content !important;
+            margin-bottom: 4px;
+            padding: 6px 10px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-label-box i {
+            font-size: 12px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-label-box span {
+            font-size: 12px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-group-1,
+        .director-filters-bar-rapport .filter-group-2,
+        .director-filters-bar-rapport .filter-group-3,
+        .director-filters-bar-rapport .filter-group-search {
+            flex-wrap: wrap !important;
+            justify-content: flex-start !important;
+            width: 100% !important;
+            gap: 4px !important;
+        }
+        
+        .director-filters-bar-rapport button.filter-button,
+        .director-filters-bar-rapport .filter-group-1 button,
+        .director-filters-bar-rapport .filter-group-2 button,
+        .director-filters-bar-rapport .filter-group-3 button {
+            flex: 1 1 auto !important;
+            padding: 6px 8px !important;
+            font-size: 11px !important;
+            margin: 1px !important;
+            white-space: nowrap;
+            min-width: 60px !important;
+            max-width: none !important;
+        }
+        
+        .director-filters-bar-rapport .filter-group-3 {
+            flex-wrap: wrap !important;
+            display: flex !important;
+            width: 100% !important;
+            justify-content: flex-start;
+            align-items: center !important;
+        }
+        
+        .director-filters-bar-rapport .filter-date-arrow {
+            display: inline-flex !important;
+            margin: 0 4px !important;
+            font-size: 12px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-date-start,
+        .director-filters-bar-rapport .filter-date-end,
+        .director-filters-bar-rapport #customStart,
+        .director-filters-bar-rapport #customEnd {
+            max-width: calc(50% - 8px) !important;
+            width: calc(50% - 8px) !important;
+            min-width: 100px !important;
+            font-size: 11px !important;
+            padding: 6px 8px !important;
+            flex: 1 1 auto !important;
+        }
+        
+        .director-filters-bar-rapport .filter-group-search {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            margin-top: 4px !important;
+            margin-inline-start: 0 !important;
+            margin-inline-end: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            flex: none !important;
+        }
+        
+        .director-filters-bar-rapport #textSearch,
+        .director-filters-bar-rapport .filter-group-search input {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            box-sizing: border-box;
+            font-size: 12px !important;
+            padding: 8px 12px !important;
+        }
+        
+        /* RTL support */
+        html[lang="ar"] .director-filters-bar-rapport > .flex,
+        .director-filters-bar-rapport[dir="rtl"] > .flex {
+            flex-direction: column !important;
+        }
+        
+        html[lang="ar"] .director-filters-bar-rapport .ml-auto,
+        .director-filters-bar-rapport[dir="rtl"] .ml-auto {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            margin-inline-start: 0 !important;
+            margin-inline-end: 0 !important;
+        }
+    }
+    
+    /* Extra small screens */
+    @media (max-width: 480px) {
+        .director-filters-bar-rapport {
+            padding: 6px !important;
+        }
+        
+        .director-filters-bar-rapport > .flex {
+            gap: 6px !important;
+        }
+        
+        .director-filters-bar-rapport button.filter-button,
+        .director-filters-bar-rapport .filter-group-1 button,
+        .director-filters-bar-rapport .filter-group-2 button,
+        .director-filters-bar-rapport .filter-group-3 button {
+            padding: 4px 6px !important;
+            font-size: 10px !important;
+            margin: 1px !important;
+            min-width: 50px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-label-box {
+            padding: 4px 8px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-label-box i {
+            font-size: 10px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-label-box span {
+            font-size: 10px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-date-start,
+        .director-filters-bar-rapport .filter-date-end,
+        .director-filters-bar-rapport #customStart,
+        .director-filters-bar-rapport #customEnd {
+            min-width: 80px !important;
+            font-size: 10px !important;
+            padding: 4px 6px !important;
+        }
+        
+        .director-filters-bar-rapport #textSearch,
+        .director-filters-bar-rapport .filter-group-search input {
+            font-size: 11px !important;
+            padding: 6px 10px !important;
+        }
+    }
+
     .filter-button {
         padding: 0.5rem 1rem;
         border: 1px solid #d1d5db;
@@ -95,6 +271,57 @@
         transform: translateY(-4px);
         box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
         border-color: #3B82F6;
+    }
+    
+    /* Mobile styles for report cards */
+    @media (max-width: 768px) {
+        .report-card {
+            padding: 16px !important;
+            border-radius: 16px !important;
+        }
+        
+        .report-card .dir-info-block-rapport {
+            gap: 10px !important;
+            padding: 8px 10px !important;
+        }
+        
+        .report-card .dir-info-block-rapport .icon-box {
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 8px !important;
+            font-size: 14px !important;
+        }
+        
+        .report-card .dir-info-block-rapport .label {
+            font-size: 0.6rem !important;
+        }
+        
+        .report-card .dir-info-block-rapport .value {
+            font-size: 0.75rem !important;
+        }
+        
+        .report-card > div[style*="grid"] {
+            grid-template-columns: 1fr !important;
+            gap: 8px !important;
+        }
+        
+        /* Target inline grid styles in mobile */
+        .report-card > div > div[style*="grid"] {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .report-card h4 {
+            font-size: 1rem !important;
+        }
+    }
+    
+    /* Also hide inline grid in mobile */
+    @media (max-width: 768px) {
+        .report-card div[style*="display: grid"],
+        .report-card div[style*="grid"] {
+            display: flex !important;
+            flex-direction: column !important;
+        }
     }
     .report-card .dir-info-block-rapport { display: flex; align-items: center; gap: 18px; padding: 12px 14px; border-radius: 14px; }
     .report-card .dir-info-block-rapport.blue { background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.04)); border: 1px solid rgba(59, 130, 246, 0.2); }
@@ -246,9 +473,278 @@
     /* Full width - no side margin */
     #rapport-main { width: 100%; max-width: 100%; margin: 0 !important; padding: 1.5rem; box-sizing: border-box; }
     [dir="rtl"] #rapport-main { margin-right: 0 !important; margin-left: 0 !important; }
+
+    /* MOBILE RESPONSIVE STYLES - OVERRIDES ALL OTHER STYLES INCLUDING TAILWIND */
+    @media (max-width: 768px) {
+        /* Force override of Tailwind flex classes */
+        .director-filters-bar-rapport,
+        .director-filters-bar-rapport > div[class*="flex"],
+        .director-filters-bar-rapport > .flex {
+            display: block !important;
+            flex-direction: column !important;
+            flex-wrap: wrap !important;
+            align-items: stretch !important;
+            justify-content: flex-start !important;
+            gap: 8px !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            overflow-x: hidden !important;
+            padding: 8px !important;
+            margin: 0 !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Override all child divs */
+        .director-filters-bar-rapport > div,
+        .director-filters-bar-rapport > .flex > div,
+        .director-filters-bar-rapport div[class*="flex"],
+        .director-filters-bar-rapport div[class*="gap"] {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            flex: none !important;
+            margin: 0 0 4px 0 !important;
+            padding: 4px 0 !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Override filter label box */
+        .director-filters-bar-rapport .filter-label-box {
+            display: inline-flex !important;
+            width: fit-content !important;
+            margin-bottom: 4px !important;
+            padding: 6px 10px !important;
+            background: rgba(59, 130, 246, 0.1) !important;
+            border-radius: 8px !important;
+            border-left: 3px solid #3b82f6 !important;
+        }
+        
+        .director-filters-bar-rapport .filter-label-box i {
+            font-size: 12px !important;
+            color: #3b82f6 !important;
+        }
+        
+        .director-filters-bar-rapport .filter-label-box span {
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            color: #1e40af !important;
+        }
+        
+        /* Override filter groups */
+        .director-filters-bar-rapport .filter-group-1,
+        .director-filters-bar-rapport .filter-group-2,
+        .director-filters-bar-rapport .filter-group-3,
+        .director-filters-bar-rapport .filter-group-search,
+        .director-filters-bar-rapport div[class*="gap-2"] {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: flex-start !important;
+            width: 100% !important;
+            gap: 4px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        /* Override ALL filter buttons - most specific selector */
+        .director-filters-bar-rapport button.filter-button,
+        .director-filters-bar-rapport .filter-group-1 button.filter-button,
+        .director-filters-bar-rapport .filter-group-2 button.filter-button,
+        .director-filters-bar-rapport .filter-group-3 button.filter-button,
+        .director-filters-bar-rapport div[class*="gap-2"] button {
+            display: inline-block !important;
+            flex: 1 1 auto !important;
+            padding: 6px 8px !important;
+            font-size: 11px !important;
+            font-weight: 500 !important;
+            margin: 1px !important;
+            white-space: nowrap !important;
+            min-width: 60px !important;
+            max-width: none !important;
+            border-radius: 6px !important;
+            border: 1px solid #d1d5db !important;
+            background: #fff !important;
+            color: #475569 !important;
+            cursor: pointer !important;
+            transition: all 0.2s !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Override date group */
+        .director-filters-bar-rapport .filter-group-3 {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            width: 100% !important;
+            justify-content: flex-start !important;
+            align-items: center !important;
+            gap: 4px !important;
+        }
+        
+        /* Override date arrow */
+        .director-filters-bar-rapport .filter-date-arrow,
+        .director-filters-bar-rapport span[class*="text-gray-500"] {
+            display: inline-flex !important;
+            margin: 0 4px !important;
+            font-size: 12px !important;
+            color: #6b7280 !important;
+        }
+        
+        /* Override ALL input styles */
+        .director-filters-bar-rapport .profile-input-rapport,
+        .director-filters-bar-rapport .filter-date-start,
+        .director-filters-bar-rapport .filter-date-end,
+        .director-filters-bar-rapport #customStart,
+        .director-filters-bar-rapport #customEnd,
+        .director-filters-bar-rapport input[type="date"],
+        .director-filters-bar-rapport input[type="text"] {
+            display: inline-block !important;
+            max-width: calc(50% - 8px) !important;
+            width: calc(50% - 8px) !important;
+            min-width: 100px !important;
+            font-size: 11px !important;
+            padding: 6px 8px !important;
+            flex: 1 1 auto !important;
+            border-radius: 6px !important;
+            border: 1px solid rgba(226, 232, 240, 0.9) !important;
+            background: #fff !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Override search group */
+        .director-filters-bar-rapport .filter-group-search,
+        .director-filters-bar-rapport div[class*="ml-auto"],
+        .director-filters-bar-rapport div[class*="flex-1"] {
+            display: block !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            margin-top: 4px !important;
+            margin-inline-start: 0 !important;
+            margin-inline-end: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            flex: none !important;
+            min-width: 0 !important;
+        }
+        
+        /* Override search input */
+        .director-filters-bar-rapport #textSearch,
+        .director-filters-bar-rapport .filter-group-search input,
+        .director-filters-bar-rapport input[class*="w-full"] {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            box-sizing: border-box !important;
+            font-size: 12px !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            border: 1px solid rgba(226, 232, 240, 0.9) !important;
+            background: #fff !important;
+        }
+        
+        /* Hide list view button on mobile */
+        .director-filters-bar-rapport #rapportViewModeList,
+        #rapportViewModeList,
+        button#rapportViewModeList,
+        .rapport-view-mode-btn#rapportViewModeList {
+            display: none !important;
+        }
+        
+        /* RTL support */
+        html[lang="ar"] .director-filters-bar-rapport > .flex,
+        .director-filters-bar-rapport[dir="rtl"] > .flex {
+            flex-direction: column !important;
+        }
+        
+        html[lang="ar"] .director-filters-bar-rapport .ml-auto,
+        .director-filters-bar-rapport[dir="rtl"] .ml-auto {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            margin-inline-start: 0 !important;
+            margin-inline-end: 0 !important;
+        }
+    }
+    
+    /* Extra small screens */
+    @media (max-width: 480px) {
+        .director-filters-bar-rapport {
+            padding: 6px !important;
+        }
+        
+        .director-filters-bar-rapport > .flex {
+            gap: 6px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-button,
+        .director-filters-bar-rapport .filter-group-1 .filter-button,
+        .director-filters-bar-rapport .filter-group-2 .filter-button,
+        .director-filters-bar-rapport .filter-group-3 .filter-button {
+            padding: 4px 6px !important;
+            font-size: 10px !important;
+            margin: 1px !important;
+            min-width: 50px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-label-box {
+            padding: 4px 8px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-label-box i {
+            font-size: 10px !important;
+        }
+        
+        .director-filters-bar-rapport .filter-label-box span {
+            font-size: 10px !important;
+        }
+        
+        .director-filters-bar-rapport .profile-input-rapport,
+        .director-filters-bar-rapport .filter-date-start,
+        .director-filters-bar-rapport .filter-date-end,
+        .director-filters-bar-rapport #customStart,
+        .director-filters-bar-rapport #customEnd {
+            min-width: 80px !important;
+            font-size: 10px !important;
+            padding: 4px 6px !important;
+        }
+        
+        .director-filters-bar-rapport #textSearch,
+        .director-filters-bar-rapport .filter-group-search input {
+            font-size: 11px !important;
+            padding: 6px 10px !important;
+        }
+        
+        /* Hide list view button on extra small screens */
+        #rapportViewModeList,
+        button#rapportViewModeList,
+        .rapport-view-mode-btn#rapportViewModeList {
+            display: none !important;
+        }
+    }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+<!-- DEBUG: File updated at 2026-03-09 12:58 -->
+<style>
+/* Additional mobile-specific styles to ensure list view button is hidden */
+@media (max-width: 768px) {
+    button#rapportViewModeList.rapport-view-mode-btn,
+    #rapportViewModeList.rapport-view-mode-btn,
+    .rapport-view-mode-btn#rapportViewModeList,
+    button#rapportViewModeCards.rapport-view-mode-btn,
+    #rapportViewModeCards.rapport-view-mode-btn,
+    .rapport-view-mode-btn#rapportViewModeCards {
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: -9999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+    }
+}
+</style>
     <main id="rapport-main" class="p-6">
         <!-- Vue Employé -->
         <div id="employeeInterface" class="space-y-6">
@@ -310,30 +806,30 @@
             </div>
 
             <!-- Filtres (Director style) -->
-            <section class="director-filters-bar-rapport">
-                <div class="flex flex-wrap items-center gap-4">
-                    <div class="filter-label-box">
+            <section class="director-filters-bar-rapport" id="mobileFilters">
+                <div class="flex flex-wrap items-center gap-4" id="filterFlexContainer">
+                    <div class="filter-label-box" id="filterLabelBox">
                         <i class="fas fa-filter"></i>
                         <span data-translate="report.filters">Filtres</span>
                     </div>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="flex flex-wrap gap-2 filter-group-1" id="filterGroup1">
                         <button class="filter-button active" data-status="all" data-translate="common.all">Tous</button>
                         <button class="filter-button" data-status="pending" data-translate="report.pending">En Attente</button>
                         <button class="filter-button" data-status="acknowledged" data-translate="report.acknowledged">Accusés</button>
                     </div>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="flex flex-wrap gap-2 filter-group-2" id="filterGroup2">
                         <button class="filter-button active" data-period="all" data-translate="report.all_periods">Toutes Périodes</button>
                         <button class="filter-button" data-period="today" data-translate="report.today">Aujourd'hui</button>
                         <button class="filter-button" data-period="week" data-translate="report.this_week">Cette Semaine</button>
                         <button class="filter-button" data-period="month" data-translate="report.this_month">Ce Mois</button>
                     </div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <input id="customStart" type="date" class="profile-input-rapport" style="max-width:140px" />
-                        <span class="text-gray-500">→</span>
-                        <input id="customEnd" type="date" class="profile-input-rapport" style="max-width:140px" />
+                    <div class="flex flex-wrap items-center gap-2 filter-group-3" id="filterGroup3">
+                        <input id="customStart" type="date" class="profile-input-rapport filter-date-start" />
+                        <span class="text-gray-500 filter-date-arrow" id="filterDateArrow">→</span>
+                        <input id="customEnd" type="date" class="profile-input-rapport filter-date-end" />
                         <button id="applyCustomDate" type="button" class="filter-button" data-translate="common.apply">Appliquer</button>
                     </div>
-                    <div class="ml-auto flex-1 min-w-[200px] max-w-md">
+                    <div class="ml-auto flex-1 min-w-[200px] max-w-md filter-group-search" id="filterGroupSearch">
                         <input id="textSearch" type="text" class="profile-input-rapport w-full" data-translate-placeholder="report.search_placeholder" placeholder="Rechercher (titre, objet, destinataire, contenu)" />
                     </div>
                 </div>
@@ -341,7 +837,7 @@
 
             <!-- Liste des rapports -->
             <div class="director-panel-rapport p-0 overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-200/80 bg-gray-50/50">
+                <div class="border-b border-gray-200/80 bg-gray-50/50">
                     <div class="flex items-center justify-between flex-wrap gap-2">
                         <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
                             <i class="fas fa-list text-blue-600"></i>
@@ -353,7 +849,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="reportsList" class="p-6 w-full">
+                <div id="reportsList" class="w-full">
                     <div class="flex justify-center items-center py-12">
                         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                         <span class="ml-3 text-gray-600" data-translate="report.loading">Chargement des rapports...</span>
@@ -453,6 +949,91 @@
     </div>
 
     <script>
+        // Mobile filter bar responsive fix
+        function applyMobileFilterStyles() {
+            const isMobile = window.innerWidth <= 768;
+            const filterContainer = document.getElementById('filterFlexContainer');
+            const filterGroups = [
+                document.getElementById('filterGroup1'),
+                document.getElementById('filterGroup2'),
+                document.getElementById('filterGroup3'),
+                document.getElementById('filterGroupSearch')
+            ];
+            
+            if (isMobile) {
+                // Force vertical stacking on mobile
+                if (filterContainer) {
+                    filterContainer.style.flexDirection = 'column';
+                    filterContainer.style.alignItems = 'stretch';
+                    filterContainer.style.gap = '8px';
+                }
+                
+                // Make each group full width
+                filterGroups.forEach(group => {
+                    if (group) {
+                        group.style.width = '100%';
+                        group.style.flex = 'none';
+                        group.style.marginBottom = '4px';
+                    }
+                });
+                
+                // Make buttons smaller
+                document.querySelectorAll('#filterGroup1 button, #filterGroup2 button, #filterGroup3 button').forEach(btn => {
+                    btn.style.padding = '4px 6px';
+                    btn.style.fontSize = '10px';
+                    btn.style.margin = '2px';
+                });
+                
+                // Make date inputs smaller
+                const dateInputs = document.querySelectorAll('#filterGroup3 input');
+                dateInputs.forEach(input => {
+                    input.style.width = 'calc(50% - 4px)';
+                    input.style.maxWidth = 'calc(50% - 4px)';
+                    input.style.fontSize = '10px';
+                    input.style.padding = '4px';
+                });
+                
+                // Hide arrow between dates
+                const dateArrow = document.getElementById('filterDateArrow');
+                if (dateArrow) dateArrow.style.display = 'none';
+                
+                // Make search full width
+                const searchInput = document.getElementById('textSearch');
+                if (searchInput) {
+                    searchInput.style.width = '100%';
+                    searchInput.style.maxWidth = '100%';
+                    searchInput.style.fontSize = '11px';
+                }
+            } else {
+                // Reset to default on desktop
+                if (filterContainer) {
+                    filterContainer.style.flexDirection = '';
+                    filterContainer.style.alignItems = '';
+                    filterContainer.style.gap = '';
+                }
+                
+                filterGroups.forEach(group => {
+                    if (group) {
+                        group.style.width = '';
+                        group.style.flex = '';
+                        group.style.marginBottom = '';
+                    }
+                });
+            }
+        }
+        
+        // Run early on DOMContentLoaded to prevent flash
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', applyMobileFilterStyles);
+        } else {
+            applyMobileFilterStyles();
+        }
+        
+        // Also run on resize and after a short delay to ensure elements exist
+        window.addEventListener('resize', applyMobileFilterStyles);
+        setTimeout(applyMobileFilterStyles, 100);
+        setTimeout(applyMobileFilterStyles, 500);
+        
         // API base URL - hr_tasks server runs on port 3020 (TASK_SERVICE_PORT)
         const API = (function() {
             // Check if there's a parent window with API services

@@ -447,20 +447,263 @@
     }
 
     @media (max-width: 768px) {
-      .charts-grid {
-        grid-template-columns: 1fr;
+      body {
+        padding: 1rem 0.5rem;
       }
 
+      /* Header */
+      .header {
+        padding: 1rem;
+        flex-direction: column;
+        text-align: center;
+        border-radius: 12px;
+      }
+
+      .header h1 {
+        font-size: 1.25rem;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .header h1 span {
+        font-size: 2rem;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        flex: 1;
+      }
+
+      /* Filters */
+      .filters {
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+      }
+
+      .filters-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+
+      .filter-group input {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+      }
+
+      /* Stats Grid */
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .stat-card {
+        padding: 1rem;
+        border-radius: 12px;
+      }
+
+      .stat-card .stat-value {
+        font-size: 1.5rem;
+      }
+
+      .stat-card .stat-label {
+        font-size: 0.75rem;
+      }
+
+      /* Charts */
+      .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .chart-container {
+        height: 250px !important;
+        padding: 1rem;
+        border-radius: 12px;
+      }
+
+      /* Table Card */
+      .table-card {
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        overflow-x: auto;
+      }
+
+      /* Convert table to cards on mobile */
+      .data-table {
+        display: block;
+      }
+
+      .data-table thead {
+        display: none;
+      }
+
+      .data-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .data-table tbody tr {
+        display: flex;
+        flex-direction: column;
+        background: #f9fafb;
+        border-radius: 10px;
+        padding: 0.75rem;
+        border: 1px solid #e5e7eb;
+      }
+
+      .data-table tbody tr:hover {
+        background: #f0f4ff;
+        border-color: #6366f1;
+      }
+
+      .data-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 0.85rem;
+      }
+
+      .data-table td:last-child {
+        border-bottom: none;
+      }
+
+      .data-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6b7280;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+
+      .data-table td:empty {
+        display: none;
+      }
+
+      /* Matrix Highlights */
+      .matrix-highlights {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .matrix-highlight {
+        padding: 0.75rem;
+        border-radius: 10px;
+      }
+
+      .matrix-highlight strong {
+        font-size: 1.5rem;
+      }
+
+      /* Matrix Table - convert to cards */
+      .matrix-table-wrapper {
+        overflow-x: visible;
+      }
+
+      .matrix-table {
+        display: block;
+      }
+
+      .matrix-table thead {
+        display: none;
+      }
+
+      .matrix-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .matrix-table tbody tr {
+        display: flex;
+        flex-direction: column;
+        background: #f9fafb;
+        border-radius: 10px;
+        padding: 0.75rem;
+        border: 1px solid #e5e7eb;
+      }
+
+      .matrix-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.4rem 0;
+        font-size: 0.85rem;
+      }
+
+      .matrix-table td:first-child {
+        font-weight: 600;
+        color: #1f2937;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      /* Alert */
+      .alert {
+        left: 1rem;
+        right: 1rem;
+        transform: none;
+        min-width: unset;
+        padding: 0.75rem;
+        font-size: 0.85rem;
+      }
+
+      /* Section title */
+      .section-title {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+        padding: 0.5rem;
+      }
+    }
+
+    /* Extra small devices */
+    @media (max-width: 480px) {
       .stats-grid {
         grid-template-columns: 1fr;
       }
 
-      .header {
-        text-align: center;
+      .header-actions {
+        flex-direction: column;
       }
 
-      .header h1 {
-        font-size: 1.5rem;
+      .btn {
+        width: 100%;
+      }
+
+      .stat-card {
+        padding: 0.75rem;
+      }
+
+      .stat-card .stat-value {
+        font-size: 1.25rem;
+      }
+
+      .chart-container {
+        height: 200px !important;
+      }
+
+      .data-table td {
+        font-size: 0.8rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+
+      .data-table td::before {
+        font-size: 0.7rem;
       }
     }
   </style>
@@ -702,12 +945,12 @@
       // Alertes critiques (critical_alerts)
       const alertsRows = criticalAlerts.map(a => `
         <tr>
-          <td>${a.alert_type === 'suggestion_stalled' ? 'اقتراح متأخر' : 'إشارة غير معالجة'}</td>
-          <td>${a.id}</td>
-          <td>${a.title}</td>
-          <td>${a.employee}</td>
-          <td>${a.department || a.location || 'غير محدد'}</td>
-          <td>${a.days_pending}</td>
+          <td data-label="النوع">${a.alert_type === 'suggestion_stalled' ? 'اقتراح متأخر' : 'إشارة غير معالجة'}</td>
+          <td data-label="المعرف">${a.id}</td>
+          <td data-label="العنوان">${a.title}</td>
+          <td data-label="الموظف">${a.employee}</td>
+          <td data-label="القسم">${a.department || a.location || 'غير محدد'}</td>
+          <td data-label="أيام الانتظار">${a.days_pending}</td>
         </tr>
       `).join('') || '<tr><td colspan="6">لا توجد تنبيهات حرجة حالياً</td></tr>';
 
@@ -808,9 +1051,9 @@
       `).join('') || '<span style="color:#6b7280;">لا توجد بيانات</span>';
       const typeRows = (stats.byType || []).map((row, idx) => `
         <tr>
-          <td>${idx + 1}</td>
-          <td>${row.type_name || 'غير محدد'}</td>
-          <td>${formatNumber(row.total || 0)}</td>
+          <td data-label="الترتيب">${idx + 1}</td>
+          <td data-label="النوع">${row.type_name || 'غير محدد'}</td>
+          <td data-label="العدد">${formatNumber(row.total || 0)}</td>
         </tr>
       `).join('') || '<tr><td colspan="3">لا توجد بيانات متاحة حالياً</td></tr>';
       const satisfactionList = (stats.satisfaction || []).length
@@ -881,12 +1124,12 @@
 
       const deptRows = (stats.byDepartment || []).map((row, idx) => `
         <tr>
-          <td>${idx + 1}</td>
-          <td>${row.department_name || 'غير محدد'}</td>
-          <td>${formatNumber(row.total || 0)}</td>
-          <td>${formatNumber(row.pending || 0)}</td>
-          <td>${formatNumber(row.accepted || 0)}</td>
-          <td>${formatNumber(row.rejected || 0)}</td>
+          <td data-label="الترتيب">${idx + 1}</td>
+          <td data-label="القسم">${row.department_name || 'غير محدد'}</td>
+          <td data-label="الإجمالي">${formatNumber(row.total || 0)}</td>
+          <td data-label="معلق">${formatNumber(row.pending || 0)}</td>
+          <td data-label="مقبول">${formatNumber(row.accepted || 0)}</td>
+          <td data-label="مرفوض">${formatNumber(row.rejected || 0)}</td>
         </tr>
       `).join('') || '<tr><td colspan="6">لا توجد بيانات متاحة حالياً</td></tr>';
 
