@@ -148,11 +148,33 @@ async function apiRequest(endpoint, options = {}) {
         const response = await fetch(url, mergedOptions);
         clearTimeout(timeoutId);
         
-        // Handle authentication errors
+        // Handle authentication errors - only redirect if token is truly invalid
         if (response.status === 401) {
-            removeToken();
-            window.location.href = '../index.html';
-            return null;
+            // Check if the token is actually expired/invalid before redirecting
+            const token = getToken();
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    if (payload.exp < Date.now() / 1000) {
+                        // Token expired - redirect to login
+                        removeToken();
+                        window.location.href = '../index.html';
+                        return null;
+                    }
+                } catch (e) {
+                    // Invalid token format - redirect to login
+                    removeToken();
+                    window.location.href = '../index.html';
+                    return null;
+                }
+            } else {
+                // No token - redirect to login
+                window.location.href = '../index.html';
+                return null;
+            }
+            // Token is valid but service returned 401 - throw error instead of redirecting
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Unauthorized');
         }
         
         // Handle other HTTP errors

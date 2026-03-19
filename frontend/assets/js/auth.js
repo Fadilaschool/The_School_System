@@ -295,11 +295,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const loadingSpinner = document.getElementById('loadingSpinner');
     const loginButton = document.getElementById('loginButton');
 
-    // Only redirect if on login page and already authenticated
-    // if (authManager.isAuthenticated() && !window.location.pathname.includes('/pages/')) {
-    //     authManager.redirectToDashboard();
-    //     return;
-    // }
+    // Redirect if on login page and already authenticated
+    if (authManager.isAuthenticated() && !window.location.pathname.includes('/pages/')) {
+        authManager.redirectToDashboard();
+        return;
+    }
 
     if (loginForm) {
         loginForm.addEventListener('submit', async function (e) {
