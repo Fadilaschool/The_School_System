@@ -5,7 +5,7 @@
 async function loadMyPersonalTasks() {
     try {
         if (!currentResponsibleId) return false;
-        const tasksApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+        const tasksApiBase = window.API_SERVICES?.hr_tasks ?? '';
         const token = authManager.getToken();
         if (!token) return false;
 
@@ -38,7 +38,7 @@ async function loadMyPersonalTasks() {
 async function loadMyPersonalReports() {
     try {
         if (!currentResponsibleId) return false;
-        const reportsApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+        const reportsApiBase = window.API_SERVICES?.hr_tasks ?? '';
         const token = authManager.getToken();
         if (!token) return false;
 
@@ -70,7 +70,7 @@ async function loadMyPersonalReports() {
 async function loadMyPersonalRequests() {
     try {
         if (!currentResponsibleId) return false;
-        const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3004';
+        const attendanceApiBase = window.API_SERVICES?.attendance ?? '/api';
         const token = authManager.getToken();
         if (!token) return false;
 
@@ -111,7 +111,7 @@ async function loadMyPersonalRequests() {
 async function loadMyPersonalSalary() {
     try {
         if (!currentResponsibleId) return false;
-        const salaryApiBase = window.API_SERVICES?.salary || 'http://localhost:3005';
+        const salaryApiBase = window.API_SERVICES?.salary ?? '/api/salary';
         const token = authManager.getToken();
         if (!token) return false;
 
@@ -139,7 +139,7 @@ async function loadMyPersonalSalary() {
 async function loadMyPersonalSignals() {
     try {
         if (!currentResponsibleId) return false;
-        const signalsApiBase = window.API_SERVICES?.signals || 'http://localhost:3006';
+        const signalsApiBase = window.API_SERVICES?.signals ?? '';
         const token = authManager.getToken();
         if (!token) return false;
 
@@ -171,7 +171,7 @@ async function loadMyPersonalSignals() {
 async function loadMyPersonalComplaints() {
     try {
         if (!currentResponsibleId) return false;
-        const complaintsApiBase = window.API_SERVICES?.complaints || 'http://localhost:3007';
+        const complaintsApiBase = window.API_SERVICES?.complaints ?? '';
         const token = authManager.getToken();
         if (!token) return false;
 
@@ -206,7 +206,7 @@ async function loadMyPersonalComplaints() {
 async function loadMyPersonalAttendance() {
     try {
         if (!currentResponsibleId) return false;
-        const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3004';
+        const attendanceApiBase = window.API_SERVICES?.attendance ?? '/api';
         const token = authManager.getToken();
         if (!token) return false;
 
@@ -259,7 +259,7 @@ async function loadSchedule() {
         }
 
         console.log('Loading schedule for responsible ID:', currentResponsibleId);
-        const timetableApiBase = window.API_SERVICES?.timetable || 'http://localhost:3005';
+        const timetableApiBase = window.API_SERVICES?.timetable ?? '/api/timetable';
         const response = await fetch(`${timetableApiBase}/employee-assignments/${currentResponsibleId}`, {
             headers: {
                 'Authorization': `Bearer ${authManager.getToken()}`,

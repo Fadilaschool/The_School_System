@@ -1442,7 +1442,7 @@
     <script src="../assets/js/main.js"></script>
     <script src="../components/api.js"></script>
     <script>
-        const API_BASE_URL = (window.API_SERVICES && window.API_SERVICES.salary !== undefined) ? window.API_SERVICES.salary : 'http://localhost:3010';
+        const API_BASE_URL = window.API_SERVICES?.salary ?? '/api/salary';
         
         let currentSalaries = [];
         let currentPagination = {};
@@ -3347,7 +3347,7 @@
             try {
                 // First, check if validation is allowed (no pending cases)
                 const token = localStorage.getItem('token');
-                let validationCheckUrl = `${(window.API_SERVICES && window.API_SERVICES.attendance ? window.API_SERVICES.attendance : "http://localhost:3000")}/api/attendance/validation/check/${year}/${month}`;
+                let validationCheckUrl = `${(window.API_SERVICES?.attendance ?? '/api')}/api/attendance/validation/check/${year}/${month}`;
                 if (department) {
                     validationCheckUrl += `?department=${department}`;
                 }
@@ -3402,7 +3402,7 @@
                     try {
                         // Call the attendance service validation API
                         const token = localStorage.getItem('token');
-                        const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.attendance ? window.API_SERVICES.attendance : "http://localhost:3000")}/api/attendance/validate/employee/${employee.employee_id}`, {
+                        const response = await fetch(`${(window.API_SERVICES?.attendance ?? '/api')}/api/attendance/validate/employee/${employee.employee_id}`, {
                             method: 'POST',
                             headers: {
                                 'Authorization': `Bearer ${token}`,

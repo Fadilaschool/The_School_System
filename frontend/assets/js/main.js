@@ -633,7 +633,11 @@ function handleSidebarNavigation() {
           // Get frontend base URL
           let frontendBase = localStorage.getItem('frontendBaseURL');
           if (!frontendBase) {
-            frontendBase = 'http://127.0.0.1:5502/frontend/pages/';
+            // Production: use /pages/; Dev: use Live Server
+            const _devPorts = ['5502','5503','5504','5505','5506','5507','5508','5518'];
+            const _onDev = _devPorts.some(p => window.location.port === p) ||
+                           (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+            frontendBase = _onDev ? 'http://127.0.0.1:5502/frontend/pages/' : '/pages/';
           }
           href = `${frontendBase}${href}`;
         }
@@ -1165,9 +1169,12 @@ function initializeCollapsibleSidebar() {
           }
         }
 
-        // Fallback to common Live Server port
+        // Fallback: Production uses /pages/, Dev uses Live Server
         if (!frontendBase) {
-          frontendBase = 'http://127.0.0.1:5502/frontend/pages/';
+          const _devPorts2 = ['5502','5503','5504','5505','5506','5507','5508','5518'];
+          const _onDev2 = _devPorts2.some(p => window.location.port === p) ||
+                          (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+          frontendBase = _onDev2 ? 'http://127.0.0.1:5502/frontend/pages/' : '/pages/';
         }
 
         // Store for future use
@@ -1620,7 +1627,8 @@ function getHrTasksApiBase() {
       return window.API_SERVICES.hr_tasks; // returns "" in production
     }
   }
-  return 'http://localhost:3020';
+  // Production fallback: empty string (nginx handles routing)
+  return '';
 }
 
 // Toggle notification dropdown

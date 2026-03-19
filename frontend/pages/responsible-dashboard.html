@@ -1475,7 +1475,7 @@
 		// Load responsible profile to get responsible ID and department info
 		async function loadResponsibleProfile() {
 			try {
-				const usersApiBase = window.API_SERVICES?.users || 'http://localhost:3002';
+				const usersApiBase = window.API_SERVICES?.users ?? '/api/users';
 				const response = await fetch(`${usersApiBase}/profile`, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
@@ -1510,7 +1510,7 @@
 					currentResponsibleId = employeeId;
 
 					// Find department where this employee is responsible
-					const deptApiBase = window.API_SERVICES?.departments || 'http://localhost:3003';
+					const deptApiBase = window.API_SERVICES?.departments ?? '/api/departments';
 					const deptResponse = await fetch(`${deptApiBase}/departments`, {
 						headers: {
 							'Authorization': `Bearer ${authManager.getToken()}`,
@@ -1557,7 +1557,7 @@
 
 			try {
 				// Get employees in the department
-				const hrTasksApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				const hrTasksApiBase = window.API_SERVICES?.hr_tasks ?? '';
 				const response = await fetch(`${hrTasksApiBase}/employees?responsible_id=${currentResponsibleId}`, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
@@ -1671,7 +1671,7 @@
 					}
 				}
 
-				const tasksApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				const tasksApiBase = window.API_SERVICES?.hr_tasks ?? '';
 				const token = localStorage.getItem('jwt_token') || localStorage.getItem('token') || authManager.getToken();
 				if (!token) {
 					document.getElementById('myTasksTotal').textContent = '0';
@@ -1763,7 +1763,7 @@
 					}
 				}
 
-				const reportsApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				const reportsApiBase = window.API_SERVICES?.hr_tasks ?? '';
 				
 				// Map dashboard period to reports period filter
 				let periodFilter = 'all';
@@ -1867,7 +1867,7 @@
 					}
 				}
 
-				const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3000';
+				const attendanceApiBase = window.API_SERVICES?.attendance ?? '/api';
 				let exceptionsCount = 0;
 				let extraHoursCount = 0;
 
@@ -1957,7 +1957,7 @@
 					}
 				}
 
-				const salaryApiBase = window.API_SERVICES?.salary || 'http://localhost:3010';
+				const salaryApiBase = window.API_SERVICES?.salary ?? '/api/salary';
 				const now = new Date();
 				let month, year;
 
@@ -2024,7 +2024,7 @@
 					}
 				}
 
-				const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3000';
+				const attendanceApiBase = window.API_SERVICES?.attendance ?? '/api';
 				const isYearFilter = currentPeriod === 'year';
 
 				let totalWorkDays = 0;
@@ -2112,7 +2112,7 @@
 					if (!currentResponsibleId) return false;
 				}
 
-				const tasksApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				const tasksApiBase = window.API_SERVICES?.hr_tasks ?? '';
 				const token = localStorage.getItem('jwt_token') || localStorage.getItem('token') || authManager.getToken();
 
 				if (!token) {
@@ -2184,7 +2184,7 @@
 					if (!currentDepartmentEmployees.length) return false;
 				}
 
-				const reportsApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				const reportsApiBase = window.API_SERVICES?.hr_tasks ?? '';
 
 				// Get reports for all department employees
 				const reportPromises = currentDepartmentEmployees.map(emp =>
@@ -2275,7 +2275,7 @@
 					}
 				}
 
-				const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3000';
+				const attendanceApiBase = window.API_SERVICES?.attendance ?? '/api';
 
 				// Get current month for accepted requests
 				const now = new Date();
@@ -2459,7 +2459,7 @@
 					if (!currentDepartmentEmployees.length) return false;
 				}
 
-				const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3000';
+				const attendanceApiBase = window.API_SERVICES?.attendance ?? '/api';
 				const isYearFilter = currentPeriod === 'year';
 
 				let totalWorkDays = 0;
@@ -2556,7 +2556,7 @@
 					}
 				}
 
-				const usersApiBase = window.API_SERVICES?.users || 'http://localhost:3002';
+				const usersApiBase = window.API_SERVICES?.users ?? '/api/users';
 				const response = await fetch(`${usersApiBase}/profile`, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
@@ -2624,7 +2624,7 @@
 					if (!currentResponsibleId) return false;
 				}
 
-				const signalsApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				const signalsApiBase = window.API_SERVICES?.hr_tasks ?? '';
 				const from = dateRange.start.toISOString().split('T')[0];
 				const to = dateRange.end.toISOString().split('T')[0];
 
@@ -2681,7 +2681,7 @@
 					}
 				}
 				
-				const timetableApiBase = window.API_SERVICES?.timetable || 'http://localhost:3011';
+				const timetableApiBase = window.API_SERVICES?.timetable ?? '/api/timetable';
 				const response = await fetch(`${timetableApiBase}/employee-assignments/${currentResponsibleId}`, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,

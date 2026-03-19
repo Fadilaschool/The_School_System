@@ -348,7 +348,7 @@
         async function loadEmployeeDetails() {
             try {
                 console.log('Fetching employee details for', currentEmployeeId, 'via salary-service 3010');
-                const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : 'http://localhost:3010')}/employees/${currentEmployeeId}`, {
+                const response = await fetch(`${(window.API_SERVICES?.salary ?? '/api/salary')}/employees/${currentEmployeeId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                         'Content-Type': 'application/json'
@@ -384,7 +384,7 @@
 
                 const queryString = Object.keys(params).length > 0 ? '?' + new URLSearchParams(params).toString() : '';
 
-                const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : 'http://localhost:3010')}/payslips/admin/${currentEmployeeId}${queryString}`, {
+                const response = await fetch(`${(window.API_SERVICES?.salary ?? '/api/salary')}/payslips/admin/${currentEmployeeId}${queryString}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                         'Content-Type': 'application/json'
@@ -479,7 +479,7 @@
 
         async function downloadPayslip(payslipId) {
             try {
-                const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : 'http://localhost:3010')}/payslips/download/${payslipId}`, {
+                const response = await fetch(`${(window.API_SERVICES?.salary ?? '/api/salary')}/payslips/download/${payslipId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }

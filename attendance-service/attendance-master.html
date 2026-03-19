@@ -1752,10 +1752,12 @@
             }
         });
 
-        // Override API base URL to ensure it points to the correct port
+        // Override API base URL - detect production vs dev
         if (typeof window !== 'undefined') {
-            window.API_BASE_URL = 'http://localhost:3000';
-            console.log('Force setting API_BASE_URL to:', window.API_BASE_URL);
+            const _attPort = window.location.port;
+            const _attDevPorts = ['3000','5502','5503','5504','5505','5506','5507','5508','5518'];
+            window.API_BASE_URL = _attDevPorts.includes(_attPort) ? 'http://localhost:3000' : '/api';
+            console.log('Setting API_BASE_URL to:', window.API_BASE_URL);
         }
 
         // Global variables

@@ -620,7 +620,7 @@
 
             try {
                 const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : {
-                    users: (window.API_SERVICES && window.API_SERVICES.users !== undefined) ? window.API_SERVICES.users : 'http://localhost:3002'
+                    users: window.API_SERVICES?.users ?? '/api/users'
                 };
                 
                 const response = await authManager.makeAuthenticatedRequest(
@@ -715,7 +715,7 @@
             
             try {
                 const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : {
-                    users: (window.API_SERVICES && window.API_SERVICES.users !== undefined) ? window.API_SERVICES.users : 'http://localhost:3002'
+                    users: window.API_SERVICES?.users ?? '/api/users'
                 };
                 
                 const response = await authManager.makeAuthenticatedRequest(
@@ -784,7 +784,7 @@
 
             try {
                 const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : {
-                    users: (window.API_SERVICES && window.API_SERVICES.users !== undefined) ? window.API_SERVICES.users : 'http://localhost:3002'
+                    users: window.API_SERVICES?.users ?? '/api/users'
                 };
                 
                 const response = await authManager.makeAuthenticatedRequest(
@@ -807,7 +807,7 @@
 
         async function downloadContractTemplate() {
             try {
-                const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : { users: (window.API_SERVICES && window.API_SERVICES.users !== undefined) ? window.API_SERVICES.users : 'http://localhost:3002' };
+                const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : { users: window.API_SERVICES?.users ?? '/api/users' };
                 const response = await authManager.makeAuthenticatedRequest(
                     `${apiServices.users}/contracts/download-template`,
                     { method: 'GET' }
@@ -836,7 +836,7 @@
             
             try {
                 const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : {
-                    users: (window.API_SERVICES && window.API_SERVICES.users !== undefined) ? window.API_SERVICES.users : 'http://localhost:3002'
+                    users: window.API_SERVICES?.users ?? '/api/users'
                 };
                 
                 const response = await authManager.makeAuthenticatedRequest(

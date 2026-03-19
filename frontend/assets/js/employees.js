@@ -672,7 +672,7 @@ class EmployeeManager {
             
             // Get API services from main.js
             const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : {
-                users: 'http://localhost:3002'
+                users: '/api/users'
             };
             
             const response = await authManager.makeAuthenticatedRequest(
@@ -710,7 +710,7 @@ class EmployeeManager {
             
             // Get API services from main.js
             const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : {
-                users: 'http://localhost:3002'
+                users: '/api/users'
             };
             
             const response = await authManager.makeAuthenticatedRequest(
@@ -749,7 +749,7 @@ class EmployeeManager {
             Utils.showNotification(loadingText, 'info');
             
             const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : {
-                users: 'http://localhost:3002'
+                users: '/api/users'
             };
             
             const response = await authManager.makeAuthenticatedRequest(
@@ -792,7 +792,7 @@ class EmployeeManager {
             Utils.showNotification(loadingText, 'info');
 
             const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : {
-                users: 'http://localhost:3002'
+                users: '/api/users'
             };
 
             const formData = new FormData();
@@ -847,7 +847,7 @@ class EmployeeManager {
             Utils.showNotification(loadingText, 'info');
             
             const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : {
-                users: 'http://localhost:3002'
+                users: '/api/users'
             };
             
             const response = await authManager.makeAuthenticatedRequest(
@@ -896,7 +896,7 @@ class EmployeeManager {
             
             // Get API services from main.js
             const apiServices = (typeof window !== 'undefined' && window.API_SERVICES) ? window.API_SERVICES : {
-                users: 'http://localhost:3002'
+                users: '/api/users'
             };
             
             const response = await authManager.makeAuthenticatedRequest(

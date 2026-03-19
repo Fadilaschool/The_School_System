@@ -363,16 +363,9 @@
         // Define API_BASE to support file:// usage
         try{
           if (!window.API_BASE){
-            const origin = (window.location && window.location.origin) || '';
-            // If origin is a Live Server port (5500-5510) or embed mode, use port 3020 for API
-            if (origin && /^https?:\/\/(127\.0\.0\.1|localhost):(550[0-9]|551[0-9])/i.test(origin) || 
-                new URLSearchParams(window.location.search).get('embed') === '1') {
-              window.API_BASE = 'http://localhost:3020';
-            } else {
-              window.API_BASE = (origin && /^https?:\/\//i.test(origin)) ? origin : 'http://localhost:3020';
-            }
+            window.API_BASE = window.API_SERVICES?.hr_tasks ?? '';
           }
-        }catch(_){ window.API_BASE = 'http://localhost:3020'; }
+        }catch(_){ window.API_BASE = ''; }
         if (typeof window.editComment !== 'function') {
           window.editComment = function(commentId, currentText) {
             if (typeof openEditModal === 'function') {
@@ -611,7 +604,7 @@ let currentOriginalText = null;
                 if (typeof io === 'undefined'){
                     console.log('📦 Loading Socket.IO library...');
                     const s = document.createElement('script');
-                    s.src = (window.API_BASE||'http://localhost:3020') + '/socket.io/socket.io.js';
+                    s.src = (window.API_BASE||'') + '/socket.io/socket.io.js';
                     s.async = false;
                     s.onload = () => { 
                         console.log('✅ Socket.IO library loaded, retrying setup...');
@@ -1550,7 +1543,7 @@ async function loadInstructions() {
             return { success: true, instructions: [] };
         }
 
-        const apiBase = window.API_BASE || 'http://localhost:3020';
+        const apiBase = window.API_BASE || '';
         const response = await fetch(`${apiBase}/api/instructions/employee/${employeeId}`);
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
@@ -2717,7 +2710,7 @@ async function completeMyAssignment(taskId) {
       // NOUVEAU CODE CORRIGÉ
 async function updateAssigneeStatus(taskId, employeeId, status) {
   try {
-    const apiUrl = (window.API_SERVICES && typeof window.API_SERVICES.hr_tasks !== 'undefined') ? window.API_SERVICES.hr_tasks : 'http://localhost:3020';
+    const apiUrl = window.API_SERVICES?.hr_tasks ?? '';
     
     console.log('📤 Sending request to backend...');
     

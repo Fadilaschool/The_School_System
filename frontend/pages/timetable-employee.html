@@ -423,7 +423,7 @@
     <script src="../assets/js/main.js"></script>
     <script src="../components/api.js"></script>
     <script>
-        const API_BASE_URL = window.API_SERVICES?.timetable || 'http://localhost:3011';
+        const API_BASE_URL = window.API_SERVICES?.timetable ?? '/api/timetable';
         let currentEmployeeId = null;
         let timetableData = null;
         let currentWeekStart = new Date();
@@ -515,7 +515,7 @@
                 }
 
                 // Try multiple approaches to get employee ID
-                const usersApiBase = window.API_SERVICES?.users || 'http://localhost:3002';
+                const usersApiBase = window.API_SERVICES?.users ?? '/api/users';
                 
                 // Approach 1: Try /profile endpoint first (most reliable, always exists)
                 try {

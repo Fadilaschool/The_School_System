@@ -1069,7 +1069,7 @@
     <script src="../assets/js/main.js"></script>
     <script src="../components/api.js"></script>
     <script>
-        const API_BASE_URL = window.API_SERVICES?.salary || 'http://localhost:3010';
+        const API_BASE_URL = window.API_SERVICES?.salary ?? '/api/salary';
         let currentYear = new Date().getFullYear();
         let currentEmployeeId = null;
         let yearlySalaries = [];
@@ -1174,7 +1174,7 @@
                     throw new Error('User not found');
                 }
 
-                const response = await fetch(`${window.API_SERVICES?.users || 'http://localhost:3002'}/employees/by-user/${user.id}`, {
+                const response = await fetch(`${window.API_SERVICES?.users ?? '/api/users'}/employees/by-user/${user.id}`, {
                     headers: {
                         'Authorization': `Bearer ${authManager.getToken()}`,
                         'Content-Type': 'application/json'

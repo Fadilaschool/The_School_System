@@ -170,7 +170,13 @@ class AuthManager {
 
         // If on attendance service (port 3000), redirect to frontend dashboard
         if (window.location.port === '3000') {
-            window.location.href = `http://127.0.0.1:5502/frontend/pages/${targetPage}`;
+            // In production, use origin; in dev, use Live Server
+            const DEV_PORTS = ['5502','5503','5504','5505','5506','5507','5508','5518'];
+            const isDev = DEV_PORTS.includes(window.location.port) ||
+                          window.location.hostname === 'localhost' ||
+                          window.location.hostname === '127.0.0.1';
+            const base = isDev ? 'http://127.0.0.1:5502/frontend/pages/' : '/pages/';
+            window.location.href = `${base}${targetPage}`;
             return;
         }
 

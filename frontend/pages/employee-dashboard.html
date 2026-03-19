@@ -1488,7 +1488,7 @@
 		// Load employee profile to get employee ID and info
 		async function loadEmployeeProfile() {
 			try {
-				const usersApiBase = window.API_SERVICES?.users || 'http://localhost:3002';
+				const usersApiBase = window.API_SERVICES?.users ?? '/api/users';
 				const response = await fetch(`${usersApiBase}/profile`, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
@@ -1793,7 +1793,7 @@
 				
 				// Use hr_tasks service (port 3020) like tasks.html does
 				// Force port 3020 since hr_tasks service runs on 3020, not 3004
-				const tasksApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				const tasksApiBase = window.API_SERVICES?.hr_tasks ?? '';
 				console.log('📡 Tasks API Base:', tasksApiBase);
 				console.log('📡 API_SERVICES object:', window.API_SERVICES);
 				
@@ -2053,7 +2053,7 @@
 				}
 				
 				// HR Tasks service runs on port 3020 (not 3004)
-				const reportsApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				const reportsApiBase = window.API_SERVICES?.hr_tasks ?? '';
 				
 				// Map dashboard period to reports period filter (matching repoemp.html)
 				// Dashboard: 'current', 'last', 'week', 'year'
@@ -2171,7 +2171,7 @@
 				const isYearFilter = currentPeriod === 'year';
 				
 				// Get exceptions from attendance service
-				const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3000';
+				const attendanceApiBase = window.API_SERVICES?.attendance ?? '/api';
 				const exceptionsResponse = await fetch(`${attendanceApiBase}/api/exceptions/mine?status=all`, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
@@ -2274,7 +2274,7 @@
 					if (!currentEmployeeId) return false;
 				}
 				
-				const salaryApiBase = window.API_SERVICES?.salary || 'http://localhost:3010';
+				const salaryApiBase = window.API_SERVICES?.salary ?? '/api/salary';
 				const isYearFilter = currentPeriod === 'year';
 				
 				if (isYearFilter) {
@@ -2425,7 +2425,7 @@
 					if (!currentEmployeeId) return false;
 				}
 				
-				const attendanceApiBase = window.API_SERVICES?.attendance || 'http://localhost:3000';
+				const attendanceApiBase = window.API_SERVICES?.attendance ?? '/api';
 				const isYearFilter = currentPeriod === 'year';
 				
 				if (isYearFilter) {
@@ -2540,7 +2540,7 @@
 					}
 				}
 				
-				const timetableApiBase = (window.API_SERVICES && window.API_SERVICES.timetable !== undefined) ? window.API_SERVICES.timetable : 'http://localhost:3011';
+				const timetableApiBase = window.API_SERVICES?.timetable ?? '/api/timetable';
 				const response = await fetch(`${timetableApiBase}/employee-assignments/${currentEmployeeId}`, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,
@@ -2729,7 +2729,7 @@
 					if (!currentEmployeeId) return false;
 				}
 				
-				const signalsApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				const signalsApiBase = window.API_SERVICES?.hr_tasks ?? '';
 				const from = dateRange.start.toISOString().split('T')[0];
 				const to = dateRange.end.toISOString().split('T')[0];
 				
@@ -2776,7 +2776,7 @@
 					if (!currentEmployeeId) return false;
 				}
 				
-				const complaintsApiBase = window.API_SERVICES?.hr_tasks || 'http://localhost:3020';
+				const complaintsApiBase = window.API_SERVICES?.hr_tasks ?? '';
 				const from = dateRange.start.toISOString().split('T')[0];
 				const to = dateRange.end.toISOString().split('T')[0];
 				
@@ -2831,7 +2831,7 @@
 					}
 				}
 				
-				const usersApiBase = window.API_SERVICES?.users || 'http://localhost:3002';
+				const usersApiBase = window.API_SERVICES?.users ?? '/api/users';
 				const response = await fetch(`${usersApiBase}/profile`, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,

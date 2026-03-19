@@ -1448,7 +1448,7 @@
         var weekendDays = [5, 6]; // Friday and Saturday by default
         var currentView = 'grid';
 
-        const TIMETABLE_API_URL = (window.API_SERVICES && window.API_SERVICES.timetable !== undefined) ? window.API_SERVICES.timetable : 'http://localhost:3011';
+        const TIMETABLE_API_URL = window.API_SERVICES?.timetable ?? '/api/timetable';
 
         document.addEventListener('DOMContentLoaded', function() {
             // Language selector
