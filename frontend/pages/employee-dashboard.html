@@ -2540,7 +2540,7 @@
 					}
 				}
 				
-				const timetableApiBase = window.API_SERVICES?.timetable || 'http://localhost:3005';
+				const timetableApiBase = (window.API_SERVICES && window.API_SERVICES.timetable !== undefined) ? window.API_SERVICES.timetable : 'http://localhost:3011';
 				const response = await fetch(`${timetableApiBase}/employee-assignments/${currentEmployeeId}`, {
 					headers: {
 						'Authorization': `Bearer ${authManager.getToken()}`,

@@ -48,7 +48,7 @@
 
 			// Build the iframe URL
 			const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
-			let iframeUrl = 'http://localhost:3000/daily-attendance.html?embed=1&lang=' + currentLang;
+			let iframeUrl = window.location.origin + '/daily-attendance.html?embed=1&lang=' + currentLang;
 
 			if (employeeId) iframeUrl += '&employeeId=' + employeeId;
 			if (year) iframeUrl += '&year=' + year;
@@ -72,7 +72,7 @@
 						frame.contentWindow.postMessage({
 							type: 'languageChange',
 							language: lang
-						}, 'http://localhost:3000');
+						}, window.location.origin);
 						console.log('[daily-attendance.html] Sent language to iframe:', lang);
 					}
 				} catch (e) {
@@ -113,7 +113,7 @@
 			// Listen for navigation messages from iframe
 			window.addEventListener('message', function (event) {
 				// Verify origin for security (allow localhost:3000)
-				if (event.origin !== 'http://localhost:3000' && !event.origin.includes('localhost:3000') && !event.origin.includes('127.0.0.1:3000')) {
+				if (event.origin !== window.location.origin && !event.origin.includes('localhost') && !event.origin.includes('127.0.0.1')) {
 					return;
 				}
 

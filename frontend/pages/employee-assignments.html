@@ -2422,8 +2422,8 @@
                 }
 
                 // API configuration
-                const TIMETABLE_API_URL = 'http://localhost:3011'; // Timetable service URL
-                const DEPARTMENT_API_URL = 'http://localhost:3003'; // Department service URL
+                const TIMETABLE_API_URL = (window.API_SERVICES && window.API_SERVICES.timetable !== undefined) ? window.API_SERVICES.timetable : 'http://localhost:3011';
+                const DEPARTMENT_API_URL = (window.API_SERVICES && window.API_SERVICES.departments !== undefined) ? window.API_SERVICES.departments : 'http://localhost:3003';
 
                 // Update page direction based on language
                 function updatePageDirection(lang) {

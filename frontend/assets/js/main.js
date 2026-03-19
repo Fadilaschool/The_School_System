@@ -53,12 +53,21 @@ if (typeof window !== 'undefined' && typeof window.currentLanguage === 'undefine
 // API service URLs - expose globally for other scripts
 // Only declare if not already declared (prevents duplicate declaration errors)
 if (typeof window === 'undefined' || !window.API_SERVICES) {
-  const API_SERVICES = {
+  // Detect production vs development environment
+  const _IS_DEV_MODE = (() => {
+    if (typeof window === 'undefined') return true;
+    const port = window.location.port;
+    return ['5502','5503','5504','5505','5506','5507','5508','5518',
+            '3000','3001','3002','3003','3004','3005','3006','3007',
+            '3009','3010','3011','3020'].includes(port);
+  })();
+
+  const API_SERVICES = _IS_DEV_MODE ? {
     auth: "http://localhost:3001",
     users: "http://localhost:3002",
     departments: "http://localhost:3003",
     tasks: "http://localhost:3004",
-    hr_tasks: "http://localhost:3020", // HR Tasks service runs on port 3020
+    hr_tasks: "http://localhost:3020",
     meetings: "http://localhost:3005",
     payments: "http://localhost:3006",
     notifications: "http://localhost:3007",
@@ -66,15 +75,28 @@ if (typeof window === 'undefined' || !window.API_SERVICES) {
     requests: "http://localhost:3009",
     salary: "http://localhost:3010",
     timetable: "http://localhost:3011",
+  } : {
+    // Production: nginx proxies /api/service/... to the correct microservice
+    auth: "",
+    users: "/api/users",
+    departments: "/api/departments",
+    tasks: "",
+    hr_tasks: "",
+    meetings: "/api/meetings",
+    payments: "/api/payments",
+    notifications: "/api/notifications",
+    attendance: "/api",
+    requests: "/api/requests",
+    salary: "/api/salary",
+    timetable: "/api/timetable",
   };
 
   // Expose API_SERVICES globally for other scripts
   if (typeof window !== 'undefined') {
     window.API_SERVICES = API_SERVICES;
-    // Also expose API_BASE for iframe communication (used by director dashboard)
-    // Use same hostname as current page to avoid CORS issues
+    // API_BASE for hr-tasks iframe communication (used by director dashboard)
     const currentHost = window.location.hostname === '127.0.0.1' ? '127.0.0.1' : 'localhost';
-    window.API_BASE = `http://${currentHost}:3020`;
+    window.API_BASE = _IS_DEV_MODE ? `http://${currentHost}:3020` : '';
   }
 }
 
@@ -1591,9 +1613,11 @@ function getHrTasksAuthHeaders() {
 
 function getHrTasksApiBase() {
   if (typeof window !== 'undefined') {
+    // window.API_BASE is '' in production, so only use it if non-empty
     if (window.API_BASE) return window.API_BASE;
-    if (window.API_SERVICES && window.API_SERVICES.hr_tasks) {
-      return window.API_SERVICES.hr_tasks;
+    // Use hr_tasks from API_SERVICES; check for undefined (not falsy) to handle empty string in production
+    if (window.API_SERVICES && typeof window.API_SERVICES.hr_tasks !== 'undefined') {
+      return window.API_SERVICES.hr_tasks; // returns "" in production
     }
   }
   return 'http://localhost:3020';

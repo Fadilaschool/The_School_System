@@ -3,14 +3,23 @@
 // Base API configuration
 // Resolve service base by endpoint prefix to hit correct microservice instead of frontend origin
 const LIVE_SERVER_PORTS = ['5502', '5503', '5504', '5505', '5506', '5507', '5508', '5518'];
+const SERVICE_PORTS = ['3000', '3001', '3002', '3003', '3004', '3005', '3006', '3007', '3009', '3010', '3011', '3020'];
 const isLiveServerPort = LIVE_SERVER_PORTS.includes(window.location.port);
+const isServicePort = SERVICE_PORTS.includes(window.location.port);
+const isDevMode = isLiveServerPort || isServicePort;
 const port = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
-const DEFAULT_API_BASE_URL = isLiveServerPort ? 'http://localhost:3000' : `${window.location.protocol}//${window.location.hostname}:${port}`;
+// In production (served via nginx on port 80/443/custom), use relative URLs so nginx proxies correctly.
+// In development (live server or direct service port), route to specific service localhost.
+const DEFAULT_API_BASE_URL = isDevMode ? (isLiveServerPort ? 'http://localhost:3000' : `${window.location.protocol}//${window.location.hostname}:${port}`) : '';
 window.API_BASE_URL = DEFAULT_API_BASE_URL; // Back-compat global
 
 function getServiceBaseForEndpoint(endpoint) {
     try {
-        // Ensure API_SERVICES exists (defined in main.js). Fallbacks provided.
+        // In production (nginx), all endpoints already have correct /api/ paths.
+        // Return empty string so URLs are relative and nginx routes them correctly.
+        if (!isDevMode) return '';
+
+        // Development: route to specific service localhost ports
         const services = (typeof API_SERVICES !== 'undefined') ? API_SERVICES : {
             auth: 'http://localhost:3001',
             users: 'http://localhost:3002',
@@ -24,17 +33,17 @@ function getServiceBaseForEndpoint(endpoint) {
             salary: 'http://localhost:3010',
         };
 
-        if (endpoint.startsWith('/api/auth')) return services.auth;
-        if (endpoint.startsWith('/api/departments')) return services.departments;
-        if (endpoint.startsWith('/api/attendance')) return services.attendance;
-        if (endpoint.startsWith('/api/punches')) return services.attendance;
-        if (endpoint.startsWith('/api/exceptions')) return services.attendance;
-        if (endpoint.startsWith('/api/substitutions')) return services.attendance;
-        if (endpoint.startsWith('/api/salary')) return services.salary;
+        if (endpoint.startsWith('/api/auth')) return 'http://localhost:3001';
+        if (endpoint.startsWith('/api/departments')) return 'http://localhost:3003';
+        if (endpoint.startsWith('/api/attendance')) return 'http://localhost:3000';
+        if (endpoint.startsWith('/api/punches')) return 'http://localhost:3000';
+        if (endpoint.startsWith('/api/exceptions')) return 'http://localhost:3000';
+        if (endpoint.startsWith('/api/substitutions')) return 'http://localhost:3000';
+        if (endpoint.startsWith('/api/salary')) return 'http://localhost:3010';
         // Default to current origin or dev proxy
         return DEFAULT_API_BASE_URL;
     } catch (_) {
-        return DEFAULT_API_BASE_URL;
+        return isDevMode ? DEFAULT_API_BASE_URL : '';
     }
 }
 

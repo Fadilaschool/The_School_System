@@ -1538,7 +1538,7 @@
                     const lastMonthYear = lastMonth.getFullYear();
                     
                     try {
-                        const salaryResponse = await fetch(`http://localhost:3010/salaries/summary?month=${lastMonthNum}&year=${lastMonthYear}`, {
+                        const salaryResponse = await fetch(`${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : "http://localhost:3010")}/salaries/summary?month=${lastMonthNum}&year=${lastMonthYear}`, {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                                 'Content-Type': 'application/json'
@@ -2075,7 +2075,7 @@
                 const currentYear = currentDate.getFullYear();
 
                 // Get salary summary for current month
-                const response = await fetch(`http://localhost:3010/salaries/summary?month=${currentMonth}&year=${currentYear}`, {
+                const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : "http://localhost:3010")}/salaries/summary?month=${currentMonth}&year=${currentYear}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                         'Content-Type': 'application/json'
@@ -2268,7 +2268,7 @@
 
                     // Create promises for all 12 months
                     for (let month = 1; month <= 12; month++) {
-                        const url = `http://localhost:3010/salaries/summary?month=${month}&year=${year}`;
+                        const url = `${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : "http://localhost:3010")}/salaries/summary?month=${month}&year=${year}`;
                         monthPromises.push(
                             fetch(url, {
                                 headers: {
@@ -2298,7 +2298,7 @@
                         console.warn('⚠️ Error aggregating yearly salary data:', error);
                         // Fallback to current month
                         const currentDate = new Date();
-                        const url = `http://localhost:3010/salaries/summary?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`;
+                        const url = `${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : "http://localhost:3010")}/salaries/summary?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`;
                         const response = await fetch(url, {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -2314,7 +2314,7 @@
                 } else {
                     // Current Month or Last Month: Single API call
                     const queryString = new URLSearchParams(filters).toString();
-                    const url = `http://localhost:3010/salaries/summary?${queryString}`;
+                    const url = `${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : "http://localhost:3010")}/salaries/summary?${queryString}`;
 
                     console.log('💰 Salary API URL:', url);
 

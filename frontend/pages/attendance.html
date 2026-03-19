@@ -63,7 +63,7 @@
 			// Get current language and include it in the URL
 			const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
 			// Load from attendance service on port 3000
-			frame.src = 'http://localhost:3000/attendance-master.html?embed=1&lang=' + currentLang;
+			frame.src = window.location.origin + '/attendance-master.html?embed=1&lang=' + currentLang;
 			
 			// Initialize translations
 			if (typeof updatePageTranslations === 'function') {
@@ -77,7 +77,7 @@
 						frame.contentWindow.postMessage({
 							type: 'languageChange',
 							language: lang
-						}, 'http://localhost:3000');
+						}, window.location.origin);
 						console.log('[attendance.html] Sent language to iframe:', lang);
 					}
 				} catch (e) {
@@ -95,7 +95,7 @@
 							type: 'authToken',
 							token: token,
 							user: user
-						}, 'http://localhost:3000');
+						}, window.location.origin);
 						console.log('[attendance.html] Sent auth token to iframe');
 					}
 				} catch (e) {
@@ -140,7 +140,7 @@
 			// Listen for messages from iframe
 			window.addEventListener('message', function(event) {
 				// Verify origin for security (allow localhost:3000)
-				if (event.origin !== 'http://localhost:3000' && !event.origin.includes('localhost:3000') && !event.origin.includes('127.0.0.1:3000')) {
+				if (event.origin !== window.location.origin && !event.origin.includes('localhost') && !event.origin.includes('127.0.0.1')) {
 					return;
 				}
 				
@@ -162,7 +162,7 @@
 					
 					if (currentPort === '5502' || currentPort === '5503') {
 						// Frontend is running, navigate to attendance service
-						targetUrl = `http://localhost:3000/daily-attendance.html?${params}`;
+						targetUrl = `${window.location.origin}/daily-attendance.html?${params}`;
 					} else {
 						// Get current page base URL
 						const currentUrl = window.location.href;

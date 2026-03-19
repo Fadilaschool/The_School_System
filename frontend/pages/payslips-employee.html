@@ -293,8 +293,8 @@
                     ...(document.getElementById('filterYear').value ? { year: document.getElementById('filterYear').value } : {}),
                     ...(document.getElementById('filterMonth').value ? { month: document.getElementById('filterMonth').value } : {})
                 }).toString();
-                console.log('Requesting payslips:', `http://localhost:3010/payslips/me${qs ? ('?' + qs) : ''}`);
-                const response = await fetch(`http://localhost:3010/payslips/me${qs ? ('?' + qs) : ''}`, {
+                console.log('Requesting payslips:', `${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : 'http://localhost:3010')}/payslips/me${qs ? ('?' + qs) : ''}`);
+                const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : 'http://localhost:3010')}/payslips/me${qs ? ('?' + qs) : ''}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                         'Content-Type': 'application/json'
@@ -418,7 +418,7 @@
 
         async function downloadPayslip(payslipId) {
             try {
-                const response = await fetch(`http://localhost:3010/payslips/download/${payslipId}`, {
+                const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : 'http://localhost:3010')}/payslips/download/${payslipId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -589,9 +589,9 @@
 
                 }).toString();
 
-                console.log('Requesting payslips:', `http://localhost:3010/payslips/me${qs ? ('?' + qs) : ''}`);
+                console.log('Requesting payslips:', `${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : 'http://localhost:3010')}/payslips/me${qs ? ('?' + qs) : ''}`);
 
-                const response = await fetch(`http://localhost:3010/payslips/me${qs ? ('?' + qs) : ''}`, {
+                const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : 'http://localhost:3010')}/payslips/me${qs ? ('?' + qs) : ''}`, {
 
                     headers: {
 
@@ -807,7 +807,7 @@
 
             try {
 
-                const response = await fetch(`http://localhost:3010/payslips/download/${payslipId}`, {
+                const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : 'http://localhost:3010')}/payslips/download/${payslipId}`, {
 
                     headers: {
 

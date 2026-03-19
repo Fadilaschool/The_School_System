@@ -1,5 +1,14 @@
 // Authentication utilities
-const AUTH_API_BASE_URL = 'http://localhost:3001'; // Auth service URL
+// In production (served via nginx), use relative /api path so nginx proxies to auth-service.
+// In development (live server or direct service port), use localhost directly.
+const AUTH_API_BASE_URL = (() => {
+    if (typeof window === 'undefined') return 'http://localhost:3001';
+    const port = window.location.port;
+    const DEV_PORTS = ['5502','5503','5504','5505','5506','5507','5508','5518',
+                       '3000','3001','3002','3003','3004','3005','3006','3007',
+                       '3009','3010','3011','3020'];
+    return DEV_PORTS.includes(port) ? 'http://localhost:3001' : '/api';
+})();
 
 class AuthManager {
     constructor() {

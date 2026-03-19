@@ -717,7 +717,7 @@
                 const params = { month, year, limit: 200 };
                 if (department) params.department = department;
 
-                const response = await fetch(`http://localhost:3010/payslips/admin?${new URLSearchParams(params)}`, {
+                const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : "http://localhost:3010")}/payslips/admin?${new URLSearchParams(params)}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                         'Content-Type': 'application/json'
@@ -829,7 +829,7 @@
 
         async function downloadPayslip(payslipId) {
             try {
-                const response = await fetch(`http://localhost:3010/payslips/download/${payslipId}`, {
+                const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : 'http://localhost:3010')}/payslips/download/${payslipId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -889,7 +889,7 @@
                 const uploadingText = t('payslips.uploading', 'Uploading...');
                 document.getElementById('progressText').textContent = `${uploadingText} ${files.length} files...`;
 
-                const response = await fetch('http://localhost:3010/payslips/upload-batch', {
+                const response = await fetch((window.API_SERVICES && window.API_SERVICES.salary !== undefined ? window.API_SERVICES.salary : 'http://localhost:3010') + '/payslips/upload-batch', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,

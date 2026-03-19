@@ -1442,7 +1442,7 @@
     <script src="../assets/js/main.js"></script>
     <script src="../components/api.js"></script>
     <script>
-        const API_BASE_URL = 'http://localhost:3010'; // Update this to your salary service URL
+        const API_BASE_URL = (window.API_SERVICES && window.API_SERVICES.salary !== undefined) ? window.API_SERVICES.salary : 'http://localhost:3010';
         
         let currentSalaries = [];
         let currentPagination = {};
@@ -3347,7 +3347,7 @@
             try {
                 // First, check if validation is allowed (no pending cases)
                 const token = localStorage.getItem('token');
-                let validationCheckUrl = `http://localhost:3000/api/attendance/validation/check/${year}/${month}`;
+                let validationCheckUrl = `${(window.API_SERVICES && window.API_SERVICES.attendance ? window.API_SERVICES.attendance : "http://localhost:3000")}/api/attendance/validation/check/${year}/${month}`;
                 if (department) {
                     validationCheckUrl += `?department=${department}`;
                 }
@@ -3402,7 +3402,7 @@
                     try {
                         // Call the attendance service validation API
                         const token = localStorage.getItem('token');
-                        const response = await fetch(`http://localhost:3000/api/attendance/validate/employee/${employee.employee_id}`, {
+                        const response = await fetch(`${(window.API_SERVICES && window.API_SERVICES.attendance ? window.API_SERVICES.attendance : "http://localhost:3000")}/api/attendance/validate/employee/${employee.employee_id}`, {
                             method: 'POST',
                             headers: {
                                 'Authorization': `Bearer ${token}`,
@@ -3546,7 +3546,7 @@
             
             if (currentPort === '5502' || currentPort === '5503') {
                 // If we're on frontend (Live Server), try attendance service on port 3000
-                attendanceUrl = `http://localhost:3000/daily?${params.toString()}`;
+                attendanceUrl = `${window.location.origin}/daily?${params.toString()}`;
             } else {
                 // Fallback to relative path
                 attendanceUrl = `../attendance-service/daily-attendance.html?${params.toString()}`;
@@ -3605,7 +3605,7 @@
                 const currentPort = window.location.port;
                 let attendanceUrl;
                 if (currentPort === '5502' || currentPort === '5503') {
-                    attendanceUrl = `http://localhost:3000/daily?${qs.toString()}`;
+                    attendanceUrl = `${window.location.origin}/daily?${qs.toString()}`;
                 } else {
                     attendanceUrl = `../attendance-service/daily-attendance.html?${qs.toString()}`;
                 }

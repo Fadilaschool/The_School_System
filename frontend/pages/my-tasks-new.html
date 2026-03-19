@@ -2717,7 +2717,7 @@ async function completeMyAssignment(taskId) {
       // NOUVEAU CODE CORRIGÉ
 async function updateAssigneeStatus(taskId, employeeId, status) {
   try {
-    const apiUrl = 'http://localhost:3020';
+    const apiUrl = (window.API_SERVICES && typeof window.API_SERVICES.hr_tasks !== 'undefined') ? window.API_SERVICES.hr_tasks : 'http://localhost:3020';
     
     console.log('📤 Sending request to backend...');
     

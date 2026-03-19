@@ -874,7 +874,7 @@
                             try {
                                 const usersService = (typeof window !== 'undefined' && window.API_SERVICES?.users) || 
                                                    (typeof API_SERVICES !== 'undefined' && API_SERVICES.users) || 
-                                                   'http://localhost:3002';
+                                                   (window.API_SERVICES && window.API_SERVICES.users !== undefined) ? window.API_SERVICES.users : (window.API_SERVICES && window.API_SERVICES.users !== undefined) ? window.API_SERVICES.users : (window.API_SERVICES && window.API_SERVICES.users !== undefined) ? window.API_SERVICES.users : 'http://localhost:3002';
                                 const response = await authManager.makeAuthenticatedRequest(
                                     `${usersService}/employees/by-user/${user.id}`
                                 );
