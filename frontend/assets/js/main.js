@@ -1475,6 +1475,13 @@ function insertGlobalHeader() {
   // Don't insert on login page or if header already exists
   if (document.querySelector('#loginForm')) return;
   if (document.querySelector('.page-hero')) return;
+  // Don't insert when embedded in iframe
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const isEmbed = params.get('embed') === '1';
+    const inIframe = window.self !== window.top;
+    if (isEmbed || inIframe) return;
+  } catch (_) { }
 
   const main = document.querySelector('main');
   if (!main) return;
