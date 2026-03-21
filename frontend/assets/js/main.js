@@ -1740,6 +1740,8 @@ async function loadTaskNotifications() {
       headers: getHrTasksAuthHeaders()
     });
     if (!response.ok) return [];
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) return [];
     const tasks = await response.json();
     const notifications = [];
 
