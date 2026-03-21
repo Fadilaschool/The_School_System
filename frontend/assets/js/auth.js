@@ -302,7 +302,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const loginButton = document.getElementById('loginButton');
 
     // Redirect if on login page and already authenticated
-    if (authManager.isAuthenticated() && !window.location.pathname.includes('/pages/')) {
+    // Skip redirect when embedded in iframe (e.g. attendance-master.html inside attendance.html)
+    let _inIframe = false;
+    try { _inIframe = window.self !== window.top; } catch (_) { _inIframe = true; }
+    const _isEmbed = new URLSearchParams(window.location.search).get('embed') === '1';
+    if (authManager.isAuthenticated() && !window.location.pathname.includes('/pages/') && !_inIframe && !_isEmbed) {
         authManager.redirectToDashboard();
         return;
     }
