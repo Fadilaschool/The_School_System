@@ -1756,7 +1756,7 @@
         if (typeof window !== 'undefined') {
             const _attPort = window.location.port;
             const _attDevPorts = ['3000','5502','5503','5504','5505','5506','5507','5508','5518'];
-            window.API_BASE_URL = _attDevPorts.includes(_attPort) ? 'http://localhost:3000' : '/api';
+            window.API_BASE_URL = _attDevPorts.includes(_attPort) ? 'http://localhost:3000' : '';
             console.log('Setting API_BASE_URL to:', window.API_BASE_URL);
         }
 
