@@ -1781,32 +1781,9 @@
                 isEmbedded = true;
             }
             
-            // If embedded, hide sidebar/header and skip auth redirect (parent handles it)
+            // If embedded, skip authentication redirect (parent page handles it)
             if (isEmbed || isEmbedded) {
-                console.log('Page is embedded, hiding sidebar/header. Parent page handles auth.');
-                // Hide sidebar and header created by main.js
-                const sidebar = document.getElementById('collapsibleSidebar');
-                if (sidebar) sidebar.style.display = 'none';
-                const header = document.querySelector('.page-hero');
-                if (header) header.style.display = 'none';
-                // Also remove margin/padding that sidebar adds to body
-                document.body.style.marginLeft = '0';
-                document.body.style.paddingLeft = '0';
-                // Watch for dynamically added sidebar/header
-                const embedObserver = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        mutation.addedNodes.forEach(function(node) {
-                            if (node.nodeType === 1) {
-                                if (node.id === 'collapsibleSidebar' || (node.classList && node.classList.contains('page-hero'))) {
-                                    node.style.display = 'none';
-                                }
-                            }
-                        });
-                    });
-                });
-                if (document.body) {
-                    embedObserver.observe(document.body, { childList: true, subtree: true });
-                }
+                console.log('Page is embedded, skipping authentication redirect. Parent page handles auth.');
                 
                 // Check for token - if not found, wait for it from parent
                 const token = localStorage.getItem('token') || sessionStorage.getItem('token');
