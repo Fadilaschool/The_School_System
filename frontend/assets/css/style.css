@@ -954,7 +954,8 @@ body:has(#collapsibleSidebar) main .page-hero {
 }
 
 /* Push main content right of sidebar on desktop (no body padding) */
-body:has(#collapsibleSidebar) main {
+body:has(#collapsibleSidebar) > main,
+body:has(#collapsibleSidebar) > .main-content {
     position: relative;
     width: calc(100% - 4rem);
     max-width: calc(100vw - 4rem);
@@ -964,7 +965,8 @@ body:has(#collapsibleSidebar) main {
     overflow-x: visible;
 }
 
-[dir="rtl"] body:has(#collapsibleSidebar) main {
+[dir="rtl"] body:has(#collapsibleSidebar) > main,
+[dir="rtl"] body:has(#collapsibleSidebar) > .main-content {
     margin-left: 0;
     margin-right: 4rem;
     width: calc(100% - 4rem);
