@@ -1447,7 +1447,7 @@ function buildGlobalHeaderHTML() {
                   </div>
                 </div>
                 <div class="notification-dropdown-footer">
-                  <a href="priorities.html" class="view-all-link">
+                  <a href="javascript:void(0)" onclick="event.stopPropagation(); var p=window.location.pathname.includes('/pages/'); window.location.href=p?'priorities.html':'pages/priorities.html'" class="view-all-link">
                     <span data-translate="notifications.view_all">View all notifications</span>
                     <i class="fas fa-arrow-right"></i>
                   </a>
@@ -1753,8 +1753,8 @@ async function loadTaskNotifications() {
         notifications.push({
           id: `task-${task.id}`,
           type: 'task',
-          title: task.title || 'Task',
-          message: `Overdue task - Due ${formatHeaderDate(dueDate)}`,
+          title: task.title || (typeof translate === 'function' ? translate('notifications.task') : 'Task'),
+          message: (typeof translate === 'function' ? translate('notifications.task_overdue') : 'Overdue task - Due {date}').replace('{date}', formatHeaderDate(dueDate)),
           link: 'tasks.html',
           icon: 'fa-tasks',
           color: '#ef4444',
@@ -1765,8 +1765,8 @@ async function loadTaskNotifications() {
         notifications.push({
           id: `task-${task.id}`,
           type: 'task',
-          title: task.title || 'Task',
-          message: 'High priority task pending',
+          title: task.title || (typeof translate === 'function' ? translate('notifications.task') : 'Task'),
+          message: typeof translate === 'function' ? translate('notifications.task_high_priority') : 'High priority task pending',
           link: 'tasks.html',
           icon: 'fa-tasks',
           color: '#3b82f6',
@@ -1814,8 +1814,8 @@ async function loadReportNotifications() {
         notifications.push({
           id: `report-${report.id}`,
           type: 'report',
-          title: report.title || 'Report',
-          message: `Urgent report - Priority score: ${urgencyScore}/10`,
+          title: report.title || (typeof translate === 'function' ? translate('report.report') : 'Report'),
+          message: (typeof translate === 'function' ? translate('notifications.urgent_report') : 'Urgent report - Score: {score}/10').replace('{score}', urgencyScore),
           link: 'reports-director.html',
           icon: 'fa-file-alt',
           color: '#f59e0b',
@@ -1853,8 +1853,8 @@ async function loadComplaintNotifications() {
       notifications.push({
         id: 'complaints-pending',
         type: 'complaint',
-        title: 'Pending Complaints',
-        message: `${overview.pending} complaint${overview.pending > 1 ? 's' : ''} awaiting review`,
+        title: typeof translate === 'function' ? translate('notifications.pending_complaints') : 'Pending Complaints',
+        message: (typeof translate === 'function' ? translate('notifications.complaints_awaiting') : '{count} complaints awaiting review').replace('{count}', overview.pending),
         link: 'complaints-director.html',
         icon: 'fa-comment',
         color: '#ef4444',
@@ -1867,8 +1867,8 @@ async function loadComplaintNotifications() {
       notifications.push({
         id: 'complaints-overdue',
         type: 'complaint',
-        title: 'Overdue Complaints',
-        message: `${overview.overdue} complaint${overview.overdue > 1 ? 's' : ''} past due date`,
+        title: typeof translate === 'function' ? translate('notifications.overdue_complaints') : 'Overdue Complaints',
+        message: (typeof translate === 'function' ? translate('notifications.complaints_past_due') : '{count} complaints past due').replace('{count}', overview.overdue),
         link: 'complaints-director.html',
         icon: 'fa-comment',
         color: '#dc2626',
@@ -1905,8 +1905,8 @@ async function loadSignalNotifications() {
       notifications.push({
         id: 'signals-pending',
         type: 'signal',
-        title: 'Pending Signals',
-        message: `${overview.pending} signal${overview.pending > 1 ? 's' : ''} awaiting treatment`,
+        title: typeof translate === 'function' ? translate('notifications.pending_signals') : 'Pending Signals',
+        message: (typeof translate === 'function' ? translate('notifications.signals_awaiting') : '{count} signals awaiting treatment').replace('{count}', overview.pending),
         link: 'signals-responsible.html',
         icon: 'fa-exclamation-triangle',
         color: '#10b981',
@@ -1919,8 +1919,8 @@ async function loadSignalNotifications() {
       notifications.push({
         id: 'signals-high-priority',
         type: 'signal',
-        title: 'High Priority Signals',
-        message: `${overview.high_priority} high priority signal${overview.high_priority > 1 ? 's' : ''}`,
+        title: typeof translate === 'function' ? translate('notifications.high_priority_signals') : 'High Priority Signals',
+        message: (typeof translate === 'function' ? translate('notifications.signals_count') : '{count} high priority signals').replace('{count}', overview.high_priority),
         link: 'signals-responsible.html',
         icon: 'fa-exclamation-triangle',
         color: '#059669',
@@ -1977,9 +1977,11 @@ function createNotificationItem(notification) {
       </div>
     </div>
   `;
-  div.addEventListener('click', () => {
+  div.addEventListener('click', (e) => {
+    e.stopPropagation();
     if (notification.link) {
-      window.location.href = notification.link;
+      const inPages = window.location.pathname.includes('/pages/');
+      window.location.href = inPages ? notification.link : 'pages/' + notification.link;
     }
   });
   return div;
@@ -1993,17 +1995,19 @@ function formatRelativeTime(timestamp) {
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
 
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
-  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+  if (diffMins < 1) return typeof translate === 'function' ? translate('time.just_now') : 'Just now';
+  if (diffMins < 60) return (typeof translate === 'function' ? translate('time.minutes_ago') : '{n} min ago').replace('{n}', diffMins);
+  if (diffHours < 24) return (typeof translate === 'function' ? translate('time.hours_ago') : '{n}h ago').replace('{n}', diffHours);
+  if (diffDays < 7) return (typeof translate === 'function' ? translate('time.days_ago') : '{n}d ago').replace('{n}', diffDays);
   return formatHeaderDate(date);
 }
 
 function formatHeaderDate(date) {
   if (!date) return '';
   const d = new Date(date);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
+  const locale = lang === 'ar' ? 'ar-DZ' : lang === 'fr' ? 'fr-FR' : 'en-US';
+  return d.toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 function markAllAsRead() {
