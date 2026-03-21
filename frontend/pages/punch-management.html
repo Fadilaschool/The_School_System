@@ -839,9 +839,10 @@
 
         // Use centralized AuthManager token
         const getToken = () => authManager.getToken();
-        const ATTENDANCE_BASE = (typeof API_SERVICES !== 'undefined' && API_SERVICES.attendance) 
-            ? API_SERVICES.attendance 
-            : `http://${window.location.hostname}:3008`;
+        const _isLocalDev = ['localhost','127.0.0.1'].includes(window.location.hostname);
+        const ATTENDANCE_BASE = (typeof API_SERVICES !== 'undefined' && API_SERVICES.attendance)
+            ? API_SERVICES.attendance
+            : (_isLocalDev ? `http://${window.location.hostname}:3008` : '');
         let selectedFile = null;
         let currentUploadId = null;
         let currentPunchRecords = [];
