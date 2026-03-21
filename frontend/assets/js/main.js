@@ -85,7 +85,7 @@ if (typeof window === 'undefined' || !window.API_SERVICES) {
     meetings: "/api/meetings",
     payments: "/api/payments",
     notifications: "/api/notifications",
-    attendance: "/api",
+    attendance: "",
     requests: "/api/requests",
     salary: "/api/salary",
     timetable: "/api/timetable",
