@@ -31,7 +31,7 @@
 			// Load the HR Tasks UI inside an iframe in embed mode (hides its own sidebar)
 			var frame = document.getElementById('myTasksFrame');
 			// Relative from /frontend/pages/ to /hr_tasks/hr_tasks/public/my-tasks.html
-			var lang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+			var lang = localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
 			frame.src = '../../hr_tasks/hr_tasks/public/my-tasks.html?embed=1&lang=' + encodeURIComponent(lang);
 			
 			// Initialize translations

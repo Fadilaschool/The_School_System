@@ -41,7 +41,7 @@ if (typeof window !== 'undefined') {
 if (typeof window !== 'undefined' && typeof window.currentLanguage === 'undefined') {
   window.currentLanguage = (() => {
     try {
-      return localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+      return localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
     } catch (_) {
       return 'en';
     }
@@ -108,7 +108,7 @@ function getCurrentLanguage() {
   }
   // Fallback to localStorage or default
   try {
-    return localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+    return localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
   } catch (_) {
     return 'en';
   }
@@ -2238,7 +2238,7 @@ function translateNav(key) {
 
   // Try window.translations object
   if (typeof window !== 'undefined' && window.translations) {
-    const lang = window.currentLanguage || localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+    const lang = window.currentLanguage || localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
     const translation = window.translations[lang]?.[key];
     if (translation) {
       return translation;

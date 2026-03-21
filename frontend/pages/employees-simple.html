@@ -1050,7 +1050,7 @@
             const languageSelector = document.getElementById('languageSelector');
             if (languageSelector) {
                 // Set current language
-                const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+                const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
                 languageSelector.value = currentLang;
 
                 // Apply RTL for filter controls if Arabic
@@ -1081,7 +1081,7 @@
             // Listen for language change events
             document.addEventListener('languageChanged', function() {
                 // Update filter controls RTL
-                const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+                const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
                 updateFilterControlsRTL(currentLang);
                 
                 // Update language selector value

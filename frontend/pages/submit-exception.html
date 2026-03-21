@@ -696,7 +696,7 @@
             
             // Wait for translations to be available before initializing
             waitForTranslations(function() {
-                let savedLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+                let savedLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
                 if (typeof window.setLanguage === 'function') {
                     window.setLanguage(savedLanguage);
                 }
@@ -704,7 +704,7 @@
 
                 // Initialize translations with multiple attempts to ensure they load
                 function applyTranslationsNow() {
-                    let currentLang = window.currentLanguage || localStorage.getItem('language') || localStorage.getItem('lang') || savedLanguage || 'en';
+                    let currentLang = window.currentLanguage || localStorage.getItem('language') || localStorage.getItem('lang') || savedLanguage || 'ar';
                     if (typeof window.setLanguage === 'function') {
                         window.setLanguage(currentLang);
                         setTimeout(function() {

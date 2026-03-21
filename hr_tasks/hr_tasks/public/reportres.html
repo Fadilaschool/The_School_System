@@ -1751,7 +1751,7 @@
                 }
                 // Third try: direct access to translations object if available
                 if (typeof window !== 'undefined' && typeof translations !== 'undefined') {
-                    const currentLang = window.currentLanguage || localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+                    const currentLang = window.currentLanguage || localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
                     if (translations[currentLang] && translations[currentLang][key]) {
                         return translations[currentLang][key];
                     }
@@ -1806,7 +1806,7 @@ let currentView = 'received'; // 'received' or 'generated'
             // Language selector
             const languageSelector = document.getElementById('languageSelector');
             if (languageSelector) {
-                languageSelector.value = (typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'en'));
+                languageSelector.value = (typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'ar'));
                 languageSelector.addEventListener('change', (e) => {
                     if (typeof setLanguage === 'function') {
                         setLanguage(e.target.value);

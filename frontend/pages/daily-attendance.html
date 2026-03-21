@@ -48,7 +48,7 @@
 			console.log('[WRAPPER] URL params received:', { employeeId, year, month });
 
 			// Build the iframe URL
-			const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+			const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
 			let iframeUrl = window.location.origin + '/daily-attendance.html?embed=1&lang=' + currentLang;
 
 			if (employeeId) iframeUrl += '&employeeId=' + employeeId;
@@ -83,28 +83,28 @@
 
 			// Send initial language when iframe loads
 			frame.addEventListener('load', function () {
-				const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+				const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
 				sendLanguageToIframe(currentLang);
 			});
 
 			// Listen for language changes from the parent page
 			document.addEventListener('languageChanged', function (event) {
-				const lang = event.detail ? event.detail.language : (localStorage.getItem('language') || localStorage.getItem('lang') || 'en');
+				const lang = event.detail ? event.detail.language : (localStorage.getItem('language') || localStorage.getItem('lang') || 'ar');
 				sendLanguageToIframe(lang);
 			});
 
 			// Also listen for localStorage changes (in case language is changed elsewhere)
 			window.addEventListener('storage', function (e) {
 				if (e.key === 'language' || e.key === 'lang') {
-					const lang = e.newValue || localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+					const lang = e.newValue || localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
 					sendLanguageToIframe(lang);
 				}
 			});
 
 			// Poll for language changes (fallback method)
-			let lastLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+			let lastLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
 			setInterval(function () {
-				const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+				const currentLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
 				if (currentLang !== lastLanguage) {
 					lastLanguage = currentLang;
 					sendLanguageToIframe(currentLang);

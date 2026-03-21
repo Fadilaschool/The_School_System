@@ -1429,7 +1429,7 @@
         function t(key, fallback = '') {
             if (!key) return fallback || '';
             try {
-                var lang = (typeof window !== 'undefined' && window.currentLanguage) ? window.currentLanguage : (typeof localStorage !== 'undefined' && (localStorage.getItem('language') || localStorage.getItem('lang'))) || 'en';
+                var lang = (typeof window !== 'undefined' && window.currentLanguage) ? window.currentLanguage : (typeof localStorage !== 'undefined' && (localStorage.getItem('language') || localStorage.getItem('lang'))) || 'ar';
                 if (typeof window !== 'undefined' && window.translations && typeof window.translations[lang] === 'object' && window.translations[lang][key]) {
                     return window.translations[lang][key];
                 }
@@ -1489,7 +1489,7 @@ let currentOriginalText = null;
             // Apply language: from URL first (e.g. ?embed=1&lang=ar), then localStorage, so card labels translate
             var langToApply = urlParams.get('lang');
             if (!langToApply || (langToApply !== 'ar' && langToApply !== 'fr' && langToApply !== 'en')) {
-                langToApply = (typeof localStorage !== 'undefined' && (localStorage.getItem('language') || localStorage.getItem('lang'))) || 'en';
+                langToApply = (typeof localStorage !== 'undefined' && (localStorage.getItem('language') || localStorage.getItem('lang'))) || 'ar';
                 if (langToApply !== 'ar' && langToApply !== 'fr') langToApply = 'en';
             }
             if (langToApply) {
@@ -1684,7 +1684,7 @@ let currentOriginalText = null;
             // Language selector
             const languageSelector = document.getElementById('languageSelector');
             if (languageSelector) {
-                const savedLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+                const savedLang = localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
                 languageSelector.value = savedLang;
                 
                 languageSelector.addEventListener('change', function(e) {

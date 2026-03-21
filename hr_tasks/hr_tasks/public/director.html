@@ -6729,7 +6729,7 @@
 	<!-- <script src="/socket.io/socket.io.js"></script> -->
 	<script src="translations.js"></script>
 	<script>
-		const getCurrentLanguage = () => (typeof window !== 'undefined' && window.currentLanguage) ? window.currentLanguage : (localStorage.getItem('language') || localStorage.getItem('lang') || 'en');
+		const getCurrentLanguage = () => (typeof window !== 'undefined' && window.currentLanguage) ? window.currentLanguage : (localStorage.getItem('language') || localStorage.getItem('lang') || 'ar');
 		const t = (key) => (typeof translate === 'function') ? translate(key) : key;
 		const translatePriorityValue = (value) => {
 			const lang = getCurrentLanguage();
@@ -7210,7 +7210,7 @@
 		}
 
 		function sortAllTasksByLanguage(items) {
-			const currentLang = typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'en');
+			const currentLang = typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'ar');
 			console.log('Sorting All Tasks:', items.length, 'items, order:', allTasksSortOrder);
 
 			return [...items].sort((a, b) => {
@@ -10516,7 +10516,7 @@
 			// Language selector
 			const languageSelector = document.getElementById('languageSelector');
 			if (languageSelector) {
-				languageSelector.value = (typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'en'));
+				languageSelector.value = (typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'ar'));
 				languageSelector.addEventListener('change', (e) => {
 					if (typeof setLanguage === 'function') {
 						setLanguage(e.target.value);
@@ -12486,7 +12486,7 @@
 					const v = translate(key);
 					if (v !== undefined && v !== null) return v;
 				}
-				const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || (typeof window !== 'undefined' && window.currentLanguage) || 'en';
+				const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || (typeof window !== 'undefined' && window.currentLanguage) || 'ar';
 				if (typeof window !== 'undefined' && window.translations && window.translations[lang] && window.translations[lang][key]) {
 					return window.translations[lang][key];
 				}
@@ -12895,7 +12895,7 @@
 			}
 
 			function sortTasksByLanguage(items) {
-				const currentLang = typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'en');
+				const currentLang = typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'ar');
 
 				return [...items].sort((a, b) => {
 					const textA = a.title || '';
@@ -13226,7 +13226,7 @@
 			}
 
 			function sortInstructionsByLanguage(items) {
-				const currentLang = typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'en');
+				const currentLang = typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'ar');
 
 				return [...items].sort((a, b) => {
 					const textA = a.body || '';

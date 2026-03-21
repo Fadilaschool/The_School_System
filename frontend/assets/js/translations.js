@@ -7842,7 +7842,7 @@ if (typeof window !== 'undefined') {
     window.setLanguage = setLanguage;
     window.updatePageTranslations = updatePageTranslations;
     window.translations = translations; // Expose translations object for debugging
-    window.currentLanguage = window.currentLanguage || currentLanguage || 'en';
+    window.currentLanguage = window.currentLanguage || currentLanguage || 'ar';
     console.log('[translations.js] Functions exposed to window:', {
         translate: typeof window.translate,
         setLanguage: typeof window.setLanguage,
@@ -8080,7 +8080,7 @@ function updatePageTranslations() {
 (function () {
     if (typeof document === 'undefined') return;
 
-    const savedLanguage = localStorage.getItem('language') || 'en';
+    const savedLanguage = localStorage.getItem('language') || 'ar';
     // Set on window first, then reference it
     if (typeof window !== 'undefined') {
         window.currentLanguage = savedLanguage;
@@ -8125,7 +8125,7 @@ function updatePageTranslations() {
 // Initialize language on page load
 document.addEventListener('DOMContentLoaded', function () {
     console.log('[translations.js] DOMContentLoaded fired');
-    const savedLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+    const savedLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
     console.log('[translations.js] Saved language from localStorage:', savedLanguage);
 
     const languageSelector = document.getElementById('languageSelector');

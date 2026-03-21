@@ -1091,7 +1091,7 @@ let selectedEmployeeIds = [];
             
             waitForTranslations(function() {
                 const languageSelector = document.getElementById('languageSelector');
-                let savedLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
+                let savedLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'ar';
                 
                 if (languageSelector) {
                     languageSelector.value = savedLanguage;

@@ -2,7 +2,7 @@
 // Don't redeclare currentLanguage if it's already defined (e.g., by translations.js)
 if (typeof currentLanguage === 'undefined') {
   var currentLanguage = (() => {
-    try { return localStorage.getItem('lang') || localStorage.getItem('language') || 'en'; } catch(_) { return 'en'; }
+    try { return localStorage.getItem('lang') || localStorage.getItem('language') || 'ar'; } catch(_) { return 'en'; }
   })();
 }
 // Also sync with window.currentLanguage if available
@@ -17,7 +17,7 @@ const TRANSLATIONS = {
   ar: {'common.cancel':'إلغاء'}
 };
 function translate(key){ const d=TRANSLATIONS[currentLanguage]||{}; return d[key]||key; }
-function setLanguage(lang){ currentLanguage = lang || 'en'; try{localStorage.setItem('lang',currentLanguage);}catch(_){}; applyTranslations(); }
+function setLanguage(lang){ currentLanguage = lang || 'ar'; try{localStorage.setItem('lang',currentLanguage);}catch(_){}; applyTranslations(); }
 function applyTranslations(){
   document.querySelectorAll('[data-translate]').forEach(el=>{
     const key = el.getAttribute('data-translate'); if(!key) return;

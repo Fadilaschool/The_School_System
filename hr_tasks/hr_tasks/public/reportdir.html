@@ -3214,7 +3214,7 @@
             // Language selector
             const languageSelector = document.getElementById('languageSelector');
             if (languageSelector) {
-                const savedLang = localStorage.getItem('preferredLanguage') || 'en';
+                const savedLang = localStorage.getItem('preferredLanguage') || 'ar';
                 languageSelector.value = savedLang;
 
                 // Update HTML lang and dir attributes
@@ -4972,7 +4972,7 @@
             const dateElement = document.getElementById('currentDate');
             if (dateElement) {
                 const today = new Date();
-                const lang = localStorage.getItem('preferredLanguage') || 'en';
+                const lang = localStorage.getItem('preferredLanguage') || 'ar';
                 const options = {
                     year: 'numeric',
                     month: 'long',
@@ -5697,7 +5697,7 @@
 
         // Sort reports by language
         function sortReportsByLanguage(items) {
-            const currentLang = document.getElementById('languageSelector')?.value || 'en';
+            const currentLang = document.getElementById('languageSelector')?.value || 'ar';
 
             return [...items].sort((a, b) => {
                 const textA = a.title || '';

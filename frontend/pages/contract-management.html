@@ -366,7 +366,7 @@
         let branches = [];
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const lang = (typeof window !== 'undefined' && window.currentLanguage) ? window.currentLanguage : (localStorage.getItem('language') || 'en');
+            const lang = (typeof window !== 'undefined' && window.currentLanguage) ? window.currentLanguage : (localStorage.getItem('language') || 'ar');
             const html = document.getElementById('contract-page-html') || document.documentElement;
             if (lang === 'ar') {
                 html.setAttribute('dir', 'rtl');

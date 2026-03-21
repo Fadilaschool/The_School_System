@@ -2213,7 +2213,7 @@
 
         // Helper for translations - use same localStorage keys as frontend (language, lang)
         function getCurrentLanguage() {
-            return localStorage.getItem('language') || localStorage.getItem('lang') || localStorage.getItem('preferredLanguage') || 'en';
+            return localStorage.getItem('language') || localStorage.getItem('lang') || localStorage.getItem('preferredLanguage') || 'ar';
         }
         function getTranslation(key) {
             if (typeof translations === 'undefined') return key;
@@ -2537,7 +2537,7 @@
 
             // Get translation function
             const getTranslation = (key) => {
-                const lang = localStorage.getItem('preferredLanguage') || 'en';
+                const lang = localStorage.getItem('preferredLanguage') || 'ar';
                 if (typeof translations !== 'undefined' && translations[lang] && translations[lang][key]) {
                     return translations[lang][key];
                 }
@@ -3212,7 +3212,7 @@
 
             // Get translation function
             const getTranslation = (key) => {
-                const lang = localStorage.getItem('preferredLanguage') || 'en';
+                const lang = localStorage.getItem('preferredLanguage') || 'ar';
                 if (typeof translations !== 'undefined' && translations[lang] && translations[lang][key]) {
                     return translations[lang][key];
                 }

@@ -133,13 +133,13 @@ class ProfileManager {
         this.updateFormField('address', profile.address);
 
         // Update preferences
-        this.updateFormField('languagePreference', profile.language_preference || 'en');
+        this.updateFormField('languagePreference', profile.language_preference || 'ar');
         this.updateFormField('themePreference', profile.theme_preference || 'light');
 
         // Update language selector to match preference
         const languageSelector = document.getElementById('languageSelector');
         if (languageSelector) {
-            languageSelector.value = profile.language_preference || 'en';
+            languageSelector.value = profile.language_preference || 'ar';
         }
 
         // Update notification preferences
@@ -342,7 +342,7 @@ class ProfileManager {
             this.setSubmitLoading(true);
 
             const preferences = {
-                language_preference: document.getElementById('languagePreference')?.value || 'en',
+                language_preference: document.getElementById('languagePreference')?.value || 'ar',
                 theme_preference: document.getElementById('themePreference')?.value || 'light',
                 notification_preferences: {
                     email: document.getElementById('emailNotifications')?.checked || false,

@@ -1462,7 +1462,7 @@
                     body.setAttribute('dir', 'rtl');
                 } else {
                     html.setAttribute('dir', 'ltr');
-                    html.setAttribute('lang', lang || 'en');
+                    html.setAttribute('lang', lang || 'ar');
                     body.setAttribute('dir', 'ltr');
                 }
             }
@@ -1470,7 +1470,7 @@
             // Language selector
             const languageSelector = document.getElementById('languageSelector');
             if (languageSelector) {
-                const currentLang = (typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'en'));
+                const currentLang = (typeof currentLanguage !== 'undefined' ? currentLanguage : (window.currentLanguage || 'ar'));
                 languageSelector.value = currentLang;
                 updatePageDirection(currentLang);
                 
@@ -1487,7 +1487,7 @@
 
             // Listen for language changes
             document.addEventListener('languageChanged', function() {
-                const lang = window.currentLanguage || localStorage.getItem('language') || 'en';
+                const lang = window.currentLanguage || localStorage.getItem('language') || 'ar';
                 updatePageDirection(lang);
             });
             
