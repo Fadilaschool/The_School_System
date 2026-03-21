@@ -1446,11 +1446,7 @@ function buildGlobalHeaderHTML() {
                     <p data-translate="notifications.empty">No notifications</p>
                   </div>
                 </div>
-                <div class="notification-dropdown-footer">
-                  <a href="javascript:void(0)" onclick="event.stopPropagation(); var p=window.location.pathname.includes('/pages/'); window.location.href=p?'priorities.html':'pages/priorities.html'" class="view-all-link">
-                    <span data-translate="notifications.view_all">View all notifications</span>
-                    <i class="fas fa-arrow-right"></i>
-                  </a>
+                <div class="notification-dropdown-footer" style="display:none;">
                 </div>
               </div>
             </div>
