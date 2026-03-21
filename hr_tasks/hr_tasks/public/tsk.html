@@ -3056,5 +3056,24 @@ if (typeof window !== 'undefined') {
 }
 
     </script>
+
+<script>
+// Language sync from parent frame
+window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'languageChanged') {
+        var lang = event.data.language || event.data.lang;
+        if (!lang) return;
+        if (typeof window.setLanguage === 'function') {
+            window.setLanguage(lang);
+        } else {
+            localStorage.setItem('language', lang);
+            localStorage.setItem('lang', lang);
+            if (typeof window.updatePageTranslations === 'function') {
+                window.updatePageTranslations();
+            }
+        }
+    }
+});
+</script>
 </body>
 </html>

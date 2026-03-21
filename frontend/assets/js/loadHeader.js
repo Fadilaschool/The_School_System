@@ -36,7 +36,7 @@ async function loadHeader(titleKey, subtitleKey, defaultTitle, defaultSubtitle) 
         // Initialize language selector logic (assuming translations.js is loaded)
         const languageSelector = document.getElementById('languageSelector');
         if (languageSelector && typeof window.setLanguage === 'function') {
-            const savedLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'fr';
+            const savedLanguage = localStorage.getItem('language') || localStorage.getItem('lang') || 'en';
             languageSelector.value = savedLanguage;
             languageSelector.addEventListener('change', function(event) {
                 window.setLanguage(event.target.value);
