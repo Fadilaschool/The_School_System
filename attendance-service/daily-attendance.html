@@ -1802,10 +1802,12 @@
         }
     </script>
     <script>
-        // Override API base URL to ensure it points to the correct port
+        // Override API base URL - detect production vs dev
         if (typeof window !== 'undefined') {
-            window.API_BASE_URL = 'http://localhost:3000';
-            console.log('Force setting API_BASE_URL to:', window.API_BASE_URL);
+            const _dailyPort = window.location.port;
+            const _dailyDevPorts = ['3000','5502','5503','5504','5505','5506','5507','5508','5518'];
+            window.API_BASE_URL = _dailyDevPorts.includes(_dailyPort) ? 'http://localhost:3000' : '';
+            console.log('Setting API_BASE_URL to:', window.API_BASE_URL);
         }
 
         // Check if embedded in iframe
@@ -3605,7 +3607,7 @@
                 console.log('Current API_BASE_URL:', window.API_BASE_URL);
 
                 // Test years endpoint
-                const response = await fetch('http://localhost:3000/api/attendance/years', {
+                const response = await fetch(`${window.API_BASE_URL}/api/attendance/years`, {
                     headers: {
                         'Authorization': 'Bearer test-token',
                         'Content-Type': 'application/json'
