@@ -37,12 +37,13 @@ pool.on('error', (err) => {
 });
 
 // Middleware
-// Relaxed CORS for local development: allow any localhost/127.0.0.1 origin with any port
+// CORS: allow localhost (dev) and production domain
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true); // allow non-browser clients
     const isLocal = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
-    if (isLocal) {
+    const isProduction = /^https?:\/\/(.*\.)?elfadila\.com$/.test(origin);
+    if (isLocal || isProduction) {
       return callback(null, true);
     }
     return callback(new Error('Not allowed by CORS'));
