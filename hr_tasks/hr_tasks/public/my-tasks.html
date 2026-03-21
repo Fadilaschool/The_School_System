@@ -1372,9 +1372,9 @@
             const fromParent = (window.parent && window.parent.API_SERVICES && window.parent.API_SERVICES.hr_tasks) 
               ? window.parent.API_SERVICES.hr_tasks 
               : null;
-            window.API_BASE = fromParent || 'http://localhost:3020';
+            window.API_BASE = fromParent || '';
           }
-        }catch(_){ window.API_BASE = 'http://localhost:3020'; }
+        }catch(_){ window.API_BASE = ''; }
         if (typeof window.editComment !== 'function') {
           window.editComment = function(commentId, currentText) {
             if (typeof openEditModal === 'function') {
@@ -1887,7 +1887,7 @@ let currentOriginalText = null;
                 if (typeof io === 'undefined'){
                     console.log('📦 Loading Socket.IO library...');
                     const s = document.createElement('script');
-                    s.src = (window.API_BASE||'http://localhost:3020') + '/socket.io/socket.io.js';
+                    s.src = (window.API_BASE||'') + '/socket.io/socket.io.js';
                     s.async = false;
                     s.onload = () => { 
                         console.log('✅ Socket.IO library loaded, retrying setup...');
@@ -2493,7 +2493,7 @@ function closeReports() {
                     
                     // 2. Fallback to default users service port
                     if (!usersApiBase) {
-                        usersApiBase = 'http://localhost:3002';
+                        usersApiBase = '/api/users';
                     }
                     
                     const token = authManager.getToken();
@@ -2813,7 +2813,7 @@ function filterAssigneeOptions(searchTerm) {
                 // Use hr_tasks service (port 3020) for this endpoint, not departments service
                 const apiBase = (window.parent && window.parent.API_SERVICES && window.parent.API_SERVICES.hr_tasks) 
                   ? window.parent.API_SERVICES.hr_tasks 
-                  : (window.API_BASE || window.TASKS_API || 'http://localhost:3020');
+                  : (window.API_BASE || window.TASKS_API || '');
                 const url = `${apiBase}/responsibles/${encodeURIComponent(responsibleId)}/departments`;
                 const res = (typeof authManager !== 'undefined' && authManager?.makeAuthenticatedRequest)
                     ? await authManager.makeAuthenticatedRequest(url)
@@ -2866,7 +2866,7 @@ function filterAssigneeOptions(searchTerm) {
             if (responsibleId) {
                 const apiBase = (window.parent && window.parent.API_SERVICES && window.parent.API_SERVICES.users) 
                   ? window.parent.API_SERVICES.users 
-                  : (window.API_BASE || window.TASKS_API || 'http://localhost:3020');
+                  : (window.API_BASE || window.TASKS_API || '');
                 const url = `${apiBase}/employees?responsible_id=${encodeURIComponent(responsibleId)}`;
                 const res = (typeof authManager !== 'undefined' && authManager?.makeAuthenticatedRequest)
                     ? await authManager.makeAuthenticatedRequest(url)
@@ -3870,7 +3870,7 @@ document.getElementById('saveEditBtn').addEventListener('click', async () => {
       return;
     }
 
-    const response = await fetch(`http://localhost:3020/comments/${currentEditId}`, {
+    const response = await fetch(`/comments/${currentEditId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -3953,7 +3953,7 @@ document.getElementById('saveEditBtn').addEventListener('click', async () => {
             document.getElementById('taskDetailsModal').classList.remove('flex');
         }
  async function updateTaskWithAssignees(taskId, formData) {
-    const response = await fetch(`http://localhost:3020/tasks/${taskId}`, {
+    const response = await fetch(`/tasks/${taskId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -4246,7 +4246,7 @@ async function completeMyAssignment(taskId) {
     if (!confirm('Are you sure you want to delete this task?')) return;
 
     try {
-        const response = await fetch(`http://localhost:3020/tasks/${id}`, {
+        const response = await fetch(`/tasks/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -4270,7 +4270,7 @@ async function completeMyAssignment(taskId) {
       // NOUVEAU CODE CORRIGÉ
 async function updateAssigneeStatus(taskId, employeeId, status) {
   try {
-    const apiUrl = 'http://localhost:3020';
+    const apiUrl = '';
     
     console.log('📤 Sending request to backend...');
     
@@ -4407,7 +4407,7 @@ async function editComment(commentId, currentText) {
       return;
     }
     
-    const response = await fetch(`http://localhost:3020/comments/${commentId}`, {
+    const response = await fetch(`/comments/${commentId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -4451,7 +4451,7 @@ async function deleteComment(commentId) {
       return;
     }
     
-    const response = await fetch(`http://localhost:3020/comments/${commentId}`, {
+    const response = await fetch(`/comments/${commentId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -4493,7 +4493,7 @@ async function loadAndDisplayTaskComments(taskId) {
     const commentsContainer = document.getElementById('taskComments');
     commentsContainer.innerHTML = '<p class="text-gray-500 text-sm">' + (typeof t === 'function' ? t('tasks.loading_tasks', 'Loading comments...') : 'Loading comments...') + '</p>';
     
-    const response = await fetch(`http://localhost:3020/tasks/${taskId}/comments`);
+    const response = await fetch(`/tasks/${taskId}/comments`);
     
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
@@ -4579,7 +4579,7 @@ async function loadAndDisplayTaskComments(taskId) {
     button.disabled = true;
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     
-    const response = await fetch(`http://localhost:3020/tasks/${currentTaskId}/comments`, {
+    const response = await fetch(`/tasks/${currentTaskId}/comments`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1499,7 +1499,7 @@
         if (parentBase) return parentBase.replace(/\/$/, '');
         if (window.location.origin && window.location.origin !== 'null') return window.location.origin;
       } catch (_) {}
-      return 'http://localhost:3020';
+      return '';
     })();
 
     const CONFIG = {

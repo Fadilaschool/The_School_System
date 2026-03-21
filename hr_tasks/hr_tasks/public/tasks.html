@@ -2638,13 +2638,13 @@
                         const port = parseInt((window.location && window.location.port) || '', 10);
                         // If accessed via Live Server or any high dev port (5500-5600) or invalid origin, use backend service
                         if ((port && port >= 5500 && port <= 5600) || !origin || !/^https?:\/\//i.test(origin)) {
-                            window.API_BASE = 'http://localhost:3020';
+                            window.API_BASE = '';
                         } else {
                             window.API_BASE = origin;
                         }
                     }
                 }
-            } catch (_) { window.API_BASE = 'http://localhost:3020'; }
+            } catch (_) { window.API_BASE = ''; }
             if (typeof window.editComment !== 'function') {
                 window.editComment = function (commentId, currentText) {
                     if (typeof openEditModal === 'function') {
@@ -3337,7 +3337,7 @@
                 if (typeof io === 'undefined') {
                     console.log('📦 Loading Socket.IO library...');
                     const s = document.createElement('script');
-                    s.src = (window.API_BASE || 'http://localhost:3020') + '/socket.io/socket.io.js';
+                    s.src = (window.API_BASE || '') + '/socket.io/socket.io.js';
                     s.async = false;
                     s.onload = () => {
                         console.log('✅ Socket.IO library loaded, retrying setup...');
@@ -3961,7 +3961,7 @@
 
                     // 2. Fallback to default users service port
                     if (!usersApiBase) {
-                        usersApiBase = 'http://localhost:3002';
+                        usersApiBase = '/api/users';
                     }
 
                     const token = authManager.getToken();
@@ -4281,7 +4281,7 @@
                 // Use hr_tasks service (port 3020) for this endpoint, not departments service
                 const apiBase = (window.parent && window.parent.API_SERVICES && window.parent.API_SERVICES.hr_tasks)
                     ? window.parent.API_SERVICES.hr_tasks
-                    : (window.API_BASE || window.TASKS_API || 'http://localhost:3020');
+                    : (window.API_BASE || window.TASKS_API || '');
                 const url = `${apiBase}/responsibles/${encodeURIComponent(responsibleId)}/departments`;
                 const res = (typeof authManager !== 'undefined' && authManager?.makeAuthenticatedRequest)
                     ? await authManager.makeAuthenticatedRequest(url)
@@ -4347,7 +4347,7 @@
                         // Use tasks API (port 3020) which has the /employees endpoint with responsible_id filter
                         const apiBase = (window.parent && window.parent.API_SERVICES && window.parent.API_SERVICES.hr_tasks)
                             ? window.parent.API_SERVICES.hr_tasks
-                            : (window.API_BASE || window.TASKS_API || 'http://localhost:3020');
+                            : (window.API_BASE || window.TASKS_API || '');
                         const url = `${apiBase}/employees?responsible_id=${encodeURIComponent(responsibleId)}`;
                         console.log('🔍 Fetching employees for Department Responsible from:', url);
 
@@ -4529,7 +4529,7 @@
 
             const apiBase = (window.parent && window.parent.API_SERVICES && window.parent.API_SERVICES.hr_tasks)
                 ? window.parent.API_SERVICES.hr_tasks
-                : (window.API_BASE || window.TASKS_API || 'http://localhost:3020');
+                : (window.API_BASE || window.TASKS_API || '');
 
             // Load departments for each employee in parallel (but limit concurrency)
             const departmentPromises = employees.map(async (employee) => {
@@ -5533,7 +5533,7 @@
                     return;
                 }
 
-                const response = await fetch(`http://localhost:3020/comments/${currentEditId}`, {
+                const response = await fetch(`/comments/${currentEditId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -5627,7 +5627,7 @@
             }
         }
         async function updateTaskWithAssignees(taskId, formData) {
-            const response = await fetch(`http://localhost:3020/tasks/${taskId}`, {
+            const response = await fetch(`/tasks/${taskId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -5766,7 +5766,7 @@
             // Use the tasks API base (port 3020) which has the /employees/:id endpoint
             const apiBase = (window.parent && window.parent.API_SERVICES && window.parent.API_SERVICES.hr_tasks)
                 ? window.parent.API_SERVICES.hr_tasks
-                : (window.API_BASE || window.TASKS_API || 'http://localhost:3020');
+                : (window.API_BASE || window.TASKS_API || '');
 
             const backendInvalidIds = [];
             for (const employeeId of assignedToIds) {
@@ -6129,7 +6129,7 @@
             if (!confirm('Are you sure you want to delete this task?')) return;
 
             try {
-                const response = await fetch(`http://localhost:3020/tasks/${id}`, {
+                const response = await fetch(`/tasks/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -6153,7 +6153,7 @@
         // NOUVEAU CODE CORRIGÉ
         async function updateAssigneeStatus(taskId, employeeId, status) {
             try {
-                const apiUrl = 'http://localhost:3020';
+                const apiUrl = '';
 
                 console.log('📤 Sending request to backend...');
 
@@ -6353,7 +6353,7 @@
                     return;
                 }
 
-                const response = await fetch(`http://localhost:3020/comments/${commentId}`, {
+                const response = await fetch(`/comments/${commentId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -6397,7 +6397,7 @@
                     return;
                 }
 
-                const response = await fetch(`http://localhost:3020/comments/${commentId}`, {
+                const response = await fetch(`/comments/${commentId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -6447,7 +6447,7 @@
             try {
                 commentsContainer.innerHTML = `<p class="text-gray-500 text-sm" data-translate="common.loading">${t('common.loading', 'Loading comments...')}</p>`;
 
-                const response = await fetch(`http://localhost:3020/tasks/${taskId}/comments`);
+                const response = await fetch(`/tasks/${taskId}/comments`);
 
                 if (!response.ok) {
                     // 404 = task not in backend (e.g. instruction or deleted); show empty instead of error
@@ -6541,7 +6541,7 @@
                 button.disabled = true;
                 button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-                const response = await fetch(`http://localhost:3020/tasks/${currentTaskId}/comments`, {
+                const response = await fetch(`/tasks/${currentTaskId}/comments`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

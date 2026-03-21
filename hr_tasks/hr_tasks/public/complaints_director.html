@@ -1619,9 +1619,9 @@
   <script src="vendor/html2canvas.min.js"></script>
   <script src="vendor/jspdf.umd.min.js"></script>
   <script>
-    const API = 'http://localhost:3020/api/complaints';
-    const SUGGESTIONS_API_DIR = 'http://localhost:3020/api/suggestions';
-    const DEPARTMENTS_API_DIR = 'http://localhost:3020/api/departments';
+    const API = '/api/complaints';
+    const SUGGESTIONS_API_DIR = '/api/suggestions';
+    const DEPARTMENTS_API_DIR = '/api/departments';
     const $ = id => document.getElementById(id);
     const VIEW_MODES = { CARD: 'card', TABLE: 'table' };
     const DIRECTOR_SECTIONS = { COMPLAINTS: 'complaints', SUGGESTIONS: 'suggestions' };
@@ -1690,7 +1690,7 @@
 
       async loadUnreadCount() {
         try {
-          const res = await fetch(`http://localhost:3020/api/complaints/notifications/${this.userId}/unread-count?ts=${Date.now()}`, {
+          const res = await fetch(`/api/complaints/notifications/${this.userId}/unread-count?ts=${Date.now()}`, {
             cache: 'no-store'
           });
           if (!res.ok) throw new Error('failed');
@@ -1750,7 +1750,7 @@
 
       async showNotifications() {
         try {
-          const res = await fetch(`http://localhost:3020/api/complaints/notifications/${this.userId}?ts=${Date.now()}`, {
+          const res = await fetch(`/api/complaints/notifications/${this.userId}?ts=${Date.now()}`, {
             cache: 'no-store'
           });
           if (!res.ok) throw new Error('failed');
@@ -1790,7 +1790,7 @@
           });
           document.body.appendChild(modal);
           await Promise.all(notifications.filter(n => !n.is_read).map(n =>
-            fetch(`http://localhost:3020/api/complaints/notifications/${n.id}/read`, { method: 'POST' })
+            fetch(`/api/complaints/notifications/${n.id}/read`, { method: 'POST' })
           ));
           this.unreadCount = 0;
           this.updateBadge();
@@ -1824,7 +1824,7 @@
 
     class DataExporter {
       async exportComplaints(filters = {}) {
-        const res = await fetch('http://localhost:3020/api/complaints/export', {
+        const res = await fetch('/api/complaints/export', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ filters, format: 'csv' })
@@ -3014,7 +3014,7 @@
 
     async function loadDepartmentsForFilters() {
       try {
-        const depts = await fetchData('http://localhost:3020/api/departments');
+        const depts = await fetchData('/api/departments');
         const select = document.getElementById('suggestionFilterDepartment');
         if (select) {
           select.innerHTML = '<option value="">الكل</option>' +
@@ -3193,7 +3193,7 @@
 
     async function loadDirectorSuggestionDepartments() {
       try {
-        const depts = await fetchData('http://localhost:3020/api/departments');
+        const depts = await fetchData('/api/departments');
         const select = document.getElementById('directorSuggestionDepartmentId');
         if (select) {
           select.innerHTML = '<option value="">اختر القسم (اختياري)</option>' +

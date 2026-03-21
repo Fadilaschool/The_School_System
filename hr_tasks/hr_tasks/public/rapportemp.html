@@ -1050,7 +1050,7 @@
             if (currentOrigin && (/^https?:\/\/(127\.0\.0\.1|localhost):(550[0-9]|551[0-9])/i.test(currentOrigin) || 
                 new URLSearchParams(window.location.search).get('embed') === '1')) {
                 // Replace port with the API server port (3020)
-                return 'http://localhost:3020';
+                return '';
             }
             
             // Fallback to common ports
@@ -1058,7 +1058,7 @@
                 return currentOrigin;
             }
             // Default fallback - use port 3020 (TASK_SERVICE_PORT)
-            return 'http://localhost:3020';
+            return '';
         })();
         console.log('🔍 API Base URL:', API);
         let currentUser = null;

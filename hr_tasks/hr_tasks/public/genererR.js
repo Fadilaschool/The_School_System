@@ -85,7 +85,7 @@ async function saveReport(taskId) {
 
   try {
     // ✅ Corriger l'URL de l'API
-    const __API = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : 'http://localhost:3020';
+    const __API = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : '';
     const response = await fetch(`${__API}/api/reports`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -99,7 +99,7 @@ async function saveReport(taskId) {
       closeReportModal();
 
       // 👉 Affiche directement le PDF généré
-      const __API = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : 'http://localhost:3020';
+      const __API = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : '';
       const pdfUrl = `${__API}/api/reports/${result.report.id}/pdf`;
       window.open(pdfUrl, "_blank");
 
@@ -118,7 +118,7 @@ function viewReport(reportId) {
   console.log("👁️ Tentative d'ouverture du rapport ID:", reportId);
   
   // URL directe vers le PDF - ouvrir directement sans vérification
-  const __API = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : 'http://localhost:3020';
+  const __API = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : '';
   const pdfUrl = `${__API}/api/reports/${reportId}/pdf`;
   console.log("✅ Ouverture directe du PDF:", pdfUrl);
   
@@ -132,7 +132,7 @@ async function loadReports(taskId) {
   try {
     console.log("🔍 Chargement des rapports pour la tâche:", taskId);
     
-    const __API = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : 'http://localhost:3020';
+    const __API = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : '';
     const response = await fetch(`${__API}/api/reports/task/${taskId}`);
     const data = await response.json();
 
@@ -236,7 +236,7 @@ function debugReport(reportId) {
   console.log("🐛 DEBUG - Type de l'ID:", typeof reportId);
   
   // Tester différentes URLs
-  const __API = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : 'http://localhost:3020';
+  const __API = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : '';
   const urls = [
     `${__API}/api/reports/${reportId}`,
     `${__API}/api/reports/${reportId}/pdf`

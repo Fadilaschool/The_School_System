@@ -3012,7 +3012,7 @@
                 }
                 return origin;
             } catch (_) {
-                return 'http://localhost:3020';
+                return '';
             }
         })();
 
@@ -3440,13 +3440,13 @@
                     // Check if this is a CORS/origin issue
                     const currentOrigin = window.location.origin;
                     const isFileProtocol = window.location.protocol === 'file:';
-                    const isWrongOrigin = !currentOrigin.includes('localhost:3020') && !currentOrigin.includes('127.0.0.1:3020');
+                    const isWrongOrigin = !currentOrigin.includes('localhost:3020') && !currentOrigin.includes('127.0.0.1:3020') && !currentOrigin.includes('elfadila.com');
 
                     if (isFileProtocol || isWrongOrigin) {
                         console.warn('⚠️ CORS/Origin Issue Detected - continuing with limited functionality');
                         console.warn('📍 Current page origin:', currentOrigin);
                         console.warn('🎯 API target:', url);
-                        console.warn('💡 Recommended: Access this page at http://localhost:3020/reportdir.html');
+                        console.warn('💡 Recommended: Access this page at /reportdir.html');
 
                         // Show user-friendly warning message (not error)
                         const warningDiv = document.createElement('div');
@@ -3470,7 +3470,7 @@
                                 <i class="fas fa-info-circle" style="font-size: 20px; margin-top: 1px;"></i>
                                 <div>
                                     <p style="margin: 0; font-weight: 600; line-height: 1.4;">
-                                        For best results, access at: <code style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">http://localhost:3020/reportdir.html</code>
+                                        For best results, access at: <code style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">/reportdir.html</code>
                                     </p>
                                 </div>
                                 <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; cursor: pointer; font-size: 18px; padding: 0; margin-left: auto;">×</button>

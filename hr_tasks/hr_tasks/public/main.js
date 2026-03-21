@@ -285,7 +285,7 @@ static async getTaskComments(taskId) {
 
 // === Config uniquement pour TASKS ===
 
-const TASKS_API = "http://localhost:3020";
+const TASKS_API = "";
 
 // === Utils (uniquement ce que l'écran Tasks utilise) ===
 // Only declare Utils if it doesn't already exist (to avoid duplicate declaration errors)

@@ -165,7 +165,7 @@ async function initializeReports(reportsWindow) {
             </div>
         `;
 
-        const backendUrl = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : 'http://localhost:3020';
+        const backendUrl = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : '';
         const response = await fetch(`${backendUrl}/api/reports/data`);
 
         if (!response.ok) {
@@ -393,7 +393,7 @@ async function initializeReports(reportsWindow) {
     // ---- Vue par tâche: helpers pour commentaires/rapports (données fraîches) ----
     window.showTaskComments = async function(taskId){
         try{
-            const backendUrl = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : 'http://localhost:3020';
+            const backendUrl = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : '';
             const r = await fetch(`${backendUrl}/tasks/${taskId}/comments`);
             const data = await r.json();
             const list = (data && data.success && Array.isArray(data.comments)) ? data.comments : [];
@@ -419,7 +419,7 @@ async function initializeReports(reportsWindow) {
     };
     window.showTaskReports = async function(taskId){
         try{
-            const backendUrl = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : 'http://localhost:3020';
+            const backendUrl = (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : '';
             const r = await fetch(`${backendUrl}/api/reports/task/${taskId}`);
             const data = await r.json();
             const list = (data && data.success && Array.isArray(data.reports)) ? data.reports : [];

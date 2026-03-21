@@ -16,7 +16,7 @@
     async function updateDetailedStats() {
         try {
             // Get API base URL
-            const API = window.API || 'http://localhost:3020';
+            const API = window.API || '';
 
             // Fetch tasks directly from API
             const response = await fetch(`${API}/tasks`);

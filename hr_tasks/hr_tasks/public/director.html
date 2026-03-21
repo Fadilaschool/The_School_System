@@ -6989,11 +6989,11 @@
 				const isLiveServerPort = !Number.isNaN(portNumber) && portNumber >= 5500 && portNumber <= 5599;
 				const isLocalHost = /^(127\.0\.0\.1|localhost)$/i.test(hostname || '');
 				if ((isLocalHost && isLiveServerPort) || !origin || !/^https?:\/\//i.test(origin)) {
-					return 'http://localhost:3020';
+					return '';
 				}
 				return origin;
 			} catch (_) {
-				return 'http://localhost:3020';
+				return '';
 			}
 		})();
 
@@ -7002,16 +7002,16 @@
 			try {
 				// Check parent window for API_SERVICES
 				if (window.parent && window.parent !== window && window.parent.API_SERVICES) {
-					return window.parent.API_SERVICES.departments || 'http://localhost:3003';
+					return window.parent.API_SERVICES.departments || '/api/departments';
 				}
 				// Check current window
 				if (window.API_SERVICES && window.API_SERVICES.departments) {
 					return window.API_SERVICES.departments;
 				}
 				// Default to department-service port
-				return 'http://localhost:3003';
+				return '/api/departments';
 			} catch (_) {
-				return 'http://localhost:3003';
+				return '/api/departments';
 			}
 		}
 
@@ -7059,16 +7059,16 @@
 			try {
 				// Check parent window for API_SERVICES
 				if (window.parent && window.parent !== window && window.parent.API_SERVICES) {
-					return window.parent.API_SERVICES.users || 'http://localhost:3002';
+					return window.parent.API_SERVICES.users || '/api/users';
 				}
 				// Check current window
 				if (window.API_SERVICES && window.API_SERVICES.users) {
 					return window.API_SERVICES.users;
 				}
 				// Default to user-management-service port
-				return 'http://localhost:3002';
+				return '/api/users';
 			} catch (_) {
-				return 'http://localhost:3002';
+				return '/api/users';
 			}
 		}
 
@@ -11347,7 +11347,7 @@
 
 							// If not found in employees list, try fetching from API
 							try {
-								const usersApiBase = window.parent.API_SERVICES?.users || 'http://localhost:3002';
+								const usersApiBase = window.parent.API_SERVICES?.users || '/api/users';
 								const token = authManager.getToken();
 								if (token && usersApiBase) {
 									const response = await fetch(`${usersApiBase}/profile`, {
@@ -11955,7 +11955,7 @@
 				if (typeof io === 'undefined') {
 					console.log('?? Loading Socket.IO library...');
 					const s = document.createElement('script');
-					s.src = (window.API || 'http://localhost:3020') + '/socket.io/socket.io.js';
+					s.src = (window.API || '') + '/socket.io/socket.io.js';
 					s.async = false;
 					s.onload = () => {
 						console.log('? Socket.IO library loaded, retrying setup...');

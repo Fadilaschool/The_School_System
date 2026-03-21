@@ -383,9 +383,9 @@
         try{
           if (!window.API_BASE){
             const origin = (window.location && window.location.origin) || '';
-            window.API_BASE = (origin && /^https?:\/\//i.test(origin)) ? origin : 'http://localhost:3020';
+            window.API_BASE = (origin && /^https?:\/\//i.test(origin)) ? origin : '';
           }
-        }catch(_){ window.API_BASE = 'http://localhost:3020'; }
+        }catch(_){ window.API_BASE = ''; }
         if (typeof window.editComment !== 'function') {
           window.editComment = function(commentId, currentText) {
             if (typeof openEditModal === 'function') {
@@ -609,7 +609,7 @@ let currentOriginalText = null;
                 if (typeof io === 'undefined'){
                     console.log('📦 Loading Socket.IO library...');
                     const s = document.createElement('script');
-                    s.src = (window.API_BASE||'http://localhost:3020') + '/socket.io/socket.io.js';
+                    s.src = (window.API_BASE||'') + '/socket.io/socket.io.js';
                     s.async = false;
                     s.onload = () => { 
                         console.log('✅ Socket.IO library loaded, retrying setup...');
@@ -2692,7 +2692,7 @@ async function completeMyAssignment(taskId) {
       // NOUVEAU CODE CORRIGÉ
 async function updateAssigneeStatus(taskId, employeeId, status) {
   try {
-    const apiUrl = 'http://localhost:3020';
+    const apiUrl = '';
     
     console.log('📤 Sending request to backend...');
     

@@ -4,18 +4,18 @@
 // API service URLs
 if (typeof window !== 'undefined' && !window.API_SERVICES) {
     window.API_SERVICES = {
-        auth: "http://localhost:3001",
-        users: "http://localhost:3002",
-        departments: "http://localhost:3003",
-        tasks: "http://localhost:3004",
-        hr_tasks: "http://localhost:3020",
-        meetings: "http://localhost:3005",
-        payments: "http://localhost:3006",
-        notifications: "http://localhost:3007",
-        attendance: "http://localhost:3000",
-        requests: "http://localhost:3009",
-        salary: "http://localhost:3010",
-        timetable: "http://localhost:3011",
+        auth: "/api/auth",
+        users: "/api/users",
+        departments: "/api/departments",
+        tasks: "",
+        hr_tasks: "",
+        meetings: "/api/meetings",
+        payments: "/api/payments",
+        notifications: "/api/notifications",
+        attendance: "",
+        requests: "/api/requests",
+        salary: "/api/salary",
+        timetable: "/api/timetable",
     };
 }
 

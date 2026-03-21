@@ -586,7 +586,7 @@
     let treatedPage = 1;
     let pendingPage = 1;
     const PAGE_SIZE = 5;
-    const CORE_API = 'http://localhost:3020';
+    const CORE_API = '';
 
     function getAuthHeaders() {
       // Prefer authManager; fall back to URL token for embedded usage
@@ -638,7 +638,7 @@
         if (from) params.set('from', from);
         if (to) params.set('to', to);
 
-        const response = await fetch(`http://localhost:3020/api/signals/responsible/${responsibleId}/statistics?${params}`, {
+        const response = await fetch(`/api/signals/responsible/${responsibleId}/statistics?${params}`, {
           headers: getAuthHeaders()
         });
         if (!response.ok) throw new Error('خطأ في تحميل البيانات');

@@ -24,6 +24,8 @@ app.use(
         "'self'",
         "http://localhost:3020", "ws://localhost:3020",
         "http://localhost:3004", "ws://localhost:3004",
+        "https://platform.elfadila.com", "wss://platform.elfadila.com",
+        "https://*.elfadila.com", "wss://*.elfadila.com",
         "https://gc.kis.v2.scr.kaspersky-labs.com", "wss://gc.kis.v2.scr.kaspersky-labs.com"
       ]
     },

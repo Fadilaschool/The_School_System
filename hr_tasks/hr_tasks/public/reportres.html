@@ -1785,10 +1785,10 @@
             // If origin is a Live Server port (5500-5600), use port 3020 instead (avoid hitting static server on 5511)
             const port = parseInt(location.port, 10);
             if (port && port >= 5500 && port <= 5600) {
-                return 'http://localhost:3020';
+                return '';
             }
             // Use origin if valid HTTP/HTTPS, otherwise default to port 3020
-            return (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : 'http://localhost:3020';
+            return (location.origin && /^https?:\/\//i.test(location.origin)) ? location.origin : '';
         })();
         let currentUser = null;
         let reports = [];
