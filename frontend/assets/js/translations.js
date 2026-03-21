@@ -1555,7 +1555,7 @@ if (typeof translations === 'undefined') {
             'salary.previous': 'Previous',
             'salary.next': 'Next',
             'salary.calculation_method_label': 'Calculation Method',
-            'common.found': 'found',
+            'common.found': 'trouvé',
             'common.not_applicable': 'N/A',
 
             // Attendance
@@ -2491,6 +2491,50 @@ if (typeof translations === 'undefined') {
         'dashboard.show_more': 'Show more',
         'dashboard.show_less': 'Show less',
         'attendance.master.description': 'Monitor and validate employee attendance records',
+
+        'common.confirm_logout': 'Are you sure you want to logout?',
+
+        'employee.failed_to_export': 'Failed to export employees',
+
+        'contract.error_renewing': 'Error renewing contracts',
+
+        'contract.error_loading_edit': 'Error loading contract for editing',
+
+        'contract.updated_success': 'Contract updated successfully',
+
+        'contract.error_updating': 'Error updating contract',
+
+        'contract.error_loading_history': 'Error loading contract history',
+
+        'contract.deleted_success': 'Contract deleted successfully',
+
+        'contract.error_deleting': 'Error deleting contract',
+
+        'contract.error_download_template': 'Could not download template',
+
+        'contract.doc_generated_success': 'Contract document generated and downloaded successfully',
+
+        'contract.error_generating_doc': 'Error generating document',
+
+        'common.access_denied': 'Access denied. Insufficient permissions.',
+
+        'common.cannot_identify_employee': 'Cannot identify current employee',
+
+        'common.error_updating': 'Error updating',
+
+        'tasks.error_loading': 'Error loading tasks',
+
+        'tasks.not_found': 'Task not found',
+
+        'tasks.instruction_marked_read': 'Instruction marked as read',
+
+        'tasks.error_marking': 'Error marking',
+
+        'notifications.error_deleting': 'Error deleting notifications',
+
+        'notifications.error_deleting_single': 'Error deleting notification',
+
+        'notifications.deleted_success': 'Notification deleted',
 },
 
         fr: {
@@ -2531,7 +2575,7 @@ if (typeof translations === 'undefined') {
             'nav.timetables': 'Horaires',
             'nav.assign_timetables': 'Assigner les Horaires',
             'nav.requests': 'Demandes',
-            'nav.signals': 'Signales',
+            'nav.signals': 'Signaux',
             'nav.signals_employee': 'Signalisations',
             'nav.maintenance_requests': 'Demandes de maintenance',
             'nav.responsible_space': 'Espace responsable',
@@ -3441,7 +3485,7 @@ if (typeof translations === 'undefined') {
             'payment.overtime_rate': 'Taux Heures Supplémentaires',
             'payment.bonus_rate': 'Taux de Prime',
             'payment.base_salary': 'Salaire de Base',
-            'payment.calculate_salary': 'Calculer Sala salaire',
+            'payment.calculate_salary': 'Calculer le Salaire',
             'payment.payment_management': 'Gestion des Paiements',
             'payment.position_salaries': 'Salaires par Poste',
             'payment.salary_calculator': 'Calculateur de Salaire',
@@ -4957,6 +5001,107 @@ if (typeof translations === 'undefined') {
         'dashboard.show_more': 'Show more',
         'dashboard.show_less': 'Show less',
         'attendance.master.description': 'Surveiller et valider les enregistrements de présence des employés',
+
+        'dashboard.handle_exceptions': 'Gérer les exceptions des employés',
+        'dashboard.validate_attendance': 'Valider la présence des employés',
+        'dashboard.manage_salaries': 'Gérer la paie',
+        'dashboard.latest_hires': 'Derniers membres de l'équipe',
+        'dashboard.recent': 'Récent',
+        'dashboard.chart': 'Graphique',
+        'dashboard.analytics': 'Analytiques',
+        'dashboard.calendar': 'Calendrier',
+        'dashboard.no_upcoming_meetings': 'Aucune réunion prévue',
+        'director.task_matrix_desc': 'Matrice des tâches',
+        'responsible_dashboard.title': 'Tableau de Bord Responsable',
+        'responsible_dashboard.welcome': 'Consultez les statistiques de votre département et gérez votre équipe',
+        'responsible_dashboard.my_personal_data': 'Mes Données Personnelles',
+        'responsible_dashboard.as_employee': 'En tant qu'employé de l'établissement',
+        'responsible_dashboard.personal': 'Personnel',
+        'responsible_dashboard.my_attendance_summary': 'Récapitulatif de Ma Présence',
+        'responsible_dashboard.view_personal_attendance': 'Voir vos statistiques de présence personnelles',
+        'responsible_dashboard.total_work_days': 'Total Jours Travaillés',
+        'responsible_dashboard.total_absent_days': 'Total Jours d'Absence',
+        'responsible_dashboard.total_overtime_hours': 'Total Heures Supplémentaires',
+        'responsible_dashboard.total_late': 'Total Retards',
+        'responsible_dashboard.total_early_leave': 'Total Départs Anticipés',
+        'responsible_dashboard.department_management': 'Gestion du Département',
+        'responsible_dashboard.department_oversight': 'Supervision et statistiques de votre département',
+        'responsible_dashboard.management': 'Gestion',
+        'responsible_dashboard.department_attendance_summary': 'Récapitulatif de Présence du Département',
+        'responsible_dashboard.view_department_attendance': 'Voir les statistiques de présence du département',
+        'responsible_dashboard.stats': 'Statistiques',
+        'responsible_dashboard.view_schedule_desc': 'Voir votre emploi du temps',
+        'responsible_dashboard.employees': 'Employés',
+        'responsible_dashboard.avg_work_days': 'Moy.',
+        'responsible_dashboard.work_days_per_employee': 'jours travaillés par employé',
+        'tasks.created_by_me': 'Créées par moi',
+        'tasks.completed_created': 'Créées et terminées',
+        'tasks.received_by_dept': 'Reçues par le département',
+        'tasks.completed_received': 'Reçues et terminées',
+        'requests.header': 'Gestion des Demandes',
+        'requests.total': 'Total des Demandes',
+        'salary.validated': 'Validé',
+        'salary.not_validated': 'Non Validé',
+        'salary.awaiting_validation': 'En Attente de Validation',
+        'salary.not_paid': 'Non Payé',
+        'salary.exception_method': 'Méthode d'Exception',
+        'salary.showing': 'Affichage',
+        'salary.to': 'à',
+        'salary.of': 'sur',
+        'salary.results': 'résultats',
+        'salary.previous': 'Précédent',
+        'salary.next': 'Suivant',
+        'salary.calculation_method_label': 'Méthode de Calcul',
+        'common.found': 'trouvé(s)',
+        'attendance.department_summary': 'Récapitulatif de Présence du Département',
+        'attendance.total_employees': 'Total Employés',
+        'reports.department_reports': 'Rapports du Département',
+        'requests.department_requests': 'Demandes du Département',
+        'requests.accepted_this_month': 'Acceptées ce mois',
+
+        'common.confirm_logout': 'Êtes-vous sûr de vouloir vous déconnecter ?',
+
+        'employee.failed_to_export': 'Échec de l'exportation des employés',
+
+        'contract.error_renewing': 'Erreur lors du renouvellement des contrats',
+
+        'contract.error_loading_edit': 'Erreur lors du chargement du contrat pour modification',
+
+        'contract.updated_success': 'Contrat mis à jour avec succès',
+
+        'contract.error_updating': 'Erreur lors de la mise à jour du contrat',
+
+        'contract.error_loading_history': 'Erreur lors du chargement de l'historique du contrat',
+
+        'contract.deleted_success': 'Contrat supprimé avec succès',
+
+        'contract.error_deleting': 'Erreur lors de la suppression du contrat',
+
+        'contract.error_download_template': 'Impossible de télécharger le modèle',
+
+        'contract.doc_generated_success': 'Document contractuel généré et téléchargé avec succès',
+
+        'contract.error_generating_doc': 'Erreur lors de la génération du document',
+
+        'common.access_denied': 'Accès refusé. Permissions insuffisantes.',
+
+        'common.cannot_identify_employee': 'Impossible d'identifier l'employé actuel',
+
+        'common.error_updating': 'Erreur lors de la mise à jour',
+
+        'tasks.error_loading': 'Erreur lors du chargement des tâches',
+
+        'tasks.not_found': 'Tâche introuvable',
+
+        'tasks.instruction_marked_read': 'Instruction marquée comme lue',
+
+        'tasks.error_marking': 'Erreur lors du marquage',
+
+        'notifications.error_deleting': 'Erreur lors de la suppression des notifications',
+
+        'notifications.error_deleting_single': 'Erreur lors de la suppression de la notification',
+
+        'notifications.deleted_success': 'Notification supprimée',
 },
 
         ar: {
@@ -4990,7 +5135,7 @@ if (typeof translations === 'undefined') {
             'nav.timetables': 'الجداول الزمنية',
             'nav.assign_timetables': 'تعيين الجداول الزمنية',
             'nav.signals': 'الإشارات',
-            'nav.signals_employee': 'طلبات الصيانة',
+            'nav.signals_employee': 'الإشارات',
             'nav.parametres': 'الإعدادات',
             'nav.complaints': 'الشكاوى',
             'nav.complaints_employee': 'الشكاوى',
@@ -5586,9 +5731,9 @@ if (typeof translations === 'undefined') {
             'common.deny': 'رفض',
             'common.duration': 'المدة',
             'common.grade': 'الصف',
-            'common.no_level_info': 'لا توجد معلومات المستوى',
+            'common.no_level_info': 'لا توجد معلومات عن المستوى',
             'common.error': 'خطأ',
-            'common.success': 'نجح',
+            'common.success': 'نجاح',
             'common.close': 'إغلاق',
             'common.confirm': 'تأكيد',
             'common.unknown': 'غير معروف',
@@ -5639,7 +5784,7 @@ if (typeof translations === 'undefined') {
             'common.month': 'الشهر',
 
             // Status
-            'status.pending': 'معلق',
+            'status.pending': 'قيد الانتظار',
             'status.completed': 'مكتمل',
             'status.in_progress': 'قيد التنفيذ',
             'status.accepted': 'مقبول',
@@ -7411,7 +7556,7 @@ if (typeof translations === 'undefined') {
             'nav.payments': 'المدفوعات',
             'nav.meetings': 'الاجتماعات',
             'nav.reports': 'التقارير',
-            'nav.requests': 'الاذونات',
+            'nav.requests': 'الطلبات',
             'nav.manage_requests': 'إدارة الطلبات',
             'nav.salary': 'الراتب',
             'nav.profile': 'الملف الشخصي',
@@ -7481,6 +7626,61 @@ if (typeof translations === 'undefined') {
         'dashboard.show_more': 'المزيد',
         'dashboard.show_less': 'إظهار أقل',
         'attendance.master.description': 'مراقبة والتحقق من سجلات حضور الموظفين',
+
+        'director.task_matrix_desc': 'مصفوفة المهام',
+        'requests.header': 'إدارة الطلبات',
+        'requests.total': 'مجموع الطلبات',
+        'requests.drop': 'إسقاط',
+        'requests.mark_taught': 'تحديد كمُدرَّس',
+        'requests.added_to_overtime': 'أُضيف إلى الساعات الإضافية',
+        'requests.slot_taken': 'الحصة محجوزة',
+        'requests.sent_invitations_management': 'إدارة الدعوات المرسلة',
+        'requests.manage_invitations': 'إدارة جميع دعوات الاستبدال المرسلة للمعلمين',
+        'report.add_report': 'إضافة تقرير',
+
+        'common.confirm_logout': 'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+
+        'employee.failed_to_export': 'فشل تصدير بيانات الموظفين',
+
+        'contract.error_renewing': 'خطأ في تجديد العقود',
+
+        'contract.error_loading_edit': 'خطأ في تحميل العقد للتعديل',
+
+        'contract.updated_success': 'تم تحديث العقد بنجاح',
+
+        'contract.error_updating': 'خطأ في تحديث العقد',
+
+        'contract.error_loading_history': 'خطأ في تحميل سجل العقد',
+
+        'contract.deleted_success': 'تم حذف العقد بنجاح',
+
+        'contract.error_deleting': 'خطأ في حذف العقد',
+
+        'contract.error_download_template': 'تعذر تحميل القالب',
+
+        'contract.doc_generated_success': 'تم إنشاء وثيقة العقد وتحميلها بنجاح',
+
+        'contract.error_generating_doc': 'خطأ في إنشاء الوثيقة',
+
+        'common.access_denied': 'تم رفض الوصول. صلاحيات غير كافية.',
+
+        'common.cannot_identify_employee': 'تعذر التعرف على الموظف الحالي',
+
+        'common.error_updating': 'خطأ في التحديث',
+
+        'tasks.error_loading': 'خطأ في تحميل المهام',
+
+        'tasks.not_found': 'المهمة غير موجودة',
+
+        'tasks.instruction_marked_read': 'تم تحديد التعليمة كمقروءة',
+
+        'tasks.error_marking': 'خطأ في التحديد',
+
+        'notifications.error_deleting': 'خطأ في حذف الإشعارات',
+
+        'notifications.error_deleting_single': 'خطأ في حذف الإشعار',
+
+        'notifications.deleted_success': 'تم حذف الإشعار',
 }
     };
 } // End of if (typeof translations === 'undefined')

@@ -3383,7 +3383,19 @@ if (typeof translations === 'undefined') {
             'nav.hr_management_system': 'Director Space',
             'nav.employee_space': 'Portail Employé',
             'nav.systems_space': 'Espace Systèmes',
-        },
+        
+        'nav.task_management': 'Gestion des Tâches',
+        'dashboard.overview': 'Overview',
+        'dashboard.click_details': 'Click here for details',
+        'dashboard.complaints_and_signals': 'Complaints & Signals',
+        'dashboard.total_signals': 'Total des Signaux',
+        'dashboard.active_feedback_alerts': 'Alertes et retours actifs',
+        'dashboard.show_more': 'Show more',
+        'dashboard.show_less': 'Show less',
+        'director.task_matrix_desc': 'Matrice des tâches',
+        'requests.header': 'Gestion des Demandes',
+        'requests.total': 'Total des Demandes',
+},
 
         ar: {
             // Login page
@@ -3937,7 +3949,7 @@ if (typeof translations === 'undefined') {
             'common.grade': 'الصف',
             'common.no_level_info': 'لا توجد معلومات المستوى',
             'common.error': 'خطأ',
-            'common.success': 'نجح',
+            'common.success': 'نجاح',
             'common.close': 'إغلاق',
             'common.confirm': 'تأكيد',
             'common.unknown': 'غير معروف',
@@ -3989,7 +4001,7 @@ if (typeof translations === 'undefined') {
             'common.month': 'الشهر',
 
             // Status
-            'status.pending': 'معلق',
+            'status.pending': 'قيد الانتظار',
             'status.completed': 'مكتمل',
             'status.in_progress': 'قيد التنفيذ',
             'status.accepted': 'مقبول',
@@ -5149,7 +5161,18 @@ if (typeof translations === 'undefined') {
             'nav.all_views': 'جميع العروض',
             'nav.hr_management_system': 'director space',
             'nav.employee_space': 'بوابة الموظف',
-        }
+        
+        'director.task_matrix_desc': 'مصفوفة المهام',
+        'requests.header': 'إدارة الطلبات',
+        'requests.total': 'مجموع الطلبات',
+        'requests.drop': 'إسقاط',
+        'requests.mark_taught': 'تحديد كمُدرَّس',
+        'requests.added_to_overtime': 'أُضيف إلى الساعات الإضافية',
+        'requests.slot_taken': 'الحصة محجوزة',
+        'requests.sent_invitations_management': 'إدارة الدعوات المرسلة',
+        'requests.manage_invitations': 'إدارة جميع دعوات الاستبدال المرسلة للمعلمين',
+        'report.add_report': 'إضافة تقرير',
+}
     };
 } // End of if (typeof translations === 'undefined')
 

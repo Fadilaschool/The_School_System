@@ -443,7 +443,7 @@ let currentOriginalText = null;
             // Ensure correct role for this page
             const userRole = isDevMode ? currentUser.role : (window.authManager?.getUserRole?.() || authManager?.getUserRole?.());
             if (userRole !== 'HR_Manager' && userRole !== 'Employee' && userRole !== 'Department_Responsible') {
-                Utils.showNotification('Access denied. Insufficient permissions.', 'error');
+                Utils.showNotification(typeof translate === 'function' ? translate('common.access_denied') : 'Access denied. Insufficient permissions.', 'error');
                 if (!isDevMode && (window.authManager?.redirectToDashboard || authManager?.redirectToDashboard)) {
                     (window.authManager?.redirectToDashboard || authManager.redirectToDashboard)();
                 }
@@ -831,7 +831,7 @@ let currentOriginalText = null;
                     if (!response.ok) {
                         const errorData = await response.json();
                         console.error('Clear all notifications failed:', errorData);
-                        alert('Erreur lors de la suppression des notifications');
+                        alert(typeof translate === 'function' ? translate('notifications.error_deleting') : 'Error deleting notifications');
                         return;
                     }
                     
@@ -839,7 +839,7 @@ let currentOriginalText = null;
                     console.log('All notifications cleared successfully:', result);
                 } catch(e){ 
                     console.error('Error clearing notifications:', e);
-                    alert('Erreur lors de la suppression des notifications');
+                    alert(typeof translate === 'function' ? translate('notifications.error_deleting') : 'Error deleting notifications');
                 }
                 
                 // Vider complètement le localStorage des notifications seulement si la suppression a réussi
@@ -1006,7 +1006,7 @@ function updateEmpNotifBadge() {
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('Delete notification failed:', errorData);
-                    Utils.showNotification('Erreur lors de la suppression de la notification', 'error');
+                    Utils.showNotification(typeof translate === 'function' ? translate('notifications.error_deleting_single') : 'Error deleting notification', 'error');
                     return;
                 }
                 
@@ -1023,11 +1023,11 @@ function updateEmpNotifBadge() {
             updateEmpNotifBadge();
             renderEmpNotificationsList(window.__empNotifications);
                 
-                Utils.showNotification('Notification supprimée', 'success');
+                Utils.showNotification(typeof translate === 'function' ? translate('notifications.deleted_success') : 'Notification deleted', 'success');
                 
             } catch(e) { 
                 console.error('Error deleting notification:', e);
-                Utils.showNotification('Erreur lors de la suppression de la notification', 'error');
+                Utils.showNotification(typeof translate === 'function' ? translate('notifications.error_deleting_single') : 'Error deleting notification', 'error');
             }
         });
     });
@@ -1529,7 +1529,7 @@ async function loadTasks() {
         tasks = [];
         renderTasks();
         updateTaskStatistics();
-        Utils.showNotification('Error loading tasks and instructions: ' + error.message, 'error');
+        Utils.showNotification((typeof translate === 'function' ? translate('tasks.error_loading') : 'Error loading tasks and instructions') + ': ' + error.message, 'error');
     } finally {
         document.getElementById('loadingState').style.display = 'none';
     }
@@ -1782,7 +1782,7 @@ async function acknowledgeInstruction(instructionId) {
   try {
     const employeeId = getCurrentEmployeeId();
     if (!employeeId) {
-      Utils.showNotification('Cannot identify current employee', 'error');
+      Utils.showNotification(typeof translate === 'function' ? translate('common.cannot_identify_employee') : 'Cannot identify current employee', 'error');
       return;
     }
 
@@ -1799,7 +1799,7 @@ async function acknowledgeInstruction(instructionId) {
     const result = await response.json();
     
     if (result.success) {
-      Utils.showNotification('Instruction marquée comme lue', 'success');
+      Utils.showNotification(typeof translate === 'function' ? translate('tasks.instruction_marked_read') : 'Instruction marked as read', 'success');
       // Optionnel: recharger les tâches pour mettre à jour l'affichage
       // loadTasks();
     } else {
@@ -1807,7 +1807,7 @@ async function acknowledgeInstruction(instructionId) {
     }
   } catch (error) {
     console.error('Error acknowledging instruction:', error);
-    Utils.showNotification('Erreur lors du marquage: ' + error.message, 'error');
+    Utils.showNotification((typeof translate === 'function' ? translate('tasks.error_marking') : 'Error marking') + ': ' + error.message, 'error');
   }
 }
       function updateTaskStatistics() {
@@ -2223,7 +2223,7 @@ document.getElementById('saveEditBtn').addEventListener('click', async () => {
   const newText = document.getElementById('editCommentInput').value;
 
   if (!newText.trim()) {
-    Utils.showNotification('Le commentaire ne peut pas être vide', 'error');
+    Utils.showNotification(typeof translate === 'function' ? translate('tasks.comment_empty') : 'Comment cannot be empty', 'error');
     return;
   }
   if (newText.trim() === currentOriginalText.trim()) {
@@ -2234,7 +2234,7 @@ document.getElementById('saveEditBtn').addEventListener('click', async () => {
   try {
     const employeeId = getCurrentEmployeeId();
     if (!employeeId) {
-      Utils.showNotification('Cannot identify current employee', 'error');
+      Utils.showNotification(typeof translate === 'function' ? translate('common.cannot_identify_employee') : 'Cannot identify current employee', 'error');
       return;
     }
 
@@ -2256,20 +2256,20 @@ document.getElementById('saveEditBtn').addEventListener('click', async () => {
       if (commentElement) {
         commentElement.textContent = newText.trim();
       }
-      Utils.showNotification('Commentaire modifié avec succès', 'success');
+      Utils.showNotification(typeof translate === 'function' ? translate('tasks.comment_updated') : 'Comment updated successfully', 'success');
       closeEditModal();
     } else {
       throw new Error(data.error || 'Failed to update comment');
     }
   } catch (error) {
     console.error('Error updating comment:', error);
-    Utils.showNotification('Erreur lors de la modification: ' + error.message, 'error');
+    Utils.showNotification((typeof translate === 'function' ? translate('common.error_updating') : 'Error updating') + ': ' + error.message, 'error');
   }
 });
        function editTask(id) {
     const task = tasks.find(t => t.id == id); // Utiliser == pour gérer string/number
     if (!task) {
-        Utils.showNotification('Task not found', 'error');
+        Utils.showNotification(typeof translate === 'function' ? translate('tasks.not_found') : 'Task not found', 'error');
         return;
     }
 
@@ -2366,7 +2366,7 @@ document.getElementById('saveEditBtn').addEventListener('click', async () => {
             // Mode création
             const assignedById = getCurrentEmployeeId();
             if (!assignedById) {
-                Utils.showNotification('Cannot identify current employee', 'error');
+                Utils.showNotification(typeof translate === 'function' ? translate('common.cannot_identify_employee') : 'Cannot identify current employee', 'error');
                 return;
             }
             formData.assigned_by = assignedById;
@@ -2590,7 +2590,7 @@ async function completeMyAssignment(taskId) {
   try {
     const employeeId = getCurrentEmployeeId();
     if (!employeeId) {
-      Utils.showNotification('Cannot identify current employee', 'error');
+      Utils.showNotification(typeof translate === 'function' ? translate('common.cannot_identify_employee') : 'Cannot identify current employee', 'error');
       return;
     }
 
@@ -2848,14 +2848,14 @@ async function editComment(commentId, currentText) {
   if (newText.trim() === currentText.trim()) return; // Texte identique
   
   if (!newText.trim()) {
-    Utils.showNotification('Le commentaire ne peut pas être vide', 'error');
+    Utils.showNotification(typeof translate === 'function' ? translate('tasks.comment_empty') : 'Comment cannot be empty', 'error');
     return;
   }
   
   try {
     const employeeId = getCurrentEmployeeId();
     if (!employeeId) {
-      Utils.showNotification('Cannot identify current employee', 'error');
+      Utils.showNotification(typeof translate === 'function' ? translate('common.cannot_identify_employee') : 'Cannot identify current employee', 'error');
       return;
     }
     
@@ -2882,13 +2882,13 @@ async function editComment(commentId, currentText) {
       if (commentElement) {
         commentElement.textContent = newText.trim();
       }
-      Utils.showNotification('Commentaire modifié avec succès', 'success');
+      Utils.showNotification(typeof translate === 'function' ? translate('tasks.comment_updated') : 'Comment updated successfully', 'success');
     } else {
       throw new Error(data.error || 'Failed to update comment');
     }
   } catch (error) {
     console.error('Error updating comment:', error);
-    Utils.showNotification('Erreur lors de la modification: ' + error.message, 'error');
+    Utils.showNotification((typeof translate === 'function' ? translate('common.error_updating') : 'Error updating') + ': ' + error.message, 'error');
   }
 }
 
@@ -2899,7 +2899,7 @@ async function deleteComment(commentId) {
   try {
     const employeeId = getCurrentEmployeeId();
     if (!employeeId) {
-      Utils.showNotification('Cannot identify current employee', 'error');
+      Utils.showNotification(typeof translate === 'function' ? translate('common.cannot_identify_employee') : 'Cannot identify current employee', 'error');
       return;
     }
     
@@ -3022,7 +3022,7 @@ async function loadAndDisplayTaskComments(taskId) {
   try {
     const employeeId = getCurrentEmployeeId();
     if (!employeeId) {
-      Utils.showNotification('Cannot identify current employee', 'error');
+      Utils.showNotification(typeof translate === 'function' ? translate('common.cannot_identify_employee') : 'Cannot identify current employee', 'error');
       return;
     }
     

@@ -610,7 +610,7 @@
         async function submitBulkRenewal() {
             const startDate = document.getElementById('renewStartDate').value;
             if (!startDate) {
-                alert('Start date is required');
+                alert(typeof translate === 'function' ? translate('contract.start_date_required') : 'Start date is required');
                 return;
             }
 
@@ -652,7 +652,7 @@
                 await loadContracts();
             } catch (error) {
                 console.error('Error renewing contracts:', error);
-                alert('Error renewing contracts: ' + (error.message || 'Unknown error'));
+                alert((typeof translate === 'function' ? translate('contract.error_renewing') : 'Error renewing contracts') + ': ' + (error.message || ''));
             }
         }
 
@@ -682,7 +682,7 @@
                 document.getElementById('contractDetailsModal').classList.add('active');
             } catch (error) {
                 console.error('Error loading contract:', error);
-                alert('Error loading contract details');
+                alert(typeof translate === 'function' ? translate('contract.error_loading') : 'Error loading contract details');
             }
         }
 
@@ -702,7 +702,7 @@
                 document.getElementById('editContractModal').classList.add('active');
             } catch (error) {
                 console.error('Error loading contract:', error);
-                alert('Error loading contract for editing: ' + (error.message || 'Unknown error'));
+                alert((typeof translate === 'function' ? translate('contract.error_loading_edit') : 'Error loading contract for editing') + ': ' + (error.message || ''));
             }
         }
 
@@ -738,12 +738,12 @@
                     throw new Error(errorData.error || 'Failed to update contract');
                 }
 
-                alert('Contract updated successfully');
+                alert(typeof translate === 'function' ? translate('contract.updated_success') : 'Contract updated successfully');
                 closeEditContractModal();
                 await loadContracts();
             } catch (error) {
                 console.error('Error updating contract:', error);
-                alert('Error updating contract: ' + (error.message || 'Unknown error'));
+                alert((typeof translate === 'function' ? translate('contract.error_updating') : 'Error updating contract') + ': ' + (error.message || ''));
             }
         });
 
@@ -774,7 +774,7 @@
                 document.getElementById('generateDocBtn').style.display = 'none';
             } catch (error) {
                 console.error('Error loading contract history:', error);
-                alert('Error loading contract history');
+                alert(typeof translate === 'function' ? translate('contract.error_loading_history') : 'Error loading contract history');
             }
         }
 
@@ -798,11 +798,11 @@
                     throw new Error(errorData.error || 'Failed to delete contract');
                 }
 
-                alert('Contract deleted successfully');
+                alert(typeof translate === 'function' ? translate('contract.deleted_success') : 'Contract deleted successfully');
                 await loadContracts();
             } catch (error) {
                 console.error('Error deleting contract:', error);
-                alert('Error deleting contract: ' + (error.message || 'Unknown error'));
+                alert((typeof translate === 'function' ? translate('contract.error_deleting') : 'Error deleting contract') + ': ' + (error.message || ''));
             }
         }
 
@@ -828,7 +828,7 @@
                 document.body.removeChild(a);
             } catch (error) {
                 console.error('Error downloading template:', error);
-                alert('Error: ' + (error.message || 'Could not download template'));
+                alert((typeof translate === 'function' ? translate('common.error') : 'Error') + ': ' + (error.message || (typeof translate === 'function' ? translate('contract.error_download_template') : 'Could not download template')));
             }
         }
 
@@ -861,10 +861,10 @@
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
                 
-                alert('Contract document generated and downloaded successfully');
+                alert(typeof translate === 'function' ? translate('contract.doc_generated_success') : 'Contract document generated and downloaded successfully');
             } catch (error) {
                 console.error('Error generating document:', error);
-                alert('Error generating document: ' + (error.message || 'Unknown error'));
+                alert((typeof translate === 'function' ? translate('contract.error_generating_doc') : 'Error generating document') + ': ' + (error.message || ''));
             }
         }
     </script>

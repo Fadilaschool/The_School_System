@@ -633,7 +633,7 @@ class EmployeeManager {
             await Utils.exportToCSV(data, `employees_${new Date().toISOString().split('T')[0]}.csv`);
         } catch (error) {
             console.error('Error exporting employees:', error);
-            Utils.showNotification('Failed to export employees', 'error');
+            Utils.showNotification(typeof translate === 'function' ? translate('employee.failed_to_export') : 'Failed to export employees', 'error');
         }
     }
 
